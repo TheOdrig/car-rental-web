@@ -7,6 +7,7 @@ import { clientPost, clientGet } from '@/lib/api/client';
 import type {
     User,
     LoginRequest,
+    RegisterRequest,
     MeResponse,
     LoginResponse,
     LogoutResponse,
@@ -33,6 +34,10 @@ async function logoutApi(): Promise<LogoutResponse> {
 
 async function refreshApi(): Promise<LoginResponse> {
     return clientPost<LoginResponse>('/api/auth/refresh');
+}
+
+async function registerApi(data: RegisterRequest): Promise<LoginResponse> {
+    return clientPost<LoginResponse>('/api/auth/register', data);
 }
 
 export function useAuth(): AuthContextValue {
@@ -188,6 +193,17 @@ export function useRefreshToken() {
             queryClient.setQueryData(authKeys.me(), null);
             queryClient.removeQueries({ queryKey: authKeys.all });
             router.push('/login');
+        },
+    });
+}
+
+export function useRegister() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: registerApi,
+        onSuccess: async () => {
+            await queryClient.invalidateQueries({ queryKey: authKeys.me() });
         },
     });
 }
