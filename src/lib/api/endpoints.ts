@@ -1,4 +1,9 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL ||
+    (process.env.NODE_ENV === 'development' ? 'http://localhost:8082' : '');
+
+if (!API_BASE_URL) {
+    throw new Error('NEXT_PUBLIC_API_URL environment variable is required');
+}
 
 export const endpoints = {
     auth: {
