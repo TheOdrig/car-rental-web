@@ -60,3 +60,30 @@ export interface PasswordChangeRequest {
     newPassword: string;
     confirmPassword: string;
 }
+
+export interface MeResponse {
+    id: number;
+    username: string;
+    roles: Role[];
+    exp: number;
+}
+
+export interface LoginResponse {
+    username: string;
+    tokenType: string;
+}
+
+export interface LogoutResponse {
+    message: string;
+}
+
+export interface AuthContextValue {
+    user: User | null;
+    isLoading: boolean;
+    isAuthenticated: boolean;
+    isAdmin: boolean;
+    error: Error | null;
+    login: (credentials: LoginRequest) => Promise<void>;
+    logout: () => Promise<void>;
+    refresh: () => Promise<void>;
+}
