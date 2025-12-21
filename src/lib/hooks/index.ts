@@ -19,3 +19,14 @@ export {
     useInvalidateCars,
     carKeys,
 } from './use-cars';
+
+export {
+    useRentals,
+    useMyRentals,
+    useRental,
+    useCreateRental,
+    useCancelRental,
+    usePrefetchRental,
+    useInvalidateRentals,
+    rentalKeys,
+} from './use-rentals';
