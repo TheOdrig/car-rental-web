@@ -1,16 +1,21 @@
 'use client';
 
 import Image from 'next/image';
-import { Fuel, Users, Settings2, Calendar, Gauge, Palette, MapPin } from 'lucide-react';
+import Link from 'next/link';
+import { Fuel, Users, Settings2, Calendar, Gauge, Palette, MapPin, LogIn } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { RentalForm } from '@/components/rentals';
+import { useAuth } from '@/lib/hooks';
 import type { Car, CarAvailabilityCalendar } from '@/types';
 
 interface CarDetailProps {
     car: Car;
     calendar?: CarAvailabilityCalendar;
+    showRentalForm?: boolean;
     className?: string;
 }
 
@@ -34,7 +39,9 @@ function getStatusColor(status: string): string {
     }
 }
 
-export function CarDetail({ car, calendar, className }: CarDetailProps) {
+export function CarDetail({ car, calendar, showRentalForm = true, className }: CarDetailProps) {
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
+
     const specs = [
         { icon: Fuel, label: 'Fuel', value: car.fuelType },
         { icon: Settings2, label: 'Transmission', value: car.transmissionType },
@@ -43,6 +50,9 @@ export function CarDetail({ car, calendar, className }: CarDetailProps) {
         { icon: Palette, label: 'Color', value: car.color },
         { icon: Calendar, label: 'Year', value: car.productionYear },
     ].filter(spec => spec.value);
+
+    const isAvailable = car.carStatusType === 'Available';
+    const canBook = isAvailable && showRentalForm;
 
     return (
         <div className={cn('grid gap-6 lg:grid-cols-2', className)}>
@@ -58,7 +68,7 @@ export function CarDetail({ car, calendar, className }: CarDetailProps) {
                     />
                     <Badge
                         className="absolute top-4 right-4"
-                        variant={car.carStatusType === 'Available' ? 'default' : 'secondary'}
+                        variant={isAvailable ? 'default' : 'secondary'}
                     >
                         {car.carStatusType}
                     </Badge>
@@ -119,6 +129,47 @@ export function CarDetail({ car, calendar, className }: CarDetailProps) {
                         </CardHeader>
                         <CardContent>
                             <p className="text-muted-foreground">{car.notes}</p>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {canBook && (
+                    <Card>
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-lg">Book This Car</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            {authLoading ? (
+                                <div className="space-y-4">
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                    <Skeleton className="h-12 w-full" />
+                                </div>
+                            ) : isAuthenticated ? (
+                                <RentalForm car={car} />
+                            ) : (
+                                <div className="text-center py-4">
+                                    <p className="text-muted-foreground mb-4">
+                                        Please log in to book this car
+                                    </p>
+                                    <Button asChild>
+                                        <Link href={`/login?callbackUrl=/cars/${car.id}`}>
+                                            <LogIn className="h-4 w-4 mr-2" />
+                                            Log In to Book
+                                        </Link>
+                                    </Button>
+                                </div>
+                            )}
+                        </CardContent>
+                    </Card>
+                )}
+
+                {!isAvailable && showRentalForm && (
+                    <Card className="border-amber-200 bg-amber-50/50">
+                        <CardContent className="py-4">
+                            <p className="text-center text-amber-600">
+                                This car is currently not available for booking.
+                            </p>
                         </CardContent>
                     </Card>
                 )}
