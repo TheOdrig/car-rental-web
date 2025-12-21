@@ -10,8 +10,8 @@ function isPublicRoute(pathname: string): boolean {
     if (pathname.startsWith('/cars/')) return true;
     if (pathname.startsWith('/api/')) return true;
     if (pathname.startsWith('/_next/')) return true;
-    if (pathname.includes('.')) return true; // Static files
-    return false;
+    return pathname.includes('.');
+
 }
 
 function isAuthRoute(pathname: string): boolean {
@@ -50,7 +50,7 @@ function isTokenExpired(payload: JwtPayload): boolean {
     return payload.exp < now;
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('access_token')?.value;
 
@@ -90,7 +90,3 @@ export function middleware(request: NextRequest) {
 
     return NextResponse.next();
 }
-
-export const config = {
-    matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*|api/).*)',],
-};
