@@ -1,0 +1,218 @@
+'use client';
+
+import { useState, type FormEvent } from 'react';
+import { useRouter } from 'next/navigation';
+import { format, addDays, isBefore, startOfDay } from 'date-fns';
+import { CalendarIcon, Loader2, Car } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Label } from '@/components/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { useCreateRental } from '@/lib/hooks';
+import { cn } from '@/lib/utils';
+import type { Car as CarType } from '@/types';
+
+interface RentalFormProps {
+    car: CarType;
+    onSuccess?: () => void;
+    className?: string;
+}
+
+export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
+    const router = useRouter();
+    const createRentalMutation = useCreateRental();
+
+    const today = startOfDay(new Date());
+    const [startDate, setStartDate] = useState<Date | undefined>();
+    const [endDate, setEndDate] = useState<Date | undefined>();
+    const [errors, setErrors] = useState<Record<string, string>>({});
+
+    const validateForm = (): boolean => {
+        const newErrors: Record<string, string> = {};
+
+        if (!startDate) {
+            newErrors.startDate = 'Start date is required';
+        } else if (isBefore(startDate, today)) {
+            newErrors.startDate = 'Start date cannot be in the past';
+        }
+
+        if (!endDate) {
+            newErrors.endDate = 'End date is required';
+        } else if (startDate && isBefore(endDate, startDate)) {
+            newErrors.endDate = 'End date must be after start date';
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) return;
+
+        try {
+            await createRentalMutation.mutateAsync({
+                carId: car.id,
+                startDate: format(startDate!, 'yyyy-MM-dd'),
+                endDate: format(endDate!, 'yyyy-MM-dd'),
+            });
+
+            onSuccess?.();
+            router.push('/rentals');
+        } catch {
+            setErrors({
+                form: 'Failed to create rental request. Please try again.',
+            });
+        }
+    };
+
+    const calculateDays = (): number => {
+        if (!startDate || !endDate) return 0;
+        const diffTime = endDate.getTime() - startDate.getTime();
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    };
+
+    const calculateTotal = (): number => {
+        return calculateDays() * car.price;
+    };
+
+    const days = calculateDays();
+    const total = calculateTotal();
+
+    return (
+        <form onSubmit={handleSubmit} className={cn('space-y-6', className)}>
+            {errors.form && (
+                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
+                    {errors.form}
+                </div>
+            )}
+
+            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
+                <Car className="h-5 w-5 text-muted-foreground" />
+                <div>
+                    <p className="font-semibold">{car.brand} {car.model}</p>
+                    <p className="text-sm text-muted-foreground">
+                        ${car.price.toFixed(2)} / day
+                    </p>
+                </div>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+                <div className="flex flex-col gap-2">
+                    <Label>Start Date</Label>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className={cn(
+                                    'h-12 justify-start text-left font-normal',
+                                    !startDate && 'text-muted-foreground',
+                                    errors.startDate && 'border-destructive'
+                                )}
+                                disabled={createRentalMutation.isPending}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {startDate ? format(startDate, 'PPP') : 'Select date'}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={startDate}
+                                onSelect={(date) => {
+                                    setStartDate(date);
+                                    if (errors.startDate) {
+                                        setErrors(prev => ({ ...prev, startDate: '' }));
+                                    }
+                                    if (date && endDate && isBefore(endDate, date)) {
+                                        setEndDate(addDays(date, 1));
+                                    }
+                                }}
+                                disabled={(date) => isBefore(date, today)}
+                            />
+                        </PopoverContent>
+                    </Popover>
+                    {errors.startDate && (
+                        <p className="text-xs text-destructive">{errors.startDate}</p>
+                    )}
+                </div>
+
+                <div className="flex flex-col gap-2">
+                    <Label>End Date</Label>
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className={cn(
+                                    'h-12 justify-start text-left font-normal',
+                                    !endDate && 'text-muted-foreground',
+                                    errors.endDate && 'border-destructive'
+                                )}
+                                disabled={createRentalMutation.isPending}
+                            >
+                                <CalendarIcon className="mr-2 h-4 w-4" />
+                                {endDate ? format(endDate, 'PPP') : 'Select date'}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                                mode="single"
+                                selected={endDate}
+                                onSelect={(date) => {
+                                    setEndDate(date);
+                                    if (errors.endDate) {
+                                        setErrors(prev => ({ ...prev, endDate: '' }));
+                                    }
+                                }}
+                                disabled={(date) => {
+                                    if (isBefore(date, today)) return true;
+                                    return !!(startDate && isBefore(date, startDate));
+                                }}
+                            />
+                        </PopoverContent>
+                    </Popover>
+                    {errors.endDate && (
+                        <p className="text-xs text-destructive">{errors.endDate}</p>
+                    )}
+                </div>
+            </div>
+
+            {days > 0 && (
+                <div className="rounded-lg border p-4 space-y-2">
+                    <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Daily rate</span>
+                        <span>${car.price.toFixed(2)}</span>
+                    </div>
+                    <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Duration</span>
+                        <span>{days} {days === 1 ? 'day' : 'days'}</span>
+                    </div>
+                    <div className="border-t pt-2 flex justify-between font-semibold">
+                        <span>Estimated Total</span>
+                        <span>${total.toFixed(2)}</span>
+                    </div>
+                </div>
+            )}
+
+            <Button
+                type="submit"
+                className="w-full h-12 font-bold"
+                disabled={createRentalMutation.isPending}
+            >
+                {createRentalMutation.isPending ? (
+                    <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Submitting Request...
+                    </>
+                ) : (
+                    'Request Rental'
+                )}
+            </Button>
+
+            <p className="text-xs text-center text-muted-foreground">
+                Your request will be reviewed and confirmed shortly.
+            </p>
+        </form>
+    );
+}
