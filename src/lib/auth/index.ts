@@ -5,3 +5,5 @@ export {
     clearAuthTokens,
     isAuthenticated,
 } from './cookies';
+
+export { AuthProvider, useAuthContext } from './auth-provider';

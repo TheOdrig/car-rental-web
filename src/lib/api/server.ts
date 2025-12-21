@@ -2,17 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { ApiException, parseErrorResponse } from './errors';
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-
-interface RequestOptions {
-    method?: HttpMethod;
-    body?: unknown;
-    headers?: Record<string, string>;
-    cache?: RequestCache;
-    revalidate?: number | false;
-    tags?: string[];
-}
+import type { ServerRequestOptions } from './types';
 
 async function getAuthHeader(): Promise<Record<string, string>> {
     const cookieStore = await cookies();
@@ -26,7 +16,7 @@ async function getAuthHeader(): Promise<Record<string, string>> {
 
 export async function serverFetch<T>(
     url: string,
-    options: RequestOptions = {}
+    options: ServerRequestOptions = {}
 ): Promise<T> {
     const {
         method = 'GET',
@@ -79,7 +69,7 @@ export async function serverFetch<T>(
 
 export async function serverGet<T>(
     url: string,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ServerRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'GET' });
 }
@@ -87,7 +77,7 @@ export async function serverGet<T>(
 export async function serverPost<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ServerRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'POST', body });
 }
@@ -95,7 +85,7 @@ export async function serverPost<T>(
 export async function serverPut<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ServerRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'PUT', body });
 }
@@ -103,14 +93,14 @@ export async function serverPut<T>(
 export async function serverPatch<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ServerRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'PATCH', body });
 }
 
 export async function serverDelete<T>(
     url: string,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ServerRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'DELETE' });
 }

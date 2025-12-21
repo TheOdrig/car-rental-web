@@ -1,17 +1,9 @@
 import { ApiException, parseErrorResponse } from './errors';
-
-type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
-
-interface RequestOptions {
-    method?: HttpMethod;
-    body?: unknown;
-    headers?: Record<string, string>;
-    signal?: AbortSignal;
-}
+import type { ClientRequestOptions } from './types';
 
 export async function clientFetch<T>(
     url: string,
-    options: RequestOptions = {}
+    options: ClientRequestOptions = {}
 ): Promise<T> {
     const {
         method = 'GET',
@@ -50,7 +42,7 @@ export async function clientFetch<T>(
 
 export async function clientGet<T>(
     url: string,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ClientRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'GET' });
 }
@@ -58,7 +50,7 @@ export async function clientGet<T>(
 export async function clientPost<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ClientRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'POST', body });
 }
@@ -66,7 +58,7 @@ export async function clientPost<T>(
 export async function clientPut<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ClientRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'PUT', body });
 }
@@ -74,14 +66,14 @@ export async function clientPut<T>(
 export async function clientPatch<T>(
     url: string,
     body?: unknown,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ClientRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'PATCH', body });
 }
 
 export async function clientDelete<T>(
     url: string,
-    options?: Omit<RequestOptions, 'method' | 'body'>
+    options?: Omit<ClientRequestOptions, 'method' | 'body'>
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'DELETE' });
 }
