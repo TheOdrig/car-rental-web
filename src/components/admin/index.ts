@@ -2,3 +2,4 @@ export { MetricsCard, MetricsCardSkeleton, DashboardMetricsGrid } from './metric
 export { FleetStatusCard, FleetStatusCompact, FleetStatusSkeleton } from './fleet-status';
 export { PendingRentalsTable, PendingRentalsSkeleton } from './pending-rentals';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';
+export { AdminSidebar } from './admin-sidebar';
