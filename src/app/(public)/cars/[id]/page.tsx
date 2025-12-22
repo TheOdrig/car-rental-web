@@ -5,11 +5,6 @@ import { endpoints } from '@/lib/api/endpoints';
 import { CarDetail } from '@/components/cars';
 import type { Car, CarAvailabilityCalendar } from '@/types';
 
-interface CarDetailResponse {
-    car: Car;
-    calendar?: CarAvailabilityCalendar;
-}
-
 interface PageProps {
     params: Promise<{ id: string }>;
 }
@@ -23,14 +18,23 @@ export default async function CarDetailPage({ params }: PageProps) {
     }
 
     try {
-        const data = await serverGet<CarDetailResponse>(
-            `${endpoints.cars.byId(carId)}`,
+        const car = await serverGet<Car>(
+            endpoints.cars.byId(carId),
             { tags: ['cars', `car-${carId}`] }
         );
 
+        let calendar: CarAvailabilityCalendar | undefined;
+        try {
+            calendar = await serverGet<CarAvailabilityCalendar>(
+                endpoints.cars.availability.calendar(carId),
+                { tags: [`car-${carId}-calendar`] }
+            );
+        } catch {
+        }
+
         return (
             <main className="container mx-auto px-4 py-8">
-                <CarDetail car={data.car} calendar={data.calendar} />
+                <CarDetail car={car} calendar={calendar} />
             </main>
         );
     } catch {
@@ -47,14 +51,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     try {
-        const data = await serverGet<CarDetailResponse>(
-            `${endpoints.cars.byId(carId)}`,
+        const car = await serverGet<Car>(
+            endpoints.cars.byId(carId),
             { tags: ['cars', `car-${carId}`] }
         );
 
         return {
-            title: `${data.car.brand} ${data.car.model} ${data.car.productionYear} | Car Rental`,
-            description: `Rent ${data.car.brand} ${data.car.model} - ${data.car.fuelType ?? ''} ${data.car.transmissionType ?? ''}`.trim(),
+            title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
+            description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
         };
     } catch {
         return { title: 'Car Not Found' };

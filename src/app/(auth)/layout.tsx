@@ -9,11 +9,14 @@ interface AuthLayoutProps {
 export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
         <div className="min-h-screen flex flex-col lg:flex-row">
-            <div className="hidden lg:flex lg:w-1/2 relative bg-gray-900 items-center justify-center">
-                <div className="absolute inset-0 z-0">
-                    <div className="w-full h-full bg-gradient-to-br from-primary/20 via-primary/10 to-transparent" />
-                </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+            <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden">
+                <div
+                    className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+                    style={{
+                        backgroundImage: `url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&q=80')`,
+                    }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/30 z-10" />
 
                 <div className="relative z-20 p-12 max-w-lg text-white">
                     <div className="mb-6 flex items-center gap-3">

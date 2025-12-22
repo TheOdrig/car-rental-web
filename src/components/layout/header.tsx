@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import dynamic from 'next/dynamic';
 import { Car, Menu, User } from 'lucide-react';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { Button } from '@/components/ui/button';
@@ -13,7 +14,16 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { MobileNav } from './mobile-nav';
+
+const MobileNav = dynamic(() => import('./mobile-nav').then(mod => mod.MobileNav), {
+    ssr: false,
+    loading: () => (
+        <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-5 w-5" />
+            <span className="sr-only">Toggle menu</span>
+        </Button>
+    ),
+});
 
 export function Header() {
     const router = useRouter();
