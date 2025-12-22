@@ -1,5 +1,6 @@
+import React, { type ReactNode } from 'react';
+import { render } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import type { ReactNode } from 'react';
 
 export function createTestQueryClient() {
     return new QueryClient({
@@ -26,6 +27,18 @@ export function createQueryWrapper() {
             </QueryClientProvider>
         );
     };
+}
+
+export function renderWithProviders(ui: React.ReactElement) {
+    const queryClient = createTestQueryClient();
+
+    return render(ui, {
+        wrapper: ({ children }) => (
+            <QueryClientProvider client={queryClient}>
+                {children}
+            </QueryClientProvider>
+        ),
+    });
 }
 
 export function createRouteParams<T extends Record<string, string>>(params: T) {
