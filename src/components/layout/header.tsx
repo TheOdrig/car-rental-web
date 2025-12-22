@@ -13,13 +13,11 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-
-import { useState } from 'react';
+import { MobileNav } from './mobile-nav';
 
 export function Header() {
     const router = useRouter();
     const { user, isAuthenticated, logout, isLoading, isAdmin } = useAuth();
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const handleLogout = async () => {
         await logout();
@@ -29,7 +27,15 @@ export function Header() {
     return (
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
+                    <MobileNav
+                        trigger={
+                            <Button variant="ghost" size="icon" className="md:hidden">
+                                <Menu className="h-5 w-5" />
+                                <span className="sr-only">Toggle menu</span>
+                            </Button>
+                        }
+                    />
                     <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                         <Car className="h-6 w-6 text-primary" />
                         <span>CarRental</span>
@@ -98,56 +104,8 @@ export function Header() {
                             </Button>
                         </div>
                     )}
-
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        className="md:hidden"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                    >
-                        <Menu className="h-5 w-5" />
-                        <span className="sr-only">Toggle menu</span>
-                    </Button>
                 </div>
             </div>
-
-            {mobileMenuOpen && (
-                <div className="md:hidden border-t p-4 space-y-4 bg-background">
-                    <nav className="flex flex-col space-y-3">
-                        <Link
-                            href="/cars"
-                            className="text-sm font-medium transition-colors hover:text-primary"
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            Browse Cars
-                        </Link>
-                        <Link
-                            href="/locations"
-                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            Locations
-                        </Link>
-                        <Link
-                            href="/about"
-                            className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
-                            onClick={() => setMobileMenuOpen(false)}
-                        >
-                            About
-                        </Link>
-                        {!isAuthenticated && (
-                            <div className="flex flex-col gap-2 mt-4">
-                                <Button variant="outline" asChild className="w-full justify-start">
-                                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Log in</Link>
-                                </Button>
-                                <Button asChild className="w-full justify-start">
-                                    <Link href="/register" onClick={() => setMobileMenuOpen(false)}>Sign up</Link>
-                                </Button>
-                            </div>
-                        )}
-                    </nav>
-                </div>
-            )}
         </header>
     );
 }
