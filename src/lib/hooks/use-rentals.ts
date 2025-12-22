@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete } from '@/lib/api/client';
+import { showToast, toastMessages } from '@/lib/utils/toast';
 import type { Rental, RentalRequest, PageResponse } from '@/types';
 
 interface RentalFilters {
@@ -100,7 +101,11 @@ export function useCreateRental() {
     return useMutation({
         mutationFn: createRental,
         onSuccess: () => {
+            showToast.success(toastMessages.rental.createSuccess);
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.createError, error.message);
         },
     });
 }
@@ -111,8 +116,12 @@ export function useCancelRental() {
     return useMutation({
         mutationFn: cancelRental,
         onSuccess: (_data, rentalId) => {
+            showToast.success(toastMessages.rental.cancelSuccess);
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(rentalId) });
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.cancelError, error.message);
         },
     });
 }

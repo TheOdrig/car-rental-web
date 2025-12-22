@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { clientPost, clientGet } from '@/lib/api/client';
+import { showToast, toastMessages } from '@/lib/utils/toast';
 import type {
     User,
     LoginRequest,
@@ -73,22 +74,23 @@ export function useAuth(): AuthContextValue {
     const loginMutation = useMutation({
         mutationFn: loginApi,
         onSuccess: async () => {
+            showToast.success(toastMessages.auth.loginSuccess);
             await queryClient.invalidateQueries({ queryKey: authKeys.me() });
         },
-        onError: (error) => {
-            console.error('Login failed:', error);
+        onError: (error: Error) => {
+            showToast.error(toastMessages.auth.loginError, error.message);
         },
     });
 
     const logoutMutation = useMutation({
         mutationFn: logoutApi,
         onSuccess: () => {
+            showToast.success(toastMessages.auth.logoutSuccess);
             queryClient.setQueryData(authKeys.me(), null);
             queryClient.removeQueries({ queryKey: authKeys.all });
             router.push('/');
         },
-        onError: (error) => {
-            console.error('Logout failed:', error);
+        onError: () => {
             queryClient.setQueryData(authKeys.me(), null);
         },
     });
