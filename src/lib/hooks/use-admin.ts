@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/lib/api/client';
+import { showToast, toastMessages } from '@/lib/utils/toast';
 import type {
     DailySummary,
     FleetStatus,
@@ -181,12 +182,16 @@ export function useApproveRental() {
     return useMutation({
         mutationFn: approveRental,
         onSuccess: (result) => {
+            showToast.success(toastMessages.rental.approveSuccess);
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
             void queryClient.invalidateQueries({ queryKey: ['rentals'] });
 
             if (result.updatedSummary) {
                 queryClient.setQueryData(adminKeys.summary(), result.updatedSummary);
             }
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.approveError, error.message);
         },
     });
 }
@@ -197,12 +202,16 @@ export function useProcessPickup() {
     return useMutation({
         mutationFn: processPickup,
         onSuccess: (result) => {
+            showToast.success(toastMessages.rental.pickupSuccess);
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
             void queryClient.invalidateQueries({ queryKey: ['rentals'] });
 
             if (result.updatedSummary) {
                 queryClient.setQueryData(adminKeys.summary(), result.updatedSummary);
             }
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.pickupError, error.message);
         },
     });
 }
@@ -213,6 +222,7 @@ export function useProcessReturn() {
     return useMutation({
         mutationFn: processReturn,
         onSuccess: (result) => {
+            showToast.success(toastMessages.rental.returnSuccess);
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
             void queryClient.invalidateQueries({ queryKey: ['rentals'] });
             void queryClient.invalidateQueries({ queryKey: ['cars'] });
@@ -220,6 +230,9 @@ export function useProcessReturn() {
             if (result.updatedSummary) {
                 queryClient.setQueryData(adminKeys.summary(), result.updatedSummary);
             }
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.returnError, error.message);
         },
     });
 }

@@ -8,10 +8,7 @@ const PROTECTED_ROUTES = ['/rentals', '/profile', '/settings'];
 function isPublicRoute(pathname: string): boolean {
     if (PUBLIC_ROUTES.includes(pathname)) return true;
     if (pathname.startsWith('/cars/')) return true;
-    if (pathname.startsWith('/api/')) return true;
-    if (pathname.startsWith('/_next/')) return true;
-    return pathname.includes('.');
-
+    return pathname.startsWith('/api/');
 }
 
 function isAuthRoute(pathname: string): boolean {
@@ -90,3 +87,9 @@ export function proxy(request: NextRequest) {
 
     return NextResponse.next();
 }
+
+export const config = {
+    matcher: [
+        '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
+    ],
+};
