@@ -237,4 +237,61 @@ describe('RegisterForm', () => {
             });
         });
     });
+
+    describe('Validation Icons', () => {
+        it('should show success border for valid username after blur', async () => {
+            renderWithProviders(<RegisterForm />);
+
+            const usernameInput = getUsernameInput();
+            await user.type(usernameInput, 'testuser');
+            await user.tab();
+
+            expect(usernameInput).toHaveClass('border-green-500');
+        });
+
+        it('should show success border for valid email after blur', async () => {
+            renderWithProviders(<RegisterForm />);
+
+            const emailInput = getEmailInput();
+            await user.type(emailInput, 'test@example.com');
+            await user.tab();
+
+            expect(emailInput).toHaveClass('border-green-500');
+        });
+
+        it('should show success border for matching passwords', async () => {
+            renderWithProviders(<RegisterForm />);
+
+            await user.type(getPasswordInput(), 'Password123!');
+            const confirmInput = getConfirmPasswordInput();
+            await user.type(confirmInput, 'Password123!');
+            await user.tab();
+
+            expect(confirmInput).toHaveClass('border-green-500');
+        });
+
+        it('should clear form error when user starts typing', async () => {
+            const mockMutateAsync = vi.fn().mockRejectedValue(new Error('Registration failed'));
+            vi.mocked(useRegister).mockReturnValue({
+                mutateAsync: mockMutateAsync,
+                isPending: false,
+            } as unknown as ReturnType<typeof useRegister>);
+
+            renderWithProviders(<RegisterForm />);
+
+            await user.type(getUsernameInput(), 'testuser');
+            await user.type(getEmailInput(), 'test@example.com');
+            await user.type(getPasswordInput(), 'Password123!');
+            await user.type(getConfirmPasswordInput(), 'Password123!');
+            await user.click(getTermsCheckbox());
+            await user.click(getSubmitButton());
+
+            await waitFor(() => {
+                expect(screen.getByText(/registration failed/i)).toBeInTheDocument();
+            });
+
+            await user.type(getUsernameInput(), 'x');
+            expect(screen.queryByText(/registration failed/i)).not.toBeInTheDocument();
+        });
+    });
 });
