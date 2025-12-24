@@ -247,4 +247,74 @@ describe('useFilterStore', () => {
             expect(useFilterStore.getState().hasActiveFilters()).toBe(false);
         });
     });
+
+    describe('viewMode', () => {
+        it('should default to grid view', () => {
+            const { viewMode } = useFilterStore.getState();
+            expect(viewMode).toBe('grid');
+        });
+
+        it('should set view mode to list', () => {
+            const { setViewMode } = useFilterStore.getState();
+
+            setViewMode('list');
+
+            expect(useFilterStore.getState().viewMode).toBe('list');
+        });
+
+        it('should set view mode back to grid', () => {
+            const { setViewMode } = useFilterStore.getState();
+
+            setViewMode('list');
+            setViewMode('grid');
+
+            expect(useFilterStore.getState().viewMode).toBe('grid');
+        });
+
+        it('should not be affected by clearFilters', () => {
+            const { setViewMode, clearFilters } = useFilterStore.getState();
+
+            setViewMode('list');
+            clearFilters();
+
+            expect(useFilterStore.getState().viewMode).toBe('list');
+        });
+    });
+
+    describe('sortBy', () => {
+        it('should default to recommended', () => {
+            const { sortBy } = useFilterStore.getState();
+            expect(sortBy).toBe('recommended');
+        });
+
+        it('should set sort option', () => {
+            const { setSortBy } = useFilterStore.getState();
+
+            setSortBy('price-asc');
+
+            expect(useFilterStore.getState().sortBy).toBe('price-asc');
+        });
+
+        it('should allow all sort options', () => {
+            const { setSortBy } = useFilterStore.getState();
+
+            setSortBy('price-desc');
+            expect(useFilterStore.getState().sortBy).toBe('price-desc');
+
+            setSortBy('name-asc');
+            expect(useFilterStore.getState().sortBy).toBe('name-asc');
+
+            setSortBy('recommended');
+            expect(useFilterStore.getState().sortBy).toBe('recommended');
+        });
+
+        it('should not be affected by clearFilters', () => {
+            const { setSortBy, clearFilters } = useFilterStore.getState();
+
+            setSortBy('price-asc');
+            clearFilters();
+
+            expect(useFilterStore.getState().sortBy).toBe('price-asc');
+        });
+    });
 });

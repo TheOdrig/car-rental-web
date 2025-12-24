@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { AlertCircle, RefreshCw, LayoutGrid, List, SlidersHorizontal } from 'lucide-react';
+import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     Select,
@@ -10,15 +10,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { CarGrid, CarGridSkeleton, FilterSidebar, ActiveFilters } from '@/components/cars';
+import {
+    CarGrid,
+    CarGridSkeleton,
+    FilterSidebar,
+    ActiveFilters,
+    ViewToggle,
+    CarListView,
+    CarListViewSkeleton,
+} from '@/components/cars';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { useCars } from '@/lib/hooks';
-import { useFilterStore } from '@/lib/stores/filter-store';
-import { cn } from '@/lib/utils';
+import { useFilterStore, type SortOption } from '@/lib/stores/filter-store';
 import type { Car, AvailableCar } from '@/types';
-
-type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc';
-type ViewMode = 'grid' | 'list';
 
 const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: 'recommended', label: 'Recommended' },
@@ -53,11 +57,16 @@ function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | Avai
 }
 
 export function CarsListingContent() {
-    const [sortBy, setSortBy] = useState<SortOption>('recommended');
-    const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-    const { filters, hasActiveFilters } = useFilterStore();
+    const {
+        filters,
+        viewMode,
+        sortBy,
+        setViewMode,
+        setSortBy,
+        hasActiveFilters,
+    } = useFilterStore();
     const { data, isLoading, error, refetch } = useCars(filters);
 
     const cars = data?.content ?? [];
@@ -161,45 +170,20 @@ export function CarsListingContent() {
                                 </SelectContent>
                             </Select>
 
-                            <div className="flex items-center border rounded-lg p-1">
-                                <Button
-                                    variant={viewMode === 'grid' ? 'secondary' : 'ghost'}
-                                    size="sm"
-                                    onClick={() => setViewMode('grid')}
-                                    className="h-8 w-8 p-0"
-                                    aria-label="Grid view"
-                                    aria-pressed={viewMode === 'grid'}
-                                >
-                                    <LayoutGrid className="h-4 w-4" />
-                                </Button>
-                                <Button
-                                    variant={viewMode === 'list' ? 'secondary' : 'ghost'}
-                                    size="sm"
-                                    onClick={() => setViewMode('list')}
-                                    className="h-8 w-8 p-0"
-                                    aria-label="List view"
-                                    aria-pressed={viewMode === 'list'}
-                                >
-                                    <List className="h-4 w-4" />
-                                </Button>
-                            </div>
+                            <ViewToggle value={viewMode} onChange={setViewMode} />
                         </div>
                     </div>
 
                     {isLoading ? (
-                        <CarGridSkeleton
-                            count={8}
-                            className={cn(
-                                viewMode === 'list' && 'grid-cols-1 lg:grid-cols-2'
-                            )}
-                        />
+                        viewMode === 'grid' ? (
+                            <CarGridSkeleton count={8} />
+                        ) : (
+                            <CarListViewSkeleton count={4} />
+                        )
+                    ) : viewMode === 'grid' ? (
+                        <CarGrid cars={sortedCars} />
                     ) : (
-                        <CarGrid
-                            cars={sortedCars}
-                            className={cn(
-                                viewMode === 'list' && 'grid-cols-1 lg:grid-cols-2'
-                            )}
-                        />
+                        <CarListView cars={sortedCars} />
                     )}
 
                     {!isLoading && totalCars > 0 && (
