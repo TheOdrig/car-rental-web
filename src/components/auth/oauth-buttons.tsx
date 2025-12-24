@@ -1,12 +1,15 @@
 'use client';
 
-import {Button} from '@/components/ui/button';
-import {endpoints} from '@/lib/api';
-import {cn} from '@/lib/utils';
+import { useState } from 'react';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { endpoints } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 interface OAuthButtonsProps {
     className?: string;
     disabled?: boolean;
+    onError?: (error: string) => void;
 }
 
 function GoogleIcon({ className }: { className?: string }) {
@@ -40,10 +43,20 @@ function GitHubIcon({ className }: { className?: string }) {
     );
 }
 
-export function OAuthButtons({ className, disabled }: OAuthButtonsProps) {
+export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps) {
+    const [loadingProvider, setLoadingProvider] = useState<'google' | 'github' | null>(null);
+
     const handleOAuthLogin = (provider: 'google' | 'github') => {
-        window.location.href = endpoints.auth.oauth.authorize(provider);
+        try {
+            setLoadingProvider(provider);
+            window.location.href = endpoints.auth.oauth.authorize(provider);
+        } catch {
+            setLoadingProvider(null);
+            onError?.(`Failed to connect to ${provider}. Please try again.`);
+        }
     };
+
+    const isLoading = loadingProvider !== null;
 
     return (
         <div className={cn('grid grid-cols-2 gap-4', className)}>
@@ -52,9 +65,13 @@ export function OAuthButtons({ className, disabled }: OAuthButtonsProps) {
                 variant="outline"
                 className="h-12 gap-3"
                 onClick={() => handleOAuthLogin('google')}
-                disabled={disabled}
+                disabled={disabled || isLoading}
             >
-                <GoogleIcon className="h-5 w-5" />
+                {loadingProvider === 'google' ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                    <GoogleIcon className="h-5 w-5" />
+                )}
                 <span className="font-medium">Google</span>
             </Button>
 
@@ -63,9 +80,13 @@ export function OAuthButtons({ className, disabled }: OAuthButtonsProps) {
                 variant="outline"
                 className="h-12 gap-3"
                 onClick={() => handleOAuthLogin('github')}
-                disabled={disabled}
+                disabled={disabled || isLoading}
             >
-                <GitHubIcon className="h-5 w-5" />
+                {loadingProvider === 'github' ? (
+                    <Loader2 className="h-5 w-5 animate-spin" />
+                ) : (
+                    <GitHubIcon className="h-5 w-5" />
+                )}
                 <span className="font-medium">GitHub</span>
             </Button>
         </div>

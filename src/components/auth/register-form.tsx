@@ -1,42 +1,22 @@
 'use client';
 
-import { useState, useMemo, type FormEvent, type ChangeEvent } from 'react';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2, Check, X } from 'lucide-react';
+import {
+    Eye, EyeOff, Loader2, CheckCircle2, XCircle
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useRegister } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
+import { FormError } from './form-error';
+import { PasswordStrengthIndicator } from './password-strength-indicator';
+import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/utils/validation';
 
 interface RegisterFormProps {
     className?: string;
-}
-
-interface PasswordStrength {
-    score: number;
-    label: string;
-    color: string;
-}
-
-function getPasswordStrength(password: string): PasswordStrength {
-    let score = 0;
-
-    if (password.length >= 8) score++;
-    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
-    if (/\d/.test(password)) score++;
-    if (/[^a-zA-Z0-9]/.test(password)) score++;
-
-    const strengths: PasswordStrength[] = [
-        { score: 0, label: 'Too weak', color: 'bg-destructive' },
-        { score: 1, label: 'Weak', color: 'bg-destructive' },
-        { score: 2, label: 'Fair', color: 'bg-yellow-500' },
-        { score: 3, label: 'Good', color: 'bg-green-500' },
-        { score: 4, label: 'Strong', color: 'bg-green-600' },
-    ];
-
-    return strengths[score];
 }
 
 export function RegisterForm({ className }: RegisterFormProps) {
@@ -53,11 +33,13 @@ export function RegisterForm({ className }: RegisterFormProps) {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [touched, setTouched] = useState<Record<string, boolean>>({});
+    const [formError, setFormError] = useState<string | null>(null);
 
-    const passwordStrength = useMemo(
-        () => getPasswordStrength(formData.password),
-        [formData.password]
-    );
+    const isUsernameValid = formData.username.length >= 3;
+    const isEmailValid = validateEmail(formData.email);
+    const isPasswordValid = validatePassword(formData.password);
+    const isConfirmPasswordValid = validatePasswordMatch(formData.password, formData.confirmPassword) && formData.confirmPassword.length > 0;
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -70,19 +52,19 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
         if (!formData.email.trim()) {
             newErrors.email = 'Email is required';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        } else if (!validateEmail(formData.email)) {
             newErrors.email = 'Please enter a valid email address';
         }
 
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else if (formData.password.length < 8) {
+        } else if (!validatePassword(formData.password)) {
             newErrors.password = 'Password must be at least 8 characters';
         }
 
         if (!formData.confirmPassword) {
             newErrors.confirmPassword = 'Please confirm your password';
-        } else if (formData.password !== formData.confirmPassword) {
+        } else if (!validatePasswordMatch(formData.password, formData.confirmPassword)) {
             newErrors.confirmPassword = 'Passwords do not match';
         }
 
@@ -96,6 +78,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setFormError(null);
 
         if (!validateForm()) return;
 
@@ -107,9 +90,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             });
             router.push('/');
         } catch {
-            setErrors({
-                form: 'Registration failed. Please try again.',
-            });
+            setFormError('Registration failed. Please try again.');
         }
     };
 
@@ -119,57 +100,93 @@ export function RegisterForm({ className }: RegisterFormProps) {
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
+        if (formError) {
+            setFormError(null);
+        }
     };
 
-    const passwordsMatch = formData.password && formData.confirmPassword && formData.password === formData.confirmPassword;
+    const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name } = e.target;
+        setTouched(prev => ({ ...prev, [name]: true }));
+    };
+
+    const getValidationIcon = (fieldName: string, isValid: boolean) => {
+        if (!touched[fieldName] || !formData[fieldName as keyof typeof formData]) {
+            return null;
+        }
+        return isValid ? (
+            <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden="true" />
+        ) : (
+            <XCircle className="h-5 w-5 text-destructive" aria-hidden="true" />
+        );
+    };
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
-            {errors.form && (
-                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                    {errors.form}
-                </div>
-            )}
+            <FormError
+                message={formError || ''}
+                onDismiss={() => setFormError(null)}
+            />
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor="username">Username</Label>
-                <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="e.g. johndoe"
-                    value={formData.username}
-                    onChange={handleChange}
-                    disabled={registerMutation.isPending}
-                    aria-invalid={!!errors.username}
-                    className={cn(
-                        'h-12',
-                        errors.username && 'border-destructive focus-visible:ring-destructive'
-                    )}
-                />
+                <div className="relative">
+                    <Input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="e.g. johndoe"
+                        value={formData.username}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        disabled={registerMutation.isPending}
+                        aria-invalid={!!errors.username}
+                        aria-describedby={errors.username ? 'username-error' : undefined}
+                        className={cn(
+                            'h-12 pr-10',
+                            errors.username && 'border-destructive focus-visible:ring-destructive',
+                            touched.username && isUsernameValid && 'border-green-500 focus-visible:ring-green-500'
+                        )}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                        {getValidationIcon('username', isUsernameValid)}
+                    </div>
+                </div>
                 {errors.username && (
-                    <p className="text-xs text-destructive">{errors.username}</p>
+                    <p id="username-error" className="text-xs text-destructive" role="alert">
+                        {errors.username}
+                    </p>
                 )}
             </div>
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor="email">Email Address</Label>
-                <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    placeholder="name@example.com"
-                    value={formData.email}
-                    onChange={handleChange}
-                    disabled={registerMutation.isPending}
-                    aria-invalid={!!errors.email}
-                    className={cn(
-                        'h-12',
-                        errors.email && 'border-destructive focus-visible:ring-destructive'
-                    )}
-                />
+                <div className="relative">
+                    <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        placeholder="name@example.com"
+                        value={formData.email}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        disabled={registerMutation.isPending}
+                        aria-invalid={!!errors.email}
+                        aria-describedby={errors.email ? 'email-error' : undefined}
+                        className={cn(
+                            'h-12 pr-10',
+                            errors.email && 'border-destructive focus-visible:ring-destructive',
+                            touched.email && isEmailValid && 'border-green-500 focus-visible:ring-green-500'
+                        )}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                        {getValidationIcon('email', isEmailValid)}
+                    </div>
+                </div>
                 {errors.email && (
-                    <p className="text-xs text-destructive">{errors.email}</p>
+                    <p id="email-error" className="text-xs text-destructive" role="alert">
+                        {errors.email}
+                    </p>
                 )}
             </div>
 
@@ -183,11 +200,14 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Create a strong password"
                         value={formData.password}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         disabled={registerMutation.isPending}
                         aria-invalid={!!errors.password}
+                        aria-describedby={errors.password ? 'password-error' : undefined}
                         className={cn(
                             'h-12 pr-10',
-                            errors.password && 'border-destructive focus-visible:ring-destructive'
+                            errors.password && 'border-destructive focus-visible:ring-destructive',
+                            touched.password && isPasswordValid && 'border-green-500 focus-visible:ring-green-500'
                         )}
                     />
                     <button
@@ -203,28 +223,11 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         )}
                     </button>
                 </div>
-                {formData.password && (
-                    <>
-                        <div className="flex gap-1 h-1 w-full">
-                            {[1, 2, 3, 4].map((level) => (
-                                <div
-                                    key={level}
-                                    className={cn(
-                                        'h-full flex-1 rounded-full transition-colors',
-                                        level <= passwordStrength.score
-                                            ? passwordStrength.color
-                                            : 'bg-muted'
-                                    )}
-                                />
-                            ))}
-                        </div>
-                        <p className="text-xs text-muted-foreground">
-                            Password strength: {passwordStrength.label}
-                        </p>
-                    </>
-                )}
+                <PasswordStrengthIndicator password={formData.password} showSuggestions={false} />
                 {errors.password && (
-                    <p className="text-xs text-destructive">{errors.password}</p>
+                    <p id="password-error" className="text-xs text-destructive" role="alert">
+                        {errors.password}
+                    </p>
                 )}
             </div>
 
@@ -238,35 +241,36 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         disabled={registerMutation.isPending}
                         aria-invalid={!!errors.confirmPassword}
+                        aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
                         className={cn(
                             'h-12 pr-10',
                             errors.confirmPassword && 'border-destructive focus-visible:ring-destructive',
-                            passwordsMatch && 'border-green-500 focus-visible:ring-green-500'
+                            touched.confirmPassword && isConfirmPasswordValid && 'border-green-500 focus-visible:ring-green-500'
                         )}
                     />
-                    <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                    >
-                        {formData.confirmPassword ? (
-                            passwordsMatch ? (
-                                <Check className="h-5 w-5 text-green-500" />
+                    <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
+                        {getValidationIcon('confirmPassword', isConfirmPasswordValid)}
+                        <button
+                            type="button"
+                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                        >
+                            {showConfirmPassword ? (
+                                <EyeOff className="h-5 w-5" />
                             ) : (
-                                <X className="h-5 w-5 text-destructive" />
-                            )
-                        ) : showConfirmPassword ? (
-                            <EyeOff className="h-5 w-5" />
-                        ) : (
-                            <Eye className="h-5 w-5" />
-                        )}
-                    </button>
+                                <Eye className="h-5 w-5" />
+                            )}
+                        </button>
+                    </div>
                 </div>
                 {errors.confirmPassword && (
-                    <p className="text-xs text-destructive">{errors.confirmPassword}</p>
+                    <p id="confirm-password-error" className="text-xs text-destructive" role="alert">
+                        {errors.confirmPassword}
+                    </p>
                 )}
             </div>
 
@@ -283,6 +287,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     }}
                     disabled={registerMutation.isPending}
                     className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                    aria-describedby={errors.terms ? 'terms-error' : undefined}
                 />
                 <div className="text-sm">
                     <label htmlFor="terms" className="text-foreground">
@@ -296,7 +301,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         </Link>
                     </label>
                     {errors.terms && (
-                        <p className="text-xs text-destructive mt-1">{errors.terms}</p>
+                        <p id="terms-error" className="text-xs text-destructive mt-1" role="alert">
+                            {errors.terms}
+                        </p>
                     )}
                 </div>
             </div>

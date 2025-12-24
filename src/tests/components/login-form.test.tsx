@@ -205,4 +205,49 @@ describe('LoginForm', () => {
             expect(passwordInput).toHaveAttribute('type', 'password');
         });
     });
+
+    describe('Validation Icons', () => {
+        it('should show success icon when username is valid after blur', async () => {
+            renderWithProviders(<LoginForm />);
+
+            const usernameInput = getUsernameInput();
+            await user.type(usernameInput, 'testuser');
+            await user.tab();
+
+            await waitFor(() => {
+                expect(screen.getByLabelText(/show password/i).parentElement?.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+            });
+        });
+
+        it('should show success icon for valid password after blur', async () => {
+            renderWithProviders(<LoginForm />);
+
+            const passwordInput = getPasswordInput();
+            await user.type(passwordInput, 'password123');
+            await user.tab();
+
+            expect(passwordInput).toHaveClass('border-green-500');
+        });
+
+        it('should clear form error when user starts typing', async () => {
+            const mockMutateAsync = vi.fn().mockRejectedValue(new Error('Invalid credentials'));
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: mockMutateAsync,
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm />);
+
+            await user.type(getUsernameInput(), 'testuser');
+            await user.type(getPasswordInput(), 'wrongpassword');
+            await user.click(getSubmitButton());
+
+            await waitFor(() => {
+                expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
+            });
+
+            await user.type(getUsernameInput(), 'x');
+            expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+        });
+    });
 });

@@ -87,3 +87,31 @@ export interface AuthContextValue {
     logout: () => Promise<void>;
     refresh: () => Promise<void>;
 }
+
+export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong';
+
+export interface FieldValidationState {
+    value: string;
+    error?: string;
+    isValid: boolean;
+    touched: boolean;
+}
+
+export interface FormValidationState {
+    email: FieldValidationState;
+    password: FieldValidationState & {
+        strength?: PasswordStrength;
+    };
+    confirmPassword?: FieldValidationState;
+    termsAccepted?: {
+        value: boolean;
+        error?: string;
+        isValid: boolean;
+        touched: boolean;
+    };
+}
+
+export interface FormMessage {
+    message: string;
+    type: 'error' | 'success' | 'warning' | 'info';
+}

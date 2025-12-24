@@ -3,12 +3,14 @@
 import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Eye, EyeOff, Loader2, CheckCircle2, XCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useLogin } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
+import { FormError } from './form-error';
+import { validateEmail } from '@/lib/utils/validation';
 
 interface LoginFormProps {
     callbackUrl?: string;
@@ -25,6 +27,12 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
     });
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [touched, setTouched] = useState<Record<string, boolean>>({});
+    const [formError, setFormError] = useState<string | null>(null);
+
+    const isUsernameValid = formData.username.trim().length > 0 &&
+        (validateEmail(formData.username) || formData.username.length >= 3);
+    const isPasswordValid = formData.password.length >= 6;
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -45,6 +53,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
+        setFormError(null);
 
         if (!validateForm()) return;
 
@@ -55,9 +64,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
             });
             router.push(callbackUrl);
         } catch {
-            setErrors({
-                form: 'Invalid credentials. Please try again.',
-            });
+            setFormError('Invalid credentials. Please try again.');
         }
     };
 
@@ -67,34 +74,62 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
+        if (formError) {
+            setFormError(null);
+        }
+    };
+
+    const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name } = e.target;
+        setTouched(prev => ({ ...prev, [name]: true }));
+    };
+
+    const getValidationIcon = (fieldName: string, isValid: boolean) => {
+        if (!touched[fieldName] || !formData[fieldName as keyof typeof formData]) {
+            return null;
+        }
+        return isValid ? (
+            <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden="true" />
+        ) : (
+            <XCircle className="h-5 w-5 text-destructive" aria-hidden="true" />
+        );
     };
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
-            {errors.form && (
-                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                    {errors.form}
-                </div>
-            )}
+            <FormError
+                message={formError || ''}
+                onDismiss={() => setFormError(null)}
+            />
 
             <div className="flex flex-col gap-2">
                 <Label htmlFor="username">Email or Username</Label>
-                <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    placeholder="name@example.com"
-                    value={formData.username}
-                    onChange={handleChange}
-                    disabled={loginMutation.isPending}
-                    aria-invalid={!!errors.username}
-                    className={cn(
-                        'h-12',
-                        errors.username && 'border-destructive focus-visible:ring-destructive'
-                    )}
-                />
+                <div className="relative">
+                    <Input
+                        id="username"
+                        name="username"
+                        type="text"
+                        placeholder="name@example.com"
+                        value={formData.username}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        disabled={loginMutation.isPending}
+                        aria-invalid={!!errors.username}
+                        aria-describedby={errors.username ? 'username-error' : undefined}
+                        className={cn(
+                            'h-12 pr-10',
+                            errors.username && 'border-destructive focus-visible:ring-destructive',
+                            touched.username && isUsernameValid && 'border-green-500 focus-visible:ring-green-500'
+                        )}
+                    />
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
+                        {getValidationIcon('username', isUsernameValid)}
+                    </div>
+                </div>
                 {errors.username && (
-                    <p className="text-xs text-destructive">{errors.username}</p>
+                    <p id="username-error" className="text-xs text-destructive" role="alert">
+                        {errors.username}
+                    </p>
                 )}
             </div>
 
@@ -116,28 +151,36 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
+                        onBlur={handleBlur}
                         disabled={loginMutation.isPending}
                         aria-invalid={!!errors.password}
+                        aria-describedby={errors.password ? 'password-error' : undefined}
                         className={cn(
-                            'h-12 pr-10',
-                            errors.password && 'border-destructive focus-visible:ring-destructive'
+                            'h-12 pr-20',
+                            errors.password && 'border-destructive focus-visible:ring-destructive',
+                            touched.password && isPasswordValid && 'border-green-500 focus-visible:ring-green-500'
                         )}
                     />
-                    <button
-                        type="button"
-                        onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    >
-                        {showPassword ? (
-                            <EyeOff className="h-5 w-5" />
-                        ) : (
-                            <Eye className="h-5 w-5" />
-                        )}
-                    </button>
+                    <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
+                        {getValidationIcon('password', isPasswordValid)}
+                        <button
+                            type="button"
+                            onClick={() => setShowPassword(!showPassword)}
+                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
+                            aria-label={showPassword ? 'Hide password' : 'Show password'}
+                        >
+                            {showPassword ? (
+                                <EyeOff className="h-5 w-5" />
+                            ) : (
+                                <Eye className="h-5 w-5" />
+                            )}
+                        </button>
+                    </div>
                 </div>
                 {errors.password && (
-                    <p className="text-xs text-destructive">{errors.password}</p>
+                    <p id="password-error" className="text-xs text-destructive" role="alert">
+                        {errors.password}
+                    </p>
                 )}
             </div>
 
