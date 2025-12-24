@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { CarGrid, CarGridSkeleton, CarFilters } from '@/components/cars';
+import { CarGrid, CarGridSkeleton, FilterSidebar } from '@/components/cars';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { useCars } from '@/lib/hooks';
 import { useFilterStore } from '@/lib/stores/filter-store';
@@ -57,7 +57,7 @@ export function CarsListingContent() {
     const [viewMode, setViewMode] = useState<ViewMode>('grid');
     const [showMobileFilters, setShowMobileFilters] = useState(false);
 
-    const { filters, hasActiveFilters, clearFilters } = useFilterStore();
+    const { filters, hasActiveFilters } = useFilterStore();
     const { data, isLoading, error, refetch } = useCars(filters);
 
     const cars = data?.content ?? [];
@@ -101,21 +101,8 @@ export function CarsListingContent() {
 
             <div className="flex flex-col lg:flex-row gap-8">
                 <aside className="hidden lg:block w-64 flex-shrink-0">
-                    <div className="sticky top-24 space-y-6">
-                        <div className="flex items-center justify-between">
-                            <h2 className="font-semibold text-lg">Filters</h2>
-                            {hasActiveFilters() && (
-                                <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    onClick={clearFilters}
-                                    className="text-muted-foreground h-auto py-1 px-2"
-                                >
-                                    Reset All
-                                </Button>
-                            )}
-                        </div>
-                        <CarFilters layout="vertical" />
+                    <div className="sticky top-24">
+                        <FilterSidebar />
                     </div>
                 </aside>
 
@@ -136,19 +123,7 @@ export function CarsListingContent() {
 
                     {showMobileFilters && (
                         <div className="mt-4 p-4 border rounded-lg bg-card">
-                            <div className="flex items-center justify-between mb-4">
-                                <h2 className="font-semibold">Filters</h2>
-                                {hasActiveFilters() && (
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={clearFilters}
-                                    >
-                                        Reset All
-                                    </Button>
-                                )}
-                            </div>
-                            <CarFilters layout="vertical" />
+                            <FilterSidebar />
                         </div>
                     )}
                 </div>
