@@ -10,7 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { CarGrid, CarGridSkeleton, FilterSidebar } from '@/components/cars';
+import { CarGrid, CarGridSkeleton, FilterSidebar, ActiveFilters } from '@/components/cars';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { useCars } from '@/lib/hooks';
 import { useFilterStore } from '@/lib/stores/filter-store';
@@ -129,6 +129,8 @@ export function CarsListingContent() {
                 </div>
 
                 <main className="flex-1 min-w-0">
+                    <ActiveFilters className="mb-4" />
+
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                         <p className="text-sm text-muted-foreground">
                             Showing{' '}
