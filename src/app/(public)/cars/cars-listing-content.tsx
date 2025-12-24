@@ -4,13 +4,6 @@ import { useState, useMemo } from 'react';
 import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import {
     CarGrid,
     CarGridSkeleton,
     FilterSidebar,
@@ -18,18 +11,14 @@ import {
     ViewToggle,
     CarListView,
     CarListViewSkeleton,
+    SortDropdown,
 } from '@/components/cars';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { useCars } from '@/lib/hooks';
 import { useFilterStore, type SortOption } from '@/lib/stores/filter-store';
 import type { Car, AvailableCar } from '@/types';
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-    { value: 'recommended', label: 'Recommended' },
-    { value: 'price-asc', label: 'Price: Low to High' },
-    { value: 'price-desc', label: 'Price: High to Low' },
-    { value: 'name-asc', label: 'Name: A to Z' },
-];
+
 
 function getCarPrice(car: Car | AvailableCar): number {
     if ('dailyRate' in car) {
@@ -46,6 +35,8 @@ function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | Avai
             return sorted.sort((a, b) => getCarPrice(a) - getCarPrice(b));
         case 'price-desc':
             return sorted.sort((a, b) => getCarPrice(b) - getCarPrice(a));
+        case 'rating-desc':
+            return sorted.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
         case 'name-asc':
             return sorted.sort((a, b) =>
                 `${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`)
@@ -154,21 +145,7 @@ export function CarsListingContent() {
                         </p>
 
                         <div className="flex items-center gap-3">
-                            <Select
-                                value={sortBy}
-                                onValueChange={(value) => setSortBy(value as SortOption)}
-                            >
-                                <SelectTrigger className="w-[180px]">
-                                    <SelectValue placeholder="Sort by" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {SORT_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value}>
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            <SortDropdown value={sortBy} onChange={setSortBy} />
 
                             <ViewToggle value={viewMode} onChange={setViewMode} />
                         </div>

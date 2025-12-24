@@ -8,3 +8,4 @@ export { FilterSidebar } from './car-filters-sidebar';
 export { ActiveFilters } from './active-filters';
 export { ViewToggle, type ViewMode } from './view-toggle';
 export { CarListView, CarListItem, CarListViewSkeleton } from './car-list-view';
+export { SortDropdown, SORT_OPTIONS } from './sort-dropdown';

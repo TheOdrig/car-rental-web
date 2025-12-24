@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { CarFilters } from '@/types';
 
 export type ViewMode = 'grid' | 'list';
-export type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc';
+export type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc' | 'rating-desc';
 
 interface FilterState {
     filters: CarFilters;
