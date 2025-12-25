@@ -17,6 +17,7 @@ export const carKeys = {
     all: ['cars'] as const,
     lists: () => [...carKeys.all, 'list'] as const,
     list: (filters?: CarFilters) => [...carKeys.lists(), filters] as const,
+    featured: () => [...carKeys.all, 'featured'] as const,
     details: () => [...carKeys.all, 'detail'] as const,
     detail: (id: number) => [...carKeys.details(), id] as const,
     search: () => [...carKeys.all, 'search'] as const,
@@ -85,6 +86,14 @@ export function useCars(filters?: CarFilters) {
     return useQuery({
         queryKey: carKeys.list(filters),
         queryFn: () => fetchCars(filters),
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
+export function useFeaturedCars() {
+    return useQuery({
+        queryKey: carKeys.featured(),
+        queryFn: () => clientGet<PageResponse<Car>>('/api/cars/featured'),
         staleTime: 5 * 60 * 1000,
     });
 }
