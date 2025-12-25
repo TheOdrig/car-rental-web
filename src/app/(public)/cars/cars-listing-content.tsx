@@ -1,9 +1,16 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
+import { AlertCircle, RefreshCw, SlidersHorizontal, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
+import {
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from '@/components/ui/sheet';
 import {
     CarGrid,
     CarGridSkeleton,
@@ -49,7 +56,7 @@ function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | Avai
 }
 
 export function CarsListingContent() {
-    const [showMobileFilters, setShowMobileFilters] = useState(false);
+    const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
     const {
         filters,
@@ -104,32 +111,47 @@ export function CarsListingContent() {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">
+                {/* Desktop Sidebar */}
                 <aside className="hidden lg:block w-64 flex-shrink-0">
                     <div className="sticky top-24">
                         <FilterSidebar />
                     </div>
                 </aside>
 
+                {/* Mobile Filter Sheet */}
                 <div className="lg:hidden">
-                    <Button
-                        variant="outline"
-                        onClick={() => setShowMobileFilters(!showMobileFilters)}
-                        className="w-full justify-center gap-2"
-                    >
-                        <SlidersHorizontal className="h-4 w-4" />
-                        {showMobileFilters ? 'Hide Filters' : 'Show Filters'}
-                        {hasActiveFilters() && (
-                            <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
-                                Active
-                            </span>
-                        )}
-                    </Button>
-
-                    {showMobileFilters && (
-                        <div className="mt-4 p-4 border rounded-lg bg-card">
-                            <FilterSidebar />
-                        </div>
-                    )}
+                    <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
+                        <SheetTrigger asChild>
+                            <Button
+                                variant="outline"
+                                className="w-full justify-center gap-2"
+                            >
+                                <SlidersHorizontal className="h-4 w-4" />
+                                Filters
+                                {hasActiveFilters() && (
+                                    <span className="bg-primary text-primary-foreground rounded-full px-2 py-0.5 text-xs">
+                                        Active
+                                    </span>
+                                )}
+                            </Button>
+                        </SheetTrigger>
+                        <SheetContent side="left" className="w-[300px] sm:w-[350px] overflow-y-auto">
+                            <SheetHeader>
+                                <SheetTitle>Filters</SheetTitle>
+                            </SheetHeader>
+                            <div className="mt-6">
+                                <FilterSidebar />
+                            </div>
+                            <div className="mt-6 pt-6 border-t">
+                                <Button
+                                    className="w-full"
+                                    onClick={() => setMobileFiltersOpen(false)}
+                                >
+                                    Apply Filters
+                                </Button>
+                            </div>
+                        </SheetContent>
+                    </Sheet>
                 </div>
 
                 <main className="flex-1 min-w-0">
