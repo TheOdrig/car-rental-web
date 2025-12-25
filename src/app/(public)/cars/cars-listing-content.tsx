@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react';
 import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import {
     CarGrid,
     CarGridSkeleton,
@@ -54,14 +55,17 @@ export function CarsListingContent() {
         filters,
         viewMode,
         sortBy,
+        page,
         setViewMode,
         setSortBy,
+        setPage,
         hasActiveFilters,
     } = useFilterStore();
-    const { data, isLoading, error, refetch } = useCars(filters);
+    const { data, isLoading, error, refetch } = useCars(filters, page);
 
     const cars = data?.content ?? [];
     const totalCars = data?.totalElements ?? 0;
+    const totalPages = data?.totalPages ?? 0;
 
     const sortedCars = useMemo(() => sortCars(cars, sortBy), [cars, sortBy]);
 
@@ -164,10 +168,17 @@ export function CarsListingContent() {
                     )}
 
                     {!isLoading && totalCars > 0 && (
-                        <div className="mt-8 flex justify-center">
-                            <p className="text-sm text-muted-foreground">
-                                Pagination will be added in a future update
-                            </p>
+                        <div className="mt-8 flex flex-col items-center gap-4">
+                            <PaginationInfo
+                                currentPage={page}
+                                pageSize={12}
+                                totalElements={totalCars}
+                            />
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={setPage}
+                            />
                         </div>
                     )}
                 </main>
