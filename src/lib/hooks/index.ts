@@ -10,6 +10,7 @@ export {
 
 export {
     useCars,
+    useFeaturedCars,
     useCar,
     useCarCalendar,
     useSimilarCars,

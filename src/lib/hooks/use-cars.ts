@@ -17,6 +17,7 @@ export const carKeys = {
     all: ['cars'] as const,
     lists: () => [...carKeys.all, 'list'] as const,
     list: (filters?: CarFilters) => [...carKeys.lists(), filters] as const,
+    featured: () => [...carKeys.all, 'featured'] as const,
     details: () => [...carKeys.all, 'detail'] as const,
     detail: (id: number) => [...carKeys.details(), id] as const,
     search: () => [...carKeys.all, 'search'] as const,
@@ -39,7 +40,7 @@ interface UseCarOptions {
 }
 
 
-async function fetchCars(filters?: CarFilters): Promise<PageResponse<Car>> {
+async function fetchCars(filters?: CarFilters, page: number = 0): Promise<PageResponse<Car>> {
     const params = new URLSearchParams();
 
     if (filters) {
@@ -50,8 +51,11 @@ async function fetchCars(filters?: CarFilters): Promise<PageResponse<Car>> {
         });
     }
 
+    params.append('page', String(page));
+    params.append('size', '12');
+
     const queryString = params.toString();
-    const url = queryString ? `/api/cars?${queryString}` : '/api/cars';
+    const url = `/api/cars?${queryString}`;
 
     return clientGet<PageResponse<Car>>(url);
 }
@@ -81,10 +85,18 @@ async function searchCars(params: AvailabilitySearchRequest): Promise<Availabili
 }
 
 
-export function useCars(filters?: CarFilters) {
+export function useCars(filters?: CarFilters, page: number = 0) {
     return useQuery({
-        queryKey: carKeys.list(filters),
-        queryFn: () => fetchCars(filters),
+        queryKey: [...carKeys.list(filters), page],
+        queryFn: () => fetchCars(filters, page),
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
+export function useFeaturedCars() {
+    return useQuery({
+        queryKey: carKeys.featured(),
+        queryFn: () => clientGet<PageResponse<Car>>('/api/cars/featured'),
         staleTime: 5 * 60 * 1000,
     });
 }

@@ -19,6 +19,7 @@ export const endpoints = {
     cars: {
         list: `${API_BASE_URL}/api/cars`,
         active: `${API_BASE_URL}/api/cars`,
+        featured: `${API_BASE_URL}/api/cars/featured`,
         byId: (id: number) => `${API_BASE_URL}/api/cars/${id}`,
         byLicensePlate: (plate: string) => `${API_BASE_URL}/api/cars/licensePlate/${plate}`,
         search: `${API_BASE_URL}/api/cars/search`,
