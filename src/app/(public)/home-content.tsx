@@ -3,7 +3,7 @@
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CarGrid, CarGridSkeleton, CarFilters } from '@/components/cars';
-import { HeroSection, FeaturedCarousel } from '@/components/home';
+import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/components/home';
 import { useCars } from '@/lib/hooks';
 import { useFilterStore } from '@/lib/stores/filter-store';
 
@@ -38,6 +38,8 @@ export function HomeContent() {
                 subtitle="Discover our most booked vehicles"
                 className="bg-muted/30"
             />
+
+            <PromotionalBanners />
 
             <section className="container mx-auto px-4 py-12">
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
