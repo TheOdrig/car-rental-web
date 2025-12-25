@@ -3,7 +3,7 @@
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CarGrid, CarGridSkeleton, CarFilters } from '@/components/cars';
-import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/components/home';
+import { HeroSection, FeaturedCarousel, PromotionalBanners, Testimonials } from '@/components/home';
 import { useCars } from '@/lib/hooks';
 import { useFilterStore } from '@/lib/stores/filter-store';
 
@@ -58,6 +58,8 @@ export function HomeContent() {
                     <CarGrid cars={cars} />
                 )}
             </section>
+
+            <Testimonials />
         </>
     );
 }
