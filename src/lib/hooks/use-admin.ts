@@ -321,6 +321,74 @@ export function useRejectRental() {
 }
 
 
+interface CreateCarRequest {
+    brand: string;
+    model: string;
+    year: number;
+    licensePlate: string;
+    vin?: string;
+    fuelType: string;
+    transmissionType: string;
+    bodyType?: string;
+    seats: number;
+    color?: string;
+    dailyRate: number;
+    weeklyRate?: number;
+    depositAmount?: number;
+}
+
+interface UpdateCarRequest extends CreateCarRequest {
+    id: number;
+}
+
+interface CarResponse {
+    id: number;
+    brand: string;
+    model: string;
+    licensePlate: string;
+}
+
+async function createCar(data: CreateCarRequest): Promise<CarResponse> {
+    return clientPost<CarResponse>('/api/admin/cars', data);
+}
+
+async function updateCar({ id, ...data }: UpdateCarRequest): Promise<CarResponse> {
+    return clientPost<CarResponse>(`/api/admin/cars/${id}`, data);
+}
+
+export function useCreateCar() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createCar,
+        onSuccess: (result) => {
+            showToast.success('Car added successfully', `${result.brand} ${result.model} has been added to your fleet.`);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to add car', error.message);
+        },
+    });
+}
+
+export function useUpdateCar() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateCar,
+        onSuccess: (result) => {
+            showToast.success('Car updated successfully', `${result.brand} ${result.model} has been updated.`);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to update car', error.message);
+        },
+    });
+}
+
+
 export function useInvalidateAdmin() {
     const queryClient = useQueryClient();
 
@@ -330,5 +398,6 @@ export function useInvalidateAdmin() {
         summary: () => queryClient.invalidateQueries({ queryKey: adminKeys.summary() }),
         fleet: () => queryClient.invalidateQueries({ queryKey: adminKeys.fleet() }),
         pending: () => queryClient.invalidateQueries({ queryKey: adminKeys.pending() }),
+        cars: () => queryClient.invalidateQueries({ queryKey: ['cars'] }),
     };
 }
