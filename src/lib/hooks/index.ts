@@ -31,3 +31,8 @@ export {
     useInvalidateRentals,
     rentalKeys,
 } from './use-rentals';
+
+export {
+    useCreateBooking,
+    useCheckoutNavigation,
+} from './use-checkout';
