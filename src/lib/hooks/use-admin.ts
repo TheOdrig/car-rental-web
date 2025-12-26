@@ -9,6 +9,7 @@ import type {
     PendingItem,
     QuickActionResult,
     PageResponse,
+    RevenueAnalytics,
 } from '@/types';
 
 interface PendingFilters {
@@ -26,6 +27,7 @@ export const adminKeys = {
     pendingPickups: (filters?: PendingFilters) => [...adminKeys.pending(), 'pickups', filters] as const,
     pendingReturns: (filters?: PendingFilters) => [...adminKeys.pending(), 'returns', filters] as const,
     overdueRentals: (filters?: PendingFilters) => [...adminKeys.pending(), 'overdue', filters] as const,
+    revenue: () => [...adminKeys.all, 'revenue'] as const,
 };
 
 
@@ -113,6 +115,10 @@ async function fetchOverdueRentals(filters?: PendingFilters): Promise<PageRespon
     return clientGet<PageResponse<PendingItem>>(url);
 }
 
+async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
+    return clientGet<RevenueAnalytics>('/api/admin/revenue');
+}
+
 async function approveRental(rentalId: number): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`);
 }
@@ -172,6 +178,14 @@ export function useOverdueRentals(filters?: PendingFilters) {
         queryKey: adminKeys.overdueRentals(filters),
         queryFn: () => fetchOverdueRentals(filters),
         staleTime: 30 * 1000,
+    });
+}
+
+export function useRevenueData() {
+    return useQuery({
+        queryKey: adminKeys.revenue(),
+        queryFn: fetchRevenueAnalytics,
+        staleTime: 5 * 60 * 1000,
     });
 }
 

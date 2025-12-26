@@ -1,13 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { RefreshCw, Clock } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { cn } from '@/lib/utils';
+import { RefreshCw, Clock, Plus, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DashboardMetricsGrid,
     PendingRentalsTable,
     QuickActionsCard,
     FleetStatusCard,
+    RevenueChart,
 } from '@/components/admin';
 import {
     useDashboardSummary,
@@ -19,7 +21,10 @@ import {
     useProcessPickup,
     useProcessReturn,
     useInvalidateAdmin,
+    useRevenueData,
 } from '@/lib/hooks/use-admin';
+import { processRevenueData } from '@/lib/utils/admin-utils';
+import { RevenuePeriod } from '@/types/admin';
 import { toast } from 'sonner';
 
 
@@ -28,10 +33,12 @@ type MetricsCardType = 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pi
 
 export default function AdminDashboardPage() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
+    const [revenuePeriod, setRevenuePeriod] = useState<RevenuePeriod>('last6months');
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
 
     const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
     const { data: fleetStatus, isLoading: fleetLoading } = useFleetStatus();
+    const { data: revenueAnalytics, isLoading: revenueLoading } = useRevenueData();
     const { data: approvals, isLoading: approvalsLoading } = usePendingApprovals();
     const { data: pickups, isLoading: pickupsLoading } = usePendingPickups();
     const { data: returns, isLoading: returnsLoading } = usePendingReturns();
@@ -125,6 +132,16 @@ export default function AdminDashboardPage() {
         }
     };
 
+    const chartData = useMemo(() => {
+        if (!revenueAnalytics?.monthlyRevenue) return [];
+        return processRevenueData(revenueAnalytics.monthlyRevenue, revenuePeriod);
+    }, [revenueAnalytics, revenuePeriod]);
+
+    const latestRevenue = useMemo(() => {
+        if (!revenueAnalytics?.monthlyRevenue || revenueAnalytics.monthlyRevenue.length === 0) return null;
+        return revenueAnalytics.monthlyRevenue[revenueAnalytics.monthlyRevenue.length - 1];
+    }, [revenueAnalytics]);
+
     const lastUpdated = summary?.generatedAt
         ? new Date(summary.generatedAt).toLocaleTimeString('en-US', {
             hour: '2-digit',
@@ -134,43 +151,55 @@ export default function AdminDashboardPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
                     <p className="text-muted-foreground">
                         Overview of your rental operations
                     </p>
                 </div>
-                <div className="flex items-center gap-4">
-                    {lastUpdated && (
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Clock className="h-4 w-4" />
-                            <span>Updated {lastUpdated}</span>
-                        </div>
-                    )}
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button variant="outline" size="sm" className="hidden md:flex gap-2">
+                        <Download className="h-4 w-4" />
+                        Export Report
+                    </Button>
+                    <Button size="sm" className="gap-2">
+                        <Plus className="h-4 w-4" />
+                        Add New Car
+                    </Button>
                     <Button
-                        variant="outline"
-                        size="sm"
+                        variant="ghost"
+                        size="icon"
                         onClick={handleRefresh}
-                        className="gap-2"
+                        title="Refresh Data"
                     >
-                        <RefreshCw className="h-4 w-4" />
-                        Refresh
+                        <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} />
                     </Button>
                 </div>
             </div>
 
             <DashboardMetricsGrid
+                totalRevenue={revenueAnalytics?.breakdown.totalRevenue}
+                revenueTrend={latestRevenue ? {
+                    value: Math.abs(latestRevenue.growthPercentage),
+                    direction: latestRevenue.growthPercentage >= 0 ? 'up' : 'down',
+                    label: 'vs last month'
+                } : undefined}
+                activeRentals={fleetStatus?.rentedCars}
                 pendingApprovals={summary?.pendingApprovals ?? 0}
-                todaysPickups={summary?.todaysPickups ?? 0}
-                todaysReturns={summary?.todaysReturns ?? 0}
-                overdueRentals={summary?.overdueRentals ?? 0}
-                isLoading={summaryLoading}
+                isLoading={summaryLoading || revenueLoading}
                 onCardClick={handleCardClick}
             />
 
             <div className="grid gap-6 lg:grid-cols-3">
-                <div className="lg:col-span-2">
+                <div className="lg:col-span-2 space-y-6">
+                    <RevenueChart
+                        data={chartData}
+                        period={revenuePeriod}
+                        onPeriodChange={setRevenuePeriod}
+                        isLoading={revenueLoading}
+                    />
+
                     <PendingRentalsTable
                         items={getActiveItems()}
                         type={activeTab}
