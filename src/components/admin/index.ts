@@ -5,6 +5,8 @@ export type { } from './metrics-card';
 
 export { DashboardMetricsGrid } from './metrics-card';
 export { FleetStatusCard, FleetStatusCompact, FleetStatusSkeleton } from './fleet-status';
+export { FleetStatsCards, FleetStatsCardsSkeleton } from './fleet-stats';
+export { FleetTable, FleetTableSkeleton } from './fleet-table';
 export { PendingRentalsTable, PendingRentalsSkeleton } from './pending-rentals';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';
 export { RevenueChart, RevenueChartSkeleton } from './revenue-chart';
