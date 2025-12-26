@@ -128,3 +128,27 @@ export interface PenaltyWaiverResponse {
     refundInitiated: boolean;
     refundTransactionId?: string;
 }
+
+export type RentalTab = 'all' | 'active' | 'upcoming' | 'completed' | 'cancelled';
+
+
+export interface RentalTabCounts {
+    all: number;
+    active: number;
+    upcoming: number;
+    completed: number;
+    cancelled: number;
+}
+
+export interface RentalStats {
+    totalRentals: number;
+    activeTrips: number;
+    loyaltyPoints: number;
+}
+
+export interface ActionButton {
+    label: string;
+    action: string;
+    variant: 'default' | 'outline' | 'ghost' | 'destructive';
+    icon?: string;
+}
