@@ -9,6 +9,8 @@ import type {
     PendingItem,
     QuickActionResult,
     PageResponse,
+    RevenueAnalytics,
+    AdminAlert,
 } from '@/types';
 
 interface PendingFilters {
@@ -26,6 +28,8 @@ export const adminKeys = {
     pendingPickups: (filters?: PendingFilters) => [...adminKeys.pending(), 'pickups', filters] as const,
     pendingReturns: (filters?: PendingFilters) => [...adminKeys.pending(), 'returns', filters] as const,
     overdueRentals: (filters?: PendingFilters) => [...adminKeys.pending(), 'overdue', filters] as const,
+    revenue: () => [...adminKeys.all, 'revenue'] as const,
+    alerts: () => [...adminKeys.all, 'alerts'] as const,
 };
 
 
@@ -113,16 +117,36 @@ async function fetchOverdueRentals(filters?: PendingFilters): Promise<PageRespon
     return clientGet<PageResponse<PendingItem>>(url);
 }
 
-async function approveRental(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`);
+async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
+    return clientGet<RevenueAnalytics>('/api/admin/revenue');
 }
 
-async function processPickup(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`);
+async function fetchAlerts(): Promise<AdminAlert[]> {
+    return clientGet<AdminAlert[]>('/api/admin/alerts');
 }
 
-async function processReturn(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`);
+async function dismissAlert(alertId: string): Promise<void> {
+    return clientPost<void>(`/api/admin/alerts/${alertId}/dismiss`);
+}
+
+async function markAllAlertsRead(): Promise<void> {
+    return clientPost<void>('/api/admin/alerts/mark-all-read');
+}
+
+async function approveRental({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`, { notes });
+}
+
+async function processPickup({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
+}
+
+async function processReturn({ rentalId, data }: { rentalId: number; data?: any }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
+}
+
+async function rejectRental({ rentalId, reason }: { rentalId: number; reason: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
 }
 
 
@@ -172,6 +196,45 @@ export function useOverdueRentals(filters?: PendingFilters) {
         queryKey: adminKeys.overdueRentals(filters),
         queryFn: () => fetchOverdueRentals(filters),
         staleTime: 30 * 1000,
+    });
+}
+
+export function useRevenueData() {
+    return useQuery({
+        queryKey: adminKeys.revenue(),
+        queryFn: fetchRevenueAnalytics,
+        staleTime: 5 * 60 * 1000,
+    });
+}
+
+export function useAlerts() {
+    return useQuery({
+        queryKey: adminKeys.alerts(),
+        queryFn: fetchAlerts,
+        staleTime: 60 * 1000,
+    });
+}
+
+export function useDismissAlert() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: dismissAlert,
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
+        },
+    });
+}
+
+export function useMarkAllAlertsRead() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: markAllAlertsRead,
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
+            showToast.success('All alerts marked as read');
+        },
     });
 }
 
@@ -237,6 +300,94 @@ export function useProcessReturn() {
     });
 }
 
+export function useRejectRental() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: rejectRental,
+        onSuccess: (result) => {
+            showToast.success(toastMessages.rental.rejectSuccess);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
+            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
+
+            if (result.updatedSummary) {
+                queryClient.setQueryData(adminKeys.summary(), result.updatedSummary);
+            }
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.rejectError, error.message);
+        },
+    });
+}
+
+
+interface CreateCarRequest {
+    brand: string;
+    model: string;
+    year: number;
+    licensePlate: string;
+    vin?: string;
+    fuelType: string;
+    transmissionType: string;
+    bodyType?: string;
+    seats: number;
+    color?: string;
+    dailyRate: number;
+    weeklyRate?: number;
+    depositAmount?: number;
+}
+
+interface UpdateCarRequest extends CreateCarRequest {
+    id: number;
+}
+
+interface CarResponse {
+    id: number;
+    brand: string;
+    model: string;
+    licensePlate: string;
+}
+
+async function createCar(data: CreateCarRequest): Promise<CarResponse> {
+    return clientPost<CarResponse>('/api/admin/cars', data);
+}
+
+async function updateCar({ id, ...data }: UpdateCarRequest): Promise<CarResponse> {
+    return clientPost<CarResponse>(`/api/admin/cars/${id}`, data);
+}
+
+export function useCreateCar() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: createCar,
+        onSuccess: (result) => {
+            showToast.success('Car added successfully', `${result.brand} ${result.model} has been added to your fleet.`);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to add car', error.message);
+        },
+    });
+}
+
+export function useUpdateCar() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateCar,
+        onSuccess: (result) => {
+            showToast.success('Car updated successfully', `${result.brand} ${result.model} has been updated.`);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to update car', error.message);
+        },
+    });
+}
+
 
 export function useInvalidateAdmin() {
     const queryClient = useQueryClient();
@@ -247,5 +398,6 @@ export function useInvalidateAdmin() {
         summary: () => queryClient.invalidateQueries({ queryKey: adminKeys.summary() }),
         fleet: () => queryClient.invalidateQueries({ queryKey: adminKeys.fleet() }),
         pending: () => queryClient.invalidateQueries({ queryKey: adminKeys.pending() }),
+        cars: () => queryClient.invalidateQueries({ queryKey: ['cars'] }),
     };
 }

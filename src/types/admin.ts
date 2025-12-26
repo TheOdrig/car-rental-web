@@ -1,3 +1,9 @@
+export interface TrendIndicator {
+    value: number;
+    direction: 'up' | 'down';
+    label?: string;
+}
+
 export interface DailySummary {
     pendingApprovals: number;
     todaysPickups: number;
@@ -60,12 +66,18 @@ export interface PendingItem {
     rentalId: number;
     customerName: string;
     customerEmail: string;
+    customerImage?: string;
+    isCustomerVerified?: boolean;
     carId: number;
     carBrand: string;
     carModel: string;
+    carImage?: string;
     licensePlate: string;
+    fuelType?: string;
+    transmission?: string;
     startDate: string;
     endDate: string;
+    duration?: number;
     totalAmount: number;
     status: string;
     lateHours?: number;
@@ -106,11 +118,37 @@ export interface RevenueBreakdown {
     damagePercentage: number;
 }
 
+export type RevenuePeriod = 'last6months' | 'lastyear';
+
+export interface RevenueDataPoint {
+    month: string;
+    revenue: number;
+    isCurrent?: boolean;
+}
+
 export interface RevenueAnalytics {
     dailyRevenue: DailyRevenue[];
     monthlyRevenue: MonthlyRevenue[];
     breakdown: RevenueBreakdown;
     generatedAt: string;
+}
+
+export type AlertVariant = 'critical' | 'warning' | 'info' | 'success';
+
+export interface AdminAlertAction {
+    label: string;
+    action: string;
+    variant?: 'default' | 'outline' | 'ghost';
+}
+
+export interface AdminAlert {
+    id: string;
+    type: AlertVariant;
+    title: string;
+    description: string;
+    timestamp: string;
+    actions?: AdminAlertAction[];
+    dismissible?: boolean;
 }
 
 export type DamageSeverity =

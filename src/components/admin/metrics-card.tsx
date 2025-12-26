@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
     ClipboardCheck,
@@ -11,22 +12,27 @@ import {
     ArrowDownRight,
     Clock,
     AlertTriangle,
+    DollarSign,
+    Users,
     type LucideIcon,
 } from 'lucide-react';
+import type { TrendIndicator } from '@/types/admin';
 
 
-type MetricsCardVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
+type MetricsCardVariant = 'default' | 'success' | 'warning' | 'danger' | 'info' | 'revenue';
+
+interface MetricsCardBadge {
+    label: string;
+    variant?: 'default' | 'secondary' | 'destructive' | 'outline';
+}
 
 interface MetricsCardProps {
     title: string;
     value: number | string;
     description?: string;
     icon?: LucideIcon;
-    trend?: {
-        value: number;
-        direction: 'up' | 'down';
-        label?: string;
-    };
+    trend?: TrendIndicator;
+    badge?: MetricsCardBadge;
     variant?: MetricsCardVariant;
     className?: string;
     onClick?: () => void;
@@ -63,6 +69,11 @@ const variantStyles: Record<MetricsCardVariant, { bg: string; iconBg: string; ic
         iconBg: 'bg-blue-100 dark:bg-blue-900/30',
         iconColor: 'text-blue-600 dark:text-blue-400',
     },
+    revenue: {
+        bg: 'border-emerald-200 dark:border-emerald-900',
+        iconBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+        iconColor: 'text-emerald-600 dark:text-emerald-400',
+    },
 };
 
 
@@ -72,6 +83,7 @@ export const MetricsCard = memo(function MetricsCard({
     description,
     icon: Icon,
     trend,
+    badge,
     variant = 'default',
     className,
     onClick,
@@ -81,7 +93,7 @@ export const MetricsCard = memo(function MetricsCard({
     return (
         <Card
             className={cn(
-                'transition-all duration-200',
+                'transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none',
                 styles.bg,
                 onClick && 'cursor-pointer hover:shadow-md hover:scale-[1.02]',
                 className
@@ -90,13 +102,24 @@ export const MetricsCard = memo(function MetricsCard({
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}
             onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+            aria-label={onClick ? `${title}: ${value}` : undefined}
         >
             <CardContent className="p-6">
                 <div className="flex items-start justify-between">
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-muted-foreground truncate">
-                            {title}
-                        </p>
+                        <div className="flex items-center gap-2">
+                            <p className="text-sm font-medium text-muted-foreground truncate">
+                                {title}
+                            </p>
+                            {badge && (
+                                <Badge
+                                    variant={badge.variant || 'destructive'}
+                                    className="text-xs"
+                                >
+                                    {badge.label}
+                                </Badge>
+                            )}
+                        </div>
                         <p className="text-3xl font-bold mt-2 tracking-tight">
                             {value}
                         </p>
@@ -173,16 +196,30 @@ export function MetricsCardSkeleton({ className }: MetricsCardSkeletonProps) {
 
 
 interface DashboardMetricsGridProps {
+    totalRevenue?: number;
+    revenueTrend?: TrendIndicator;
+    activeRentals?: number;
+    activeRentalsTrend?: TrendIndicator;
     pendingApprovals: number;
-    todaysPickups: number;
-    todaysReturns: number;
-    overdueRentals: number;
+    newUsers?: number;
+    newUsersTrend?: TrendIndicator;
+    todaysPickups?: number;
+    todaysReturns?: number;
+    overdueRentals?: number;
     isLoading?: boolean;
-    onCardClick?: (type: 'approvals' | 'pickups' | 'returns' | 'overdue') => void;
+    onCardClick?: (type: 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pickups' | 'returns' | 'overdue') => void;
 }
 
+const HIGH_PRIORITY_THRESHOLD = 5;
+
 export function DashboardMetricsGrid({
+    totalRevenue,
+    revenueTrend,
+    activeRentals,
+    activeRentalsTrend,
     pendingApprovals,
+    newUsers,
+    newUsersTrend,
     todaysPickups,
     todaysReturns,
     overdueRentals,
@@ -200,6 +237,51 @@ export function DashboardMetricsGrid({
         );
     }
 
+    const isNewFormat = totalRevenue !== undefined || activeRentals !== undefined;
+
+    if (isNewFormat) {
+        return (
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+                <MetricsCard
+                    title="Total Revenue"
+                    value={`$${(totalRevenue ?? 0).toLocaleString()}`}
+                    description="Monthly revenue"
+                    icon={DollarSign}
+                    variant="revenue"
+                    trend={revenueTrend}
+                    onClick={onCardClick ? () => onCardClick('revenue') : undefined}
+                />
+                <MetricsCard
+                    title="Active Rentals"
+                    value={activeRentals ?? 0}
+                    description="Currently rented"
+                    icon={Car}
+                    variant="info"
+                    trend={activeRentalsTrend}
+                    onClick={onCardClick ? () => onCardClick('activeRentals') : undefined}
+                />
+                <MetricsCard
+                    title="Pending Approvals"
+                    value={pendingApprovals}
+                    description="Awaiting review"
+                    icon={ClipboardCheck}
+                    variant={pendingApprovals > 0 ? 'warning' : 'default'}
+                    badge={pendingApprovals > HIGH_PRIORITY_THRESHOLD ? { label: 'High Priority' } : undefined}
+                    onClick={onCardClick ? () => onCardClick('approvals') : undefined}
+                />
+                <MetricsCard
+                    title="New Users"
+                    value={newUsers ?? 0}
+                    description="This month"
+                    icon={Users}
+                    variant="default"
+                    trend={newUsersTrend}
+                    onClick={onCardClick ? () => onCardClick('users') : undefined}
+                />
+            </div>
+        );
+    }
+
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <MetricsCard
@@ -208,11 +290,12 @@ export function DashboardMetricsGrid({
                 description="Awaiting admin review"
                 icon={ClipboardCheck}
                 variant={pendingApprovals > 0 ? 'warning' : 'default'}
+                badge={pendingApprovals > HIGH_PRIORITY_THRESHOLD ? { label: 'High Priority' } : undefined}
                 onClick={onCardClick ? () => onCardClick('approvals') : undefined}
             />
             <MetricsCard
                 title="Today's Pickups"
-                value={todaysPickups}
+                value={todaysPickups ?? 0}
                 description="Scheduled for today"
                 icon={Car}
                 variant="info"
@@ -220,7 +303,7 @@ export function DashboardMetricsGrid({
             />
             <MetricsCard
                 title="Today's Returns"
-                value={todaysReturns}
+                value={todaysReturns ?? 0}
                 description="Expected returns"
                 icon={Clock}
                 variant="success"
@@ -228,10 +311,10 @@ export function DashboardMetricsGrid({
             />
             <MetricsCard
                 title="Overdue Rentals"
-                value={overdueRentals}
+                value={overdueRentals ?? 0}
                 description="Requires attention"
                 icon={AlertTriangle}
-                variant={overdueRentals > 0 ? 'danger' : 'default'}
+                variant={overdueRentals && overdueRentals > 0 ? 'danger' : 'default'}
                 onClick={onCardClick ? () => onCardClick('overdue') : undefined}
             />
         </div>

@@ -68,6 +68,21 @@ export const endpoints = {
         lateReturnStatistics: `${API_BASE_URL}/api/admin/late-returns/statistics`,
         penaltyWaive: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/waive`,
         penaltyHistory: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/history`,
+        cars: {
+            list: `${API_BASE_URL}/api/admin/cars`,
+            create: `${API_BASE_URL}/api/admin/cars`,
+            byId: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
+            update: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
+            delete: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
+            updateStatus: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}/status`,
+        },
+        users: {
+            list: `${API_BASE_URL}/api/admin/users`,
+            byId: (id: number) => `${API_BASE_URL}/api/admin/users/${id}`,
+            updateRole: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/role`,
+            ban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/ban`,
+            unban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/unban`,
+        },
     },
     damages: {
         me: `${API_BASE_URL}/api/damages/me`,

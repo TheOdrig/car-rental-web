@@ -5,8 +5,14 @@ export const showToast = {
         toast.success(message, { description });
     },
 
-    error: (message: string, description?: string) => {
-        toast.error(message, { description });
+    error: (message: string, description?: string, onRetry?: () => void) => {
+        toast.error(message, {
+            description,
+            action: onRetry ? {
+                label: 'Retry',
+                onClick: onRetry,
+            } : undefined,
+        });
     },
 
     warning: (message: string, description?: string) => {
@@ -49,6 +55,8 @@ export const toastMessages = {
         pickupError: 'Failed to process pickup',
         returnSuccess: 'Return processed successfully',
         returnError: 'Failed to process return',
+        rejectSuccess: 'Rental request rejected',
+        rejectError: 'Failed to reject rental',
     },
     auth: {
         loginSuccess: 'Welcome back!',

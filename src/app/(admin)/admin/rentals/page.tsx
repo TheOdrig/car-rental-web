@@ -19,6 +19,7 @@ import {
     usePendingReturns,
     useOverdueRentals,
     useApproveRental,
+    useRejectRental,
     useProcessPickup,
     useProcessReturn,
     useInvalidateAdmin,
@@ -46,6 +47,7 @@ export default function AdminRentalsPage() {
     const { data: overdue, isLoading: overdueLoading } = useOverdueRentals();
 
     const approveMutation = useApproveRental();
+    const rejectMutation = useRejectRental();
     const pickupMutation = useProcessPickup();
     const returnMutation = useProcessReturn();
     const invalidate = useInvalidateAdmin();
@@ -55,10 +57,10 @@ export default function AdminRentalsPage() {
         toast.success('Rentals refreshed');
     };
 
-    const handleApprove = async (rentalId: number) => {
+    const handleApprove = async (rentalId: number, notes?: string) => {
         setActionInProgress(rentalId);
         try {
-            await approveMutation.mutateAsync(rentalId);
+            await approveMutation.mutateAsync({ rentalId, notes });
             toast.success('Rental approved successfully');
         } catch {
             toast.error('Failed to approve rental');
@@ -67,10 +69,22 @@ export default function AdminRentalsPage() {
         }
     };
 
-    const handlePickup = async (rentalId: number) => {
+    const handleReject = async (rentalId: number, reason: string) => {
         setActionInProgress(rentalId);
         try {
-            await pickupMutation.mutateAsync(rentalId);
+            await rejectMutation.mutateAsync({ rentalId, reason });
+            toast.success('Rental rejected successfully');
+        } catch {
+            toast.error('Failed to reject rental');
+        } finally {
+            setActionInProgress(null);
+        }
+    };
+
+    const handlePickup = async (rentalId: number, notes?: string) => {
+        setActionInProgress(rentalId);
+        try {
+            await pickupMutation.mutateAsync({ rentalId, notes });
             toast.success('Pickup processed successfully');
         } catch {
             toast.error('Failed to process pickup');
@@ -79,10 +93,10 @@ export default function AdminRentalsPage() {
         }
     };
 
-    const handleReturn = async (rentalId: number) => {
+    const handleReturn = async (rentalId: number, data?: any) => {
         setActionInProgress(rentalId);
         try {
-            await returnMutation.mutateAsync(rentalId);
+            await returnMutation.mutateAsync({ rentalId, data });
             toast.success('Return processed successfully');
         } catch {
             toast.error('Failed to process return');
@@ -202,6 +216,7 @@ export default function AdminRentalsPage() {
                         type="approvals"
                         isLoading={approvalsLoading}
                         onApprove={handleApprove}
+                        onReject={handleReject}
                         actionInProgress={actionInProgress}
                     />
                 )}

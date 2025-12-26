@@ -14,24 +14,30 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/components/ui/dialog';
-import { CheckCircle, Clock, User, Car } from 'lucide-react';
+    CheckCircle,
+    Clock,
+    User,
+    Car,
+    XCircle,
+} from 'lucide-react';
 import type { PendingItem } from '@/types';
+import {
+    ApproveRentalDialog,
+    ProcessPickupDialog,
+    ProcessReturnDialog,
+    RejectRentalDialog
+} from './index';
 
 
 interface PendingRentalsTableProps {
     items: PendingItem[];
     type: 'approvals' | 'pickups' | 'returns' | 'overdue';
     isLoading?: boolean;
-    onApprove?: (rentalId: number) => void;
-    onPickup?: (rentalId: number) => void;
-    onReturn?: (rentalId: number) => void;
+    onApprove?: (rentalId: number, notes?: string) => void;
+    onReject?: (rentalId: number, reason: string) => void;
+    onPickup?: (rentalId: number, notes?: string) => void;
+    onReturn?: (rentalId: number, data?: any) => void;
+    onReportDamage?: (rentalId: number) => void;
     actionInProgress?: number | null;
     className?: string;
 }
@@ -39,17 +45,6 @@ interface PendingRentalsTableProps {
 interface PendingRentalsSkeletonProps {
     rows?: number;
     className?: string;
-}
-
-interface ConfirmDialogProps {
-    open: boolean;
-    onOpenChange: (open: boolean) => void;
-    title: string;
-    description: string;
-    confirmLabel: string;
-    onConfirm: () => void;
-    isLoading?: boolean;
-    variant?: 'default' | 'destructive';
 }
 
 
@@ -85,109 +80,49 @@ function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destr
 }
 
 
-function ConfirmDialog({
-    open,
-    onOpenChange,
-    title,
-    description,
-    confirmLabel,
-    onConfirm,
-    isLoading = false,
-    variant = 'default',
-}: ConfirmDialogProps) {
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>{title}</DialogTitle>
-                    <DialogDescription>{description}</DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                    <Button
-                        variant="outline"
-                        onClick={() => onOpenChange(false)}
-                        disabled={isLoading}
-                    >
-                        Cancel
-                    </Button>
-                    <Button
-                        variant={variant === 'destructive' ? 'destructive' : 'default'}
-                        onClick={onConfirm}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Processing...' : confirmLabel}
-                    </Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
-    );
-}
-
-
 export const PendingRentalsTable = memo(function PendingRentalsTable({
     items,
     type,
     isLoading = false,
     onApprove,
+    onReject,
     onPickup,
     onReturn,
+    onReportDamage,
     actionInProgress,
     className,
 }: PendingRentalsTableProps) {
-    const [confirmDialog, setConfirmDialog] = useState<{
+    const [selectedItem, setSelectedItem] = useState<PendingItem | null>(null);
+    const [dialogState, setDialogState] = useState<{
+        type: 'approve' | 'pickup' | 'return' | 'reject' | null;
         open: boolean;
-        rentalId: number | null;
-        action: 'approve' | 'pickup' | 'return' | null;
     }>({
+        type: null,
         open: false,
-        rentalId: null,
-        action: null,
     });
 
-    const handleAction = (rentalId: number, action: 'approve' | 'pickup' | 'return') => {
-        setConfirmDialog({ open: true, rentalId, action });
+    const handleAction = (item: PendingItem, action: 'approve' | 'pickup' | 'return' | 'reject') => {
+        setSelectedItem(item);
+        setDialogState({ type: action, open: true });
     };
 
-    const handleConfirm = () => {
-        if (!confirmDialog.rentalId || !confirmDialog.action) return;
-
-        switch (confirmDialog.action) {
-            case 'approve':
-                onApprove?.(confirmDialog.rentalId);
-                break;
-            case 'pickup':
-                onPickup?.(confirmDialog.rentalId);
-                break;
-            case 'return':
-                onReturn?.(confirmDialog.rentalId);
-                break;
-        }
-        setConfirmDialog({ open: false, rentalId: null, action: null });
+    const handleApproveConfirm = (rentalId: number, notes?: string) => {
+        onApprove?.(rentalId, notes);
+        setDialogState({ ...dialogState, open: false });
     };
 
-    const getDialogContent = () => {
-        switch (confirmDialog.action) {
-            case 'approve':
-                return {
-                    title: 'Approve Rental',
-                    description: 'Are you sure you want to approve this rental request? The customer will be notified.',
-                    confirmLabel: 'Approve',
-                };
-            case 'pickup':
-                return {
-                    title: 'Confirm Pickup',
-                    description: 'Confirm that the customer has picked up the vehicle?',
-                    confirmLabel: 'Confirm Pickup',
-                };
-            case 'return':
-                return {
-                    title: 'Process Return',
-                    description: 'Confirm that the vehicle has been returned?',
-                    confirmLabel: 'Process Return',
-                };
-            default:
-                return { title: '', description: '', confirmLabel: '' };
-        }
+    const handleRejectConfirm = (rentalId: number, reason: string) => {
+        onReject?.(rentalId, reason);
+        setDialogState({ ...dialogState, open: false });
+    };
+
+
+    const handlePickupConfirm = (rentalId: number, notes?: string) => {
+        onPickup?.(rentalId, notes);
+    };
+
+    const handleReturnConfirm = (rentalId: number, data?: any) => {
+        onReturn?.(rentalId, data);
     };
 
     const getActionButton = (item: PendingItem) => {
@@ -196,25 +131,40 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         switch (type) {
             case 'approvals':
                 return (
-                    <Button
-                        size="sm"
-                        onClick={() => handleAction(item.rentalId, 'approve')}
-                        disabled={isProcessing}
-                        className="gap-1"
-                    >
-                        <CheckCircle className="h-4 w-4" />
-                        {isProcessing ? 'Approving...' : 'Approve'}
-                    </Button>
+                    <div className="flex items-center justify-end gap-2">
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleAction(item, 'reject')}
+                            disabled={isProcessing}
+                            className="gap-1 h-8"
+                            aria-label={`Reject rental request for ${item.customerName}`}
+                        >
+                            <XCircle className="h-4 w-4" aria-hidden="true" />
+                            Reject
+                        </Button>
+                        <Button
+                            size="sm"
+                            onClick={() => handleAction(item, 'approve')}
+                            disabled={isProcessing}
+                            className="gap-1 h-8"
+                            aria-label={`Approve rental request for ${item.customerName}`}
+                        >
+                            <CheckCircle className="h-4 w-4" aria-hidden="true" />
+                            {isProcessing ? 'Approving...' : 'Approve'}
+                        </Button>
+                    </div>
                 );
             case 'pickups':
                 return (
                     <Button
                         size="sm"
-                        onClick={() => handleAction(item.rentalId, 'pickup')}
+                        onClick={() => handleAction(item, 'pickup')}
                         disabled={isProcessing}
                         className="gap-1"
+                        aria-label={`Process pickup for ${item.customerName}`}
                     >
-                        <Car className="h-4 w-4" />
+                        <Car className="h-4 w-4" aria-hidden="true" />
                         {isProcessing ? 'Processing...' : 'Pickup'}
                     </Button>
                 );
@@ -224,11 +174,12 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     <Button
                         size="sm"
                         variant={type === 'overdue' ? 'destructive' : 'default'}
-                        onClick={() => handleAction(item.rentalId, 'return')}
+                        onClick={() => handleAction(item, 'return')}
                         disabled={isProcessing}
                         className="gap-1"
+                        aria-label={`Process return for ${item.customerName}`}
                     >
-                        <CheckCircle className="h-4 w-4" />
+                        <CheckCircle className="h-4 w-4" aria-hidden="true" />
                         {isProcessing ? 'Processing...' : 'Return'}
                     </Button>
                 );
@@ -236,8 +187,6 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                 return null;
         }
     };
-
-    const dialogContent = getDialogContent();
 
     if (isLoading) {
         return <PendingRentalsSkeleton className={className} />;
@@ -268,84 +217,129 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Vehicle</TableHead>
-                                <TableHead>Dates</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
-                                {type === 'overdue' && <TableHead>Late</TableHead>}
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {items.map((item) => (
-                                <TableRow key={item.rentalId}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">{item.customerName}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {item.customerEmail}
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Customer</TableHead>
+                                    <TableHead>Vehicle</TableHead>
+                                    <TableHead>Dates</TableHead>
+                                    <TableHead>Amount</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    {type === 'overdue' && <TableHead>Late</TableHead>}
+                                    <TableHead className="text-right">Action</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {items.map((item) => (
+                                    <TableRow key={item.rentalId}>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                {item.customerImage ? (
+                                                    <img
+                                                        src={item.customerImage}
+                                                        alt={item.customerName}
+                                                        className="h-9 w-9 rounded-full object-cover border bg-muted shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center border">
+                                                        <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                                                    </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-sm truncate">{item.customerName}</p>
+                                                    <p className="text-xs text-muted-foreground truncate">
+                                                        {item.customerEmail}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                {item.carImage ? (
+                                                    <img
+                                                        src={item.carImage}
+                                                        alt={`${item.carBrand} ${item.carModel}`}
+                                                        className="h-10 w-16 rounded-lg object-cover border bg-muted shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="h-10 w-16 rounded-lg bg-muted flex items-center justify-center border">
+                                                        <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                                                    </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-sm truncate">
+                                                        {item.carBrand} {item.carModel}
+                                                    </p>
+                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
+                                                        {item.licensePlate}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-sm whitespace-nowrap">
+                                                <p>{formatDate(item.startDate)}</p>
+                                                <p className="text-muted-foreground">
+                                                    to {formatDate(item.endDate)}
                                                 </p>
                                             </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div>
-                                            <p className="font-medium">
-                                                {item.carBrand} {item.carModel}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {item.licensePlate}
-                                            </p>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="text-sm">
-                                            <p>{formatDate(item.startDate)}</p>
-                                            <p className="text-muted-foreground">
-                                                to {formatDate(item.endDate)}
-                                            </p>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {formatCurrency(item.totalAmount)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant={getStatusBadgeVariant(item.status)}>
-                                            {item.status}
-                                        </Badge>
-                                    </TableCell>
-                                    {type === 'overdue' && (
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {formatCurrency(item.totalAmount)}
+                                        </TableCell>
                                         <TableCell>
-                                            <Badge variant="destructive">
-                                                {item.lateHours}h late
+                                            <Badge variant={getStatusBadgeVariant(item.status)}>
+                                                {item.status}
                                             </Badge>
                                         </TableCell>
-                                    )}
-                                    <TableCell className="text-right">
-                                        {getActionButton(item)}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                        {type === 'overdue' && (
+                                            <TableCell>
+                                                <Badge variant="destructive">
+                                                    {item.lateHours}h late
+                                                </Badge>
+                                            </TableCell>
+                                        )}
+                                        <TableCell className="text-right">
+                                            {getActionButton(item)}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 
-            <ConfirmDialog
-                open={confirmDialog.open}
-                onOpenChange={(open) =>
-                    setConfirmDialog({ ...confirmDialog, open })
-                }
-                title={dialogContent.title}
-                description={dialogContent.description}
-                confirmLabel={dialogContent.confirmLabel}
-                onConfirm={handleConfirm}
+            <ApproveRentalDialog
+                open={dialogState.open && dialogState.type === 'approve'}
+                onOpenChange={(open) => setDialogState({ ...dialogState, open })}
+                item={selectedItem}
+                onApprove={handleApproveConfirm}
+                isLoading={actionInProgress !== null}
+            />
+
+            <ProcessPickupDialog
+                open={dialogState.open && dialogState.type === 'pickup'}
+                onOpenChange={(open) => setDialogState({ ...dialogState, open })}
+                item={selectedItem}
+                onConfirm={handlePickupConfirm}
+                isLoading={actionInProgress !== null}
+            />
+
+            <ProcessReturnDialog
+                open={dialogState.open && dialogState.type === 'return'}
+                onOpenChange={(open) => setDialogState({ ...dialogState, open })}
+                item={selectedItem}
+                onConfirm={handleReturnConfirm}
+                onReportDamage={onReportDamage}
+                isLoading={actionInProgress !== null}
+            />
+            <RejectRentalDialog
+                open={dialogState.open && dialogState.type === 'reject'}
+                onOpenChange={(open) => setDialogState({ ...dialogState, open })}
+                item={selectedItem}
+                onReject={handleRejectConfirm}
                 isLoading={actionInProgress !== null}
             />
         </>

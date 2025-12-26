@@ -25,22 +25,24 @@ interface StatusItemProps {
 }
 
 
-function StatusItem({ label, value, total, bgColor }: StatusItemProps) {
+function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps & { gradient?: string }) {
     const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
 
     return (
-        <div className="space-y-2">
-            <div className="flex items-center justify-between text-sm">
-                <span className="text-muted-foreground">{label}</span>
-                <span className="font-medium">{value}</span>
+        <div className="space-y-1.5">
+            <div className="flex items-center justify-between text-[13px]">
+                <span className="font-medium text-muted-foreground">{label}</span>
+                <span className="font-bold">{value}</span>
             </div>
-            <div className="h-2 rounded-full bg-muted overflow-hidden">
+            <div className="h-2 rounded-full bg-muted/60 overflow-hidden shadow-inner">
                 <div
-                    className={cn('h-full rounded-full transition-all duration-500', bgColor)}
+                    className={cn('h-full rounded-full transition-all duration-700 ease-out shadow-sm', bgColor, gradient)}
                     style={{ width: `${percentage}%` }}
                 />
             </div>
-            <p className="text-xs text-muted-foreground text-right">{percentage}%</p>
+            <p className="text-[10px] font-bold text-muted-foreground text-right tabular-nums opacity-70">
+                {percentage}%
+            </p>
         </div>
     );
 }
@@ -69,33 +71,37 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     value={availableCars}
                     total={totalCars}
                     bgColor="bg-green-500"
+                    gradient="bg-gradient-to-r from-green-500 to-emerald-400"
                 />
                 <StatusItem
                     label="Rented"
                     value={rentedCars}
                     total={totalCars}
                     bgColor="bg-blue-500"
+                    gradient="bg-gradient-to-r from-blue-500 to-sky-400"
                 />
                 <StatusItem
                     label="Maintenance"
                     value={maintenanceCars}
                     total={totalCars}
                     bgColor="bg-amber-500"
+                    gradient="bg-gradient-to-r from-amber-500 to-yellow-400"
                 />
                 <StatusItem
                     label="Damaged"
                     value={damagedCars}
                     total={totalCars}
                     bgColor="bg-red-500"
+                    gradient="bg-gradient-to-r from-red-500 to-rose-400"
                 />
 
                 <div className="pt-4 border-t">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between" role="status" aria-label={`Current occupancy rate: ${Math.round(occupancyRate)}%`}>
                         <div className="flex items-center gap-2">
                             <PieChart className="h-4 w-4 text-primary" aria-hidden="true" />
                             <span className="text-sm font-medium">Occupancy Rate</span>
                         </div>
-                        <span className="text-2xl font-bold text-primary">
+                        <span className="text-2xl font-bold text-primary tabular-nums">
                             {Math.round(occupancyRate)}%
                         </span>
                     </div>
