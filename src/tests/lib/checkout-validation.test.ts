@@ -194,12 +194,9 @@ describe('checkout validation schemas', () => {
             expect(result.success).toBe(true);
         });
 
-        it('should default to empty array', () => {
+        it('should reject missing addons field', () => {
             const result = addonsSchema.safeParse({});
-            expect(result.success).toBe(true);
-            if (result.success) {
-                expect(result.data.addons).toEqual([]);
-            }
+            expect(result.success).toBe(false);
         });
     });
 

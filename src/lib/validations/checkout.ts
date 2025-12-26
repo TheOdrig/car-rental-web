@@ -61,7 +61,7 @@ const paymentFormFields = {
 };
 
 const addonsFields = {
-    addons: z.array(z.string()).default([]),
+    addons: z.array(z.string()),
 };
 
 export const personalDetailsSchema = z.object(personalDetailsFields);
