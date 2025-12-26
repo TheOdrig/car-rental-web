@@ -76,6 +76,13 @@ export const endpoints = {
             delete: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
             updateStatus: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}/status`,
         },
+        users: {
+            list: `${API_BASE_URL}/api/admin/users`,
+            byId: (id: number) => `${API_BASE_URL}/api/admin/users/${id}`,
+            updateRole: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/role`,
+            ban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/ban`,
+            unban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/unban`,
+        },
     },
     damages: {
         me: `${API_BASE_URL}/api/damages/me`,
