@@ -4,3 +4,5 @@ export * from './rental';
 export * from './auth';
 export * from './admin';
 export * from './validation';
+export * from './checkout';
+export * from './payment';
