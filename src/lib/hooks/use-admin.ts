@@ -10,6 +10,7 @@ import type {
     QuickActionResult,
     PageResponse,
     RevenueAnalytics,
+    AdminAlert,
 } from '@/types';
 
 interface PendingFilters {
@@ -28,6 +29,7 @@ export const adminKeys = {
     pendingReturns: (filters?: PendingFilters) => [...adminKeys.pending(), 'returns', filters] as const,
     overdueRentals: (filters?: PendingFilters) => [...adminKeys.pending(), 'overdue', filters] as const,
     revenue: () => [...adminKeys.all, 'revenue'] as const,
+    alerts: () => [...adminKeys.all, 'alerts'] as const,
 };
 
 
@@ -119,6 +121,18 @@ async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
     return clientGet<RevenueAnalytics>('/api/admin/revenue');
 }
 
+async function fetchAlerts(): Promise<AdminAlert[]> {
+    return clientGet<AdminAlert[]>('/api/admin/alerts');
+}
+
+async function dismissAlert(alertId: string): Promise<void> {
+    return clientPost<void>(`/api/admin/alerts/${alertId}/dismiss`);
+}
+
+async function markAllAlertsRead(): Promise<void> {
+    return clientPost<void>('/api/admin/alerts/mark-all-read');
+}
+
 async function approveRental(rentalId: number): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`);
 }
@@ -186,6 +200,37 @@ export function useRevenueData() {
         queryKey: adminKeys.revenue(),
         queryFn: fetchRevenueAnalytics,
         staleTime: 5 * 60 * 1000,
+    });
+}
+
+export function useAlerts() {
+    return useQuery({
+        queryKey: adminKeys.alerts(),
+        queryFn: fetchAlerts,
+        staleTime: 60 * 1000,
+    });
+}
+
+export function useDismissAlert() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: dismissAlert,
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
+        },
+    });
+}
+
+export function useMarkAllAlertsRead() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: markAllAlertsRead,
+        onSuccess: () => {
+            void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
+            showToast.success('All alerts marked as read');
+        },
     });
 }
 

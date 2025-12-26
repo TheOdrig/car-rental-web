@@ -8,3 +8,4 @@ export { FleetStatusCard, FleetStatusCompact, FleetStatusSkeleton } from './flee
 export { PendingRentalsTable, PendingRentalsSkeleton } from './pending-rentals';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';
 export { RevenueChart, RevenueChartSkeleton } from './revenue-chart';
+export { AlertsPanel } from './alerts-panel';

@@ -98,3 +98,34 @@ export function calculateFleetPercentages(data: {
         damaged: Math.round((damagedCars / totalCars) * 100),
     };
 }
+
+export function getAlertStyles(type: 'critical' | 'warning' | 'info' | 'success') {
+    const styles = {
+        critical: {
+            border: 'border-red-500',
+            bg: 'bg-red-50 dark:bg-red-950/20',
+            text: 'text-red-900 dark:text-red-100',
+            iconColor: 'text-red-500',
+        },
+        warning: {
+            border: 'border-amber-500',
+            bg: 'bg-amber-50 dark:bg-amber-950/20',
+            text: 'text-amber-900 dark:text-amber-100',
+            iconColor: 'text-amber-500',
+        },
+        info: {
+            border: 'border-blue-500',
+            bg: 'bg-blue-50 dark:bg-blue-950/20',
+            text: 'text-blue-900 dark:text-blue-100',
+            iconColor: 'text-blue-500',
+        },
+        success: {
+            border: 'border-green-500',
+            bg: 'bg-green-50 dark:bg-green-950/20',
+            text: 'text-green-900 dark:text-green-100',
+            iconColor: 'text-green-500',
+        },
+    };
+
+    return styles[type];
+}

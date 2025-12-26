@@ -127,6 +127,24 @@ export interface RevenueAnalytics {
     generatedAt: string;
 }
 
+export type AlertVariant = 'critical' | 'warning' | 'info' | 'success';
+
+export interface AdminAlertAction {
+    label: string;
+    action: string;
+    variant?: 'default' | 'outline' | 'ghost';
+}
+
+export interface AdminAlert {
+    id: string;
+    type: AlertVariant;
+    title: string;
+    description: string;
+    timestamp: string;
+    actions?: AdminAlertAction[];
+    dismissible?: boolean;
+}
+
 export type DamageSeverity =
     | 'MINOR'
     | 'MODERATE'
