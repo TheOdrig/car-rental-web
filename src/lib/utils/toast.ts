@@ -5,8 +5,14 @@ export const showToast = {
         toast.success(message, { description });
     },
 
-    error: (message: string, description?: string) => {
-        toast.error(message, { description });
+    error: (message: string, description?: string, onRetry?: () => void) => {
+        toast.error(message, {
+            description,
+            action: onRetry ? {
+                label: 'Retry',
+                onClick: onRetry,
+            } : undefined,
+        });
     },
 
     warning: (message: string, description?: string) => {

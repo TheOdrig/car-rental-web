@@ -112,62 +112,70 @@ export function RevenueChart({
                         No revenue data available
                     </div>
                 ) : (
-                    <ChartContainer config={chartConfig} className="h-[200px] w-full">
-                        <BarChart
-                            data={processedData}
-                            margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
-                        >
-                            <CartesianGrid
-                                strokeDasharray="3 3"
-                                vertical={false}
-                                className="stroke-muted"
-                            />
-                            <XAxis
-                                dataKey="month"
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                className="text-xs"
-                            />
-                            <YAxis
-                                tickLine={false}
-                                axisLine={false}
-                                tickMargin={8}
-                                tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
-                                className="text-xs"
-                                width={50}
-                            />
-                            <ChartTooltip
-                                cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
-                                content={
-                                    <ChartTooltipContent
-                                        formatter={(value, _name, item) => (
-                                            <div className="flex flex-col gap-1">
-                                                <span className="font-medium">
-                                                    {item.payload.month}
-                                                </span>
-                                                <span className="text-primary font-bold">
-                                                    {formatCurrency(value as number)}
-                                                </span>
-                                                {item.payload.isCurrent && (
-                                                    <span className="text-xs text-muted-foreground">
-                                                        Current Month
+                    <div
+                        role="img"
+                        aria-label={`Revenue chart showing ${data.length} months of data. Total revenue: ${formatCurrency(totalRevenue)}`}
+                    >
+                        <span className="sr-only">
+                            Revenue breakdown by month: {data.map(d => `${d.month}: ${formatCurrency(d.revenue)}`).join(', ')}
+                        </span>
+                        <ChartContainer config={chartConfig} className="h-[200px] w-full">
+                            <BarChart
+                                data={processedData}
+                                margin={{ top: 10, right: 10, left: 10, bottom: 0 }}
+                            >
+                                <CartesianGrid
+                                    strokeDasharray="3 3"
+                                    vertical={false}
+                                    className="stroke-muted"
+                                />
+                                <XAxis
+                                    dataKey="month"
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickMargin={8}
+                                    className="text-xs"
+                                />
+                                <YAxis
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tickMargin={8}
+                                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                                    className="text-xs"
+                                    width={50}
+                                />
+                                <ChartTooltip
+                                    cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
+                                    content={
+                                        <ChartTooltipContent
+                                            formatter={(value, _name, item) => (
+                                                <div className="flex flex-col gap-1">
+                                                    <span className="font-medium">
+                                                        {item.payload.month}
                                                     </span>
-                                                )}
-                                            </div>
-                                        )}
-                                        hideLabel
-                                        hideIndicator
-                                    />
-                                }
-                            />
-                            <Bar
-                                dataKey="revenue"
-                                radius={[4, 4, 0, 0]}
-                                className="transition-all duration-200"
-                            />
-                        </BarChart>
-                    </ChartContainer>
+                                                    <span className="text-primary font-bold">
+                                                        {formatCurrency(value as number)}
+                                                    </span>
+                                                    {item.payload.isCurrent && (
+                                                        <span className="text-xs text-muted-foreground">
+                                                            Current Month
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            )}
+                                            hideLabel
+                                            hideIndicator
+                                        />
+                                    }
+                                />
+                                <Bar
+                                    dataKey="revenue"
+                                    radius={[4, 4, 0, 0]}
+                                    className="transition-all duration-200"
+                                />
+                            </BarChart>
+                        </ChartContainer>
+                    </div>
                 )}
 
                 {breakdown && (

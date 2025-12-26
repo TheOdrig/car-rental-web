@@ -154,9 +154,9 @@ export default function AdminDashboardPage() {
 
     const lastUpdated = summary?.generatedAt
         ? new Date(summary.generatedAt).toLocaleTimeString('en-US', {
-            hour: '2-digit',
+            hour: 'numeric',
             minute: '2-digit',
-            second: '2-digit'
+            hour12: true
         })
         : null;
 
