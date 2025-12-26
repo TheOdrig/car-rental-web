@@ -1,34 +1,53 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { BasicInfoSection } from '@/components/admin/car-form/basic-info';
 import { SpecificationsSection } from '@/components/admin/car-form/specifications';
 import { PricingSection } from '@/components/admin/car-form/pricing';
-import { ImagesSection } from '@/components/admin/car-form/images';
 import { CarFormData, defaultCarFormData } from '@/components/admin/car-form/types';
-import { useCreateCar } from '@/lib/hooks/use-admin';
+import { useUpdateCar } from '@/lib/hooks/use-admin';
+import { useCar } from '@/lib/hooks/use-cars';
 import { toast } from 'sonner';
 
-interface ImageFile {
-    id: string;
-    file?: File;
-    url: string;
-    name: string;
-    isExisting?: boolean;
-}
-
-export default function AddCarPage() {
+export default function EditCarPage() {
     const router = useRouter();
+    const params = useParams();
+    const carId = Number(params.id);
+
     const [formData, setFormData] = useState<CarFormData>(defaultCarFormData);
     const [errors, setErrors] = useState<Partial<Record<keyof CarFormData, string>>>({});
-    const [images, setImages] = useState<ImageFile[]>([]);
+    const [isInitialized, setIsInitialized] = useState(false);
 
-    const createCar = useCreateCar();
+    const { data: carData, isLoading: isLoadingCar } = useCar(carId);
+    const car = carData?.car;
+    const updateCar = useUpdateCar();
+
+    useEffect(() => {
+        if (car && !isInitialized) {
+            setFormData({
+                brand: car.brand || '',
+                model: car.model || '',
+                year: car.productionYear || new Date().getFullYear(),
+                licensePlate: car.licensePlate || '',
+                vin: car.vinNumber || '',
+                fuelType: car.fuelType?.toLowerCase() || '',
+                transmissionType: car.transmissionType?.toLowerCase() || '',
+                bodyType: car.bodyType?.toLowerCase() || '',
+                seats: car.seats || 5,
+                color: car.color?.toLowerCase() || '',
+                dailyRate: car.price || 0,
+                weeklyRate: 0,
+                depositAmount: car.damagePrice || 0,
+            });
+            setIsInitialized(true);
+        }
+    }, [car, isInitialized]);
 
     const updateField = (field: keyof CarFormData, value: string | number) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -59,12 +78,30 @@ export default function AddCarPage() {
             return;
         }
 
-        createCar.mutate(formData, {
+        updateCar.mutate({ id: carId, ...formData }, {
             onSuccess: () => {
                 router.push('/admin/fleet');
             },
         });
     };
+
+    if (isLoadingCar) {
+        return <EditCarPageSkeleton />;
+    }
+
+    if (!car) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+                <h2 className="text-xl font-semibold mb-2">Car not found</h2>
+                <p className="text-muted-foreground mb-4">
+                    The car you're looking for doesn't exist or has been removed.
+                </p>
+                <Button onClick={() => router.push('/admin/fleet')}>
+                    Back to Fleet
+                </Button>
+            </div>
+        );
+    }
 
     return (
         <div className="space-y-6">
@@ -72,15 +109,15 @@ export default function AddCarPage() {
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },
                     { label: 'Fleet Management', href: '/admin/fleet' },
-                    { label: 'Add New Car' },
+                    { label: `Edit ${car.brand} ${car.model}` },
                 ]}
             />
 
             <div className="flex items-center justify-between">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">Add New Car</h1>
+                    <h1 className="text-3xl font-bold tracking-tight">Edit Car</h1>
                     <p className="text-muted-foreground">
-                        Add a new vehicle to your fleet
+                        Update details for {car.brand} {car.model}
                     </p>
                 </div>
                 <Button
@@ -100,7 +137,7 @@ export default function AddCarPage() {
                             <CardHeader>
                                 <CardTitle>Basic Information</CardTitle>
                                 <CardDescription>
-                                    Enter the vehicle identification details
+                                    Update the vehicle identification details
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -116,7 +153,7 @@ export default function AddCarPage() {
                             <CardHeader>
                                 <CardTitle>Specifications</CardTitle>
                                 <CardDescription>
-                                    Configure vehicle specifications
+                                    Update vehicle specifications
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -134,7 +171,7 @@ export default function AddCarPage() {
                             <CardHeader>
                                 <CardTitle>Pricing</CardTitle>
                                 <CardDescription>
-                                    Set rental rates and deposit
+                                    Update rental rates and deposit
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -142,22 +179,6 @@ export default function AddCarPage() {
                                     data={formData}
                                     errors={errors}
                                     onUpdate={updateField}
-                                />
-                            </CardContent>
-                        </Card>
-
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Vehicle Images</CardTitle>
-                                <CardDescription>
-                                    Upload photos of the vehicle
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ImagesSection
-                                    images={images}
-                                    onImagesChange={setImages}
-                                    maxImages={10}
                                 />
                             </CardContent>
                         </Card>
@@ -169,12 +190,12 @@ export default function AddCarPage() {
                         type="button"
                         variant="outline"
                         onClick={() => router.back()}
-                        disabled={createCar.isPending}
+                        disabled={updateCar.isPending}
                     >
                         Cancel
                     </Button>
-                    <Button type="submit" disabled={createCar.isPending} className="gap-2">
-                        {createCar.isPending ? (
+                    <Button type="submit" disabled={updateCar.isPending} className="gap-2">
+                        {updateCar.isPending ? (
                             <>
                                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                                 Saving...
@@ -182,12 +203,54 @@ export default function AddCarPage() {
                         ) : (
                             <>
                                 <Save className="h-4 w-4" aria-hidden="true" />
-                                Add Car
+                                Save Changes
                             </>
                         )}
                     </Button>
                 </div>
             </form>
+        </div>
+    );
+}
+
+function EditCarPageSkeleton() {
+    return (
+        <div className="space-y-6">
+            <Skeleton className="h-5 w-64" />
+            <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                    <Skeleton className="h-9 w-48" />
+                    <Skeleton className="h-4 w-64" />
+                </div>
+                <Skeleton className="h-9 w-24" />
+            </div>
+            <div className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-40" />
+                            <Skeleton className="h-4 w-56" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-4 w-48" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     );
 }
