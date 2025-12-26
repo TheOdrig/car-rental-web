@@ -41,6 +41,38 @@ export function formatDate(date: Date | string): string {
     });
 }
 
+import { MonthlyRevenue, RevenueDataPoint } from '@/types/admin';
+
+export function processRevenueData(
+    data: MonthlyRevenue[],
+    period: 'last6months' | 'lastyear' = 'last6months'
+): RevenueDataPoint[] {
+    if (!data || data.length === 0) return [];
+
+    const sorted = [...data].sort((a, b) => {
+        if (a.month.year !== b.month.year) {
+            return b.month.year - a.month.year;
+        }
+        return b.month.monthValue - a.month.monthValue;
+    });
+
+    const limit = period === 'last6months' ? 6 : 12;
+    const filtered = sorted.slice(0, limit);
+
+    return filtered
+        .sort((a, b) => {
+            if (a.month.year !== b.month.year) {
+                return a.month.year - b.month.year;
+            }
+            return a.month.monthValue - b.month.monthValue;
+        })
+        .map((item, index, array) => ({
+            month: item.month.month,
+            revenue: item.revenue,
+            isCurrent: index === array.length - 1,
+        }));
+}
+
 export function calculateFleetPercentages(data: {
     totalCars: number;
     availableCars: number;

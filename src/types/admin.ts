@@ -112,6 +112,14 @@ export interface RevenueBreakdown {
     damagePercentage: number;
 }
 
+export type RevenuePeriod = 'last6months' | 'lastyear';
+
+export interface RevenueDataPoint {
+    month: string;
+    revenue: number;
+    isCurrent?: boolean;
+}
+
 export interface RevenueAnalytics {
     dailyRevenue: DailyRevenue[];
     monthlyRevenue: MonthlyRevenue[];

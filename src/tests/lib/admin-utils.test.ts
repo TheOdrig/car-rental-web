@@ -7,7 +7,9 @@ import {
     validatePickupForm,
     validateRejectForm,
     calculateFleetPercentages,
+    processRevenueData,
 } from '@/lib/utils/admin-utils';
+import { MonthlyRevenue } from '@/types/admin';
 
 
 describe('formatCurrency', () => {
@@ -222,5 +224,60 @@ describe('calculateFleetPercentages', () => {
         expect(result.rented).toBe(20);
         expect(result.maintenance).toBe(10);
         expect(result.damaged).toBe(6);
+    });
+});
+
+describe('processRevenueData', () => {
+    const mockData: MonthlyRevenue[] = [
+        { month: { year: 2024, monthValue: 6, month: 'Jun' }, revenue: 6000, rentalCount: 60, growthPercentage: 0 },
+        { month: { year: 2024, monthValue: 5, month: 'May' }, revenue: 5000, rentalCount: 50, growthPercentage: 0 },
+        { month: { year: 2024, monthValue: 4, month: 'Apr' }, revenue: 4000, rentalCount: 40, growthPercentage: 0 },
+        { month: { year: 2024, monthValue: 3, month: 'Mar' }, revenue: 3000, rentalCount: 30, growthPercentage: 0 },
+        { month: { year: 2024, monthValue: 2, month: 'Feb' }, revenue: 2000, rentalCount: 20, growthPercentage: 0 },
+        { month: { year: 2024, monthValue: 1, month: 'Jan' }, revenue: 1000, rentalCount: 10, growthPercentage: 0 },
+        { month: { year: 2023, monthValue: 12, month: 'Dec' }, revenue: 1200, rentalCount: 12, growthPercentage: 0 },
+        { month: { year: 2023, monthValue: 11, month: 'Nov' }, revenue: 1100, rentalCount: 11, growthPercentage: 0 },
+    ];
+
+    it('should filter for last 6 months by default', () => {
+        const result = processRevenueData(mockData);
+        expect(result).toHaveLength(6);
+        expect(result[0].month).toBe('Jan');
+        expect(result[5].month).toBe('Jun');
+        expect(result[5].isCurrent).toBe(true);
+    });
+
+    it('should filter for last year (up to 12 months)', () => {
+        const result = processRevenueData(mockData, 'lastyear');
+        expect(result).toHaveLength(8);
+        expect(result[0].month).toBe('Nov');
+        expect(result[7].month).toBe('Jun');
+    });
+
+    it('should identify the most recent month as isCurrent', () => {
+        const result = processRevenueData(mockData);
+        const currentMonth = result.find(r => r.isCurrent);
+        expect(currentMonth?.month).toBe('Jun');
+    });
+
+    it('should sort data chronologically regardless of input order', () => {
+        const shuffled = [...mockData].sort(() => Math.random() - 0.5);
+        const result = processRevenueData(shuffled, 'last6months');
+        expect(result[0].month).toBe('Jan');
+        expect(result[5].month).toBe('Jun');
+    });
+
+    it('should handle empty data', () => {
+        expect(processRevenueData([])).toEqual([]);
+    });
+
+    it('should handle data spanning multiple years', () => {
+        const multiYearData: MonthlyRevenue[] = [
+            { month: { year: 2024, monthValue: 1, month: 'Jan' }, revenue: 100, rentalCount: 1, growthPercentage: 0 },
+            { month: { year: 2023, monthValue: 12, month: 'Dec' }, revenue: 200, rentalCount: 1, growthPercentage: 0 },
+        ];
+        const result = processRevenueData(multiYearData);
+        expect(result[0].month).toBe('Dec');
+        expect(result[1].month).toBe('Jan');
     });
 });
