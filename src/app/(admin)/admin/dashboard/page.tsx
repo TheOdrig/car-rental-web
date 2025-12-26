@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { RefreshCw, Plus, Download } from 'lucide-react';
+import { RefreshCw, Plus, Download, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     DashboardMetricsGrid,
@@ -74,9 +74,8 @@ export default function AdminDashboardPage() {
         setActionInProgress(rentalId);
         try {
             await approveMutation.mutateAsync({ rentalId, notes });
-            toast.success('Rental approved successfully');
         } catch (error) {
-            toast.error('Failed to approve rental');
+            console.error('Failed to approve rental:', error);
         } finally {
             setActionInProgress(null);
         }
@@ -86,9 +85,8 @@ export default function AdminDashboardPage() {
         setActionInProgress(rentalId);
         try {
             await rejectMutation.mutateAsync({ rentalId, reason });
-            toast.success('Rental rejected successfully');
         } catch (error) {
-            toast.error('Failed to reject rental');
+            console.error('Failed to reject rental:', error);
         } finally {
             setActionInProgress(null);
         }
@@ -98,9 +96,8 @@ export default function AdminDashboardPage() {
         setActionInProgress(rentalId);
         try {
             await pickupMutation.mutateAsync({ rentalId, notes });
-            toast.success('Pickup processed successfully');
         } catch (error) {
-            toast.error('Failed to process pickup');
+            console.error('Failed to process pickup:', error);
         } finally {
             setActionInProgress(null);
         }
@@ -110,9 +107,8 @@ export default function AdminDashboardPage() {
         setActionInProgress(rentalId);
         try {
             await returnMutation.mutateAsync({ rentalId, data });
-            toast.success('Return processed successfully');
         } catch (error) {
-            toast.error('Failed to process return');
+            console.error('Failed to process return:', error);
         } finally {
             setActionInProgress(null);
         }
@@ -156,32 +152,55 @@ export default function AdminDashboardPage() {
         return revenueAnalytics.monthlyRevenue[revenueAnalytics.monthlyRevenue.length - 1];
     }, [revenueAnalytics]);
 
+    const lastUpdated = summary?.generatedAt
+        ? new Date(summary.generatedAt).toLocaleTimeString('en-US', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+        })
+        : null;
 
     return (
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
+                <div className="space-y-1">
                     <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                    <p className="text-muted-foreground">
-                        Overview of your rental operations
-                    </p>
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                        <p className="text-sm">Overview of your rental operations</p>
+                        {lastUpdated && (
+                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
+                                <Clock className="h-3 w-3" />
+                                Updated {lastUpdated}
+                            </span>
+                        )}
+                    </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" className="hidden md:flex gap-2">
-                        <Download className="h-4 w-4" />
+                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="hidden md:flex gap-2"
+                        aria-label="Export monthly report"
+                    >
+                        <Download className="h-4 w-4" aria-hidden="true" />
                         Export Report
                     </Button>
-                    <Button size="sm" className="gap-2">
-                        <Plus className="h-4 w-4" />
+                    <Button
+                        size="sm"
+                        className="gap-2 shrink-0"
+                        aria-label="Add new car to fleet"
+                    >
+                        <Plus className="h-4 w-4" aria-hidden="true" />
                         Add New Car
                     </Button>
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={handleRefresh}
-                        title="Refresh Data"
+                        className="shrink-0"
+                        aria-label={summaryLoading ? "Refreshing data" : "Refresh dashboard data"}
                     >
-                        <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} />
+                        <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} aria-hidden="true" />
                     </Button>
                 </div>
             </div>
@@ -206,6 +225,7 @@ export default function AdminDashboardPage() {
                         period={revenuePeriod}
                         onPeriodChange={setRevenuePeriod}
                         isLoading={revenueLoading}
+                        breakdown={revenueAnalytics?.breakdown}
                     />
 
                     <PendingRentalsTable

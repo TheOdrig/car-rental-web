@@ -15,8 +15,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Car, RotateCcw, CheckCircle, AlertTriangle } from 'lucide-react';
-import type { PendingItem } from '@/types';
+import { Car, RotateCcw, CheckCircle, AlertTriangle, User} from 'lucide-react';
+import type { PendingItem } from '@/types/admin';
 
 
 interface QuickActionsCardProps {
@@ -233,29 +233,37 @@ export const QuickActionsCard = memo(function QuickActionsCard({
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-wrap gap-4">
-                        <QuickActionButton
-                            label="Pending Pickups"
-                            icon={<Car className="h-5 w-5" />}
-                            count={pickupItems.length}
-                            onClick={() => handleOpenDialog('pickup')}
-                            disabled={actionInProgress !== null}
-                        />
-                        <QuickActionButton
-                            label="Pending Returns"
-                            icon={<RotateCcw className="h-5 w-5" />}
-                            count={returnItems.length}
-                            variant={hasOverdue ? 'default' : 'outline'}
-                            onClick={() => handleOpenDialog('return')}
-                            disabled={actionInProgress !== null}
-                        />
-                    </div>
+                    {pickupItems.length === 0 && returnItems.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-8 text-center bg-muted/20 rounded-xl border border-dashed">
+                            <CheckCircle className="h-8 w-8 text-green-500 mb-2 opacity-50" />
+                            <p className="text-sm font-medium text-muted-foreground">All caught up!</p>
+                            <p className="text-xs text-muted-foreground">No pending pickups or returns.</p>
+                        </div>
+                    ) : (
+                        <div className="flex flex-wrap gap-4">
+                            <QuickActionButton
+                                label="Pending Pickups"
+                                icon={<Car className="h-5 w-5" />}
+                                count={pickupItems.length}
+                                onClick={() => handleOpenDialog('pickup')}
+                                disabled={actionInProgress !== null}
+                            />
+                            <QuickActionButton
+                                label="Pending Returns"
+                                icon={<RotateCcw className="h-5 w-5" />}
+                                count={returnItems.length}
+                                variant={hasOverdue ? 'default' : 'outline'}
+                                onClick={() => handleOpenDialog('return')}
+                                disabled={actionInProgress !== null}
+                            />
+                        </div>
+                    )}
 
                     {hasOverdue && (
-                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-destructive">
-                            <AlertTriangle className="h-4 w-4" />
-                            <span className="text-sm font-medium">
-                                Some returns are overdue and require immediate attention
+                        <div className="mt-4 flex items-center gap-2 rounded-lg bg-destructive/10 p-3 text-destructive border border-destructive/20 animate-pulse">
+                            <AlertTriangle className="h-4 w-4" aria-hidden="true" />
+                            <span className="text-[13px] font-semibold">
+                                Critical: Some returns are overdue
                             </span>
                         </div>
                     )}
@@ -293,22 +301,46 @@ export const QuickActionItem = memo(function QuickActionItem({
     return (
         <div
             className={cn(
-                'flex items-center justify-between rounded-lg border p-4',
-                isOverdue && 'border-destructive bg-destructive/5'
+                'flex items-center justify-between rounded-xl border p-4 transition-all hover:shadow-sm',
+                isOverdue ? 'border-destructive/40 bg-destructive/5' : 'bg-card'
             )}
         >
-            <div className="space-y-1">
-                <p className="font-medium">
-                    {item.carBrand} {item.carModel}
-                </p>
-                <p className="text-sm text-muted-foreground">
-                    {item.customerName} • {item.licensePlate}
-                </p>
-                {isOverdue && (
-                    <p className="text-sm font-medium text-destructive">
-                        {item.lateHours}h overdue
+            <div className="flex items-center gap-4 min-w-0">
+                <div className="relative shrink-0">
+                    {item.customerImage ? (
+                        <img
+                            src={item.customerImage}
+                            alt={item.customerName}
+                            className="h-10 w-10 rounded-full object-cover border bg-muted"
+                        />
+                    ) : (
+                        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center border">
+                            <User className="h-5 w-5 text-muted-foreground" />
+                        </div>
+                    )}
+                    {item.carImage && (
+                        <div className="absolute -bottom-1 -right-1 h-6 w-9 rounded-md border-2 border-background overflow-hidden bg-muted shadow-sm">
+                            <img
+                                src={item.carImage}
+                                alt={item.carBrand}
+                                className="h-full w-full object-cover"
+                            />
+                        </div>
+                    )}
+                </div>
+                <div className="min-w-0">
+                    <p className="font-semibold text-sm truncate">
+                        {item.carBrand} {item.carModel}
                     </p>
-                )}
+                    <p className="text-xs text-muted-foreground truncate">
+                        {item.customerName} • <span className="font-mono">{item.licensePlate}</span>
+                    </p>
+                    {isOverdue && (
+                        <p className="text-[11px] font-bold text-destructive mt-0.5 uppercase tracking-wide">
+                            {item.lateHours}h overdue
+                        </p>
+                    )}
+                </div>
             </div>
             <Button
                 size="sm"

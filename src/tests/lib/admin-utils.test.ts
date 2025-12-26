@@ -8,6 +8,7 @@ import {
     validateRejectForm,
     calculateFleetPercentages,
     processRevenueData,
+    getAlertStyles,
 } from '@/lib/utils/admin-utils';
 import { MonthlyRevenue } from '@/types/admin';
 
@@ -279,5 +280,35 @@ describe('processRevenueData', () => {
         const result = processRevenueData(multiYearData);
         expect(result[0].month).toBe('Dec');
         expect(result[1].month).toBe('Jan');
+    });
+});
+
+describe('getAlertStyles', () => {
+    it('should return correct styles for critical variant', () => {
+        const styles = getAlertStyles('critical');
+        expect(styles.border).toBe('border-red-500');
+        expect(styles.bg).toBe('bg-red-50 dark:bg-red-950/20');
+        expect(styles.iconColor).toBe('text-red-500');
+    });
+
+    it('should return correct styles for warning variant', () => {
+        const styles = getAlertStyles('warning');
+        expect(styles.border).toBe('border-amber-500');
+        expect(styles.bg).toBe('bg-amber-50 dark:bg-amber-950/20');
+        expect(styles.iconColor).toBe('text-amber-500');
+    });
+
+    it('should return correct styles for info variant', () => {
+        const styles = getAlertStyles('info');
+        expect(styles.border).toBe('border-blue-500');
+        expect(styles.bg).toBe('bg-blue-50 dark:bg-blue-950/20');
+        expect(styles.iconColor).toBe('text-blue-500');
+    });
+
+    it('should return correct styles for success variant', () => {
+        const styles = getAlertStyles('success');
+        expect(styles.border).toBe('border-green-500');
+        expect(styles.bg).toBe('bg-green-50 dark:bg-green-950/20');
+        expect(styles.iconColor).toBe('text-green-500');
     });
 });

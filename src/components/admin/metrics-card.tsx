@@ -93,7 +93,7 @@ export const MetricsCard = memo(function MetricsCard({
     return (
         <Card
             className={cn(
-                'transition-all duration-200',
+                'transition-all duration-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:outline-none',
                 styles.bg,
                 onClick && 'cursor-pointer hover:shadow-md hover:scale-[1.02]',
                 className
@@ -102,6 +102,7 @@ export const MetricsCard = memo(function MetricsCard({
             role={onClick ? 'button' : undefined}
             tabIndex={onClick ? 0 : undefined}
             onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+            aria-label={onClick ? `${title}: ${value}` : undefined}
         >
             <CardContent className="p-6">
                 <div className="flex items-start justify-between">

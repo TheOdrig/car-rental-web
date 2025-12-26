@@ -138,8 +138,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                             onClick={() => handleAction(item, 'reject')}
                             disabled={isProcessing}
                             className="gap-1 h-8"
+                            aria-label={`Reject rental request for ${item.customerName}`}
                         >
-                            <XCircle className="h-4 w-4" />
+                            <XCircle className="h-4 w-4" aria-hidden="true" />
                             Reject
                         </Button>
                         <Button
@@ -147,8 +148,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                             onClick={() => handleAction(item, 'approve')}
                             disabled={isProcessing}
                             className="gap-1 h-8"
+                            aria-label={`Approve rental request for ${item.customerName}`}
                         >
-                            <CheckCircle className="h-4 w-4" />
+                            <CheckCircle className="h-4 w-4" aria-hidden="true" />
                             {isProcessing ? 'Approving...' : 'Approve'}
                         </Button>
                     </div>
@@ -160,8 +162,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                         onClick={() => handleAction(item, 'pickup')}
                         disabled={isProcessing}
                         className="gap-1"
+                        aria-label={`Process pickup for ${item.customerName}`}
                     >
-                        <Car className="h-4 w-4" />
+                        <Car className="h-4 w-4" aria-hidden="true" />
                         {isProcessing ? 'Processing...' : 'Pickup'}
                     </Button>
                 );
@@ -174,8 +177,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                         onClick={() => handleAction(item, 'return')}
                         disabled={isProcessing}
                         className="gap-1"
+                        aria-label={`Process return for ${item.customerName}`}
                     >
-                        <CheckCircle className="h-4 w-4" />
+                        <CheckCircle className="h-4 w-4" aria-hidden="true" />
                         {isProcessing ? 'Processing...' : 'Return'}
                     </Button>
                 );
@@ -213,72 +217,97 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Customer</TableHead>
-                                <TableHead>Vehicle</TableHead>
-                                <TableHead>Dates</TableHead>
-                                <TableHead>Amount</TableHead>
-                                <TableHead>Status</TableHead>
-                                {type === 'overdue' && <TableHead>Late</TableHead>}
-                                <TableHead className="text-right">Action</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {items.map((item) => (
-                                <TableRow key={item.rentalId}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-2">
-                                            <User className="h-4 w-4 text-muted-foreground" />
-                                            <div>
-                                                <p className="font-medium">{item.customerName}</p>
-                                                <p className="text-sm text-muted-foreground">
-                                                    {item.customerEmail}
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Customer</TableHead>
+                                    <TableHead>Vehicle</TableHead>
+                                    <TableHead>Dates</TableHead>
+                                    <TableHead>Amount</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    {type === 'overdue' && <TableHead>Late</TableHead>}
+                                    <TableHead className="text-right">Action</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {items.map((item) => (
+                                    <TableRow key={item.rentalId}>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                {item.customerImage ? (
+                                                    <img
+                                                        src={item.customerImage}
+                                                        alt={item.customerName}
+                                                        className="h-9 w-9 rounded-full object-cover border bg-muted shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center border">
+                                                        <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                                                    </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-sm truncate">{item.customerName}</p>
+                                                    <p className="text-xs text-muted-foreground truncate">
+                                                        {item.customerEmail}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="flex items-center gap-3">
+                                                {item.carImage ? (
+                                                    <img
+                                                        src={item.carImage}
+                                                        alt={`${item.carBrand} ${item.carModel}`}
+                                                        className="h-10 w-16 rounded-lg object-cover border bg-muted shadow-sm"
+                                                    />
+                                                ) : (
+                                                    <div className="h-10 w-16 rounded-lg bg-muted flex items-center justify-center border">
+                                                        <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                                                    </div>
+                                                )}
+                                                <div className="min-w-0">
+                                                    <p className="font-semibold text-sm truncate">
+                                                        {item.carBrand} {item.carModel}
+                                                    </p>
+                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
+                                                        {item.licensePlate}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            <div className="text-sm whitespace-nowrap">
+                                                <p>{formatDate(item.startDate)}</p>
+                                                <p className="text-muted-foreground">
+                                                    to {formatDate(item.endDate)}
                                                 </p>
                                             </div>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div>
-                                            <p className="font-medium">
-                                                {item.carBrand} {item.carModel}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {item.licensePlate}
-                                            </p>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="text-sm">
-                                            <p>{formatDate(item.startDate)}</p>
-                                            <p className="text-muted-foreground">
-                                                to {formatDate(item.endDate)}
-                                            </p>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="font-medium">
-                                        {formatCurrency(item.totalAmount)}
-                                    </TableCell>
-                                    <TableCell>
-                                        <Badge variant={getStatusBadgeVariant(item.status)}>
-                                            {item.status}
-                                        </Badge>
-                                    </TableCell>
-                                    {type === 'overdue' && (
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {formatCurrency(item.totalAmount)}
+                                        </TableCell>
                                         <TableCell>
-                                            <Badge variant="destructive">
-                                                {item.lateHours}h late
+                                            <Badge variant={getStatusBadgeVariant(item.status)}>
+                                                {item.status}
                                             </Badge>
                                         </TableCell>
-                                    )}
-                                    <TableCell className="text-right">
-                                        {getActionButton(item)}
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                                        {type === 'overdue' && (
+                                            <TableCell>
+                                                <Badge variant="destructive">
+                                                    {item.lateHours}h late
+                                                </Badge>
+                                            </TableCell>
+                                        )}
+                                        <TableCell className="text-right">
+                                            {getActionButton(item)}
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </div>
                 </CardContent>
             </Card>
 

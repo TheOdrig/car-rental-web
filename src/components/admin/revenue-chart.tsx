@@ -28,6 +28,7 @@ interface RevenueChartProps {
     onPeriodChange?: (period: RevenuePeriod) => void;
     isLoading?: boolean;
     className?: string;
+    breakdown?: import('@/types/admin').RevenueBreakdown;
 }
 
 const chartConfig = {
@@ -47,6 +48,7 @@ export function RevenueChart({
     onPeriodChange,
     isLoading = false,
     className,
+    breakdown,
 }: RevenueChartProps) {
     const [internalPeriod, setInternalPeriod] = useState<RevenuePeriod>(period);
 
@@ -166,6 +168,60 @@ export function RevenueChart({
                             />
                         </BarChart>
                     </ChartContainer>
+                )}
+
+                {breakdown && (
+                    <div className="mt-8 pt-6 border-t space-y-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            <div className="space-y-1.5">
+                                <div className="flex items-center justify-between text-[13px]">
+                                    <span className="text-muted-foreground font-medium">Rentals</span>
+                                    <span className="font-bold">{formatCurrency(breakdown.rentalRevenue)}</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-primary rounded-full transition-all duration-1000"
+                                        style={{ width: `${breakdown.rentalPercentage}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
+                                    {breakdown.rentalPercentage}% of total
+                                </p>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <div className="flex items-center justify-between text-[13px]">
+                                    <span className="text-muted-foreground font-medium">Penalties</span>
+                                    <span className="font-bold">{formatCurrency(breakdown.penaltyRevenue)}</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-amber-500 rounded-full transition-all duration-1000"
+                                        style={{ width: `${breakdown.penaltyPercentage}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
+                                    {breakdown.penaltyPercentage}% of total
+                                </p>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <div className="flex items-center justify-between text-[13px]">
+                                    <span className="text-muted-foreground font-medium">Damages</span>
+                                    <span className="font-bold">{formatCurrency(breakdown.damageCharges)}</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-red-500 rounded-full transition-all duration-1000"
+                                        style={{ width: `${breakdown.damagePercentage}%` }}
+                                    />
+                                </div>
+                                <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
+                                    {breakdown.damagePercentage}% of total
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 )}
             </CardContent>
         </Card>
