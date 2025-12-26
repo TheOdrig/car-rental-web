@@ -134,7 +134,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                         </PopoverContent>
                     </Popover>
                     {errors.startDate && (
-                        <p className="text-xs text-destructive">{errors.startDate}</p>
+                        <p className="text-xs text-destructive" role="alert">{errors.startDate}</p>
                     )}
                 </div>
 
@@ -173,7 +173,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                         </PopoverContent>
                     </Popover>
                     {errors.endDate && (
-                        <p className="text-xs text-destructive">{errors.endDate}</p>
+                        <p className="text-xs text-destructive" role="alert">{errors.endDate}</p>
                     )}
                 </div>
             </div>

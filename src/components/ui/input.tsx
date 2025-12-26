@@ -1,16 +1,66 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+import type { ValidationState } from "@/types/validation"
+import { getValidationBorderClasses, getValidationRingClasses } from "@/lib/utils/validation-ui"
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+interface InputProps extends React.ComponentProps<"input"> {
+  error?: string;
+  success?: string;
+  isLoading?: boolean;
+  validationState?: ValidationState;
+  wrapperClassName?: string;
+}
+
+function Input({
+  className,
+  type,
+  error,
+  success,
+  isLoading,
+  validationState = 'idle',
+  wrapperClassName,
+  disabled,
+  ...props
+}: InputProps) {
+  const effectiveState: ValidationState = React.useMemo(() => {
+    if (disabled) return 'disabled';
+    if (isLoading) return 'loading';
+    if (error) return 'invalid';
+    if (success) return 'valid';
+    return validationState;
+  }, [disabled, isLoading, error, success, validationState]);
+
+  const borderClasses = getValidationBorderClasses(effectiveState);
+  const ringClasses = getValidationRingClasses(effectiveState);
+
   return (
     <input
       type={type}
       data-slot="input"
+      data-validation-state={effectiveState}
+      disabled={disabled}
+      aria-invalid={effectiveState === 'invalid' || effectiveState === 'empty' || undefined}
+      aria-busy={effectiveState === 'loading' || undefined}
       className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
+        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground",
+        "dark:bg-input/30 h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base",
+        "shadow-xs transition-all duration-200 outline-none",
+        "file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium",
+        "disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50",
+        "md:text-sm",
+
+        "focus-visible:ring-[3px]",
+
+        effectiveState === 'idle' && "border-input focus-visible:border-ring focus-visible:ring-ring/50",
+        effectiveState === 'valid' && "border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20",
+        effectiveState === 'invalid' && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
+        effectiveState === 'empty' && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
+        effectiveState === 'loading' && "border-ring focus-visible:border-ring focus-visible:ring-ring/50",
+        effectiveState === 'disabled' && "border-input bg-muted",
+        effectiveState === 'focused' && "border-ring focus-visible:ring-ring/50",
+
         "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+
         className
       )}
       {...props}
@@ -19,3 +69,4 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
 }
 
 export { Input }
+export type { InputProps }

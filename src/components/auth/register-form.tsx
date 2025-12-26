@@ -1,19 +1,19 @@
 'use client';
 
-import { useState, type FormEvent, type ChangeEvent } from 'react';
+import { useState, useMemo, type FormEvent, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import {
-    Eye, EyeOff, Loader2, CheckCircle2, XCircle
-} from 'lucide-react';
+import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { FormField } from '@/components/ui/form-field';
 import { useRegister } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import { FormError } from './form-error';
 import { PasswordStrengthIndicator } from './password-strength-indicator';
 import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/utils/validation';
+import { determineValidationState } from '@/lib/utils/validation-ui';
+import type { ValidationState } from '@/types/validation';
 
 interface RegisterFormProps {
     className?: string;
@@ -34,12 +34,61 @@ export function RegisterForm({ className }: RegisterFormProps) {
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [touched, setTouched] = useState<Record<string, boolean>>({});
+    const [focused, setFocused] = useState<Record<string, boolean>>({});
     const [formError, setFormError] = useState<string | null>(null);
 
     const isUsernameValid = formData.username.length >= 3;
     const isEmailValid = validateEmail(formData.email);
     const isPasswordValid = validatePassword(formData.password);
     const isConfirmPasswordValid = validatePasswordMatch(formData.password, formData.confirmPassword) && formData.confirmPassword.length > 0;
+
+    const usernameValidationState: ValidationState = useMemo(() =>
+        determineValidationState({
+            value: formData.username,
+            error: errors.username,
+            isTouched: touched.username,
+            isFocused: focused.username,
+            isDisabled: registerMutation.isPending,
+            isRequired: true,
+            isValid: isUsernameValid,
+        }), [formData.username, errors.username, touched.username, focused.username, registerMutation.isPending, isUsernameValid]
+    );
+
+    const emailValidationState: ValidationState = useMemo(() =>
+        determineValidationState({
+            value: formData.email,
+            error: errors.email,
+            isTouched: touched.email,
+            isFocused: focused.email,
+            isDisabled: registerMutation.isPending,
+            isRequired: true,
+            isValid: isEmailValid,
+        }), [formData.email, errors.email, touched.email, focused.email, registerMutation.isPending, isEmailValid]
+    );
+
+    const passwordValidationState: ValidationState = useMemo(() =>
+        determineValidationState({
+            value: formData.password,
+            error: errors.password,
+            isTouched: touched.password,
+            isFocused: focused.password,
+            isDisabled: registerMutation.isPending,
+            isRequired: true,
+            isValid: isPasswordValid,
+        }), [formData.password, errors.password, touched.password, focused.password, registerMutation.isPending, isPasswordValid]
+    );
+
+    const confirmPasswordValidationState: ValidationState = useMemo(() =>
+        determineValidationState({
+            value: formData.confirmPassword,
+            error: errors.confirmPassword,
+            isTouched: touched.confirmPassword,
+            isFocused: focused.confirmPassword,
+            isDisabled: registerMutation.isPending,
+            isRequired: true,
+            isValid: isConfirmPasswordValid,
+        }), [formData.confirmPassword, errors.confirmPassword, touched.confirmPassword, focused.confirmPassword, registerMutation.isPending, isConfirmPasswordValid]
+    );
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -80,6 +129,13 @@ export function RegisterForm({ className }: RegisterFormProps) {
         e.preventDefault();
         setFormError(null);
 
+        setTouched({
+            username: true,
+            email: true,
+            password: true,
+            confirmPassword: true
+        });
+
         if (!validateForm()) return;
 
         try {
@@ -105,20 +161,15 @@ export function RegisterForm({ className }: RegisterFormProps) {
         }
     };
 
+    const handleFocus = (e: ChangeEvent<HTMLInputElement>) => {
+        const { name } = e.target;
+        setFocused(prev => ({ ...prev, [name]: true }));
+    };
+
     const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
         const { name } = e.target;
         setTouched(prev => ({ ...prev, [name]: true }));
-    };
-
-    const getValidationIcon = (fieldName: string, isValid: boolean) => {
-        if (!touched[fieldName] || !formData[fieldName as keyof typeof formData]) {
-            return null;
-        }
-        return isValid ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500" aria-hidden="true" />
-        ) : (
-            <XCircle className="h-5 w-5 text-destructive" aria-hidden="true" />
-        );
+        setFocused(prev => ({ ...prev, [name]: false }));
     };
 
     return (
@@ -128,70 +179,61 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 onDismiss={() => setFormError(null)}
             />
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="username">Username</Label>
-                <div className="relative">
-                    <Input
-                        id="username"
-                        name="username"
-                        type="text"
-                        placeholder="e.g. johndoe"
-                        value={formData.username}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        disabled={registerMutation.isPending}
-                        aria-invalid={!!errors.username}
-                        aria-describedby={errors.username ? 'username-error' : undefined}
-                        className={cn(
-                            'h-12 pr-10',
-                            errors.username && 'border-destructive focus-visible:ring-destructive',
-                            touched.username && isUsernameValid && 'border-green-500 focus-visible:ring-green-500'
-                        )}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        {getValidationIcon('username', isUsernameValid)}
-                    </div>
-                </div>
-                {errors.username && (
-                    <p id="username-error" className="text-xs text-destructive" role="alert">
-                        {errors.username}
-                    </p>
-                )}
-            </div>
+            <FormField
+                label="Username"
+                htmlFor="username"
+                error={errors.username}
+                required
+                validationState={usernameValidationState}
+                isDisabled={registerMutation.isPending}
+            >
+                <Input
+                    id="username"
+                    name="username"
+                    type="text"
+                    placeholder="e.g. johndoe"
+                    value={formData.username}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    disabled={registerMutation.isPending}
+                    validationState={usernameValidationState}
+                    className="h-12 pr-10"
+                />
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="email">Email Address</Label>
-                <div className="relative">
-                    <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        placeholder="name@example.com"
-                        value={formData.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        disabled={registerMutation.isPending}
-                        aria-invalid={!!errors.email}
-                        aria-describedby={errors.email ? 'email-error' : undefined}
-                        className={cn(
-                            'h-12 pr-10',
-                            errors.email && 'border-destructive focus-visible:ring-destructive',
-                            touched.email && isEmailValid && 'border-green-500 focus-visible:ring-green-500'
-                        )}
-                    />
-                    <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                        {getValidationIcon('email', isEmailValid)}
-                    </div>
-                </div>
-                {errors.email && (
-                    <p id="email-error" className="text-xs text-destructive" role="alert">
-                        {errors.email}
-                    </p>
-                )}
-            </div>
+            <FormField
+                label="Email Address"
+                htmlFor="email"
+                error={errors.email}
+                required
+                validationState={emailValidationState}
+                isDisabled={registerMutation.isPending}
+            >
+                <Input
+                    id="email"
+                    name="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    value={formData.email}
+                    onChange={handleChange}
+                    onFocus={handleFocus}
+                    onBlur={handleBlur}
+                    disabled={registerMutation.isPending}
+                    validationState={emailValidationState}
+                    className="h-12 pr-10"
+                />
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="password">Password</Label>
+            <FormField
+                label="Password"
+                htmlFor="password"
+                error={errors.password}
+                required
+                validationState={passwordValidationState}
+                isDisabled={registerMutation.isPending}
+                showIcon={false}
+            >
                 <div className="relative">
                     <Input
                         id="password"
@@ -200,15 +242,11 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Create a strong password"
                         value={formData.password}
                         onChange={handleChange}
+                        onFocus={handleFocus}
                         onBlur={handleBlur}
                         disabled={registerMutation.isPending}
-                        aria-invalid={!!errors.password}
-                        aria-describedby={errors.password ? 'password-error' : undefined}
-                        className={cn(
-                            'h-12 pr-10',
-                            errors.password && 'border-destructive focus-visible:ring-destructive',
-                            touched.password && isPasswordValid && 'border-green-500 focus-visible:ring-green-500'
-                        )}
+                        validationState={passwordValidationState}
+                        className="h-12 pr-12"
                     />
                     <button
                         type="button"
@@ -224,15 +262,16 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     </button>
                 </div>
                 <PasswordStrengthIndicator password={formData.password} showSuggestions={false} />
-                {errors.password && (
-                    <p id="password-error" className="text-xs text-destructive" role="alert">
-                        {errors.password}
-                    </p>
-                )}
-            </div>
+            </FormField>
 
-            <div className="flex flex-col gap-2">
-                <Label htmlFor="confirmPassword">Confirm Password</Label>
+            <FormField
+                label="Confirm Password"
+                htmlFor="confirmPassword"
+                error={errors.confirmPassword}
+                required
+                validationState={confirmPasswordValidationState}
+                isDisabled={registerMutation.isPending}
+            >
                 <div className="relative">
                     <Input
                         id="confirmPassword"
@@ -241,38 +280,26 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
+                        onFocus={handleFocus}
                         onBlur={handleBlur}
                         disabled={registerMutation.isPending}
-                        aria-invalid={!!errors.confirmPassword}
-                        aria-describedby={errors.confirmPassword ? 'confirm-password-error' : undefined}
-                        className={cn(
-                            'h-12 pr-10',
-                            errors.confirmPassword && 'border-destructive focus-visible:ring-destructive',
-                            touched.confirmPassword && isConfirmPasswordValid && 'border-green-500 focus-visible:ring-green-500'
-                        )}
+                        validationState={confirmPasswordValidationState}
+                        className="h-12 pr-20"
                     />
-                    <div className="absolute inset-y-0 right-0 flex items-center gap-1 pr-3">
-                        {getValidationIcon('confirmPassword', isConfirmPasswordValid)}
-                        <button
-                            type="button"
-                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                            className="text-muted-foreground hover:text-foreground transition-colors p-1"
-                            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                        >
-                            {showConfirmPassword ? (
-                                <EyeOff className="h-5 w-5" />
-                            ) : (
-                                <Eye className="h-5 w-5" />
-                            )}
-                        </button>
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        className="absolute inset-y-0 right-10 flex items-center px-2 text-muted-foreground hover:text-foreground transition-colors"
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                    >
+                        {showConfirmPassword ? (
+                            <EyeOff className="h-5 w-5" />
+                        ) : (
+                            <Eye className="h-5 w-5" />
+                        )}
+                    </button>
                 </div>
-                {errors.confirmPassword && (
-                    <p id="confirm-password-error" className="text-xs text-destructive" role="alert">
-                        {errors.confirmPassword}
-                    </p>
-                )}
-            </div>
+            </FormField>
 
             <div className="flex items-start gap-3">
                 <input
