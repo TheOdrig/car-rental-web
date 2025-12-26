@@ -49,6 +49,8 @@ export const toastMessages = {
         pickupError: 'Failed to process pickup',
         returnSuccess: 'Return processed successfully',
         returnError: 'Failed to process return',
+        rejectSuccess: 'Rental request rejected',
+        rejectError: 'Failed to reject rental',
     },
     auth: {
         loginSuccess: 'Welcome back!',

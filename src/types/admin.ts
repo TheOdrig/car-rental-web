@@ -66,12 +66,18 @@ export interface PendingItem {
     rentalId: number;
     customerName: string;
     customerEmail: string;
+    customerImage?: string;
+    isCustomerVerified?: boolean;
     carId: number;
     carBrand: string;
     carModel: string;
+    carImage?: string;
     licensePlate: string;
+    fuelType?: string;
+    transmission?: string;
     startDate: string;
     endDate: string;
+    duration?: number;
     totalAmount: number;
     status: string;
     lateHours?: number;

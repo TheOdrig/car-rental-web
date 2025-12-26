@@ -133,16 +133,20 @@ async function markAllAlertsRead(): Promise<void> {
     return clientPost<void>('/api/admin/alerts/mark-all-read');
 }
 
-async function approveRental(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`);
+async function approveRental({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`, { notes });
 }
 
-async function processPickup(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`);
+async function processPickup({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
 }
 
-async function processReturn(rentalId: number): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`);
+async function processReturn({ rentalId, data }: { rentalId: number; data?: any }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
+}
+
+async function rejectRental({ rentalId, reason }: { rentalId: number; reason: string }): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
 }
 
 
@@ -292,6 +296,26 @@ export function useProcessReturn() {
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.returnError, error.message);
+        },
+    });
+}
+
+export function useRejectRental() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: rejectRental,
+        onSuccess: (result) => {
+            showToast.success(toastMessages.rental.rejectSuccess);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
+            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
+
+            if (result.updatedSummary) {
+                queryClient.setQueryData(adminKeys.summary(), result.updatedSummary);
+            }
+        },
+        onError: (error: Error) => {
+            showToast.error(toastMessages.rental.rejectError, error.message);
         },
     });
 }
