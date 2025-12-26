@@ -109,7 +109,7 @@ describe('use-cars hooks', () => {
 
             expect(result.current.data).toEqual(mockResponse);
             expect(result.current.data?.content).toHaveLength(3);
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12');
         });
 
         it('should fetch cars with filters', async () => {
@@ -126,7 +126,7 @@ describe('use-cars hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?brand=Toyota&minPrice=40');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?brand=Toyota&minPrice=40&page=0&size=12');
         });
 
         it('should handle empty filters', async () => {
@@ -141,7 +141,7 @@ describe('use-cars hooks', () => {
                 expect(result.current.isSuccess).toBe(true);
             });
 
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12');
         });
 
         it('should handle fetch error', async () => {
