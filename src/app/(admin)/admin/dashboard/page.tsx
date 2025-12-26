@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
+type MetricsCardType = 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pickups' | 'returns' | 'overdue';
 
 export default function AdminDashboardPage() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
@@ -45,8 +46,19 @@ export default function AdminDashboardPage() {
         toast.success('Dashboard refreshed');
     };
 
-    const handleCardClick = (type: ActiveTab) => {
-        setActiveTab(type);
+    const handleCardClick = (type: MetricsCardType) => {
+        switch (type) {
+            case 'revenue':
+            case 'activeRentals':
+            case 'users':
+                break;
+            case 'approvals':
+            case 'pickups':
+            case 'returns':
+            case 'overdue':
+                setActiveTab(type);
+                break;
+        }
     };
 
     const handleApprove = async (rentalId: number) => {

@@ -1,3 +1,9 @@
+export interface TrendIndicator {
+    value: number;
+    direction: 'up' | 'down';
+    label?: string;
+}
+
 export interface DailySummary {
     pendingApprovals: number;
     todaysPickups: number;
