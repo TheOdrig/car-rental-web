@@ -2,6 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/lib/api/client';
+import { useFilterStore, type SortOption } from '@/lib/stores/filter-store';
 import type {
     Car,
     CarFilters,
@@ -40,7 +41,22 @@ interface UseCarOptions {
 }
 
 
-async function fetchCars(filters?: CarFilters, page: number = 0): Promise<PageResponse<Car>> {
+function sortOptionToParam(sortBy: SortOption): string {
+    switch (sortBy) {
+        case 'price-asc': return 'price,asc';
+        case 'price-desc': return 'price,desc';
+        case 'name-asc': return 'brand,asc';
+        case 'rating-desc': return 'rating,desc';
+        case 'recommended':
+        default: return 'createTime,desc';
+    }
+}
+
+async function fetchCars(
+    filters?: CarFilters,
+    page: number = 0,
+    sortBy: SortOption = 'recommended'
+): Promise<PageResponse<Car>> {
     const params = new URLSearchParams();
 
     if (filters) {
@@ -53,6 +69,7 @@ async function fetchCars(filters?: CarFilters, page: number = 0): Promise<PageRe
 
     params.append('page', String(page));
     params.append('size', '12');
+    params.append('sort', sortOptionToParam(sortBy));
 
     const queryString = params.toString();
     const url = `/api/cars?${queryString}`;
@@ -86,9 +103,11 @@ async function searchCars(params: AvailabilitySearchRequest): Promise<Availabili
 
 
 export function useCars(filters?: CarFilters, page: number = 0) {
+    const { sortBy } = useFilterStore();
+
     return useQuery({
-        queryKey: [...carKeys.list(filters), page],
-        queryFn: () => fetchCars(filters, page),
+        queryKey: [...carKeys.list(filters), page, sortBy],
+        queryFn: () => fetchCars(filters, page, sortBy),
         staleTime: 5 * 60 * 1000,
     });
 }
