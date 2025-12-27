@@ -6,6 +6,7 @@ import { logger } from '@/lib/utils/logger';
 import { useMyRentals } from '@/lib/hooks';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ErrorBoundary } from '@/components/shared';
 import {
     RentalList,
     RentalListSkeleton,
@@ -84,70 +85,72 @@ export default function MyRentalsPage() {
     }
 
     return (
-        <div className="container py-8">
-            <div className="mb-8 flex items-start justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold">My Rentals</h1>
-                    <p className="mt-1 text-muted-foreground">
-                        View and manage your rental history
-                    </p>
+        <ErrorBoundary>
+            <div className="container py-8">
+                <div className="mb-8 flex items-start justify-between gap-4">
+                    <div>
+                        <h1 className="text-3xl font-bold">My Rentals</h1>
+                        <p className="mt-1 text-muted-foreground">
+                            View and manage your rental history
+                        </p>
+                    </div>
+                    <Button
+                        variant="outline"
+                        className="hidden gap-2 md:flex"
+                        onClick={handleExport}
+                    >
+                        <Download className="h-4 w-4" />
+                        Export History
+                    </Button>
                 </div>
-                <Button
-                    variant="outline"
-                    className="hidden gap-2 md:flex"
-                    onClick={handleExport}
+
+                <div className="mb-8">
+                    {isLoading ? (
+                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                            <Skeleton className="h-24" />
+                            <Skeleton className="h-24" />
+                            <Skeleton className="h-24" />
+                        </div>
+                    ) : (
+                        <RentalStats stats={stats} />
+                    )}
+                </div>
+
+                <div className="mb-6">
+                    {isLoading ? (
+                        <div className="flex gap-4 border-b pb-3">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <Skeleton key={i} className="h-8 w-24" />
+                            ))}
+                        </div>
+                    ) : (
+                        <RentalTabs
+                            activeTab={activeTab}
+                            onTabChange={handleTabChange}
+                            counts={tabCounts}
+                        />
+                    )}
+                </div>
+
+                <div
+                    role="tabpanel"
+                    id={`tabpanel-${activeTab}`}
+                    aria-labelledby={`tab-${activeTab}`}
                 >
-                    <Download className="h-4 w-4" />
-                    Export History
-                </Button>
+                    {isLoading ? (
+                        <RentalListSkeleton count={3} variant="detailed" />
+                    ) : filteredRentals.length === 0 ? (
+                        <RentalListEmpty tab={activeTab} showBrowseLink={activeTab === 'all'} />
+                    ) : (
+                        <RentalList
+                            rentals={filteredRentals}
+                            variant="detailed"
+                            showActions
+                            onAction={handleAction}
+                        />
+                    )}
+                </div>
             </div>
-
-            <div className="mb-8">
-                {isLoading ? (
-                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                        <Skeleton className="h-24" />
-                        <Skeleton className="h-24" />
-                        <Skeleton className="h-24" />
-                    </div>
-                ) : (
-                    <RentalStats stats={stats} />
-                )}
-            </div>
-
-            <div className="mb-6">
-                {isLoading ? (
-                    <div className="flex gap-4 border-b pb-3">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <Skeleton key={i} className="h-8 w-24" />
-                        ))}
-                    </div>
-                ) : (
-                    <RentalTabs
-                        activeTab={activeTab}
-                        onTabChange={handleTabChange}
-                        counts={tabCounts}
-                    />
-                )}
-            </div>
-
-            <div
-                role="tabpanel"
-                id={`tabpanel-${activeTab}`}
-                aria-labelledby={`tab-${activeTab}`}
-            >
-                {isLoading ? (
-                    <RentalListSkeleton count={3} variant="detailed" />
-                ) : filteredRentals.length === 0 ? (
-                    <RentalListEmpty tab={activeTab} showBrowseLink={activeTab === 'all'} />
-                ) : (
-                    <RentalList
-                        rentals={filteredRentals}
-                        variant="detailed"
-                        showActions
-                        onAction={handleAction}
-                    />
-                )}
-            </div>
-        </div>
+        </ErrorBoundary>
     );
 }

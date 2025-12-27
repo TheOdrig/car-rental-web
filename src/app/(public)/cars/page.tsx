@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { CarsListingContent } from './cars-listing-content';
+import { ErrorBoundary } from '@/components/shared';
 
 export const metadata: Metadata = {
     title: 'Browse Cars | Car Rental',
@@ -11,5 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default function CarsPage() {
-    return <CarsListingContent />;
+    return (
+        <ErrorBoundary>
+            <CarsListingContent />
+        </ErrorBoundary>
+    );
 }

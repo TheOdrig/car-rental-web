@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import { RefreshCw, Plus, Download, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { ErrorBoundary } from '@/components/shared';
 import {
     DashboardMetricsGrid,
     PendingRentalsTable,
@@ -161,107 +162,109 @@ export default function AdminDashboardPage() {
         : null;
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <p className="text-sm">Overview of your rental operations</p>
-                        {lastUpdated && (
-                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
-                                <Clock className="h-3 w-3" />
-                                Updated {lastUpdated}
-                            </span>
-                        )}
+        <ErrorBoundary>
+            <div className="space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <p className="text-sm">Overview of your rental operations</p>
+                            {lastUpdated && (
+                                <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
+                                    <Clock className="h-3 w-3" />
+                                    Updated {lastUpdated}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="hidden md:flex gap-2"
+                            aria-label="Export monthly report"
+                        >
+                            <Download className="h-4 w-4" aria-hidden="true" />
+                            Export Report
+                        </Button>
+                        <Button
+                            size="sm"
+                            className="gap-2 shrink-0"
+                            aria-label="Add new car to fleet"
+                        >
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            Add New Car
+                        </Button>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            className="shrink-0"
+                            aria-label={summaryLoading ? "Refreshing data" : "Refresh dashboard data"}
+                        >
+                            <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} aria-hidden="true" />
+                        </Button>
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="hidden md:flex gap-2"
-                        aria-label="Export monthly report"
-                    >
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        Export Report
-                    </Button>
-                    <Button
-                        size="sm"
-                        className="gap-2 shrink-0"
-                        aria-label="Add new car to fleet"
-                    >
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        Add New Car
-                    </Button>
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        className="shrink-0"
-                        aria-label={summaryLoading ? "Refreshing data" : "Refresh dashboard data"}
-                    >
-                        <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} aria-hidden="true" />
-                    </Button>
+
+                <DashboardMetricsGrid
+                    totalRevenue={revenueAnalytics?.breakdown.totalRevenue}
+                    revenueTrend={latestRevenue ? {
+                        value: Math.abs(latestRevenue.growthPercentage),
+                        direction: latestRevenue.growthPercentage >= 0 ? 'up' : 'down',
+                        label: 'vs last month'
+                    } : undefined}
+                    activeRentals={fleetStatus?.rentedCars}
+                    pendingApprovals={summary?.pendingApprovals ?? 0}
+                    isLoading={summaryLoading || revenueLoading}
+                    onCardClick={handleCardClick}
+                />
+
+                <div className="grid gap-6 lg:grid-cols-3">
+                    <div className="lg:col-span-2 space-y-6">
+                        <RevenueChart
+                            data={chartData}
+                            period={revenuePeriod}
+                            onPeriodChange={setRevenuePeriod}
+                            isLoading={revenueLoading}
+                            breakdown={revenueAnalytics?.breakdown}
+                        />
+
+                        <PendingRentalsTable
+                            items={getActiveItems()}
+                            type={activeTab}
+                            isLoading={isTableLoading()}
+                            onApprove={handleApprove}
+                            onReject={handleReject}
+                            onPickup={handlePickup}
+                            onReturn={handleReturn}
+                            actionInProgress={actionInProgress}
+                        />
+                    </div>
+                    <div className="space-y-6">
+                        <QuickActionsCard
+                            pickupItems={pickups?.content ?? []}
+                            returnItems={returns?.content ?? []}
+                            isLoading={pickupsLoading || returnsLoading}
+                            onPickup={handlePickup}
+                            onReturn={handleReturn}
+                            actionInProgress={actionInProgress}
+                        />
+                        <FleetStatusCard
+                            data={fleetStatus ?? {
+                                totalCars: 0,
+                                availableCars: 0,
+                                rentedCars: 0,
+                                maintenanceCars: 0,
+                                damagedCars: 0,
+                                occupancyRate: 0,
+                                generatedAt: new Date().toISOString(),
+                            }}
+                            className={fleetLoading ? 'opacity-50' : ''}
+                        />
+                    </div>
                 </div>
             </div>
-
-            <DashboardMetricsGrid
-                totalRevenue={revenueAnalytics?.breakdown.totalRevenue}
-                revenueTrend={latestRevenue ? {
-                    value: Math.abs(latestRevenue.growthPercentage),
-                    direction: latestRevenue.growthPercentage >= 0 ? 'up' : 'down',
-                    label: 'vs last month'
-                } : undefined}
-                activeRentals={fleetStatus?.rentedCars}
-                pendingApprovals={summary?.pendingApprovals ?? 0}
-                isLoading={summaryLoading || revenueLoading}
-                onCardClick={handleCardClick}
-            />
-
-            <div className="grid gap-6 lg:grid-cols-3">
-                <div className="lg:col-span-2 space-y-6">
-                    <RevenueChart
-                        data={chartData}
-                        period={revenuePeriod}
-                        onPeriodChange={setRevenuePeriod}
-                        isLoading={revenueLoading}
-                        breakdown={revenueAnalytics?.breakdown}
-                    />
-
-                    <PendingRentalsTable
-                        items={getActiveItems()}
-                        type={activeTab}
-                        isLoading={isTableLoading()}
-                        onApprove={handleApprove}
-                        onReject={handleReject}
-                        onPickup={handlePickup}
-                        onReturn={handleReturn}
-                        actionInProgress={actionInProgress}
-                    />
-                </div>
-                <div className="space-y-6">
-                    <QuickActionsCard
-                        pickupItems={pickups?.content ?? []}
-                        returnItems={returns?.content ?? []}
-                        isLoading={pickupsLoading || returnsLoading}
-                        onPickup={handlePickup}
-                        onReturn={handleReturn}
-                        actionInProgress={actionInProgress}
-                    />
-                    <FleetStatusCard
-                        data={fleetStatus ?? {
-                            totalCars: 0,
-                            availableCars: 0,
-                            rentedCars: 0,
-                            maintenanceCars: 0,
-                            damagedCars: 0,
-                            occupancyRate: 0,
-                            generatedAt: new Date().toISOString(),
-                        }}
-                        className={fleetLoading ? 'opacity-50' : ''}
-                    />
-                </div>
-            </div>
-        </div>
+        </ErrorBoundary>
     );
 }
