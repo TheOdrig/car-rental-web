@@ -3,6 +3,7 @@
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
     Select,
     SelectContent,
@@ -11,19 +12,27 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { useFilterStore } from '@/lib/stores/filter-store';
+import { useFilterOptions } from '@/lib/hooks/use-filter-options';
 
 interface CarFiltersProps {
     className?: string;
     layout?: 'horizontal' | 'vertical';
 }
 
-const BRANDS = ['Toyota', 'Honda', 'BMW', 'Mercedes', 'Audi', 'Ford', 'Volkswagen'];
-const TRANSMISSIONS = ['Automatic', 'Manual'];
-const FUEL_TYPES = ['Gasoline', 'Diesel', 'Electric', 'Hybrid'];
-const BODY_TYPES = ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Convertible', 'Van'];
-
 export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps) {
     const { filters, setFilter, clearFilters, hasActiveFilters } = useFilterStore();
+    const { data: options, isLoading } = useFilterOptions();
+
+    if (isLoading) {
+        return (
+            <div className={cn('flex gap-3', layout === 'vertical' ? 'flex-col' : 'flex-wrap items-center', className)}>
+                <Skeleton className="h-10 w-[160px]" />
+                <Skeleton className="h-10 w-[160px]" />
+                <Skeleton className="h-10 w-[160px]" />
+                <Skeleton className="h-10 w-[160px]" />
+            </div>
+        );
+    }
 
     return (
         <div
@@ -41,7 +50,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                     <SelectValue placeholder="Brand" />
                 </SelectTrigger>
                 <SelectContent>
-                    {BRANDS.map((brand) => (
+                    {options?.brands.map((brand) => (
                         <SelectItem key={brand} value={brand}>
                             {brand}
                         </SelectItem>
@@ -57,7 +66,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                     <SelectValue placeholder="Transmission" />
                 </SelectTrigger>
                 <SelectContent>
-                    {TRANSMISSIONS.map((t) => (
+                    {options?.transmissions.map((t) => (
                         <SelectItem key={t} value={t}>
                             {t}
                         </SelectItem>
@@ -73,7 +82,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                     <SelectValue placeholder="Fuel Type" />
                 </SelectTrigger>
                 <SelectContent>
-                    {FUEL_TYPES.map((fuel) => (
+                    {options?.fuelTypes.map((fuel) => (
                         <SelectItem key={fuel} value={fuel}>
                             {fuel}
                         </SelectItem>
@@ -89,7 +98,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                     <SelectValue placeholder="Body Type" />
                 </SelectTrigger>
                 <SelectContent>
-                    {BODY_TYPES.map((body) => (
+                    {options?.bodyTypes.map((body) => (
                         <SelectItem key={body} value={body}>
                             {body}
                         </SelectItem>
