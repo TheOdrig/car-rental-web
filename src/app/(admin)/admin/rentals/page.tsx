@@ -24,6 +24,7 @@ import {
     useProcessReturn,
     useInvalidateAdmin,
 } from '@/lib/hooks/use-admin';
+import type { ProcessReturnData } from '@/types';
 import { toast } from 'sonner';
 
 
@@ -93,7 +94,7 @@ export default function AdminRentalsPage() {
         }
     };
 
-    const handleReturn = async (rentalId: number, data?: any) => {
+    const handleReturn = async (rentalId: number, data?: ProcessReturnData) => {
         setActionInProgress(rentalId);
         try {
             await returnMutation.mutateAsync({ rentalId, data });

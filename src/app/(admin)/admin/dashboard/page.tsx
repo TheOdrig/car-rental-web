@@ -26,7 +26,7 @@ import {
     useRevenueData,
 } from '@/lib/hooks/use-admin';
 import { processRevenueData } from '@/lib/utils/admin-utils';
-import { RevenuePeriod } from '@/types/admin';
+import type { RevenuePeriod, ProcessReturnData } from '@/types/admin';
 import { toast } from 'sonner';
 
 
@@ -104,7 +104,7 @@ export default function AdminDashboardPage() {
         }
     };
 
-    const handleReturn = async (rentalId: number, data?: any) => {
+    const handleReturn = async (rentalId: number, data?: string | ProcessReturnData) => {
         setActionInProgress(rentalId);
         try {
             await returnMutation.mutateAsync({ rentalId, data });

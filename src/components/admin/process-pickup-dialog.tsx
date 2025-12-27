@@ -129,7 +129,7 @@ export function ProcessPickupDialog({
                                         Customer ID Verified
                                     </Label>
                                     <p className="text-xs text-muted-foreground">
-                                        Verify physical driver's license matches customer profile.
+                                        Verify physical driver&apos;s license matches customer profile.
                                     </p>
                                 </div>
                             </div>

@@ -4,7 +4,6 @@ import { memo, type ReactNode } from 'react';
 import { format } from 'date-fns';
 import {
     CheckCircle2,
-    Circle,
     Calendar,
     MapPin,
     Car,

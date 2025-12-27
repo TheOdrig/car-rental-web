@@ -46,7 +46,7 @@ export const FormField = memo(function FormField({
     const messageId = message ? `${htmlFor}-message` : undefined;
     const descriptionId = description ? `${htmlFor}-description` : undefined;
 
-    const describedBy = [messageId, descriptionId].filter(Boolean).join(' ') || undefined;
+    const _describedBy = [messageId, descriptionId].filter(Boolean).join(' ') || undefined;
 
     return (
         <div className={cn('space-y-2', className)}>

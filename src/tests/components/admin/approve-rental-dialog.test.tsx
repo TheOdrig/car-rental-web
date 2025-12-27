@@ -1,7 +1,7 @@
 'use client';
 
 import { describe, it, expect, vi } from 'vitest';
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ApproveRentalDialog } from '@/components/admin/approve-rental-dialog';
 import { renderWithProviders } from '../../test-utils';

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { Slider } from '@/components/ui/slider';
 import { cn } from '@/lib/utils';
 
@@ -29,23 +29,24 @@ export function PriceRangeSlider({
     formatPrice = defaultFormatPrice,
     className,
 }: PriceRangeSliderProps) {
-    const [localValue, setLocalValue] = useState<[number, number]>(
-        value ?? defaultValue ?? [min, max]
+    const [internalValue, setInternalValue] = useState<[number, number]>(
+        defaultValue ?? [min, max]
     );
 
-    useEffect(() => {
-        if (value) {
-            setLocalValue(value);
-        }
-    }, [value]);
+    const currentValue = useMemo(() =>
+        value ?? internalValue,
+        [value, internalValue]
+    );
 
     const handleValueChange = useCallback(
         (newValue: number[]) => {
             const typedValue: [number, number] = [newValue[0], newValue[1]];
-            setLocalValue(typedValue);
+            if (!value) {
+                setInternalValue(typedValue);
+            }
             onValueChange?.(typedValue);
         },
-        [onValueChange]
+        [value, onValueChange]
     );
 
     const handleValueCommit = useCallback(
@@ -60,18 +61,18 @@ export function PriceRangeSlider({
         <div className={cn('space-y-4', className)}>
             <div className="flex items-center justify-between text-sm">
                 <span className="font-medium text-foreground">
-                    {formatPrice(localValue[0])}
+                    {formatPrice(currentValue[0])}
                 </span>
                 <span className="text-muted-foreground">—</span>
                 <span className="font-medium text-foreground">
-                    {formatPrice(localValue[1])}
+                    {formatPrice(currentValue[1])}
                 </span>
             </div>
             <Slider
                 min={min}
                 max={max}
                 step={step}
-                value={localValue}
+                value={currentValue}
                 onValueChange={handleValueChange}
                 onValueCommit={handleValueCommit}
                 className="cursor-pointer"

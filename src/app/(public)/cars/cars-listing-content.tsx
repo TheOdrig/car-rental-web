@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { AlertCircle, RefreshCw, SlidersHorizontal, X } from 'lucide-react';
+import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
 import {
@@ -70,11 +70,13 @@ export function CarsListingContent() {
     } = useFilterStore();
     const { data, isLoading, error, refetch } = useCars(filters, page);
 
-    const cars = data?.content ?? [];
     const totalCars = data?.totalElements ?? 0;
     const totalPages = data?.totalPages ?? 0;
 
-    const sortedCars = useMemo(() => sortCars(cars, sortBy), [cars, sortBy]);
+    const sortedCars = useMemo(() => {
+        const cars = data?.content ?? [];
+        return sortCars(cars, sortBy);
+    }, [data?.content, sortBy]);
 
     const breadcrumbItems = [{ label: 'Cars' }];
 

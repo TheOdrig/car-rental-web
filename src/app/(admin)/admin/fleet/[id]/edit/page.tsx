@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -20,34 +20,31 @@ export default function EditCarPage() {
     const params = useParams();
     const carId = Number(params.id);
 
-    const [formData, setFormData] = useState<CarFormData>(defaultCarFormData);
-    const [errors, setErrors] = useState<Partial<Record<keyof CarFormData, string>>>({});
-    const [isInitialized, setIsInitialized] = useState(false);
-
     const { data: carData, isLoading: isLoadingCar } = useCar(carId);
     const car = carData?.car;
     const updateCar = useUpdateCar();
 
-    useEffect(() => {
-        if (car && !isInitialized) {
-            setFormData({
-                brand: car.brand || '',
-                model: car.model || '',
-                year: car.productionYear || new Date().getFullYear(),
-                licensePlate: car.licensePlate || '',
-                vin: car.vinNumber || '',
-                fuelType: car.fuelType?.toLowerCase() || '',
-                transmissionType: car.transmissionType?.toLowerCase() || '',
-                bodyType: car.bodyType?.toLowerCase() || '',
-                seats: car.seats || 5,
-                color: car.color?.toLowerCase() || '',
-                dailyRate: car.price || 0,
-                weeklyRate: 0,
-                depositAmount: car.damagePrice || 0,
-            });
-            setIsInitialized(true);
-        }
-    }, [car, isInitialized]);
+    const initialFormData = useMemo<CarFormData>(() => {
+        if (!car) return defaultCarFormData;
+        return {
+            brand: car.brand || '',
+            model: car.model || '',
+            year: car.productionYear || new Date().getFullYear(),
+            licensePlate: car.licensePlate || '',
+            vin: car.vinNumber || '',
+            fuelType: car.fuelType?.toLowerCase() || '',
+            transmissionType: car.transmissionType?.toLowerCase() || '',
+            bodyType: car.bodyType?.toLowerCase() || '',
+            seats: car.seats || 5,
+            color: car.color?.toLowerCase() || '',
+            dailyRate: car.price || 0,
+            weeklyRate: 0,
+            depositAmount: car.damagePrice || 0,
+        };
+    }, [car]);
+
+    const [formData, setFormData] = useState<CarFormData>(initialFormData);
+    const [errors, setErrors] = useState<Partial<Record<keyof CarFormData, string>>>({});
 
     const updateField = (field: keyof CarFormData, value: string | number) => {
         setFormData((prev) => ({ ...prev, [field]: value }));
@@ -94,7 +91,7 @@ export default function EditCarPage() {
             <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
                 <h2 className="text-xl font-semibold mb-2">Car not found</h2>
                 <p className="text-muted-foreground mb-4">
-                    The car you're looking for doesn't exist or has been removed.
+                    The car you&apos;re looking for doesn&apos;t exist or has been removed.
                 </p>
                 <Button onClick={() => router.push('/admin/fleet')}>
                     Back to Fleet

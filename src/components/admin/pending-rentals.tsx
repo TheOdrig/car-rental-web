@@ -21,6 +21,7 @@ import {
     XCircle,
 } from 'lucide-react';
 import type { PendingItem } from '@/types';
+import type { ProcessReturnData } from '@/types/admin';
 import {
     ApproveRentalDialog,
     ProcessPickupDialog,
@@ -36,7 +37,7 @@ interface PendingRentalsTableProps {
     onApprove?: (rentalId: number, notes?: string) => void;
     onReject?: (rentalId: number, reason: string) => void;
     onPickup?: (rentalId: number, notes?: string) => void;
-    onReturn?: (rentalId: number, data?: any) => void;
+    onReturn?: (rentalId: number, data?: ProcessReturnData) => void;
     onReportDamage?: (rentalId: number) => void;
     actionInProgress?: number | null;
     className?: string;
@@ -121,7 +122,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         onPickup?.(rentalId, notes);
     };
 
-    const handleReturnConfirm = (rentalId: number, data?: any) => {
+    const handleReturnConfirm = (rentalId: number, data?: ProcessReturnData) => {
         onReturn?.(rentalId, data);
     };
 

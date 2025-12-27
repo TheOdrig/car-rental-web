@@ -8,7 +8,7 @@ interface InputProps extends React.ComponentProps<"input"> {
   success?: string;
   isLoading?: boolean;
   validationState?: ValidationState;
-  wrapperClassName?: string;
+  // wrapperClassName reserved for future use
 }
 
 function Input({
@@ -18,7 +18,6 @@ function Input({
   success,
   isLoading,
   validationState = 'idle',
-  wrapperClassName,
   disabled,
   ...props
 }: InputProps) {
@@ -30,8 +29,9 @@ function Input({
     return validationState;
   }, [disabled, isLoading, error, success, validationState]);
 
-  const borderClasses = getValidationBorderClasses(effectiveState);
-  const ringClasses = getValidationRingClasses(effectiveState);
+  // Validation classes available for future customization
+  // const borderClasses = getValidationBorderClasses(effectiveState);
+  // const ringClasses = getValidationRingClasses(effectiveState);
 
   return (
     <input

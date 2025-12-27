@@ -11,6 +11,7 @@ import type {
     PageResponse,
     RevenueAnalytics,
     AdminAlert,
+    ProcessReturnData,
 } from '@/types';
 
 interface PendingFilters {
@@ -141,14 +142,7 @@ async function processPickup({ rentalId, notes }: { rentalId: number; notes?: st
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
 }
 
-interface ProcessReturnData {
-    notes?: string;
-    condition?: string;
-    damageReported?: boolean;
-    finalMileage?: number;
-}
-
-async function processReturn({ rentalId, data }: { rentalId: number; data?: ProcessReturnData }): Promise<QuickActionResult> {
+async function processReturn({ rentalId, data }: { rentalId: number; data?: string | ProcessReturnData }): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
 }
 

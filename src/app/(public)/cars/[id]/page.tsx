@@ -17,29 +17,32 @@ export default async function CarDetailPage({ params }: PageProps) {
         notFound();
     }
 
+    let car: Car;
+    let calendar: CarAvailabilityCalendar | undefined;
+
     try {
-        const car = await serverGet<Car>(
+        car = await serverGet<Car>(
             endpoints.cars.byId(carId),
             { tags: ['cars', `car-${carId}`] }
-        );
-
-        let calendar: CarAvailabilityCalendar | undefined;
-        try {
-            calendar = await serverGet<CarAvailabilityCalendar>(
-                endpoints.cars.availability.calendar(carId),
-                { tags: [`car-${carId}-calendar`] }
-            );
-        } catch {
-        }
-
-        return (
-            <main className="container mx-auto px-4 py-8">
-                <CarDetail car={car} calendar={calendar} />
-            </main>
         );
     } catch {
         notFound();
     }
+
+    try {
+        calendar = await serverGet<CarAvailabilityCalendar>(
+            endpoints.cars.availability.calendar(carId),
+            { tags: [`car-${carId}-calendar`] }
+        );
+    } catch {
+        // Calendar is optional, continue without it
+    }
+
+    return (
+        <main className="container mx-auto px-4 py-8">
+            <CarDetail car={car} calendar={calendar} />
+        </main>
+    );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
