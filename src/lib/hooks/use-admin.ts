@@ -141,7 +141,14 @@ async function processPickup({ rentalId, notes }: { rentalId: number; notes?: st
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
 }
 
-async function processReturn({ rentalId, data }: { rentalId: number; data?: any }): Promise<QuickActionResult> {
+interface ProcessReturnData {
+    notes?: string;
+    condition?: string;
+    damageReported?: boolean;
+    finalMileage?: number;
+}
+
+async function processReturn({ rentalId, data }: { rentalId: number; data?: ProcessReturnData }): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
 }
 
