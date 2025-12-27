@@ -42,8 +42,8 @@ export default function ProfileSettingsPage() {
                 }}
                 email={user?.email || ''}
                 emailVerified={true}
-                onSubmit={async (_data) => {
-                    logger.log('Submitting profile update');
+                onSubmit={async (data) => {
+                    logger.log('Submitting profile update', data);
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                 }}
             />

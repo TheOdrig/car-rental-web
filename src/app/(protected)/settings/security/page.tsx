@@ -39,8 +39,9 @@ export default function SecuritySettingsPage() {
         resolver: zodResolver(passwordSchema),
     });
 
-    const handlePasswordChange = async (_data: PasswordFormData) => {
+    const handlePasswordChange = async (data: PasswordFormData) => {
         try {
+            void data;
             await new Promise((resolve) => setTimeout(resolve, 1000));
             showToast.success('Password changed successfully');
             reset();
