@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { Download } from 'lucide-react';
+import { logger } from '@/lib/utils/logger';
 import { useMyRentals } from '@/lib/hooks';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -63,7 +64,7 @@ export default function MyRentalsPage() {
                 showToast.warning(`Cancel rental #${rental.id}`);
                 break;
             default:
-                console.log(`Unknown action: ${action}`);
+                logger.warn(`Unknown action: ${action}`);
         }
     }, []);
 
