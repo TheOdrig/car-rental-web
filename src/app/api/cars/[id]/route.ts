@@ -53,9 +53,26 @@ export async function GET(
         }
 
         if (include.includes('similar')) {
+            const similarUrl = new URL(endpoints.cars.availability.similar(carId));
+
+            const startDate = searchParams.get('startDate');
+            const endDate = searchParams.get('endDate');
+
+            if (startDate && endDate) {
+                similarUrl.searchParams.append('startDate', startDate);
+                similarUrl.searchParams.append('endDate', endDate);
+            } else {
+                const today = new Date();
+                const thirtyDaysLater = new Date(today);
+                thirtyDaysLater.setDate(today.getDate() + 30);
+
+                similarUrl.searchParams.append('startDate', today.toISOString().split('T')[0]);
+                similarUrl.searchParams.append('endDate', thirtyDaysLater.toISOString().split('T')[0]);
+            }
+
             try {
                 response.similarCars = await serverGet<SimilarCar[]>(
-                    endpoints.cars.availability.similar(carId),
+                    similarUrl.toString(),
                     { cache: 'no-store' }
                 );
             } catch (similarError) {

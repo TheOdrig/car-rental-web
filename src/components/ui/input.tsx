@@ -1,14 +1,12 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import type { ValidationState } from "@/types/validation"
-import { getValidationBorderClasses, getValidationRingClasses } from "@/lib/utils/validation-ui"
 
 interface InputProps extends React.ComponentProps<"input"> {
   error?: string;
   success?: string;
   isLoading?: boolean;
   validationState?: ValidationState;
-  wrapperClassName?: string;
 }
 
 function Input({
@@ -18,7 +16,6 @@ function Input({
   success,
   isLoading,
   validationState = 'idle',
-  wrapperClassName,
   disabled,
   ...props
 }: InputProps) {
@@ -29,9 +26,6 @@ function Input({
     if (success) return 'valid';
     return validationState;
   }, [disabled, isLoading, error, success, validationState]);
-
-  const borderClasses = getValidationBorderClasses(effectiveState);
-  const ringClasses = getValidationRingClasses(effectiveState);
 
   return (
     <input

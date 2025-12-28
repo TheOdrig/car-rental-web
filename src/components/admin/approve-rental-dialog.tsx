@@ -21,6 +21,7 @@ import {
     Settings2
 } from 'lucide-react';
 import { format } from 'date-fns';
+import Image from 'next/image';
 import type { PendingItem } from '@/types/admin';
 
 interface ApproveRentalDialogProps {
@@ -69,11 +70,15 @@ export function ApproveRentalDialog({
                             </h4>
                             <div className="flex gap-4">
                                 {item.carImage ? (
-                                    <img
-                                        src={item.carImage}
-                                        alt={`${item.carBrand} ${item.carModel}`}
-                                        className="h-20 w-32 object-cover rounded-lg border bg-muted"
-                                    />
+                                    <div className="relative h-20 w-32">
+                                        <Image
+                                            src={item.carImage}
+                                            alt={`${item.carBrand} ${item.carModel}`}
+                                            fill
+                                            className="object-cover rounded-lg border bg-muted"
+                                            sizes="128px"
+                                        />
+                                    </div>
                                 ) : (
                                     <div className="h-20 w-32 rounded-lg border bg-muted flex items-center justify-center">
                                         <Car className="h-8 w-8 text-muted-foreground" />
@@ -112,11 +117,15 @@ export function ApproveRentalDialog({
                             </h4>
                             <div className="flex gap-4">
                                 {item.customerImage ? (
-                                    <img
-                                        src={item.customerImage}
-                                        alt={item.customerName}
-                                        className="h-12 w-12 rounded-full object-cover border"
-                                    />
+                                    <div className="relative h-12 w-12">
+                                        <Image
+                                            src={item.customerImage}
+                                            alt={item.customerName}
+                                            fill
+                                            className="rounded-full object-cover border"
+                                            sizes="48px"
+                                        />
+                                    </div>
                                 ) : (
                                     <div className="h-12 w-12 rounded-full border bg-muted flex items-center justify-center">
                                         <User className="h-6 w-6 text-muted-foreground" />

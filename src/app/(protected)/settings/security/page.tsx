@@ -41,7 +41,7 @@ export default function SecuritySettingsPage() {
 
     const handlePasswordChange = async (data: PasswordFormData) => {
         try {
-            console.log('Changing password:', data);
+            void data;
             await new Promise((resolve) => setTimeout(resolve, 1000));
             showToast.success('Password changed successfully');
             reset();

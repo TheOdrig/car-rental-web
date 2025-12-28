@@ -19,7 +19,7 @@ export default function UserDashboardPage() {
             <div className="mb-8">
                 <h1 className="text-3xl font-bold">Dashboard</h1>
                 <p className="text-muted-foreground mt-1">
-                    Welcome back! Here's an overview of your rentals.
+                    Welcome back! Here&apos;s an overview of your rentals.
                 </p>
             </div>
 

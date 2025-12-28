@@ -22,6 +22,8 @@ const FILTER_LABELS: Record<FilterKey, string> = {
     minPrice: 'Min Price',
     maxPrice: 'Max Price',
     minSeats: 'Seats',
+    minProductionYear: 'Min Year',
+    maxProductionYear: 'Max Year',
     status: 'Status',
 };
 

@@ -252,11 +252,11 @@ export function RevenueChartSkeleton({ className }: RevenueChartSkeletonProps) {
             </CardHeader>
             <CardContent>
                 <div className="h-[200px] flex items-end gap-2 pt-4">
-                    {[...Array(6)].map((_, i) => (
+                    {[40, 70, 55, 85, 60, 75].map((height, i) => (
                         <Skeleton
                             key={i}
                             className="flex-1"
-                            style={{ height: `${Math.random() * 60 + 40}%` }}
+                            style={{ height: `${height}%` }}
                         />
                     ))}
                 </div>

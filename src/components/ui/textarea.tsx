@@ -1,7 +1,6 @@
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import type { ValidationState } from "@/types/validation"
-import { getValidationBorderClasses, getValidationRingClasses } from "@/lib/utils/validation-ui"
 
 interface TextareaProps extends React.ComponentProps<"textarea"> {
   error?: string;

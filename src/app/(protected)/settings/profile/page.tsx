@@ -4,6 +4,7 @@ import { useCurrentUser } from '@/lib/hooks';
 import { ProfilePicture, PersonalDetailsForm } from '@/components/settings';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import { logger } from '@/lib/utils/logger';
 
 export default function ProfileSettingsPage() {
     const { user, isLoading } = useCurrentUser();
@@ -18,7 +19,9 @@ export default function ProfileSettingsPage() {
                 <CardContent className="flex flex-col items-center py-8 sm:flex-row sm:gap-8">
                     <ProfilePicture
                         onImageChange={(file) => {
-                            console.log('Image changed:', file);
+                            if (file) {
+                                logger.log('Image changed:', file.name);
+                            }
                         }}
                     />
                     <div className="mt-4 text-center sm:mt-0 sm:text-left">
@@ -40,7 +43,7 @@ export default function ProfileSettingsPage() {
                 email={user?.email || ''}
                 emailVerified={true}
                 onSubmit={async (data) => {
-                    console.log('Submitting:', data);
+                    logger.log('Submitting profile update', data);
                     await new Promise((resolve) => setTimeout(resolve, 1000));
                 }}
             />

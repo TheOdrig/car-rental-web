@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -21,6 +22,7 @@ import {
     XCircle,
 } from 'lucide-react';
 import type { PendingItem } from '@/types';
+import type { ProcessReturnData } from '@/types/admin';
 import {
     ApproveRentalDialog,
     ProcessPickupDialog,
@@ -36,7 +38,7 @@ interface PendingRentalsTableProps {
     onApprove?: (rentalId: number, notes?: string) => void;
     onReject?: (rentalId: number, reason: string) => void;
     onPickup?: (rentalId: number, notes?: string) => void;
-    onReturn?: (rentalId: number, data?: any) => void;
+    onReturn?: (rentalId: number, data?: ProcessReturnData) => void;
     onReportDamage?: (rentalId: number) => void;
     actionInProgress?: number | null;
     className?: string;
@@ -121,7 +123,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         onPickup?.(rentalId, notes);
     };
 
-    const handleReturnConfirm = (rentalId: number, data?: any) => {
+    const handleReturnConfirm = (rentalId: number, data?: ProcessReturnData) => {
         onReturn?.(rentalId, data);
     };
 
@@ -236,11 +238,15 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 {item.customerImage ? (
-                                                    <img
-                                                        src={item.customerImage}
-                                                        alt={item.customerName}
-                                                        className="h-9 w-9 rounded-full object-cover border bg-muted shadow-sm"
-                                                    />
+                                                    <div className="relative h-9 w-9">
+                                                        <Image
+                                                            src={item.customerImage}
+                                                            alt={item.customerName}
+                                                            fill
+                                                            className="rounded-full object-cover border bg-muted shadow-sm"
+                                                            sizes="36px"
+                                                        />
+                                                    </div>
                                                 ) : (
                                                     <div className="h-9 w-9 rounded-full bg-muted flex items-center justify-center border">
                                                         <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
@@ -257,11 +263,15 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                         <TableCell>
                                             <div className="flex items-center gap-3">
                                                 {item.carImage ? (
-                                                    <img
-                                                        src={item.carImage}
-                                                        alt={`${item.carBrand} ${item.carModel}`}
-                                                        className="h-10 w-16 rounded-lg object-cover border bg-muted shadow-sm"
-                                                    />
+                                                    <div className="relative h-10 w-16">
+                                                        <Image
+                                                            src={item.carImage}
+                                                            alt={`${item.carBrand} ${item.carModel}`}
+                                                            fill
+                                                            className="rounded-lg object-cover border bg-muted shadow-sm"
+                                                            sizes="64px"
+                                                        />
+                                                    </div>
                                                 ) : (
                                                     <div className="h-10 w-16 rounded-lg bg-muted flex items-center justify-center border">
                                                         <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />

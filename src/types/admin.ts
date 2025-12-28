@@ -91,6 +91,13 @@ export interface QuickActionResult {
     updatedSummary?: DailySummary;
 }
 
+export interface ProcessReturnData {
+    notes?: string;
+    condition?: string;
+    damageReported?: boolean;
+    finalMileage?: number;
+}
+
 export interface DailyRevenue {
     date: string;
     revenue: number;

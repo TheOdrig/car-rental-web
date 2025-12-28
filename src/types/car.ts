@@ -179,5 +179,7 @@ export interface CarFilters {
     minPrice?: number;
     maxPrice?: number;
     minSeats?: number;
+    minProductionYear?: number;
+    maxProductionYear?: number;
     status?: CarStatus;
 }
