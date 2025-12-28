@@ -5,14 +5,14 @@ import { clientGet } from '@/lib/api/client';
 
 interface FilterOptions {
     brands: string[];
-    transmissions: string[];
+    transmissionTypes: string[];
     fuelTypes: string[];
     bodyTypes: string[];
 }
 
 const FALLBACK_OPTIONS: FilterOptions = {
     brands: ['Toyota', 'Honda', 'BMW', 'Mercedes', 'Audi', 'Ford', 'Volkswagen'],
-    transmissions: ['Automatic', 'Manual'],
+    transmissionTypes: ['Automatic', 'Manual'],
     fuelTypes: ['Gasoline', 'Diesel', 'Electric', 'Hybrid'],
     bodyTypes: ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Convertible', 'Van'],
 };

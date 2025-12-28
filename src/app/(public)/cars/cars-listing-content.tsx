@@ -74,9 +74,9 @@ export function CarsListingContent() {
     const totalPages = data?.totalPages ?? 0;
 
     const sortedCars = useMemo(() => {
-        const cars = data?.content ?? [];
+        const cars = data?.content ?? data?.cars ?? [];
         return sortCars(cars, sortBy);
-    }, [data?.content, sortBy]);
+    }, [data?.content, data?.cars, sortBy]);
 
     const breadcrumbItems = [{ label: 'Cars' }];
 
@@ -127,6 +127,7 @@ export function CarsListingContent() {
                             <Button
                                 variant="outline"
                                 className="w-full justify-center gap-2"
+                                suppressHydrationWarning
                             >
                                 <SlidersHorizontal className="h-4 w-4" />
                                 Filters

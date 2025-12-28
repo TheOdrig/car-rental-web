@@ -10,8 +10,8 @@ import { BasicInfoSection } from '@/components/admin/car-form/basic-info';
 import { SpecificationsSection } from '@/components/admin/car-form/specifications';
 import { PricingSection } from '@/components/admin/car-form/pricing';
 import { ImagesSection } from '@/components/admin/car-form/images';
-import { CarFormData, defaultCarFormData } from '@/components/admin/car-form/types';
 import { useCreateCar } from '@/lib/hooks/use-admin';
+import { useCarForm } from '@/lib/hooks';
 import { toast } from 'sonner';
 
 interface ImageFile {
@@ -24,32 +24,15 @@ interface ImageFile {
 
 export default function AddCarPage() {
     const router = useRouter();
-    const [formData, setFormData] = useState<CarFormData>(defaultCarFormData);
-    const [errors, setErrors] = useState<Partial<Record<keyof CarFormData, string>>>({});
+    const {
+        formData,
+        errors,
+        updateField,
+        validateForm,
+    } = useCarForm();
+
     const [images, setImages] = useState<ImageFile[]>([]);
-
     const createCar = useCreateCar();
-
-    const updateField = (field: keyof CarFormData, value: string | number) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: undefined }));
-        }
-    };
-
-    const validateForm = (): boolean => {
-        const newErrors: Partial<Record<keyof CarFormData, string>> = {};
-
-        if (!formData.brand.trim()) newErrors.brand = 'Brand is required';
-        if (!formData.model.trim()) newErrors.model = 'Model is required';
-        if (!formData.licensePlate.trim()) newErrors.licensePlate = 'License plate is required';
-        if (!formData.fuelType) newErrors.fuelType = 'Fuel type is required';
-        if (!formData.transmissionType) newErrors.transmissionType = 'Transmission is required';
-        if (formData.dailyRate <= 0) newErrors.dailyRate = 'Daily rate must be greater than 0';
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

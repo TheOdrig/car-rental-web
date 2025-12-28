@@ -27,7 +27,7 @@ interface SortDropdownProps {
 export function SortDropdown({ value, onChange, className }: SortDropdownProps) {
     return (
         <Select value={value} onValueChange={(v) => onChange(v as SortOption)}>
-            <SelectTrigger className={cn('w-[180px]', className)}>
+            <SelectTrigger className={cn('w-[180px]', className)} suppressHydrationWarning>
                 <SelectValue placeholder="Sort by" />
             </SelectTrigger>
             <SelectContent>

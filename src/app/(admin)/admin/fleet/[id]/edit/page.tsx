@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,9 +10,9 @@ import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { BasicInfoSection } from '@/components/admin/car-form/basic-info';
 import { SpecificationsSection } from '@/components/admin/car-form/specifications';
 import { PricingSection } from '@/components/admin/car-form/pricing';
-import { CarFormData, defaultCarFormData } from '@/components/admin/car-form/types';
 import { useUpdateCar } from '@/lib/hooks/use-admin';
 import { useCar } from '@/lib/hooks/use-cars';
+import { useCarForm } from '@/lib/hooks';
 import { toast } from 'sonner';
 
 export default function EditCarPage() {
@@ -24,48 +24,33 @@ export default function EditCarPage() {
     const car = carData?.car;
     const updateCar = useUpdateCar();
 
-    const initialFormData = useMemo<CarFormData>(() => {
-        if (!car) return defaultCarFormData;
-        return {
-            brand: car.brand || '',
-            model: car.model || '',
-            year: car.productionYear || new Date().getFullYear(),
-            licensePlate: car.licensePlate || '',
-            vin: car.vinNumber || '',
-            fuelType: car.fuelType?.toLowerCase() || '',
-            transmissionType: car.transmissionType?.toLowerCase() || '',
-            bodyType: car.bodyType?.toLowerCase() || '',
-            seats: car.seats || 5,
-            color: car.color?.toLowerCase() || '',
-            dailyRate: car.price || 0,
-            weeklyRate: 0,
-            depositAmount: car.damagePrice || 0,
-        };
-    }, [car]);
+    const {
+        formData,
+        setFormData,
+        errors,
+        updateField,
+        validateForm,
+    } = useCarForm();
 
-    const [formData, setFormData] = useState<CarFormData>(initialFormData);
-    const [errors, setErrors] = useState<Partial<Record<keyof CarFormData, string>>>({});
-
-    const updateField = (field: keyof CarFormData, value: string | number) => {
-        setFormData((prev) => ({ ...prev, [field]: value }));
-        if (errors[field]) {
-            setErrors((prev) => ({ ...prev, [field]: undefined }));
+    useEffect(() => {
+        if (car) {
+            setFormData({
+                brand: car.brand || '',
+                model: car.model || '',
+                year: car.productionYear || new Date().getFullYear(),
+                licensePlate: car.licensePlate || '',
+                vin: car.vinNumber || '',
+                fuelType: car.fuelType?.toLowerCase() || '',
+                transmissionType: car.transmissionType?.toLowerCase() || '',
+                bodyType: car.bodyType?.toLowerCase() || '',
+                seats: car.seats || 5,
+                color: car.color?.toLowerCase() || '',
+                dailyRate: car.price || 0,
+                weeklyRate: 0,
+                depositAmount: car.damagePrice || 0,
+            });
         }
-    };
-
-    const validateForm = (): boolean => {
-        const newErrors: Partial<Record<keyof CarFormData, string>> = {};
-
-        if (!formData.brand.trim()) newErrors.brand = 'Brand is required';
-        if (!formData.model.trim()) newErrors.model = 'Model is required';
-        if (!formData.licensePlate.trim()) newErrors.licensePlate = 'License plate is required';
-        if (!formData.fuelType) newErrors.fuelType = 'Fuel type is required';
-        if (!formData.transmissionType) newErrors.transmissionType = 'Transmission is required';
-        if (formData.dailyRate <= 0) newErrors.dailyRate = 'Daily rate must be greater than 0';
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    }, [car, setFormData]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

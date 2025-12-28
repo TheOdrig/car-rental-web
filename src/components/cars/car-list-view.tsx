@@ -15,6 +15,15 @@ interface CarListItemProps {
     className?: string;
 }
 
+function formatPrice(price: number, currency: string): string {
+    return new Intl.NumberFormat('tr-TR', {
+        style: 'currency',
+        currency: currency || 'TRY',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(price);
+}
+
 function getCarDisplayData(car: Car | AvailableCar) {
     const isAvailableCar = 'dailyRate' in car;
 
@@ -113,9 +122,8 @@ export function CarListItem({ car, className }: CarListItemProps) {
                     <div className="flex items-center justify-between pt-4 border-t">
                         <div>
                             <span className="text-2xl font-bold text-primary">
-                                ${data.price}
+                                {formatPrice(data.price, data.currency)}
                             </span>
-                            <span className="text-sm text-muted-foreground">/day</span>
                         </div>
                         <Button asChild>
                             <Link href={`/cars/${data.id}`}>View Details</Link>

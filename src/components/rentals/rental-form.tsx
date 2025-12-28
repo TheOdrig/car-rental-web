@@ -12,6 +12,15 @@ import { useCreateRental } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
 import type { Car as CarType } from '@/types';
 
+function formatPrice(price: number, currency: string): string {
+    return new Intl.NumberFormat('tr-TR', {
+        style: 'currency',
+        currency: currency || 'TRY',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(price);
+}
+
 interface RentalFormProps {
     car: CarType;
     onSuccess?: () => void;
@@ -93,7 +102,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 <div>
                     <p className="font-semibold">{car.brand} {car.model}</p>
                     <p className="text-sm text-muted-foreground">
-                        ${car.price.toFixed(2)} / day
+                        {formatPrice(car.price, car.currencyType)}
                     </p>
                 </div>
             </div>
@@ -182,7 +191,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 <div className="rounded-lg border p-4 space-y-2">
                     <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Daily rate</span>
-                        <span>${car.price.toFixed(2)}</span>
+                        <span>{formatPrice(car.price, car.currencyType)}</span>
                     </div>
                     <div className="flex justify-between text-sm">
                         <span className="text-muted-foreground">Duration</span>
@@ -190,7 +199,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                     </div>
                     <div className="border-t pt-2 flex justify-between font-semibold">
                         <span>Estimated Total</span>
-                        <span>${total.toFixed(2)}</span>
+                        <span>{formatPrice(total, car.currencyType)}</span>
                     </div>
                 </div>
             )}

@@ -11,7 +11,7 @@ export function HomeContent() {
     const { filters } = useFilterStore();
     const { data, isLoading, error, refetch } = useCars(filters);
 
-    const cars = data?.content ?? [];
+    const cars = data?.content ?? data?.cars ?? [];
 
     if (error) {
         return (

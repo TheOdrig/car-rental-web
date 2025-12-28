@@ -2,6 +2,7 @@ export type CurrencyType = 'TRY' | 'USD' | 'EUR' | 'GBP' | 'JPY';
 
 export interface PageResponse<T> {
     content: T[];
+    cars?: T[];
     pageable: {
         pageNumber: number;
         pageSize: number;

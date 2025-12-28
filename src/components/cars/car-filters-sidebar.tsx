@@ -97,7 +97,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             </div>
 
             <div className="space-y-6">
-                <FilterSection title="Price Range">
+                <FilterSection title="Price Range ($/day)">
                     <PriceRangeSlider
                         min={0}
                         max={500}

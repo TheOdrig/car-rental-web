@@ -10,6 +10,16 @@ interface ProtectionExtrasProps {
     selectedAddons: string[];
     onAddonChange: (addonId: string, selected: boolean) => void;
     rentalDays: number;
+    currency?: string;
+}
+
+function formatPrice(price: number, currency: string = 'TRY'): string {
+    return new Intl.NumberFormat('tr-TR', {
+        style: 'currency',
+        currency: currency,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(price);
 }
 
 function getAddonIcon(iconName?: string) {
@@ -91,14 +101,14 @@ export function ProtectionExtras({
                                     </div>
                                     <div className="text-right">
                                         <span className="text-base font-bold text-primary">
-                                            +${addon.pricePerDay}
+                                            +{formatPrice(addon.pricePerDay)}
                                             <span className="text-xs font-normal text-muted-foreground">
                                                 /day
                                             </span>
                                         </span>
                                         {rentalDays > 1 && (
                                             <p className="text-xs text-muted-foreground">
-                                                ${totalCost.toFixed(2)} total
+                                                {formatPrice(totalCost)} total
                                             </p>
                                         )}
                                     </div>

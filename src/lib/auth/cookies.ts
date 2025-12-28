@@ -29,12 +29,13 @@ export async function setAuthTokens(
 ): Promise<void> {
     const cookieStore = await cookies();
 
-    const accessMaxAge = Math.floor(expiresInMs / 1000);
+    const now = Date.now();
+    const accessMaxAge = Math.floor((expiresInMs - now) / 1000);
     const refreshMaxAge = 60 * 60 * 24 * 7;
 
     cookieStore.set(ACCESS_TOKEN_KEY, accessToken, {
         ...COOKIE_OPTIONS,
-        maxAge: accessMaxAge,
+        maxAge: accessMaxAge > 0 ? accessMaxAge : 900,
     });
 
     cookieStore.set(REFRESH_TOKEN_KEY, refreshToken, {

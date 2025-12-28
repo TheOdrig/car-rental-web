@@ -13,6 +13,9 @@ vi.mock('next/navigation', () => ({
 describe('SearchWidget', () => {
     beforeEach(() => {
         mockPush.mockClear();
+        window.HTMLElement.prototype.hasPointerCapture = vi.fn();
+        window.HTMLElement.prototype.setPointerCapture = vi.fn();
+        window.HTMLElement.prototype.releasePointerCapture = vi.fn();
     });
 
     describe('rendering', () => {

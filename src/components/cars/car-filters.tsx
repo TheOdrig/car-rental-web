@@ -66,7 +66,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                     <SelectValue placeholder="Transmission" />
                 </SelectTrigger>
                 <SelectContent>
-                    {options?.transmissions.map((t) => (
+                    {options?.transmissionTypes?.map((t) => (
                         <SelectItem key={t} value={t}>
                             {t}
                         </SelectItem>

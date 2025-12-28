@@ -54,11 +54,11 @@ function getStatusColor(status: RentalStatus): string {
 }
 
 function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('tr-TR', {
         style: 'currency',
-        currency: currency,
+        currency: currency || 'TRY',
         minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
+        maximumFractionDigits: 0,
     }).format(price);
 }
 

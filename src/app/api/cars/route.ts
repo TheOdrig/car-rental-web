@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.cars.active);
+        const backendUrl = new URL(endpoints.cars.search);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });
