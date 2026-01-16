@@ -25,17 +25,31 @@ export async function getRefreshToken(): Promise<string | undefined> {
 export async function setAuthTokens(
     accessToken: string,
     refreshToken: string,
-    expiresInMs: number
+    expiresIn: number
 ): Promise<void> {
     const cookieStore = await cookies();
 
     const now = Date.now();
-    const accessMaxAge = Math.floor((expiresInMs - now) / 1000);
+    let accessMaxAge: number;
+
+    if (expiresIn > 1000000000000) {
+        accessMaxAge = Math.floor((expiresIn - now) / 1000);
+    } else if (expiresIn > 1000000000) {
+        accessMaxAge = Math.floor(expiresIn - (now / 1000));
+    } else {
+        accessMaxAge = expiresIn;
+    }
+
+    if (accessMaxAge <= 0) {
+        console.warn('[Auth] Invalid expiresIn value, defaulting to 15 minutes');
+        accessMaxAge = 900;
+    }
+
     const refreshMaxAge = 60 * 60 * 24 * 7;
 
     cookieStore.set(ACCESS_TOKEN_KEY, accessToken, {
         ...COOKIE_OPTIONS,
-        maxAge: accessMaxAge > 0 ? accessMaxAge : 900,
+        maxAge: accessMaxAge,
     });
 
     cookieStore.set(REFRESH_TOKEN_KEY, refreshToken, {

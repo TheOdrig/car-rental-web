@@ -29,6 +29,7 @@ import {
     ProcessReturnDialog,
     RejectRentalDialog
 } from './index';
+import { safeFormatDate } from '@/lib/utils/format';
 
 
 interface PendingRentalsTableProps {
@@ -50,13 +51,6 @@ interface PendingRentalsSkeletonProps {
 }
 
 
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
-}
 
 function formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
@@ -289,9 +283,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                         </TableCell>
                                         <TableCell>
                                             <div className="text-sm whitespace-nowrap">
-                                                <p>{formatDate(item.startDate)}</p>
+                                                <p>{safeFormatDate(item.startDate)}</p>
                                                 <p className="text-muted-foreground">
-                                                    to {formatDate(item.endDate)}
+                                                    to {safeFormatDate(item.endDate)}
                                                 </p>
                                             </div>
                                         </TableCell>

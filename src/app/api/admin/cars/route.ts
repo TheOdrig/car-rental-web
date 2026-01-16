@@ -1,13 +1,57 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
+import { serverPost, serverGet } from '@/lib/api/server';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
+
+export async function GET(request: NextRequest) {
+    try {
+        const { searchParams } = new URL(request.url);
+        const data = await serverGet(endpoints.admin.cars.list + '?' + searchParams.toString(), {
+            cache: 'no-store',
+        });
+        return NextResponse.json(data);
+    } catch (error) {
+        console.error('[API] GET /api/admin/cars error:', error);
+        return NextResponse.json(
+            { error: 'Failed to fetch cars' },
+            { status: 500 }
+        );
+    }
+}
 
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
+        console.log('[API] POST /api/admin/cars - Received body:', JSON.stringify(body));
 
-        const data = await serverPost(endpoints.admin.cars.create, body, {
+        const backendRequest: any = {
+            brand: body.brand?.replace(/-/g, ' '),
+            model: body.model,
+            productionYear: Number(body.year),
+            licensePlate: body.licensePlate?.replace(/[^A-Z0-9]/gi, '').toUpperCase(),
+            fuelType: body.fuelType,
+            transmissionType: body.transmissionType,
+            bodyType: body.bodyType,
+            seats: Number(body.seats) || 5,
+            color: body.color,
+            price: Number(body.dailyRate),
+            currencyType: 'USD',
+            carStatusType: 'Available',
+            kilometer: 0,
+            doors: 4,
+            isFeatured: false,
+            isTestDriveAvailable: true,
+            rating: 5.0,
+            imageUrl: body.imageUrl || 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1000'
+        };
+
+        if (body.vin && body.vin.length === 17) {
+            backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        }
+
+        console.log('[API] POST /api/admin/cars - Transformed for backend:', JSON.stringify(backendRequest));
+
+        const data = await serverPost(endpoints.admin.cars.create, backendRequest, {
             cache: 'no-store',
         });
 
@@ -23,7 +67,7 @@ export async function POST(request: NextRequest) {
         }
 
         return NextResponse.json(
-            { error: 'Failed to create car' },
+            { error: 'Failed to create car: ' + (error instanceof Error ? error.message : 'Unknown error') },
             { status: 500 }
         );
     }

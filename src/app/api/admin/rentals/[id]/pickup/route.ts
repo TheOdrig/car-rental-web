@@ -18,10 +18,17 @@ export async function POST(
         );
     }
 
+    let body;
+    try {
+        body = await _request.json();
+    } catch {
+        body = undefined;
+    }
+
     try {
         const result = await serverPost<QuickActionResult>(
             endpoints.admin.quickActions.pickup(rentalId),
-            undefined,
+            body,
             { cache: 'no-store' }
         );
 

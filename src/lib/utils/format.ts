@@ -1,3 +1,4 @@
+import { format, isValid, parseISO, formatDistanceToNow } from 'date-fns';
 import type { CurrencyType } from '@/types/common';
 
 export interface FormatCurrencyOptions {
@@ -46,4 +47,36 @@ export function formatDailyPrice(
     currency: CurrencyType | string = 'USD'
 ): string {
     return `${formatCurrency(amount, currency)}/day`;
+}
+
+export function safeFormatDate(
+    date: string | Date | null | undefined,
+    formatStr: string = 'MMM d, yyyy'
+): string {
+    if (!date) return 'N/A';
+
+    const d = typeof date === 'string' ? parseISO(date) : date;
+
+    if (!isValid(d)) return 'N/A';
+
+    return format(d, formatStr);
+}
+
+export function safeFormatDateTime(
+    date: string | Date | null | undefined
+): string {
+    return safeFormatDate(date, "MMM d, yyyy 'at' h:mm a");
+}
+
+export function safeFormatDistanceToNow(
+    date: string | Date | null | undefined,
+    options?: { addSuffix?: boolean }
+): string {
+    if (!date) return 'N/A';
+
+    const d = typeof date === 'string' ? parseISO(date) : date;
+
+    if (!isValid(d)) return 'N/A';
+
+    return formatDistanceToNow(d, options);
 }

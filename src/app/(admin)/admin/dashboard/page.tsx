@@ -183,6 +183,7 @@ export default function AdminDashboardPage() {
                             size="sm"
                             className="hidden md:flex gap-2"
                             aria-label="Export monthly report"
+                            onClick={() => toast.info('Export feature coming soon')}
                         >
                             <Download className="h-4 w-4" aria-hidden="true" />
                             Export Report
@@ -191,9 +192,12 @@ export default function AdminDashboardPage() {
                             size="sm"
                             className="gap-2 shrink-0"
                             aria-label="Add new car to fleet"
+                            asChild
                         >
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            Add New Car
+                            <a href="/admin/fleet/new">
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                Add New Car
+                            </a>
                         </Button>
                         <Button
                             variant="ghost"

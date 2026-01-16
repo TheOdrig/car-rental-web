@@ -8,6 +8,8 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     const cookieStore = await cookies();
     const token = cookieStore.get('access_token')?.value;
 
+    console.log('[Server API] access_token present:', !!token, token ? `(${token.substring(0, 20)}...)` : '');
+
     if (token) {
         return { Authorization: `Bearer ${token}` };
     }

@@ -59,7 +59,7 @@ export function HomeContent() {
                 )}
             </section>
 
-            <Testimonials />
+            {/* <Testimonials /> */}
         </>
     );
 }

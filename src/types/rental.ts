@@ -33,6 +33,8 @@ export interface Rental {
 
     pickupNotes?: string;
     returnNotes?: string;
+    approvalNotes?: string;
+    cancellationReason?: string;
     createTime: string;
     updateTime: string;
 }

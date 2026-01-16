@@ -30,8 +30,16 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://localhost:8082/api/:path*',
+        source: '/api/cars/:path*',
+        destination: 'http://localhost:8082/api/cars/:path*',
+      },
+      {
+        source: '/api/pricing/:path*',
+        destination: 'http://localhost:8082/api/pricing/:path*',
+      },
+      {
+        source: '/api/exchange-rates/:path*',
+        destination: 'http://localhost:8082/api/exchange-rates/:path*',
       },
     ];
   },

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost, serverGet, serverDelete } from '@/lib/api/server';
+import { serverPost, serverGet, serverDelete, serverPut } from '@/lib/api/server';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 
@@ -57,7 +57,32 @@ export async function POST(
 
         const body = await request.json();
 
-        const data = await serverPost(endpoints.admin.cars.update(carId), body, {
+        const backendRequest: any = {
+            brand: body.brand?.replace(/-/g, ' '),
+            model: body.model,
+            productionYear: Number(body.year),
+            licensePlate: body.licensePlate?.replace(/[^A-Z0-9]/gi, '').toUpperCase(),
+            fuelType: body.fuelType,
+            transmissionType: body.transmissionType,
+            bodyType: body.bodyType,
+            seats: Number(body.seats),
+            color: body.color,
+            price: Number(body.dailyRate),
+            currencyType: 'USD',
+            carStatusType: 'Available',
+            kilometer: Number(body.kilometer) || 0,
+            doors: Number(body.doors) || 4,
+            isFeatured: !!body.isFeatured,
+            isTestDriveAvailable: true,
+            rating: Number(body.rating) || 5.0,
+            imageUrl: body.imageUrl || 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1000'
+        };
+
+        if (body.vin && body.vin.length === 17) {
+            backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        }
+
+        const data = await serverPut(endpoints.admin.cars.update(carId), backendRequest, {
             cache: 'no-store',
         });
 

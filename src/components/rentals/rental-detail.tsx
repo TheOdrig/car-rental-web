@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
 import {
     Calendar,
     Clock,
@@ -25,6 +24,7 @@ import {
     Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,13 +61,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function formatDate(dateString: string): string {
-    return format(new Date(dateString), 'EEEE, MMMM d, yyyy');
-}
-
-function formatDateTime(dateString: string): string {
-    return format(new Date(dateString), 'MMM d, yyyy \'at\' h:mm a');
-}
 
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
@@ -139,7 +132,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                         </Badge>
                     </div>
                     <p className="text-muted-foreground">
-                        Booked on {formatDateTime(rental.createTime)}
+                        Booked on {safeFormatDateTime(rental.createTime)}
                     </p>
                 </div>
 
@@ -240,6 +233,43 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                         </CardContent>
                     </Card>
 
+                    {(rental.approvalNotes || rental.cancellationReason || rental.pickupNotes || rental.returnNotes) && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-lg">
+                                    <Edit className="h-5 w-5" />
+                                    Notes
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {rental.approvalNotes && (
+                                    <div className="rounded-lg bg-green-50 dark:bg-green-950 p-3 border border-green-200 dark:border-green-800">
+                                        <p className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">Approval Note</p>
+                                        <p className="text-sm text-green-600 dark:text-green-400">{rental.approvalNotes}</p>
+                                    </div>
+                                )}
+                                {rental.cancellationReason && (
+                                    <div className="rounded-lg bg-red-50 dark:bg-red-950 p-3 border border-red-200 dark:border-red-800">
+                                        <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-1">Cancellation Reason</p>
+                                        <p className="text-sm text-red-600 dark:text-red-400">{rental.cancellationReason}</p>
+                                    </div>
+                                )}
+                                {rental.pickupNotes && (
+                                    <div className="rounded-lg bg-blue-50 dark:bg-blue-950 p-3 border border-blue-200 dark:border-blue-800">
+                                        <p className="text-sm font-medium text-blue-700 dark:text-blue-300 mb-1">Pickup Note</p>
+                                        <p className="text-sm text-blue-600 dark:text-blue-400">{rental.pickupNotes}</p>
+                                    </div>
+                                )}
+                                {rental.returnNotes && (
+                                    <div className="rounded-lg bg-slate-50 dark:bg-slate-900 p-3 border border-slate-200 dark:border-slate-700">
+                                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Return Note</p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">{rental.returnNotes}</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+
                     <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
@@ -251,11 +281,11 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                             <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="rounded-lg bg-muted/50 p-4">
                                     <p className="mb-1 text-sm text-muted-foreground">Pick-up</p>
-                                    <p className="font-semibold">{formatDate(startDate)}</p>
+                                    <p className="font-semibold">{safeFormatDate(startDate, 'EEEE, MMMM d, yyyy')}</p>
                                 </div>
                                 <div className="rounded-lg bg-muted/50 p-4">
                                     <p className="mb-1 text-sm text-muted-foreground">Return</p>
-                                    <p className="font-semibold">{formatDate(endDate)}</p>
+                                    <p className="font-semibold">{safeFormatDate(endDate, 'EEEE, MMMM d, yyyy')}</p>
                                 </div>
                             </div>
                             <div className="mt-4 flex items-center justify-center gap-2 text-muted-foreground">
@@ -330,7 +360,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 </div>
 
                 <div className="space-y-6">
-                    <Card className="sticky top-24">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
                                 <CreditCard className="h-5 w-5" />

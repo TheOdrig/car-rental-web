@@ -19,8 +19,8 @@ import {
     Calendar,
     XCircle
 } from 'lucide-react';
-import { format } from 'date-fns';
 import { cn } from '@/lib/utils';
+import { safeFormatDate } from '@/lib/utils/format';
 import type { PendingItem } from '@/types/admin';
 
 interface RejectRentalDialogProps {
@@ -91,7 +91,7 @@ export function RejectRentalDialog({
                         <div className="flex items-center gap-2 text-xs text-muted-foreground pt-2 border-t border-dashed">
                             <Calendar className="h-3.5 w-3.5" />
                             <span>
-                                {format(new Date(item.startDate), 'MMM d')} - {format(new Date(item.endDate), 'MMM d, yyyy')}
+                                {safeFormatDate(item.startDate, 'MMM d')} - {safeFormatDate(item.endDate, 'MMM d, yyyy')}
                             </span>
                         </div>
                     </div>

@@ -129,7 +129,7 @@ export function BookingSuccess({
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <Button asChild className="flex-1">
-                                <Link href={`/my-rentals/${referenceNumber}`}>
+                                <Link href={`/rentals/${referenceNumber}`}>
                                     View Booking Details
                                 </Link>
                             </Button>

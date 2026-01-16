@@ -98,7 +98,7 @@ export function CheckoutForm({
         return <CheckoutSkeleton />;
     }
 
-    const car = carData?.car;
+    const car = (carData as any)?.car || carData;
 
     if (carError || !car) {
         return (

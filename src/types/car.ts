@@ -146,11 +146,7 @@ export interface DayAvailability {
 export interface CarAvailabilityCalendar {
     carId: number;
     carName: string;
-    month: {
-        year: number;
-        monthValue: number;
-        month: string;
-    };
+    month: string;
     days: DayAvailability[];
     carBlocked: boolean;
     blockReason?: string;

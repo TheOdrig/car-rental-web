@@ -26,15 +26,18 @@ export async function POST(
     }
 
     try {
+        const targetUrl = endpoints.admin.quickActions.reject(rentalId);
+        console.log('[API] Reject rental - calling backend URL:', targetUrl);
+
         const result = await serverPost<QuickActionResult>(
-            endpoints.admin.quickActions.return(rentalId),
+            targetUrl,
             body,
             { cache: 'no-store' }
         );
 
         return NextResponse.json(result);
     } catch (error) {
-        console.error(`[API] POST /api/admin/rentals/${id}/return error:`, error);
+        console.error(`[API] POST /api/admin/rentals/${id}/reject error:`, error);
 
         if (isApiException(error)) {
             return NextResponse.json(
@@ -44,7 +47,7 @@ export async function POST(
         }
 
         return NextResponse.json(
-            { error: 'Failed to record return' },
+            { error: 'Failed to reject rental' },
             { status: 503 }
         );
     }

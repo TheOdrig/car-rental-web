@@ -39,7 +39,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         await setAuthTokens(data.accessToken, data.refreshToken, data.expiresIn);
 
-        return NextResponse.redirect(new URL('/dashboard', request.url));
+        return NextResponse.redirect(new URL('/', request.url));
     } catch (error) {
         console.error('OAuth callback error:', error);
         return NextResponse.redirect(

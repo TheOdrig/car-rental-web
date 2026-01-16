@@ -20,7 +20,7 @@ import {
     Fuel,
     Settings2
 } from 'lucide-react';
-import { format } from 'date-fns';
+import { safeFormatDate } from '@/lib/utils/format';
 import Image from 'next/image';
 import type { PendingItem } from '@/types/admin';
 
@@ -156,14 +156,14 @@ export function ApproveRentalDialog({
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Start Date</p>
                                 <div className="flex items-center gap-2 text-sm font-medium">
                                     <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                    {format(new Date(item.startDate), 'MMM d, yyyy')}
+                                    {safeFormatDate(item.startDate)}
                                 </div>
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">End Date</p>
                                 <div className="flex items-center gap-2 text-sm font-medium">
                                     <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                                    {format(new Date(item.endDate), 'MMM d, yyyy')}
+                                    {safeFormatDate(item.endDate)}
                                 </div>
                             </div>
                             <div className="space-y-1">

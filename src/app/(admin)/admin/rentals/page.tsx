@@ -25,8 +25,7 @@ import {
     useInvalidateAdmin,
 } from '@/lib/hooks/use-admin';
 import type { ProcessReturnData } from '@/types';
-import { toast } from 'sonner';
-
+import { showToast } from '@/lib/utils/toast';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -55,16 +54,14 @@ export default function AdminRentalsPage() {
 
     const handleRefresh = () => {
         void invalidate.pending();
-        toast.success('Rentals refreshed');
+        showToast.success('Rentals refreshed');
     };
 
     const handleApprove = async (rentalId: number, notes?: string) => {
         setActionInProgress(rentalId);
         try {
             await approveMutation.mutateAsync({ rentalId, notes });
-            toast.success('Rental approved successfully');
         } catch {
-            toast.error('Failed to approve rental');
         } finally {
             setActionInProgress(null);
         }
@@ -74,9 +71,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await rejectMutation.mutateAsync({ rentalId, reason });
-            toast.success('Rental rejected successfully');
         } catch {
-            toast.error('Failed to reject rental');
         } finally {
             setActionInProgress(null);
         }
@@ -86,9 +81,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await pickupMutation.mutateAsync({ rentalId, notes });
-            toast.success('Pickup processed successfully');
         } catch {
-            toast.error('Failed to process pickup');
         } finally {
             setActionInProgress(null);
         }
@@ -98,9 +91,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await returnMutation.mutateAsync({ rentalId, data });
-            toast.success('Return processed successfully');
         } catch {
-            toast.error('Failed to process return');
         } finally {
             setActionInProgress(null);
         }

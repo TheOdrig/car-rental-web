@@ -3,7 +3,6 @@
 import { memo, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { format } from 'date-fns';
 import {
     Calendar,
     Car,
@@ -15,6 +14,7 @@ import {
     Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { safeFormatDate } from '@/lib/utils/format';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,9 +62,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function formatDate(dateString: string): string {
-    return format(new Date(dateString), 'MMM d, yyyy');
-}
 
 function getFuelIcon(fuelType?: string): ReactNode {
     if (!fuelType) return null;
@@ -176,9 +173,9 @@ export const RentalCard = memo(function RentalCard({
                             <div className="mb-4 grid gap-2 text-sm">
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Calendar className="h-4 w-4 shrink-0" />
-                                    <span>{formatDate(startDate)}</span>
+                                    <span>{safeFormatDate(startDate)}</span>
                                     <ArrowRight className="h-3 w-3" />
-                                    <span>{formatDate(endDate)}</span>
+                                    <span>{safeFormatDate(endDate)}</span>
                                     <Badge variant="outline" className="ml-1 text-xs">
                                         {days} {days === 1 ? 'day' : 'days'}
                                     </Badge>
@@ -257,9 +254,9 @@ export const RentalCard = memo(function RentalCard({
 
                         <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="h-4 w-4 shrink-0" />
-                            <span>{formatDate(startDate)}</span>
+                            <span>{safeFormatDate(startDate)}</span>
                             <ArrowRight className="h-3 w-3" />
-                            <span>{formatDate(endDate)}</span>
+                            <span>{safeFormatDate(endDate)}</span>
                         </div>
 
                         <div className="flex items-center gap-4 text-sm">
