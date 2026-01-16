@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,6 +14,8 @@ import { useUpdateCar } from '@/lib/hooks/use-admin';
 import { useCar } from '@/lib/hooks/use-cars';
 import { useCarForm } from '@/lib/hooks';
 import { toast } from 'sonner';
+import type { CarFormData } from '@/components/admin/car-form/types';
+import type { Car } from '@/types';
 
 export default function EditCarPage() {
     const router = useRouter();
@@ -22,50 +24,6 @@ export default function EditCarPage() {
 
     const { data: carData, isLoading: isLoadingCar } = useCar(carId);
     const car = carData?.car;
-    const updateCar = useUpdateCar();
-
-    const {
-        formData,
-        setFormData,
-        errors,
-        updateField,
-        validateForm,
-    } = useCarForm();
-
-    useEffect(() => {
-        if (car) {
-            setFormData({
-                brand: car.brand || '',
-                model: car.model || '',
-                year: car.productionYear || new Date().getFullYear(),
-                licensePlate: car.licensePlate || '',
-                vin: car.vinNumber || '',
-                fuelType: car.fuelType?.toLowerCase() || '',
-                transmissionType: car.transmissionType?.toLowerCase() || '',
-                bodyType: car.bodyType?.toLowerCase() || '',
-                seats: car.seats || 5,
-                color: car.color?.toLowerCase() || '',
-                dailyRate: car.price || 0,
-                weeklyRate: 0,
-                depositAmount: car.damagePrice || 0,
-            });
-        }
-    }, [car, setFormData]);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!validateForm()) {
-            toast.error('Please fix the errors before submitting');
-            return;
-        }
-
-        updateCar.mutate({ id: carId, ...formData }, {
-            onSuccess: () => {
-                router.push('/admin/fleet');
-            },
-        });
-    };
 
     if (isLoadingCar) {
         return <EditCarPageSkeleton />;
@@ -84,6 +42,64 @@ export default function EditCarPage() {
             </div>
         );
     }
+
+    const initialFormData: CarFormData = {
+        brand: car.brand || '',
+        model: car.model || '',
+        year: car.productionYear || new Date().getFullYear(),
+        licensePlate: car.licensePlate || '',
+        vin: car.vinNumber || '',
+        fuelType: car.fuelType?.toLowerCase() || '',
+        transmissionType: car.transmissionType?.toLowerCase() || '',
+        bodyType: car.bodyType?.toLowerCase() || '',
+        seats: car.seats || 5,
+        color: car.color?.toLowerCase() || '',
+        dailyRate: car.price || 0,
+        weeklyRate: 0,
+        depositAmount: car.damagePrice || 0,
+    };
+
+    return (
+        <EditCarForm
+            key={car.id}
+            car={car}
+            carId={carId}
+            initialFormData={initialFormData}
+        />
+    );
+}
+
+interface EditCarFormProps {
+    car: Car;
+    carId: number;
+    initialFormData: CarFormData;
+}
+
+function EditCarForm({ car, carId, initialFormData }: EditCarFormProps) {
+    const router = useRouter();
+    const updateCar = useUpdateCar();
+
+    const {
+        formData,
+        errors,
+        updateField,
+        validateForm,
+    } = useCarForm(initialFormData);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            toast.error('Please fix the errors before submitting');
+            return;
+        }
+
+        updateCar.mutate({ id: carId, ...formData }, {
+            onSuccess: () => {
+                router.push('/admin/fleet');
+            },
+        });
+    };
 
     return (
         <div className="space-y-6">
