@@ -101,7 +101,7 @@ describe('checkout validation schemas', () => {
         it('should validate correct payment details', () => {
             const data = {
                 cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/25',
+                expiryDate: '12/29',
                 cvc: '123',
                 cardholderName: 'JOHN DOE',
             };
@@ -149,7 +149,7 @@ describe('checkout validation schemas', () => {
         it('should reject too short CVC', () => {
             const data = {
                 cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/25',
+                expiryDate: '12/29',
                 cvc: '12',
                 cardholderName: 'JOHN DOE',
             };
@@ -161,7 +161,7 @@ describe('checkout validation schemas', () => {
         it('should reject CVC with letters', () => {
             const data = {
                 cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/25',
+                expiryDate: '12/29',
                 cvc: '12A',
                 cardholderName: 'JOHN DOE',
             };
@@ -173,7 +173,7 @@ describe('checkout validation schemas', () => {
         it('should reject empty cardholder name', () => {
             const data = {
                 cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/25',
+                expiryDate: '12/29',
                 cvc: '123',
                 cardholderName: '',
             };

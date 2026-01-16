@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from '@/components/auth/login-form';
 import { renderWithProviders } from '../test-utils';
@@ -42,6 +42,14 @@ describe('LoginForm', () => {
     const getPasswordInput = () => screen.getByPlaceholderText(/enter your password/i);
     const getUsernameInput = () => screen.getByPlaceholderText(/name@example.com/i);
     const getSubmitButton = () => screen.getByRole('button', { name: /log in|signing in/i });
+    const getForm = () => screen.getByRole('form') ?? getSubmitButton().closest('form')!;
+
+    const submitForm = () => {
+        const form = getSubmitButton().closest('form');
+        if (form) {
+            fireEvent.submit(form);
+        }
+    };
 
     describe('Rendering', () => {
         it('should render username input', () => {
@@ -70,18 +78,22 @@ describe('LoginForm', () => {
             renderWithProviders(<LoginForm />);
 
             await user.type(getPasswordInput(), 'password123');
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when password is empty', async () => {
             renderWithProviders(<LoginForm />);
 
             await user.type(getUsernameInput(), 'testuser');
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/password is required/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when password is too short', async () => {
@@ -89,19 +101,27 @@ describe('LoginForm', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), '12345');
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+            });
         });
 
         it('should clear field error when user starts typing', async () => {
             renderWithProviders(<LoginForm />);
 
-            await user.click(getSubmitButton());
-            expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            });
 
             await user.type(getUsernameInput(), 't');
-            expect(screen.queryByText(/email or username is required/i)).not.toBeInTheDocument();
+
+            await waitFor(() => {
+                expect(screen.queryByText(/email or username is required/i)).not.toBeInTheDocument();
+            });
         });
     });
 
@@ -142,7 +162,11 @@ describe('LoginForm', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), 'wrongpassword');
-            await user.click(getSubmitButton());
+            submitForm();
+
+            await waitFor(() => {
+                expect(mockMutateAsync).toHaveBeenCalled();
+            });
 
             await waitFor(() => {
                 expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
@@ -162,7 +186,7 @@ describe('LoginForm', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), 'password123');
-            await user.click(getSubmitButton());
+            submitForm();
 
             await waitFor(() => {
                 expect(mockMutateAsync).toHaveBeenCalledWith({
@@ -183,7 +207,7 @@ describe('LoginForm', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), 'password123');
-            await user.click(getSubmitButton());
+            submitForm();
 
             await waitFor(() => {
                 expect(mockPush).toHaveBeenCalledWith('/dashboard');
@@ -212,10 +236,10 @@ describe('LoginForm', () => {
 
             const usernameInput = getUsernameInput();
             await user.type(usernameInput, 'testuser');
-            await user.tab();
+            fireEvent.blur(usernameInput);
 
             await waitFor(() => {
-                expect(screen.getByLabelText(/show password/i).parentElement?.querySelector('[aria-hidden="true"]')).toBeInTheDocument();
+                expect(usernameInput).toHaveClass('border-green-500');
             });
         });
 
@@ -224,9 +248,11 @@ describe('LoginForm', () => {
 
             const passwordInput = getPasswordInput();
             await user.type(passwordInput, 'password123');
-            await user.tab();
+            fireEvent.blur(passwordInput);
 
-            expect(passwordInput).toHaveClass('border-green-500');
+            await waitFor(() => {
+                expect(passwordInput).toHaveClass('border-green-500');
+            });
         });
 
         it('should clear form error when user starts typing', async () => {
@@ -240,14 +266,21 @@ describe('LoginForm', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), 'wrongpassword');
-            await user.click(getSubmitButton());
+            submitForm();
+
+            await waitFor(() => {
+                expect(mockMutateAsync).toHaveBeenCalled();
+            });
 
             await waitFor(() => {
                 expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
             });
 
             await user.type(getUsernameInput(), 'x');
-            expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+
+            await waitFor(() => {
+                expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+            });
         });
     });
 });

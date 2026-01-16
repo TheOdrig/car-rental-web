@@ -15,20 +15,23 @@ export default async function CarDetailPage({ params }: PageProps) {
         notFound();
     }
 
+    let car;
+    let calendar;
+
     try {
-        const [car, calendar] = await Promise.all([
+        [car, calendar] = await Promise.all([
             getCar(carId),
             getCarCalendar(carId),
         ]);
-
-        return (
-            <main className="container mx-auto px-4 py-8">
-                <CarDetail car={car} calendar={calendar} />
-            </main>
-        );
     } catch {
         notFound();
     }
+
+    return (
+        <main className="container mx-auto px-4 py-8">
+            <CarDetail car={car} calendar={calendar} />
+        </main>
+    );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -39,14 +42,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         return { title: 'Car Not Found' };
     }
 
-    try {
-        const car = await getCar(carId);
+    let car;
 
-        return {
-            title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
-            description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
-        };
+    try {
+        car = await getCar(carId);
     } catch {
         return { title: 'Car Not Found' };
     }
+
+    return {
+        title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
+        description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
+    };
 }

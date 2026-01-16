@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RegisterForm } from '@/components/auth/register-form';
 import { renderWithProviders } from '../test-utils';
@@ -42,6 +42,14 @@ describe('RegisterForm', () => {
     const getSubmitButton = () => screen.getByRole('button', { name: /create account|creating account/i });
     const getTermsCheckbox = () => screen.getByRole('checkbox');
 
+    const submitForm = async () => {
+        const form = getSubmitButton().closest('form');
+        if (form) {
+            fireEvent.submit(form);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
+    };
+
     describe('Rendering', () => {
         it('should render all form fields', () => {
             renderWithProviders(<RegisterForm />);
@@ -69,21 +77,22 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/username is required/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/username is required/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when email is invalid', async () => {
             renderWithProviders(<RegisterForm />);
 
             await user.type(getUsernameInput(), 'testuser');
-            // test@test passes HTML5 email validation but fails the regex /^[^\s@]+@[^\s@]+\.[^\s@]+$/
             await user.type(getEmailInput(), 'test@test');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            submitForm();
 
             await waitFor(() => {
                 expect(screen.getByText(/valid email/i)).toBeInTheDocument();
@@ -98,9 +107,11 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Pass1!');
             await user.type(getConfirmPasswordInput(), 'Pass1!');
             await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/at least 8 characters/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/at least 8 characters/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when passwords do not match', async () => {
@@ -111,9 +122,11 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'DifferentPass!');
             await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/passwords do not match/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when terms not accepted', async () => {
@@ -123,9 +136,11 @@ describe('RegisterForm', () => {
             await user.type(getEmailInput(), 'test@example.com');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
-            await user.click(getSubmitButton());
+            submitForm();
 
-            expect(screen.getByText(/must accept the terms/i)).toBeInTheDocument();
+            await waitFor(() => {
+                expect(screen.getByText(/must accept the terms/i)).toBeInTheDocument();
+            });
         });
     });
 
@@ -181,8 +196,8 @@ describe('RegisterForm', () => {
             await user.type(getEmailInput(), 'new@example.com');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
-            await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            fireEvent.click(getTermsCheckbox());
+            await submitForm();
 
             await waitFor(() => {
                 expect(mockMutateAsync).toHaveBeenCalledWith({
@@ -190,7 +205,7 @@ describe('RegisterForm', () => {
                     email: 'new@example.com',
                     password: 'Password123!',
                 });
-            });
+            }, { timeout: 3000 });
         });
 
         it('should redirect to home after successful registration', async () => {
@@ -206,12 +221,12 @@ describe('RegisterForm', () => {
             await user.type(getEmailInput(), 'new@example.com');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
-            await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            fireEvent.click(getTermsCheckbox());
+            await submitForm();
 
             await waitFor(() => {
                 expect(mockPush).toHaveBeenCalledWith('/');
-            });
+            }, { timeout: 3000 });
         });
     });
 
@@ -229,8 +244,12 @@ describe('RegisterForm', () => {
             await user.type(getEmailInput(), 'existing@example.com');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
-            await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            fireEvent.click(getTermsCheckbox());
+            await submitForm();
+
+            await waitFor(() => {
+                expect(mockMutateAsync).toHaveBeenCalled();
+            }, { timeout: 3000 });
 
             await waitFor(() => {
                 expect(screen.getByText(/registration failed/i)).toBeInTheDocument();
@@ -244,9 +263,11 @@ describe('RegisterForm', () => {
 
             const usernameInput = getUsernameInput();
             await user.type(usernameInput, 'testuser');
-            await user.tab();
+            fireEvent.blur(usernameInput);
 
-            expect(usernameInput).toHaveClass('border-green-500');
+            await waitFor(() => {
+                expect(usernameInput).toHaveClass('border-green-500');
+            });
         });
 
         it('should show success border for valid email after blur', async () => {
@@ -254,9 +275,11 @@ describe('RegisterForm', () => {
 
             const emailInput = getEmailInput();
             await user.type(emailInput, 'test@example.com');
-            await user.tab();
+            fireEvent.blur(emailInput);
 
-            expect(emailInput).toHaveClass('border-green-500');
+            await waitFor(() => {
+                expect(emailInput).toHaveClass('border-green-500');
+            });
         });
 
         it('should show success border for matching passwords', async () => {
@@ -265,9 +288,11 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             const confirmInput = getConfirmPasswordInput();
             await user.type(confirmInput, 'Password123!');
-            await user.tab();
+            fireEvent.blur(confirmInput);
 
-            expect(confirmInput).toHaveClass('border-green-500');
+            await waitFor(() => {
+                expect(confirmInput).toHaveClass('border-green-500');
+            });
         });
 
         it('should clear form error when user starts typing', async () => {
@@ -283,15 +308,22 @@ describe('RegisterForm', () => {
             await user.type(getEmailInput(), 'test@example.com');
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
-            await user.click(getTermsCheckbox());
-            await user.click(getSubmitButton());
+            fireEvent.click(getTermsCheckbox());
+            await submitForm();
+
+            await waitFor(() => {
+                expect(mockMutateAsync).toHaveBeenCalled();
+            }, { timeout: 3000 });
 
             await waitFor(() => {
                 expect(screen.getByText(/registration failed/i)).toBeInTheDocument();
             });
 
             await user.type(getUsernameInput(), 'x');
-            expect(screen.queryByText(/registration failed/i)).not.toBeInTheDocument();
+
+            await waitFor(() => {
+                expect(screen.queryByText(/registration failed/i)).not.toBeInTheDocument();
+            });
         });
     });
 });

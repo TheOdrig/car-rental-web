@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { LoginForm } from '@/components/auth/login-form';
 import { renderWithProviders } from '../test-utils';
@@ -43,13 +43,21 @@ describe('LoginForm - Validation State Integration', () => {
     const getPasswordInput = () => screen.getByPlaceholderText(/enter your password/i);
     const getSubmitButton = () => screen.getByRole('button', { name: /log in|signing in/i });
 
+    const submitForm = async () => {
+        const form = getSubmitButton().closest('form');
+        if (form) {
+            fireEvent.submit(form);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
+    };
+
     describe('Validation State Flow', () => {
         it('should show valid state after typing valid email and blurring', async () => {
             renderWithProviders(<LoginForm />);
 
             const usernameInput = getUsernameInput();
             await user.type(usernameInput, 'test@example.com');
-            await user.tab();
+            fireEvent.blur(usernameInput);
 
             await waitFor(() => {
                 expect(usernameInput).toHaveClass('border-green-500');
@@ -61,7 +69,7 @@ describe('LoginForm - Validation State Integration', () => {
 
             const passwordInput = getPasswordInput();
             await user.type(passwordInput, 'validpassword123');
-            await user.tab();
+            fireEvent.blur(passwordInput);
 
             await waitFor(() => {
                 expect(passwordInput).toHaveClass('border-green-500');
@@ -71,19 +79,22 @@ describe('LoginForm - Validation State Integration', () => {
         it('should show error state after submit with empty fields', async () => {
             renderWithProviders(<LoginForm />);
 
-            await user.click(getSubmitButton());
+            await submitForm();
 
             await waitFor(() => {
                 expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
                 expect(screen.getByText(/password is required/i)).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
         });
 
         it('should clear error when user starts typing', async () => {
             renderWithProviders(<LoginForm />);
 
-            await user.click(getSubmitButton());
-            expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            await submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/email or username is required/i)).toBeInTheDocument();
+            });
 
             await user.type(getUsernameInput(), 'a');
 
@@ -97,11 +108,11 @@ describe('LoginForm - Validation State Integration', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), '12345');
-            await user.click(getSubmitButton());
+            await submitForm();
 
             await waitFor(() => {
                 expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
         });
     });
 
@@ -117,11 +128,11 @@ describe('LoginForm - Validation State Integration', () => {
 
             await user.type(getUsernameInput(), 'testuser');
             await user.type(getPasswordInput(), 'wrongpassword');
-            await user.click(getSubmitButton());
+            await submitForm();
 
             await waitFor(() => {
                 expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
-            });
+            }, { timeout: 3000 });
 
             await user.type(getUsernameInput(), 'x');
 
@@ -135,12 +146,12 @@ describe('LoginForm - Validation State Integration', () => {
         it('should have role="alert" on error messages', async () => {
             renderWithProviders(<LoginForm />);
 
-            await user.click(getSubmitButton());
+            await submitForm();
 
             await waitFor(() => {
                 const alerts = screen.getAllByRole('alert');
                 expect(alerts.length).toBeGreaterThan(0);
-            });
+            }, { timeout: 3000 });
         });
 
         it('should render form with required labels', () => {

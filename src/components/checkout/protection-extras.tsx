@@ -3,6 +3,7 @@
 import { Shield, Navigation, Baby, Users } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+import { formatCurrency, formatCurrencyWithDecimals } from '@/lib/utils/format';
 import type { Addon } from '@/types';
 
 interface ProtectionExtrasProps {
@@ -11,15 +12,6 @@ interface ProtectionExtrasProps {
     onAddonChange: (addonId: string, selected: boolean) => void;
     rentalDays: number;
     currency?: string;
-}
-
-function formatPrice(price: number, currency: string = 'TRY'): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
 }
 
 function getAddonIcon(iconName?: string) {
@@ -43,6 +35,7 @@ export function ProtectionExtras({
     selectedAddons,
     onAddonChange,
     rentalDays,
+    currency = 'USD',
 }: ProtectionExtrasProps) {
     return (
         <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
@@ -101,14 +94,14 @@ export function ProtectionExtras({
                                     </div>
                                     <div className="text-right">
                                         <span className="text-base font-bold text-primary">
-                                            +{formatPrice(addon.pricePerDay)}
+                                            +{formatCurrency(addon.pricePerDay, currency)}
                                             <span className="text-xs font-normal text-muted-foreground">
                                                 /day
                                             </span>
                                         </span>
                                         {rentalDays > 1 && (
                                             <p className="text-xs text-muted-foreground">
-                                                {formatPrice(totalCost)} total
+                                                {formatCurrencyWithDecimals(totalCost, currency)} total
                                             </p>
                                         )}
                                     </div>

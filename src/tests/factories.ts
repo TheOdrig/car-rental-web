@@ -190,7 +190,7 @@ export function createMockCheckoutFormData(overrides?: Partial<CheckoutFormData>
         email: 'john.doe@example.com',
         phone: '+1 555 123 4567',
         cardNumber: '4111 1111 1111 1111',
-        expiryDate: '12/25',
+        expiryDate: '12/29',
         cvc: '123',
         cardholderName: 'JOHN DOE',
         addons: [],

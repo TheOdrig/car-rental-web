@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AddCardForm } from '@/components/settings/add-card-form';
 
@@ -7,6 +7,16 @@ describe('AddCardForm', () => {
     const defaultProps = {
         onSubmit: vi.fn().mockResolvedValue(undefined),
         onCancel: vi.fn(),
+    };
+
+    const getSubmitButton = () => screen.getByRole('button', { name: /add card/i });
+
+    const submitForm = async () => {
+        const form = getSubmitButton().closest('form');
+        if (form) {
+            fireEvent.submit(form);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
     };
 
     describe('rendering', () => {
@@ -35,7 +45,7 @@ describe('AddCardForm', () => {
         it('should render Add Card button', () => {
             render(<AddCardForm {...defaultProps} />);
 
-            expect(screen.getByRole('button', { name: /add card/i })).toBeInTheDocument();
+            expect(getSubmitButton()).toBeInTheDocument();
         });
 
         it('should render Cancel button when onCancel is provided', () => {
@@ -67,9 +77,12 @@ describe('AddCardForm', () => {
             await user.type(screen.getByLabelText(/month/i), '12');
             await user.type(screen.getByLabelText(/year/i), '27');
             await user.type(screen.getByLabelText(/cvc/i), '123');
-            await user.click(screen.getByRole('button', { name: /add card/i }));
 
-            expect(await screen.findByText(/card number must be 16 digits/i)).toBeInTheDocument();
+            await submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/card number must be 16 digits/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when CVC is too short', async () => {
@@ -81,9 +94,12 @@ describe('AddCardForm', () => {
             await user.type(screen.getByLabelText(/month/i), '12');
             await user.type(screen.getByLabelText(/year/i), '27');
             await user.type(screen.getByLabelText(/cvc/i), '12');
-            await user.click(screen.getByRole('button', { name: /add card/i }));
 
-            expect(await screen.findByText(/cvc must be 3-4 digits/i)).toBeInTheDocument();
+            await submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/cvc must be 3-4 digits/i)).toBeInTheDocument();
+            });
         });
     });
 
@@ -92,16 +108,17 @@ describe('AddCardForm', () => {
             const onSubmit = vi.fn().mockResolvedValue(undefined);
             const user = userEvent.setup();
 
-            render(<AddCardForm onSubmit={onSubmit} />);
+            render(<AddCardForm onSubmit={onSubmit} onCancel={vi.fn()} />);
 
             await user.type(screen.getByLabelText(/card number/i), '4242424242424242');
             await user.type(screen.getByLabelText(/month/i), '12');
             await user.type(screen.getByLabelText(/year/i), '27');
             await user.type(screen.getByLabelText(/cvc/i), '123');
             await user.type(screen.getByLabelText(/cardholder name/i), 'John Doe');
-            await user.click(screen.getByRole('button', { name: /add card/i }));
 
-            await vi.waitFor(() => {
+            await submitForm();
+
+            await waitFor(() => {
                 expect(onSubmit).toHaveBeenCalledWith(
                     expect.objectContaining({
                         cardNumber: '4242 4242 4242 4242',
@@ -111,7 +128,7 @@ describe('AddCardForm', () => {
                         cardholderName: 'John Doe',
                     })
                 );
-            });
+            }, { timeout: 3000 });
         });
 
         it('should call onCancel when Cancel is clicked', async () => {

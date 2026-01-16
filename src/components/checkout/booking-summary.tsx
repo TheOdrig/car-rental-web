@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { Lock, ArrowRight, Phone, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { formatCurrencyWithDecimals, formatCurrency } from '@/lib/utils/format';
 import type { Car, PriceBreakdown } from '@/types';
 
 interface BookingSummaryProps {
@@ -15,13 +16,6 @@ interface BookingSummaryProps {
     priceBreakdown: PriceBreakdown;
     isSubmitting: boolean;
     isFormValid: boolean;
-}
-
-function formatCurrency(amount: number, currency: string = 'USD'): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency,
-    }).format(amount);
 }
 
 export function BookingSummary({

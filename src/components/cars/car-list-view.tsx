@@ -8,20 +8,12 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { formatCurrency } from '@/lib/utils/format';
 import type { Car, AvailableCar } from '@/types';
 
 interface CarListItemProps {
     car: Car | AvailableCar;
     className?: string;
-}
-
-function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
 }
 
 function getCarDisplayData(car: Car | AvailableCar) {
@@ -122,7 +114,10 @@ export function CarListItem({ car, className }: CarListItemProps) {
                     <div className="flex items-center justify-between pt-4 border-t">
                         <div>
                             <span className="text-2xl font-bold text-primary">
-                                {formatPrice(data.price, data.currency)}
+                                {formatCurrency(data.price, data.currency)}
+                                <span className="text-sm font-normal text-muted-foreground ml-1">
+                                    /day
+                                </span>
                             </span>
                         </div>
                         <Button asChild>
