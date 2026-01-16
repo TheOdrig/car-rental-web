@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { serverGet } from '@/lib/api/server';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
+import { carIdSchema, validateParams } from '@/lib/validations/api-params';
 import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/types';
 
 
@@ -10,14 +11,16 @@ export async function GET(
     { params }: { params: Promise<{ id: string }> }
 ) {
     const { id } = await params;
-    const carId = parseInt(id, 10);
 
-    if (isNaN(carId)) {
+    const validation = validateParams(carIdSchema, id);
+    if (!validation.success) {
         return NextResponse.json(
-            { error: 'Invalid car ID' },
+            { error: validation.error },
             { status: 400 }
         );
     }
+
+    const carId = validation.data;
 
     try {
         const { searchParams } = new URL(request.url);
