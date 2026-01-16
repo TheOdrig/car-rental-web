@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { verifyToken, type TokenPayload } from '@/lib/auth/jwt-verifier';
 
 const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback'];
 const AUTH_ROUTES = ['/login', '/register', '/callback'];
@@ -23,31 +24,13 @@ function isProtectedRoute(pathname: string): boolean {
     return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
 }
 
-interface JwtPayload {
-    sub: string;
-    userId: number;
-    roles: string[];
-    exp: number;
+function redirectToLogin(request: NextRequest, pathname: string): NextResponse {
+    const loginUrl = new URL('/login', request.url);
+    loginUrl.searchParams.set('callbackUrl', pathname);
+    return NextResponse.redirect(loginUrl);
 }
 
-function decodeToken(token: string): JwtPayload | null {
-    try {
-        const parts = token.split('.');
-        if (parts.length !== 3) return null;
-
-        const payload = JSON.parse(atob(parts[1]));
-        return payload as JwtPayload;
-    } catch {
-        return null;
-    }
-}
-
-function isTokenExpired(payload: JwtPayload): boolean {
-    const now = Math.floor(Date.now() / 1000);
-    return payload.exp < now;
-}
-
-export function proxy(request: NextRequest) {
+export async function proxy(request: NextRequest): Promise<NextResponse> {
     const { pathname } = request.nextUrl;
     const token = request.cookies.get('access_token')?.value;
 
@@ -55,8 +38,17 @@ export function proxy(request: NextRequest) {
         return NextResponse.next();
     }
 
-    const payload = token ? decodeToken(token) : null;
-    const isAuthenticated = payload && !isTokenExpired(payload);
+    let payload: TokenPayload | null = null;
+    let isAuthenticated = false;
+
+    if (token) {
+        const result = await verifyToken(token);
+        if (result.valid && result.payload) {
+            payload = result.payload;
+            isAuthenticated = true;
+        }
+    }
+
     const isAdmin = payload?.roles?.includes('ADMIN') ?? false;
 
     if (isAuthRoute(pathname) && isAuthenticated) {
@@ -65,9 +57,7 @@ export function proxy(request: NextRequest) {
 
     if (isAdminRoute(pathname)) {
         if (!isAuthenticated) {
-            const loginUrl = new URL('/login', request.url);
-            loginUrl.searchParams.set('callbackUrl', pathname);
-            return NextResponse.redirect(loginUrl);
+            return redirectToLogin(request, pathname);
         }
 
         if (!isAdmin) {
@@ -79,9 +69,7 @@ export function proxy(request: NextRequest) {
 
     if (isProtectedRoute(pathname) || !isPublicRoute(pathname)) {
         if (!isAuthenticated) {
-            const loginUrl = new URL('/login', request.url);
-            loginUrl.searchParams.set('callbackUrl', pathname);
-            return NextResponse.redirect(loginUrl);
+            return redirectToLogin(request, pathname);
         }
     }
 
@@ -93,3 +81,4 @@ export const config = {
         '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
     ],
 };
+
