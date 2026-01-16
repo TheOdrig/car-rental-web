@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
+import { getCar, getCarCalendar } from '@/lib/api/cached-fetchers';
 import { CarDetail } from '@/components/cars';
-import type { Car, CarAvailabilityCalendar } from '@/types';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -17,32 +15,20 @@ export default async function CarDetailPage({ params }: PageProps) {
         notFound();
     }
 
-    let car: Car;
-    let calendar: CarAvailabilityCalendar | undefined;
-
     try {
-        car = await serverGet<Car>(
-            endpoints.cars.byId(carId),
-            { tags: ['cars', `car-${carId}`] }
+        const [car, calendar] = await Promise.all([
+            getCar(carId),
+            getCarCalendar(carId),
+        ]);
+
+        return (
+            <main className="container mx-auto px-4 py-8">
+                <CarDetail car={car} calendar={calendar} />
+            </main>
         );
     } catch {
         notFound();
     }
-
-    try {
-        calendar = await serverGet<CarAvailabilityCalendar>(
-            endpoints.cars.availability.calendar(carId),
-            { tags: [`car-${carId}-calendar`] }
-        );
-    } catch {
-        // Calendar is optional, continue without it
-    }
-
-    return (
-        <main className="container mx-auto px-4 py-8">
-            <CarDetail car={car} calendar={calendar} />
-        </main>
-    );
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -54,10 +40,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     }
 
     try {
-        const car = await serverGet<Car>(
-            endpoints.cars.byId(carId),
-            { tags: ['cars', `car-${carId}`] }
-        );
+        const car = await getCar(carId);
 
         return {
             title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
