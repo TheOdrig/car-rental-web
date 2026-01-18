@@ -91,6 +91,7 @@ function ActionButtons({
                     key={action.action}
                     variant={action.variant}
                     size="sm"
+                    className="cursor-pointer"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -135,7 +136,7 @@ export const RentalCard = memo(function RentalCard({
                     <div className="flex flex-col md:flex-row">
                         <div className="relative h-48 w-full md:h-auto md:w-80 shrink-0">
                             <Image
-                                src={carSummary.thumbnailUrl || '/images/car-placeholder.jpg'}
+                                src={carSummary.thumbnailUrl || '/images/car-placeholder.svg'}
                                 alt={`${carSummary.brand} ${carSummary.model}`}
                                 fill
                                 className={cn(
@@ -164,7 +165,11 @@ export const RentalCard = memo(function RentalCard({
                                 </div>
                                 <Badge
                                     variant={getStatusBadgeVariant(status)}
-                                    className={cn('shrink-0 border', getStatusColor(status))}
+                                    className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }}
                                 >
                                     {status}
                                 </Badge>
@@ -201,7 +206,7 @@ export const RentalCard = memo(function RentalCard({
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl font-bold text-primary">
+                                    <span className="text-xl font-bold text-slate-900 dark:text-white">
                                         {formatPrice(totalPrice, currency)}
                                     </span>
                                     <Badge variant="outline" className="text-xs">
@@ -266,7 +271,7 @@ export const RentalCard = memo(function RentalCard({
                                     {days} {days === 1 ? 'day' : 'days'}
                                 </span>
                             </div>
-                            <span className="font-semibold text-primary">
+                            <span className="font-semibold text-slate-900 dark:text-white">
                                 {formatPrice(totalPrice, currency)}
                             </span>
                         </div>
@@ -274,7 +279,11 @@ export const RentalCard = memo(function RentalCard({
 
                     <Badge
                         variant={getStatusBadgeVariant(status)}
-                        className={cn('shrink-0 border', getStatusColor(status))}
+                        className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
                     >
                         {status}
                     </Badge>

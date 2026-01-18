@@ -71,7 +71,7 @@ export const endpoints = {
         penaltyWaive: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/waive`,
         penaltyHistory: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/history`,
         cars: {
-            list: `${API_BASE_URL}/api/admin/cars`,
+            list: `${API_BASE_URL}/api/cars`,
             create: `${API_BASE_URL}/api/cars`,
             byId: (id: number) => `${API_BASE_URL}/api/cars/${id}`,
             update: (id: number) => `${API_BASE_URL}/api/cars/${id}`,

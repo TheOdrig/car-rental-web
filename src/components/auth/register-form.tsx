@@ -251,7 +251,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                         {showPassword ? (
@@ -289,7 +289,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-10 flex items-center px-2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-10 flex items-center px-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                         aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                     >
                         {showConfirmPassword ? (
@@ -317,7 +317,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     aria-describedby={errors.terms ? 'terms-error' : undefined}
                 />
                 <div className="text-sm">
-                    <label htmlFor="terms" className="text-foreground">
+                    <label htmlFor="terms" className="text-slate-900 dark:text-slate-100">
                         I agree to the{' '}
                         <Link href="/terms" className="text-primary hover:underline">
                             Terms of Service
@@ -351,7 +351,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             </Button>
 
             <div className="text-center">
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-slate-600 dark:text-slate-400">
                     Already have an account?{' '}
                     <Link href="/login" className="font-bold text-primary hover:underline">
                         Log In

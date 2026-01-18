@@ -8,6 +8,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { showToast } from '@/lib/utils/toast';
+import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
 
 type VerificationStatus = 'none' | 'pending' | 'verified' | 'rejected';
 
@@ -97,6 +98,10 @@ export default function DocumentsSettingsPage() {
 
     return (
         <div className="space-y-6">
+            <ComingSoonBanner
+                title="Document Verification Coming Soon"
+                description="Document upload and verification features are currently under development. Uploaded documents will not be processed until this feature is fully implemented."
+            />
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">

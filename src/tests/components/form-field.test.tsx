@@ -157,7 +157,7 @@ describe('FormField', () => {
                 </FormField>
             );
             const label = screen.getByText('Email');
-            expect(label).toHaveClass('text-muted-foreground');
+            expect(label).toHaveClass('text-slate-600');
             expect(label).toHaveClass('cursor-not-allowed');
         });
     });

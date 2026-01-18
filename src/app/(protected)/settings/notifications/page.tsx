@@ -5,6 +5,7 @@ import { Bell, Mail, Smartphone, MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { showToast } from '@/lib/utils/toast';
+import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
 
 interface NotificationSetting {
     id: string;
@@ -120,6 +121,10 @@ export default function NotificationsSettingsPage() {
 
     return (
         <div className="space-y-6">
+            <ComingSoonBanner
+                title="Notification Preferences Coming Soon"
+                description="Notification settings are currently stored locally and will not persist. Full notification management will be available in a future update."
+            />
             {categories.map((category) => {
                 const Icon = category.icon;
 

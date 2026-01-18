@@ -18,13 +18,13 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
     return (
         <nav
             aria-label="Breadcrumb"
-            className={cn('flex items-center text-sm text-muted-foreground', className)}
+            className={cn('flex items-center text-sm text-slate-600 dark:text-slate-400', className)}
         >
             <ol className="flex items-center gap-1.5">
                 <li>
                     <Link
                         href="/"
-                        className="flex items-center gap-1 hover:text-foreground transition-colors"
+                        className="flex items-center gap-1 hover:text-slate-900 dark:hover:text-white transition-colors"
                         aria-label="Home"
                     >
                         <Home className="h-4 w-4" />
@@ -41,7 +41,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                             {isLast || !item.href ? (
                                 <span
                                     className={cn(
-                                        isLast && 'text-foreground font-medium'
+                                        isLast && 'text-slate-900 dark:text-white font-medium'
                                     )}
                                     aria-current={isLast ? 'page' : undefined}
                                 >
@@ -50,7 +50,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                             ) : (
                                 <Link
                                     href={item.href}
-                                    className="hover:text-foreground transition-colors"
+                                    className="hover:text-slate-900 dark:hover:text-white transition-colors"
                                 >
                                     {item.label}
                                 </Link>
@@ -62,3 +62,4 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
         </nav>
     );
 }
+

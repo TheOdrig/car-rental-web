@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPatch } from '@/lib/api/server';
+import { routePatch } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 
@@ -20,9 +20,12 @@ export async function POST(
 
         const body = await request.json();
 
-        const data = await serverPatch(endpoints.admin.cars.updateStatus(carId), {
-            status: body.status,
-            reason: body.reason || 'Status updated from admin panel'
+        const carStatusType = body.status.charAt(0).toUpperCase() + body.status.slice(1).toLowerCase();
+
+        const data = await routePatch(endpoints.admin.cars.updateStatus(carId), {
+            carStatusType: carStatusType,
+            reason: body.reason || 'Status updated from admin panel',
+            notes: body.notes
         }, {
             cache: 'no-store',
         });

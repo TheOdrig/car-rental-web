@@ -84,9 +84,9 @@ export function CarGridEmpty({
 }: EmptyStateProps) {
     return (
         <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-            <div className="rounded-full bg-muted p-6 mb-6">
+            <div className="rounded-full bg-slate-100 dark:bg-slate-800 p-6 mb-6">
                 <svg
-                    className="h-12 w-12 text-muted-foreground"
+                    className="h-12 w-12 text-slate-500 dark:text-slate-400"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -101,7 +101,7 @@ export function CarGridEmpty({
                 </svg>
             </div>
             <h3 className="text-xl font-semibold mb-2">{title}</h3>
-            <p className="text-muted-foreground max-w-sm mb-6">{description}</p>
+            <p className="text-slate-600 dark:text-slate-400 max-w-sm mb-6">{description}</p>
             {action}
         </div>
     );

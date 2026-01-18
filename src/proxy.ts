@@ -38,14 +38,20 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.next();
     }
 
-    let payload: TokenPayload | null = null;
-    let isAuthenticated = false;
+    
+    
+    const hasAccessToken = !!token;
+    const hasRefreshToken = !!request.cookies.get('refresh_token')?.value;
 
-    if (token) {
+    let payload: TokenPayload | null = null;
+    const isAuthenticated = hasAccessToken || hasRefreshToken;
+
+    
+    
+    if (token && isAdminRoute(pathname)) {
         const result = await verifyToken(token);
         if (result.valid && result.payload) {
             payload = result.payload;
-            isAuthenticated = true;
         }
     }
 
@@ -60,7 +66,9 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
             return redirectToLogin(request, pathname);
         }
 
-        if (!isAdmin) {
+        
+        
+        if (!isAdmin && !hasRefreshToken) {
             return NextResponse.redirect(new URL('/forbidden', request.url));
         }
 

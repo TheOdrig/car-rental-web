@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { PendingRentalsTable } from '@/components/admin';
+import { Breadcrumb } from '@/components/layout/breadcrumb';
 import {
     usePendingApprovals,
     usePendingPickups,
@@ -108,6 +109,12 @@ export default function AdminRentalsPage() {
 
     return (
         <div className="space-y-6">
+            <Breadcrumb
+                items={[
+                    { label: 'Dashboard', href: '/admin/dashboard' },
+                    { label: 'Rental Management' },
+                ]}
+            />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Rental Management</h1>

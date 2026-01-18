@@ -25,9 +25,34 @@ export function validatePasswordMatch(password: string, confirmPassword: string)
 }
 
 export function calculatePasswordStrength(password: string): PasswordStrength {
-  if (!password || password.length < MIN_PASSWORD_LENGTH) {
+  if (!password) {
     return 'weak';
   }
+
+  if (password.length < MIN_PASSWORD_LENGTH) {
+    return 'weak';
+  }
+
+  const commonPasswords = [
+    'password', 'password1', 'password123',
+    '12345678', '123456789', '1234567890',
+    'qwerty', 'qwertyui', 'qwertyuiop',
+    'abcdefgh', 'abcd1234', 'admin123',
+    'letmein', 'welcome', 'monkey', 'dragon',
+    'master', 'login', 'abc123', 'iloveyou',
+  ];
+
+  const lowerPassword = password.toLowerCase();
+  if (commonPasswords.includes(lowerPassword)) {
+    return 'weak';
+  }
+
+  const hasSequentialNumbers = /(?:012|123|234|345|456|567|678|789|890|987|876|765|654|543|432|321|210)/.test(password);
+  const hasSequentialLetters = /(?:abc|bcd|cde|def|efg|fgh|ghi|hij|ijk|jkl|klm|lmn|mno|nop|opq|pqr|qrs|rst|stu|tuv|uvw|vwx|wxy|xyz)/i.test(password);
+
+  const hasRepeatedChars = /(.)\1{2,}/.test(password);
+
+  const hasKeyboardPattern = /(?:qwerty|asdfgh|zxcvbn|qazwsx|1qaz|2wsx)/i.test(password);
 
   const hasUppercase = /[A-Z]/.test(password);
   const hasLowercase = /[a-z]/.test(password);
@@ -36,14 +61,25 @@ export function calculatePasswordStrength(password: string): PasswordStrength {
 
   const typesCount = [hasUppercase, hasLowercase, hasNumbers, hasSpecialChars].filter(Boolean).length;
 
+  const hasWeakPattern = hasSequentialNumbers || hasSequentialLetters || hasRepeatedChars || hasKeyboardPattern;
+
   if (typesCount <= 1) {
+    return 'weak';
+  }
+
+  if (hasWeakPattern) {
     return 'fair';
   }
-  
-  if (typesCount === 2 || typesCount === 3) {
-    return 'good';
+  const isLong = password.length >= 12;
+
+  if (typesCount === 2) {
+    return isLong ? 'good' : 'fair';
   }
-  
+
+  if (typesCount === 3) {
+    return isLong ? 'strong' : 'good';
+  }
+
   return 'strong';
 }
 

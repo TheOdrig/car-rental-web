@@ -10,7 +10,6 @@ import {
 import { format, addMonths, subMonths, startOfMonth, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RentalForm } from '@/components/rentals';
@@ -37,13 +36,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function getStatusColor(status: string): string {
-    switch (status) {
-        case 'Available': return 'bg-green-500';
-        case 'Unavailable': return 'bg-red-500';
-        default: return 'bg-gray-300';
-    }
-}
 
 export function CarDetail({ car, calendar, showRentalForm = true, className }: CarDetailProps) {
     const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -72,12 +64,6 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                         className="object-cover"
                         priority
                     />
-                    <Badge
-                        className="absolute top-4 right-4"
-                        variant={isAvailable ? 'default' : 'secondary'}
-                    >
-                        {car.carStatusType}
-                    </Badge>
                 </div>
 
                 {calendar && (
@@ -101,7 +87,7 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-primary">
+                    <span className="text-4xl font-bold text-slate-900 dark:text-slate-100">
                         {formatPrice(car.price, car.currencyType)}
                     </span>
                     <span className="text-muted-foreground">/day</span>
@@ -229,7 +215,7 @@ function AvailabilityCalendar({ initialCalendar, carId }: { initialCalendar: Car
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <div className="flex flex-col">
-                    <span className="text-sm font-semibold text-foreground">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
                     <div className="flex items-center gap-3 mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
@@ -297,7 +283,9 @@ function AvailabilityCalendar({ initialCalendar, carId }: { initialCalendar: Car
                                 key={index}
                                 className={cn(
                                     'aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs transition-colors',
-                                    day.status === 'Available' ? 'bg-green-500/10 text-green-700 hover:bg-green-500/20' : 'bg-red-500/10 text-red-700'
+                                    day.status === 'Available'
+                                        ? 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20'
+                                        : 'bg-red-500/10 text-red-700 dark:text-red-400'
                                 )}
                                 title={`${day.date}: ${day.status}`}
                             >

@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
+import { routeGet } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 import type { FleetStatus } from '@/types';
 
 export async function GET() {
     try {
-        const data = await serverGet<FleetStatus>(endpoints.admin.dashboard.fleet, {
+        const data = await routeGet<FleetStatus>(endpoints.admin.dashboard.fleet, {
             cache: 'no-store',
             tags: ['admin', 'fleet'],
         });

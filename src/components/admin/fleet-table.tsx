@@ -1,11 +1,11 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, useState } from 'react';
 import Image from 'next/image';
-import { MoreHorizontal, Edit, RefreshCcw, Car } from 'lucide-react';
+import Link from 'next/link';
+import { MoreHorizontal, Edit, RefreshCcw, Car, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import {
     Table,
     TableBody,
@@ -22,260 +22,359 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import type { Car as CarType, CarStatus } from '@/types';
 
-type CarStatus = 'available' | 'rented' | 'maintenance' | 'damaged';
-
-interface FleetCar {
-    id: number;
-    brand: string;
-    model: string;
-    year: number;
-    licensePlate: string;
-    status: CarStatus;
-    location: string;
-    imageUrl?: string;
-    fuelType: string;
-    lastService?: string;
-}
-
-interface FleetTableProps {
-    searchQuery?: string;
-    statusFilter?: string;
-    brandFilter?: string;
-    isLoading?: boolean;
-    className?: string;
-}
-
-const mockCars: FleetCar[] = [
-    {
-        id: 1,
-        brand: 'Toyota',
-        model: 'Camry',
-        year: 2023,
-        licensePlate: 'ABC-1234',
-        status: 'available',
-        location: 'Downtown Lot A',
-        fuelType: 'Hybrid',
-    },
-    {
-        id: 2,
-        brand: 'BMW',
-        model: '3 Series',
-        year: 2022,
-        licensePlate: 'XYZ-5678',
-        status: 'rented',
-        location: 'Customer: John D.',
-        fuelType: 'Gasoline',
-    },
-    {
-        id: 3,
-        brand: 'Tesla',
-        model: 'Model 3',
-        year: 2024,
-        licensePlate: 'EV-9012',
-        status: 'maintenance',
-        location: 'Service Center',
-        fuelType: 'Electric',
-        lastService: '2024-01-15',
-    },
-    {
-        id: 4,
-        brand: 'Mercedes',
-        model: 'C-Class',
-        year: 2023,
-        licensePlate: 'LUX-3456',
-        status: 'damaged',
-        location: 'Repair Shop',
-        fuelType: 'Diesel',
-    },
-];
-
-const statusConfig: Record<CarStatus, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
-    available: {
+const statusConfig: Record<CarStatus, { label: string; dotColor: string; textColor: string }> = {
+    Available: {
         label: 'Available',
-        variant: 'default',
-        className: 'bg-green-500 hover:bg-green-600 animate-pulse',
+        dotColor: 'bg-emerald-500',
+        textColor: 'text-emerald-700 dark:text-emerald-400',
     },
-    rented: {
-        label: 'On Road',
-        variant: 'secondary',
-        className: 'bg-blue-500 hover:bg-blue-600 text-white',
+    Rented: {
+        label: 'Rented',
+        dotColor: 'bg-violet-500',
+        textColor: 'text-violet-700 dark:text-violet-400',
     },
-    maintenance: {
+    Sold: {
+        label: 'Sold',
+        dotColor: 'bg-slate-500',
+        textColor: 'text-slate-700 dark:text-slate-400',
+    },
+    Reserved: {
+        label: 'Reserved',
+        dotColor: 'bg-amber-500',
+        textColor: 'text-amber-700 dark:text-amber-400',
+    },
+    Maintenance: {
         label: 'Maintenance',
-        variant: 'outline',
-        className: 'border-amber-500 text-amber-600 bg-amber-50 dark:bg-amber-950/20',
+        dotColor: 'bg-orange-500',
+        textColor: 'text-orange-700 dark:text-orange-400',
     },
-    damaged: {
+    Damaged: {
         label: 'Damaged',
-        variant: 'destructive',
-        className: '',
+        dotColor: 'bg-rose-500',
+        textColor: 'text-rose-700 dark:text-rose-400',
+    },
+    Inspection: {
+        label: 'Inspection',
+        dotColor: 'bg-cyan-500',
+        textColor: 'text-cyan-700 dark:text-cyan-400',
     },
 };
 
+const statusOptions: { value: CarStatus; label: string }[] = [
+    { value: 'Available', label: 'Available' },
+    { value: 'Rented', label: 'Rented' },
+    { value: 'Reserved', label: 'Reserved' },
+    { value: 'Maintenance', label: 'Maintenance' },
+    { value: 'Damaged', label: 'Damaged' },
+    { value: 'Inspection', label: 'Inspection' },
+];
+
+interface FleetTableProps {
+    cars: CarType[];
+    totalCars: number;
+    isLoading?: boolean;
+    className?: string;
+    onDeleteCar: (carId: number) => void;
+    onUpdateStatus: (carId: number, status: CarStatus) => void;
+    isDeleting?: boolean;
+    isUpdatingStatus?: boolean;
+}
+
 export const FleetTable = memo(function FleetTable({
-    searchQuery = '',
-    statusFilter = 'all',
-    brandFilter = 'all',
+    cars,
+    totalCars,
     isLoading = false,
     className,
+    onDeleteCar,
+    onUpdateStatus,
+    isDeleting = false,
+    isUpdatingStatus = false,
 }: FleetTableProps) {
-    const filteredCars = mockCars.filter((car) => {
-        const matchesSearch =
-            searchQuery === '' ||
-            `${car.brand} ${car.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            car.licensePlate.toLowerCase().includes(searchQuery.toLowerCase());
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [statusDialogOpen, setStatusDialogOpen] = useState(false);
+    const [selectedCar, setSelectedCar] = useState<CarType | null>(null);
+    const [newStatus, setNewStatus] = useState<CarStatus | null>(null);
 
-        const matchesStatus =
-            statusFilter === 'all' || car.status === statusFilter;
+    const handleDeleteClick = (car: CarType) => {
+        setSelectedCar(car);
+        setDeleteDialogOpen(true);
+    };
 
-        const matchesBrand =
-            brandFilter === 'all' || car.brand.toLowerCase() === brandFilter.toLowerCase();
+    const handleDeleteConfirm = () => {
+        if (selectedCar) {
+            onDeleteCar(selectedCar.id);
+            setDeleteDialogOpen(false);
+            setSelectedCar(null);
+        }
+    };
 
-        return matchesSearch && matchesStatus && matchesBrand;
-    });
+    const handleStatusClick = (car: CarType) => {
+        setSelectedCar(car);
+        setNewStatus(car.carStatusType);
+        setStatusDialogOpen(true);
+    };
+
+    const handleStatusConfirm = () => {
+        if (selectedCar && newStatus && newStatus !== selectedCar.carStatusType) {
+            onUpdateStatus(selectedCar.id, newStatus);
+            setStatusDialogOpen(false);
+            setSelectedCar(null);
+            setNewStatus(null);
+        }
+    };
 
     if (isLoading) {
         return <FleetTableSkeleton className={className} />;
     }
 
     return (
-        <Card className={className}>
-            <CardHeader className="pb-3">
-                <div className="flex items-center justify-between">
-                    <CardTitle className="text-lg">Fleet Inventory</CardTitle>
-                    <span className="text-sm text-muted-foreground">
-                        Showing {filteredCars.length} of {mockCars.length} vehicles
-                    </span>
-                </div>
-            </CardHeader>
-            <CardContent>
-                <div className="overflow-x-auto">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Car Details</TableHead>
-                                <TableHead>License Plate</TableHead>
-                                <TableHead>Status</TableHead>
-                                <TableHead>Location</TableHead>
-                                <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {filteredCars.length === 0 ? (
-                                <TableRow>
-                                    <TableCell colSpan={5} className="h-32 text-center">
-                                        <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                            <Car className="h-8 w-8 opacity-50" />
-                                            <p>No vehicles found matching your criteria</p>
-                                        </div>
-                                    </TableCell>
+        <>
+            <Card className={cn(
+                "rounded-3xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-lg",
+                className
+            )}>
+                <CardHeader className="pb-3">
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="text-lg text-gray-900 dark:text-white">Fleet Inventory</CardTitle>
+                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                            Showing {cars.length} of {totalCars} vehicles
+                        </span>
+                    </div>
+                </CardHeader>
+                <CardContent>
+                    <div className="overflow-x-auto">
+                        <Table>
+                            <TableHeader>
+                                <TableRow className="border-b border-slate-200 dark:border-slate-700">
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Car Details</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">License Plate</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Status</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Price/Day</TableHead>
+                                    <TableHead className="text-right text-slate-600 dark:text-slate-300 font-semibold">Actions</TableHead>
                                 </TableRow>
-                            ) : (
-                                filteredCars.map((car) => (
-                                    <TableRow key={car.id} className="group">
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                {car.imageUrl ? (
-                                                    <Image
-                                                        src={car.imageUrl}
-                                                        alt={`${car.brand} ${car.model}`}
-                                                        width={64}
-                                                        height={40}
-                                                        className="h-10 w-16 rounded-lg object-cover border bg-muted"
-                                                    />
-                                                ) : (
-                                                    <div className="h-10 w-16 rounded-lg bg-muted flex items-center justify-center border">
-                                                        <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
-                                                    </div>
-                                                )}
-                                                <div>
-                                                    <p className="font-semibold">
-                                                        {car.brand} {car.model}
-                                                    </p>
-                                                    <p className="text-xs text-muted-foreground">
-                                                        {car.year} • {car.fuelType}
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <code className="font-mono text-sm bg-muted px-2 py-1 rounded">
-                                                {car.licensePlate}
-                                            </code>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge className={cn(statusConfig[car.status].className)}>
-                                                {statusConfig[car.status].label}
-                                            </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-sm text-muted-foreground">
-                                            {car.location}
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                            <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="h-8 w-8 p-0"
-                                                    aria-label={`Edit ${car.brand} ${car.model}`}
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <DropdownMenu>
-                                                    <DropdownMenuTrigger asChild>
-                                                        <Button
-                                                            variant="ghost"
-                                                            size="sm"
-                                                            className="h-8 w-8 p-0"
-                                                            aria-label={`More actions for ${car.brand} ${car.model}`}
-                                                        >
-                                                            <MoreHorizontal className="h-4 w-4" />
-                                                        </Button>
-                                                    </DropdownMenuTrigger>
-                                                    <DropdownMenuContent align="end">
-                                                        <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem>
-                                                            <Edit className="h-4 w-4 mr-2" />
-                                                            Edit Details
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuItem>
-                                                            <RefreshCcw className="h-4 w-4 mr-2" />
-                                                            Change Status
-                                                        </DropdownMenuItem>
-                                                        <DropdownMenuSeparator />
-                                                        <DropdownMenuItem className="text-destructive">
-                                                            Remove from Fleet
-                                                        </DropdownMenuItem>
-                                                    </DropdownMenuContent>
-                                                </DropdownMenu>
+                            </TableHeader>
+                            <TableBody>
+                                {cars.length === 0 ? (
+                                    <TableRow>
+                                        <TableCell colSpan={5} className="h-32 text-center">
+                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
+                                                <Car className="h-8 w-8 opacity-50" />
+                                                <p>No vehicles found matching your criteria</p>
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                ))
-                            )}
-                        </TableBody>
-                    </Table>
-                </div>
-
-                <div className="flex items-center justify-between pt-4 border-t mt-4">
-                    <p className="text-sm text-muted-foreground">
-                        Showing 1-{filteredCars.length} of {mockCars.length} results
-                    </p>
-                    <div className="flex gap-1">
-                        <Button variant="outline" size="sm" disabled>
-                            Previous
-                        </Button>
-                        <Button variant="outline" size="sm" disabled>
-                            Next
-                        </Button>
+                                ) : (
+                                    cars.map((car) => (
+                                        <TableRow key={car.id} className="group">
+                                            <TableCell>
+                                                <div className="flex items-center gap-3">
+                                                    {car.imageUrl ? (
+                                                        <Image
+                                                            src={car.imageUrl}
+                                                            alt={`${car.brand} ${car.model}`}
+                                                            width={64}
+                                                            height={40}
+                                                            className="h-10 w-16 rounded-lg object-cover border bg-muted"
+                                                        />
+                                                    ) : (
+                                                        <div className="h-10 w-16 rounded-lg bg-muted flex items-center justify-center border">
+                                                            <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                                                        </div>
+                                                    )}
+                                                    <div>
+                                                        <p className="font-semibold">
+                                                            {car.brand} {car.model}
+                                                        </p>
+                                                        <p className="text-xs text-muted-foreground">
+                                                            {car.productionYear} • {car.fuelType || 'N/A'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <code className="font-mono text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
+                                                    {car.licensePlate}
+                                                </code>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div
+                                                    className={cn(
+                                                        "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium",
+                                                        "backdrop-blur-md bg-white/80 dark:bg-slate-800/80",
+                                                        "border border-slate-200/50 dark:border-slate-700/50 shadow-sm",
+                                                        statusConfig[car.carStatusType]?.textColor
+                                                    )}
+                                                >
+                                                    <span className={cn(
+                                                        "w-2 h-2 rounded-full mr-2",
+                                                        statusConfig[car.carStatusType]?.dotColor
+                                                    )} />
+                                                    {statusConfig[car.carStatusType]?.label || car.carStatusType}
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-sm font-medium">
+                                                ${car.price?.toFixed(2) || '0.00'}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="h-8 w-8 p-0"
+                                                        aria-label={`Edit ${car.brand} ${car.model}`}
+                                                        asChild
+                                                    >
+                                                        <Link href={`/admin/fleet/${car.id}/edit`}>
+                                                            <Edit className="h-4 w-4" />
+                                                        </Link>
+                                                    </Button>
+                                                    <DropdownMenu>
+                                                        <DropdownMenuTrigger asChild>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                className="h-8 w-8 p-0"
+                                                                aria-label={`More actions for ${car.brand} ${car.model}`}
+                                                            >
+                                                                <MoreHorizontal className="h-4 w-4" />
+                                                            </Button>
+                                                        </DropdownMenuTrigger>
+                                                        <DropdownMenuContent align="end">
+                                                            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem asChild>
+                                                                <Link href={`/admin/fleet/${car.id}/edit`}>
+                                                                    <Edit className="h-4 w-4 mr-2" />
+                                                                    Edit Details
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem onClick={() => handleStatusClick(car)}>
+                                                                <RefreshCcw className="h-4 w-4 mr-2" />
+                                                                Change Status
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuSeparator />
+                                                            <DropdownMenuItem
+                                                                className="text-destructive"
+                                                                onClick={() => handleDeleteClick(car)}
+                                                            >
+                                                                <Trash2 className="h-4 w-4 mr-2" />
+                                                                Remove from Fleet
+                                                            </DropdownMenuItem>
+                                                        </DropdownMenuContent>
+                                                    </DropdownMenu>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
+                                )}
+                            </TableBody>
+                        </Table>
                     </div>
-                </div>
-            </CardContent>
-        </Card>
+
+                    <div className="flex items-center justify-between pt-4 border-t mt-4">
+                        <p className="text-sm text-muted-foreground">
+                            Showing 1-{cars.length} of {totalCars} results
+                        </p>
+                        <div className="flex gap-1">
+                            <Button variant="outline" size="sm" disabled>
+                                Previous
+                            </Button>
+                            <Button variant="outline" size="sm" disabled>
+                                Next
+                            </Button>
+                        </div>
+                    </div>
+                </CardContent>
+            </Card>
+
+            {}
+            <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Remove Vehicle from Fleet</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Are you sure you want to remove{' '}
+                            <span className="font-semibold">
+                                {selectedCar?.brand} {selectedCar?.model}
+                            </span>{' '}
+                            ({selectedCar?.licensePlate}) from the fleet? This action cannot be undone.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isDeleting}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleDeleteConfirm}
+                            disabled={isDeleting}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        >
+                            {isDeleting ? 'Removing...' : 'Remove'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+
+            {}
+            <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Change Vehicle Status</AlertDialogTitle>
+                        <AlertDialogDescription className="space-y-4">
+                            <span>
+                                Update the status for{' '}
+                                <span className="font-semibold">
+                                    {selectedCar?.brand} {selectedCar?.model}
+                                </span>
+                            </span>
+                            <Select
+                                value={newStatus || undefined}
+                                onValueChange={(v) => setNewStatus(v as CarStatus)}
+                            >
+                                <SelectTrigger className="w-full mt-4">
+                                    <SelectValue placeholder="Select new status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {statusOptions.map((option) => (
+                                        <SelectItem key={option.value} value={option.value}>
+                                            {option.label}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel disabled={isUpdatingStatus}>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleStatusConfirm}
+                            disabled={isUpdatingStatus || newStatus === selectedCar?.carStatusType}
+                        >
+                            {isUpdatingStatus ? 'Updating...' : 'Update Status'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 });
 

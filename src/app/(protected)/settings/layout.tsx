@@ -19,11 +19,11 @@ interface SettingsLayoutProps {
 }
 
 const SETTINGS_TABS = [
-    { label: 'Personal Info', href: '/settings/profile', icon: User },
-    { label: 'Security', href: '/settings/security', icon: Shield },
-    { label: 'Documents', href: '/settings/documents', icon: FileText },
-    { label: 'Notifications', href: '/settings/notifications', icon: Bell },
-    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard },
+    { label: 'Personal Info', href: '/settings/profile', icon: User, comingSoon: true },
+    { label: 'Security', href: '/settings/security', icon: Shield, comingSoon: true },
+    { label: 'Documents', href: '/settings/documents', icon: FileText, comingSoon: true },
+    { label: 'Notifications', href: '/settings/notifications', icon: Bell, comingSoon: true },
+    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard, comingSoon: true },
 ];
 
 function Breadcrumb({ currentTab }: { currentTab?: string }) {
@@ -82,11 +82,17 @@ function SettingsSidebar() {
                             'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
                             isActive
                                 ? 'bg-primary/10 text-primary'
-                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                                : 'text-slate-600 dark:text-slate-300 hover:bg-muted hover:text-foreground',
+                            tab.comingSoon && 'opacity-80'
                         )}
                     >
                         <Icon className="h-5 w-5" />
-                        {tab.label}
+                        <span className="flex-1">{tab.label}</span>
+                        {tab.comingSoon && (
+                            <span className="text-[10px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded">
+                                Soon
+                            </span>
+                        )}
                     </Link>
                 );
             })}

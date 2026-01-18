@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { Lock, ArrowRight, Phone, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatCurrencyWithDecimals, formatCurrency } from '@/lib/utils/format';
+import { formatCurrency } from '@/lib/utils/format';
 import type { Car, PriceBreakdown } from '@/types';
 
 interface BookingSummaryProps {
@@ -30,22 +30,22 @@ export function BookingSummary({
 }: BookingSummaryProps) {
     return (
         <div className="sticky top-24 space-y-6">
-            <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
                 <div className="p-6 pb-0">
-                    <h3 className="text-lg font-bold text-foreground mb-1">
+                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">
                         {car.brand} {car.model}
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs font-medium">
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-xs font-medium">
                             {car.transmissionType}
                         </span>
-                        <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs font-medium">
+                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-xs font-medium">
                             {car.fuelType}
                         </span>
                     </div>
                 </div>
 
-                <div className="px-6 py-4 flex justify-center bg-gradient-to-b from-card to-muted/30">
+                <div className="px-6 py-4 flex justify-center bg-gradient-to-b from-white dark:from-slate-900 to-slate-50 dark:to-slate-950">
                     <div className="relative w-full max-w-[280px] aspect-[16/9] group">
                         <Image
                             src={car.imageUrl || '/placeholder-car.png'}
@@ -63,11 +63,11 @@ export function BookingSummary({
                             <div className="w-0.5 h-full bg-border my-1" />
                         </div>
                         <div className="pb-4">
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                                 Pick-up
                             </p>
-                            <p className="text-sm font-bold text-foreground">{pickupLocation}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{pickupLocation}</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                                 {format(startDate, 'MMM d, yyyy')} • {format(startDate, 'h:mm a')}
                             </p>
                         </div>
@@ -75,23 +75,23 @@ export function BookingSummary({
 
                     <div className="flex gap-3">
                         <div className="flex flex-col items-center">
-                            <div className="w-2.5 h-2.5 rounded-full border-2 border-primary bg-card" />
+                            <div className="w-2.5 h-2.5 rounded-full border-2 border-primary bg-white dark:bg-slate-900" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
                                 Drop-off
                             </p>
-                            <p className="text-sm font-bold text-foreground">{dropoffLocation}</p>
-                            <p className="text-sm text-muted-foreground">
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{dropoffLocation}</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400">
                                 {format(endDate, 'MMM d, yyyy')} • {format(endDate, 'h:mm a')}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-muted/50 px-6 py-6 border-t border-border">
+                <div className="bg-slate-50 dark:bg-slate-950 px-6 py-6 border-t border-slate-200 dark:border-slate-700">
                     <div className="space-y-3 text-sm">
-                        <div className="flex justify-between text-muted-foreground">
+                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
                             <span>
                                 Car Rental ({priceBreakdown.rentalDays}{' '}
                                 {priceBreakdown.rentalDays === 1 ? 'day' : 'days'})
@@ -121,12 +121,12 @@ export function BookingSummary({
                     <div className="h-px bg-border my-4" />
 
                     <div className="flex justify-between items-end mb-6">
-                        <span className="text-base font-bold text-foreground">Total Price</span>
+                        <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total Price</span>
                         <div className="text-right">
-                            <span className="text-2xl font-bold text-foreground tracking-tight tabular-nums">
+                            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
                                 {formatCurrency(priceBreakdown.total, priceBreakdown.currency)}
                             </span>
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {priceBreakdown.currency}, includes all taxes
                             </p>
                         </div>
@@ -170,20 +170,20 @@ export function BookingSummary({
                         )}
                     </Button>
 
-                    <div className="mt-4 flex justify-center items-center gap-2 text-muted-foreground text-xs">
+                    <div className="mt-4 flex justify-center items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
                         <Lock className="h-4 w-4" />
                         SSL Secure Transaction
                     </div>
                 </div>
             </div>
 
-            <div className="bg-card rounded-xl shadow-sm border border-border p-5 flex items-start gap-4">
+            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 flex items-start gap-4">
                 <div className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-full p-2 shrink-0">
                     <Headphones className="h-5 w-5" />
                 </div>
                 <div>
-                    <h4 className="font-bold text-foreground text-sm">Need Help?</h4>
-                    <p className="text-sm text-muted-foreground mt-1">
+                    <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Need Help?</h4>
+                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                         Call our 24/7 support line if you have any questions.
                     </p>
                     <a

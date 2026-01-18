@@ -3,13 +3,14 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, addDays, isBefore, startOfDay } from 'date-fns';
-import { CalendarIcon, Loader2, Car, CreditCard, Banknote } from 'lucide-react';
+import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCreateRental } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import type { Car as CarType } from '@/types';
 
 function formatPrice(price: number, currency: string): string {
@@ -61,7 +62,10 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            toast.error('Please select both start and end dates');
+            return;
+        }
 
         if (paymentMethod === 'online') {
             const startStr = format(startDate!, 'yyyy-MM-dd');
@@ -114,12 +118,11 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 </div>
             )}
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <Car className="h-5 w-5 text-muted-foreground" />
+            <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <div>
-                    <p className="font-semibold">{car.brand} {car.model}</p>
-                    <p className="text-sm text-muted-foreground">
-                        {formatPrice(car.price, car.currencyType)}
+                    <p className="font-semibold text-slate-900 dark:text-white">{car.brand} {car.model}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                        {formatPrice(car.price, car.currencyType)}/day
                     </p>
                 </div>
             </div>
@@ -211,7 +214,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                         type="button"
                         onClick={() => setPaymentMethod('online')}
                         className={cn(
-                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all',
+                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
                             paymentMethod === 'online'
                                 ? 'border-primary bg-primary/5'
                                 : 'border-muted hover:border-muted-foreground/50'
@@ -232,7 +235,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                         type="button"
                         onClick={() => setPaymentMethod('cash')}
                         className={cn(
-                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all',
+                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
                             paymentMethod === 'cash'
                                 ? 'border-primary bg-primary/5'
                                 : 'border-muted hover:border-muted-foreground/50'

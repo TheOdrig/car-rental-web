@@ -105,7 +105,7 @@ export function ProcessReturnDialog({
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    {/* Summary Block */}
+                    {}
                     <div className="bg-muted/40 rounded-xl p-3 border border-dashed flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <Car className="h-5 w-5 text-primary" />
@@ -120,7 +120,7 @@ export function ProcessReturnDialog({
                         </div>
                     </div>
 
-                    {/* Return Details */}
+                    {}
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
                             <Label htmlFor="odometer" className="text-xs font-bold uppercase tracking-wider text-muted-foreground">
@@ -160,7 +160,7 @@ export function ProcessReturnDialog({
                         </div>
                     </div>
 
-                    {/* Checklist Section */}
+                    {}
                     <div className="space-y-4">
                         <h4 className="text-sm font-semibold flex items-center gap-2">
                             <ClipboardCheck className="h-4 w-4 text-primary" />

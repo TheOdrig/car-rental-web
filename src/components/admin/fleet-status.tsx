@@ -4,7 +4,7 @@ import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Car, CheckCircle, Settings, AlertTriangle, PieChart } from 'lucide-react';
+import { Car, CheckCircle, Settings, AlertTriangle, PieChart, Clock } from 'lucide-react';
 import type { FleetStatus as FleetStatusType } from '@/types';
 
 
@@ -52,7 +52,16 @@ export const FleetStatusCard = memo(function FleetStatusCard({
     data,
     className,
 }: FleetStatusProps) {
-    const { totalCars, availableCars, rentedCars, maintenanceCars, damagedCars, occupancyRate } = data;
+    const {
+        totalCars,
+        availableCars,
+        rentedCars,
+        reservedCars = 0,
+        maintenanceCars,
+        inspectionCars = 0,
+        damagedCars,
+        occupancyRate
+    } = data;
 
     return (
         <Card className={cn('', className)}>
@@ -70,29 +79,43 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     label="Available"
                     value={availableCars}
                     total={totalCars}
-                    bgColor="bg-green-500"
-                    gradient="bg-gradient-to-r from-green-500 to-emerald-400"
+                    bgColor="bg-emerald-500"
+                    gradient="bg-gradient-to-r from-emerald-500 to-teal-400"
                 />
                 <StatusItem
                     label="Rented"
                     value={rentedCars}
                     total={totalCars}
+                    bgColor="bg-violet-500"
+                    gradient="bg-gradient-to-r from-violet-500 to-purple-400"
+                />
+                <StatusItem
+                    label="Reserved"
+                    value={reservedCars}
+                    total={totalCars}
                     bgColor="bg-blue-500"
-                    gradient="bg-gradient-to-r from-blue-500 to-sky-400"
+                    gradient="bg-gradient-to-r from-blue-500 to-indigo-400"
                 />
                 <StatusItem
                     label="Maintenance"
                     value={maintenanceCars}
                     total={totalCars}
                     bgColor="bg-amber-500"
-                    gradient="bg-gradient-to-r from-amber-500 to-yellow-400"
+                    gradient="bg-gradient-to-r from-amber-500 to-orange-400"
+                />
+                <StatusItem
+                    label="Inspection"
+                    value={inspectionCars}
+                    total={totalCars}
+                    bgColor="bg-cyan-500"
+                    gradient="bg-gradient-to-r from-cyan-500 to-sky-400"
                 />
                 <StatusItem
                     label="Damaged"
                     value={damagedCars}
                     total={totalCars}
-                    bgColor="bg-red-500"
-                    gradient="bg-gradient-to-r from-red-500 to-rose-400"
+                    bgColor="bg-rose-500"
+                    gradient="bg-gradient-to-r from-rose-500 to-red-400"
                 />
 
                 <div className="pt-4 border-t">
@@ -121,13 +144,15 @@ export const FleetStatusCompact = memo(function FleetStatusCompact({
     data,
     className,
 }: FleetStatusCompactProps) {
-    const { availableCars, rentedCars, maintenanceCars, damagedCars } = data;
+    const { availableCars, rentedCars, reservedCars = 0, maintenanceCars, inspectionCars = 0, damagedCars } = data;
 
     const items = [
-        { label: 'Available', value: availableCars, icon: CheckCircle, color: 'text-green-500' },
-        { label: 'Rented', value: rentedCars, icon: Car, color: 'text-blue-500' },
+        { label: 'Available', value: availableCars, icon: CheckCircle, color: 'text-emerald-500' },
+        { label: 'Rented', value: rentedCars, icon: Car, color: 'text-violet-500' },
+        { label: 'Reserved', value: reservedCars, icon: Clock, color: 'text-blue-500' },
         { label: 'Maintenance', value: maintenanceCars, icon: Settings, color: 'text-amber-500' },
-        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, color: 'text-red-500' },
+        { label: 'Inspection', value: inspectionCars, icon: PieChart, color: 'text-cyan-500' },
+        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, color: 'text-rose-500' },
     ];
 
     return (

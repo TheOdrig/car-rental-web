@@ -113,7 +113,7 @@ export function CarListItem({ car, className }: CarListItemProps) {
 
                     <div className="flex items-center justify-between pt-4 border-t">
                         <div>
-                            <span className="text-2xl font-bold text-primary">
+                            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">
                                 {formatCurrency(data.price, data.currency)}
                                 <span className="text-sm font-normal text-muted-foreground ml-1">
                                     /day

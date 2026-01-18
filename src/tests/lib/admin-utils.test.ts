@@ -205,7 +205,7 @@ describe('calculateFleetPercentages', () => {
             damagedCars: 0,
         });
 
-        // 1/3 = 33.33... should round to 33
+        
         expect(result.available).toBe(33);
         expect(result.rented).toBe(33);
         expect(result.maintenance).toBe(33);

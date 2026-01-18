@@ -28,10 +28,10 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <div className="text-center">
-                    <h1 className="text-2xl font-bold text-gray-900 mb-4">
+                    <h1 className="text-2xl font-bold text-foreground mb-4">
                         Missing Booking Information
                     </h1>
-                    <p className="text-gray-600 mb-6">
+                    <p className="text-muted-foreground mb-6">
                         Please select a car and dates to proceed with checkout.
                     </p>
                     <Link
@@ -46,9 +46,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     }
 
     return (
-        <main className="min-h-screen bg-background py-8 px-4 sm:px-6 lg:px-8">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
-                <nav className="flex mb-8 text-sm font-medium text-muted-foreground">
+                <nav className="flex mb-8 text-sm font-medium text-slate-600 dark:text-slate-400">
                     <ol className="flex items-center space-x-2">
                         <li>
                             <Link href="/cars" className="hover:text-primary transition-colors">

@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost, serverGet } from '@/lib/api/server';
+import { routeGet, routePost } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const data = await serverGet(endpoints.admin.cars.list + '?' + searchParams.toString(), {
+        const data = await routeGet(endpoints.admin.cars.list + '?' + searchParams.toString(), {
             cache: 'no-store',
         });
         return NextResponse.json(data);
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
         const body = await request.json();
         console.log('[API] POST /api/admin/cars - Received body:', JSON.stringify(body));
 
-        const backendRequest: any = {
+        const backendRequest: Record<string, unknown> = {
             brand: body.brand?.replace(/-/g, ' '),
             model: body.model,
             productionYear: Number(body.year),
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
         console.log('[API] POST /api/admin/cars - Transformed for backend:', JSON.stringify(backendRequest));
 
-        const data = await serverPost(endpoints.admin.cars.create, backendRequest, {
+        const data = await routePost(endpoints.admin.cars.create, backendRequest, {
             cache: 'no-store',
         });
 

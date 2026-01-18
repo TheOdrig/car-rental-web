@@ -31,7 +31,7 @@ export function BookingSuccess({
     return (
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
             <div className="max-w-2xl w-full">
-                <div className="bg-card rounded-2xl shadow-xl border border-border overflow-hidden">
+                <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
                     <div className="bg-gradient-to-br from-green-500 to-emerald-600 px-8 py-12 text-center text-white">
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 animate-[bounce_1s_ease-in-out]">
                             <CheckCircle className="h-12 w-12" />
@@ -42,22 +42,22 @@ export function BookingSuccess({
 
                     <div className="px-8 py-8 space-y-8">
                         <div className="text-center">
-                            <p className="text-sm text-muted-foreground mb-1">Booking Reference</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Booking Reference</p>
                             <p className="text-3xl font-mono font-bold text-primary tracking-wider">
                                 {referenceNumber}
                             </p>
                         </div>
 
-                        <div className="bg-muted/50 rounded-xl p-6 space-y-4">
-                            <h3 className="font-semibold text-foreground mb-4">Booking Details</h3>
+                        <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-6 space-y-4">
+                            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4">Booking Details</h3>
 
                             <div className="flex items-start gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg">
                                     <FileText className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-muted-foreground">Vehicle</p>
-                                    <p className="font-medium text-foreground">{carName}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Vehicle</p>
+                                    <p className="font-medium text-slate-900 dark:text-slate-100">{carName}</p>
                                 </div>
                             </div>
 
@@ -67,8 +67,8 @@ export function BookingSuccess({
                                         <Calendar className="h-5 w-5 text-primary" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-muted-foreground">Rental Period</p>
-                                        <p className="font-medium text-foreground">
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">Rental Period</p>
+                                        <p className="font-medium text-slate-900 dark:text-slate-100">
                                             {format(startDate, 'MMM d, yyyy')} - {format(endDate, 'MMM d, yyyy')}
                                         </p>
                                     </div>
@@ -80,8 +80,8 @@ export function BookingSuccess({
                                     <MapPin className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-sm text-muted-foreground">Pickup Location</p>
-                                    <p className="font-medium text-foreground">{pickupLocation}</p>
+                                    <p className="text-sm text-slate-600 dark:text-slate-400">Pickup Location</p>
+                                    <p className="font-medium text-slate-900 dark:text-slate-100">{pickupLocation}</p>
                                 </div>
                             </div>
 
@@ -91,7 +91,7 @@ export function BookingSuccess({
                                         <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
                                     </div>
                                     <div>
-                                        <p className="text-sm text-muted-foreground">Total Paid</p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">Total Paid</p>
                                         <p className="font-bold text-xl text-green-600 dark:text-green-400">
                                             ${totalPaid.toFixed(2)} {currency}
                                         </p>
@@ -101,14 +101,14 @@ export function BookingSuccess({
                         </div>
 
                         <div className="bg-blue-50 dark:bg-blue-950/50 rounded-xl p-6">
-                            <h3 className="font-semibold text-foreground mb-4 flex items-center gap-2">
+                            <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2">
                                 <Clock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
                                 What&apos;s Next?
                             </h3>
                             <ul className="space-y-3 text-sm">
                                 <li className="flex items-start gap-3">
                                     <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
-                                    <span className="text-muted-foreground">
+                                    <span className="text-slate-600 dark:text-slate-400">
                                         A confirmation email has been sent to your registered email address with all booking details.
                                     </span>
                                 </li>
@@ -145,7 +145,7 @@ export function BookingSuccess({
                                 variant="ghost"
                                 size="sm"
                                 onClick={handlePrint}
-                                className="text-muted-foreground"
+                                className="text-slate-600 dark:text-slate-400"
                             >
                                 <Printer className="h-4 w-4 mr-2" />
                                 Print Receipt

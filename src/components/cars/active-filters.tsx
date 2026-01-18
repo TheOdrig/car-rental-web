@@ -24,7 +24,7 @@ const FILTER_LABELS: Record<FilterKey, string> = {
     minSeats: 'Seats',
     minProductionYear: 'Min Year',
     maxProductionYear: 'Max Year',
-    status: 'Status',
+    carStatusType: 'Status',
 };
 
 function formatFilterValue(key: FilterKey, value: string | number | undefined): string {

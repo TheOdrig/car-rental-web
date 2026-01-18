@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { showToast } from '@/lib/utils/toast';
+import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
 
 const passwordSchema = z
     .object({
@@ -57,6 +58,10 @@ export default function SecuritySettingsPage() {
 
     return (
         <div className="space-y-6">
+            <ComingSoonBanner
+                title="Security Features Coming Soon"
+                description="Password change and other security features are currently being developed. This form is a preview of the upcoming functionality."
+            />
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -176,3 +181,4 @@ export default function SecuritySettingsPage() {
         </div>
     );
 }
+

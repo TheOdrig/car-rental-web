@@ -211,7 +211,7 @@ describe('checkout validation schemas', () => {
             const data = {
                 firstName: 'John',
                 lastName: 'Doe',
-                // Missing other fields
+                
             };
 
             const result = checkoutFormSchema.safeParse(data);
@@ -252,7 +252,7 @@ describe('checkout validation schemas', () => {
         it('should reject wrong CVC length for Amex', () => {
             const data = createMockCheckoutFormData({
                 cardNumber: '341111111111111',
-                cvc: '123', // Should be 4 digits for Amex
+                cvc: '123', 
             });
             const result = validateCheckoutForm(data, '341111111111111');
             expect(result.success).toBe(false);

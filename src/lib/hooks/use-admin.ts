@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost } from '@/lib/api/client';
+import { clientGet, clientPost, clientDelete } from '@/lib/api/client';
 import { showToast, toastMessages } from '@/lib/utils/toast';
 import type {
     DailySummary,
@@ -12,11 +12,20 @@ import type {
     RevenueAnalytics,
     AdminAlert,
     ProcessReturnData,
+    Car,
 } from '@/types';
 
 interface PendingFilters {
     page?: number;
     size?: number;
+}
+
+export interface AdminCarsFilters {
+    page?: number;
+    size?: number;
+    status?: string;
+    brand?: string;
+    search?: string;
 }
 
 export const adminKeys = {
@@ -31,6 +40,8 @@ export const adminKeys = {
     overdueRentals: (filters?: PendingFilters) => [...adminKeys.pending(), 'overdue', filters] as const,
     revenue: () => [...adminKeys.all, 'revenue'] as const,
     alerts: () => [...adminKeys.all, 'alerts'] as const,
+    cars: () => [...adminKeys.all, 'cars'] as const,
+    carsList: (filters?: AdminCarsFilters) => [...adminKeys.cars(), 'list', filters] as const,
 };
 
 
@@ -119,7 +130,7 @@ async function fetchOverdueRentals(filters?: PendingFilters): Promise<PageRespon
 }
 
 async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
-    return clientGet<RevenueAnalytics>('/api/admin/revenue');
+    return clientGet<RevenueAnalytics>('/api/admin/dashboard/revenue');
 }
 
 async function fetchAlerts(): Promise<AdminAlert[]> {
@@ -381,6 +392,7 @@ export function useUpdateCar() {
         onSuccess: (result) => {
             showToast.success('Car updated successfully', `${result.brand} ${result.model} has been updated.`);
             void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.cars() });
             void queryClient.invalidateQueries({ queryKey: ['cars'] });
         },
         onError: (error: Error) => {
@@ -394,11 +406,81 @@ export function useInvalidateAdmin() {
     const queryClient = useQueryClient();
 
     return {
-        all: () => queryClient.invalidateQueries({ queryKey: adminKeys.all }),
-        dashboard: () => queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() }),
-        summary: () => queryClient.invalidateQueries({ queryKey: adminKeys.summary() }),
-        fleet: () => queryClient.invalidateQueries({ queryKey: adminKeys.fleet() }),
-        pending: () => queryClient.invalidateQueries({ queryKey: adminKeys.pending() }),
-        cars: () => queryClient.invalidateQueries({ queryKey: ['cars'] }),
+        all: () => queryClient.refetchQueries({ queryKey: adminKeys.all }),
+        dashboard: () => queryClient.refetchQueries({ queryKey: adminKeys.dashboard() }),
+        summary: () => queryClient.refetchQueries({ queryKey: adminKeys.summary() }),
+        fleet: () => queryClient.refetchQueries({ queryKey: adminKeys.fleet() }),
+        pending: () => queryClient.refetchQueries({ queryKey: adminKeys.pending() }),
+        cars: () => queryClient.refetchQueries({ queryKey: ['cars'] }),
+        adminCars: () => queryClient.refetchQueries({ queryKey: adminKeys.cars() }),
     };
 }
+
+
+async function fetchAdminCars(filters?: AdminCarsFilters): Promise<PageResponse<Car>> {
+    const params = new URLSearchParams();
+
+    if (filters) {
+        if (filters.page !== undefined) params.append('page', String(filters.page));
+        if (filters.size !== undefined) params.append('size', String(filters.size));
+        if (filters.status && filters.status !== 'all') params.append('status', filters.status);
+        if (filters.brand && filters.brand !== 'all') params.append('brand', filters.brand);
+        if (filters.search) params.append('search', filters.search);
+    }
+
+    const queryString = params.toString();
+    const url = queryString ? `/api/admin/cars?${queryString}` : '/api/admin/cars';
+
+    return clientGet<PageResponse<Car>>(url);
+}
+
+async function deleteCar(carId: number): Promise<void> {
+    return clientDelete<void>(`/api/admin/cars/${carId}`);
+}
+
+async function updateCarStatus({ carId, status, reason }: { carId: number; status: string; reason?: string }): Promise<Car> {
+    return clientPost<Car>(`/api/admin/cars/${carId}/status`, { status, reason });
+}
+
+export function useAdminCars(filters?: AdminCarsFilters) {
+    return useQuery({
+        queryKey: adminKeys.carsList(filters),
+        queryFn: () => fetchAdminCars(filters),
+        staleTime: 30 * 1000,
+    });
+}
+
+export function useDeleteCar() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: deleteCar,
+        onSuccess: () => {
+            showToast.success('Car removed from fleet', 'The vehicle has been permanently deleted.');
+            void queryClient.invalidateQueries({ queryKey: adminKeys.cars() });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to remove car', error.message);
+        },
+    });
+}
+
+export function useUpdateCarStatus() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: updateCarStatus,
+        onSuccess: (result) => {
+            showToast.success('Car status updated', `${result.brand} ${result.model} is now ${result.carStatusType}.`);
+            void queryClient.invalidateQueries({ queryKey: adminKeys.cars() });
+            void queryClient.refetchQueries({ queryKey: adminKeys.fleet() });
+            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to update status', error.message);
+        },
+    });
+}
+

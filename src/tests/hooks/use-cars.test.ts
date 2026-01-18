@@ -49,11 +49,7 @@ function createMockCalendar(): CarAvailabilityCalendar {
     return {
         carId: 1,
         carName: 'Toyota Corolla',
-        month: {
-            year: 2025,
-            monthValue: 1,
-            month: 'JANUARY',
-        },
+        month: '2025-01',
         days: [
             { date: '2025-01-01', status: 'Available' },
             { date: '2025-01-02', status: 'Unavailable', rentalId: 10 },
@@ -223,7 +219,7 @@ describe('use-cars hooks', () => {
     describe('useCarCalendar', () => {
         it('should fetch car calendar', async () => {
             const mockCalendar = createMockCalendar();
-            mockClientGet.mockResolvedValueOnce({ calendar: mockCalendar });
+            mockClientGet.mockResolvedValueOnce(mockCalendar);
 
             const { result } = renderHook(() => useCarCalendar(1, '2025-01'), {
                 wrapper: createQueryWrapper(),
@@ -234,7 +230,7 @@ describe('use-cars hooks', () => {
             });
 
             expect(result.current.data).toEqual(mockCalendar);
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars/1?include=calendar&month=2025-01');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars/1/availability/calendar?month=2025-01');
         });
 
         it('should not fetch when id is null', async () => {
@@ -250,7 +246,7 @@ describe('use-cars hooks', () => {
     describe('useSimilarCars', () => {
         it('should fetch similar cars', async () => {
             const mockSimilarCars = createMockSimilarCars();
-            mockClientGet.mockResolvedValueOnce({ similarCars: mockSimilarCars });
+            mockClientGet.mockResolvedValueOnce(mockSimilarCars);
 
             const { result } = renderHook(() => useSimilarCars(1), {
                 wrapper: createQueryWrapper(),
@@ -261,11 +257,11 @@ describe('use-cars hooks', () => {
             });
 
             expect(result.current.data).toEqual(mockSimilarCars);
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars/1?include=similar');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars/1/similar');
         });
 
         it('should return empty array when no similar cars', async () => {
-            mockClientGet.mockResolvedValueOnce({ similarCars: undefined });
+            mockClientGet.mockResolvedValueOnce(null);
 
             const { result } = renderHook(() => useSimilarCars(1), {
                 wrapper: createQueryWrapper(),

@@ -12,6 +12,7 @@ export interface CarFormData {
     dailyRate: number;
     weeklyRate: number;
     depositAmount: number;
+    imageUrl: string;
 }
 
 export interface CarFormSectionProps<T extends Partial<CarFormData>> {
@@ -34,4 +35,5 @@ export const defaultCarFormData: CarFormData = {
     dailyRate: 0,
     weeklyRate: 0,
     depositAmount: 0,
+    imageUrl: '',
 };

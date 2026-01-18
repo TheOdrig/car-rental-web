@@ -38,7 +38,7 @@ function CardTypeIcon({ cardType }: { cardType: CardType }) {
             case 'discover':
                 return 'text-orange-600';
             default:
-                return 'text-muted-foreground';
+                return 'text-slate-500 dark:text-slate-400';
         }
     };
 
@@ -79,14 +79,14 @@ export function PaymentForm({ control, errors }: PaymentFormProps) {
     };
 
     return (
-        <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
+        <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
                     2
                 </span>
-                <h2 className="text-xl font-bold text-foreground">Payment Method</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Payment Method</h2>
                 <div className="ml-auto">
-                    <CreditCard className="h-5 w-5 text-muted-foreground" />
+                    <CreditCard className="h-5 w-5 text-slate-500 dark:text-slate-400" />
                 </div>
             </div>
 
@@ -186,7 +186,7 @@ export function PaymentForm({ control, errors }: PaymentFormProps) {
                             <TooltipProvider>
                                 <Tooltip>
                                     <TooltipTrigger asChild>
-                                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-muted-foreground cursor-help">
+                                        <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-500 dark:text-slate-400 cursor-help">
                                             <HelpCircle className="h-4 w-4" />
                                         </span>
                                     </TooltipTrigger>

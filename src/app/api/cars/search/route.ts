@@ -9,6 +9,8 @@ export async function POST(request: NextRequest) {
     try {
         const body = await request.json() as AvailabilitySearchRequest;
 
+        console.log('[API] POST /api/cars/search - Request body:', JSON.stringify(body, null, 2));
+
         if (!body.startDate || !body.endDate) {
             return NextResponse.json(
                 { error: 'Start date and end date are required' },
@@ -34,25 +36,43 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        console.log('[API] Calling backend:', endpoints.cars.availability.search);
+
         const data = await serverPost<AvailabilitySearchResponse>(
             endpoints.cars.availability.search,
             body
         );
+
+        console.log('[API] Backend response received, total cars:', data?.totalElements);
 
         return NextResponse.json(data);
     } catch (error) {
         console.error('[API] POST /api/cars/search error:', error);
 
         if (isApiException(error)) {
+            console.error('[API] ApiException details:', {
+                status: error.status,
+                message: error.message,
+                errors: error.errors,
+            });
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
             );
         }
 
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+            console.error('[API] Backend connection failed - is the backend running?');
+            return NextResponse.json(
+                { error: 'Cannot connect to backend server. Please ensure the API is running.' },
+                { status: 503 }
+            );
+        }
+
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
         return NextResponse.json(
-            { error: 'Failed to search cars' },
-            { status: 503 }
+            { error: `Failed to search cars: ${errorMessage}` },
+            { status: 500 }
         );
     }
 }

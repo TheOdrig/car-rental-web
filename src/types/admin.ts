@@ -17,8 +17,11 @@ export interface FleetStatus {
     totalCars: number;
     availableCars: number;
     rentedCars: number;
+    reservedCars: number;
     maintenanceCars: number;
+    inspectionCars: number;
     damagedCars: number;
+    soldCars?: number; 
     occupancyRate: number;
     generatedAt: string;
 }

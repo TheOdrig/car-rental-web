@@ -20,12 +20,14 @@ import type { Car } from '@/types';
 export default function EditCarPage() {
     const router = useRouter();
     const params = useParams();
-    const carId = Number(params.id);
+
+    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const carId = rawId ? Number(rawId) : null;
 
     const { data: carData, isLoading: isLoadingCar } = useCar(carId);
-    const car = carData?.car;
+    const car = ((carData as { car?: Car })?.car ?? carData) as Car | undefined;
 
-    if (isLoadingCar) {
+    if (!carId || isLoadingCar) {
         return <EditCarPageSkeleton />;
     }
 
@@ -57,6 +59,7 @@ export default function EditCarPage() {
         dailyRate: car.price || 0,
         weeklyRate: 0,
         depositAmount: car.damagePrice || 0,
+        imageUrl: car.imageUrl || '',
     };
 
     return (

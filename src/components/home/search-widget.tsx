@@ -85,17 +85,17 @@ export function SearchWidget({ className }: SearchWidgetProps) {
     return (
         <div
             className={cn(
-                'bg-white/95 backdrop-blur-sm rounded-xl p-6 shadow-2xl',
+                'bg-white dark:bg-slate-900 backdrop-blur-sm rounded-xl p-6 shadow-2xl border dark:border-slate-700',
                 className
             )}
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                         Location
                     </label>
                     <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400" />
                         <Input
                             placeholder="City or airport"
                             value={location}
@@ -106,7 +106,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                         Pickup Date
                     </label>
                     <Popover>
@@ -141,7 +141,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                         Return Date
                     </label>
                     <Popover>
@@ -178,11 +178,11 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-gray-700 mb-1.5">
+                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                         Vehicle Type
                     </label>
                     <div className="relative">
-                        <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+                        <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400 z-10" />
                         <Select value={vehicleType} onValueChange={setVehicleType}>
                             <SelectTrigger className="pl-10">
                                 <SelectValue placeholder="Select type" />

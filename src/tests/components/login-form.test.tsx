@@ -42,7 +42,6 @@ describe('LoginForm', () => {
     const getPasswordInput = () => screen.getByPlaceholderText(/enter your password/i);
     const getUsernameInput = () => screen.getByPlaceholderText(/name@example.com/i);
     const getSubmitButton = () => screen.getByRole('button', { name: /log in|signing in/i });
-    const getForm = () => screen.getByRole('form') ?? getSubmitButton().closest('form')!;
 
     const submitForm = () => {
         const form = getSubmitButton().closest('form');

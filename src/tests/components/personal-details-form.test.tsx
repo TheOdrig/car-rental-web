@@ -80,7 +80,7 @@ describe('PersonalDetailsForm', () => {
             const user = userEvent.setup();
             render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={vi.fn()} />);
 
-            // Type something in other fields to enable submit
+            
             await user.type(screen.getByLabelText(/last name/i), 'Doe');
             await user.type(screen.getByLabelText(/phone number/i), '1234567890');
 

@@ -41,20 +41,20 @@ describe('ApproveRentalDialog', () => {
             />
         );
 
-        // Vehicle info
+
         expect(screen.getByText(/Tesla Model 3/i)).toBeInTheDocument();
         expect(screen.getByText(/ABC-1234/i)).toBeInTheDocument();
         expect(screen.getByText(/Electric/i)).toBeInTheDocument();
         expect(screen.getByText(/Automatic/i)).toBeInTheDocument();
 
-        // Customer info
+
         expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
         expect(screen.getByText(/john@example.com/i)).toBeInTheDocument();
-        expect(screen.getByText(/ID Verified/i)).toBeInTheDocument();
+        expect(screen.getByText(/VERIFIED IDENTITY/i)).toBeInTheDocument();
 
-        // Rental details
-        expect(screen.getByText(/4 Days/i)).toBeInTheDocument();
-        expect(screen.getByText(/\$480/i)).toBeInTheDocument();
+
+        expect(screen.getByText('4')).toBeInTheDocument();
+        expect(screen.getByText('480')).toBeInTheDocument();
     });
 
     it('should call onApprove with notes when approve button is clicked', async () => {
@@ -68,10 +68,10 @@ describe('ApproveRentalDialog', () => {
             />
         );
 
-        const notesField = screen.getByPlaceholderText(/Add any internal notes/i);
+        const notesField = screen.getByPlaceholderText(/Add administrative notes/i);
         await user.type(notesField, 'Customer is a regular renter.');
 
-        const approveButton = screen.getByRole('button', { name: /Approve Request/i });
+        const approveButton = screen.getByRole('button', { name: /Confirm Approval/i });
         await user.click(approveButton);
 
         expect(onApprove).toHaveBeenCalledWith(101, 'Customer is a regular renter.');
@@ -88,7 +88,7 @@ describe('ApproveRentalDialog', () => {
             />
         );
 
-        const approveButton = screen.getByRole('button', { name: /Approve Request/i });
+        const approveButton = screen.getByRole('button', { name: /Confirm Approval/i });
         await user.click(approveButton);
 
         expect(onApprove).toHaveBeenCalledWith(101, '');
@@ -106,7 +106,7 @@ describe('ApproveRentalDialog', () => {
         );
 
         expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Cancel/i })).toBeDisabled();
+        expect(screen.getByRole('button', { name: /Keep Pending/i })).toBeDisabled();
     });
 
     it('should call onOpenChange(false) when cancelled', async () => {
@@ -120,7 +120,7 @@ describe('ApproveRentalDialog', () => {
             />
         );
 
-        const cancelButton = screen.getByRole('button', { name: /Cancel/i });
+        const cancelButton = screen.getByRole('button', { name: /Keep Pending/i });
         await user.click(cancelButton);
 
         expect(onOpenChange).toHaveBeenCalledWith(false);

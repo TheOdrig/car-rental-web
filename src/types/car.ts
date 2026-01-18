@@ -2,6 +2,7 @@ import { CurrencyType } from './common';
 
 export type CarStatus =
     | 'Available'
+    | 'Rented'
     | 'Sold'
     | 'Maintenance'
     | 'Reserved'
@@ -177,5 +178,5 @@ export interface CarFilters {
     minSeats?: number;
     minProductionYear?: number;
     maxProductionYear?: number;
-    status?: CarStatus;
+    carStatusType?: string;
 }

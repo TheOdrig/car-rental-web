@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
+import { routeGet } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 import type { PendingItem, PageResponse } from '@/types';
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
             backendUrl.searchParams.append(key, value);
         });
 
-        const data = await serverGet<PageResponse<PendingItem>>(backendUrl.toString(), {
+        const data = await routeGet<PageResponse<PendingItem>>(backendUrl.toString(), {
             cache: 'no-store',
             tags: ['admin', 'pending', 'overdue'],
         });

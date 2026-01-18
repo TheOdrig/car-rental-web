@@ -46,7 +46,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     return (
         <div className="flex min-h-screen">
             <AdminSidebar username={user.username} />
-            <main className="flex-1 overflow-auto">
+            <main className="flex-1 overflow-auto glass-bg-pattern">
                 <div className="container py-6">
                     {children}
                 </div>

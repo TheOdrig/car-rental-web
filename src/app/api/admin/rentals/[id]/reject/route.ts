@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
+import { routePost } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 import type { QuickActionResult } from '@/types';
@@ -29,7 +29,7 @@ export async function POST(
         const targetUrl = endpoints.admin.quickActions.reject(rentalId);
         console.log('[API] Reject rental - calling backend URL:', targetUrl);
 
-        const result = await serverPost<QuickActionResult>(
+        const result = await routePost<QuickActionResult>(
             targetUrl,
             body,
             { cache: 'no-store' }

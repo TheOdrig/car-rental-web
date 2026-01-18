@@ -5,6 +5,7 @@ import { ProfilePicture, PersonalDetailsForm } from '@/components/settings';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { logger } from '@/lib/utils/logger';
+import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
 
 export default function ProfileSettingsPage() {
     const { user, isLoading } = useCurrentUser();
@@ -14,7 +15,11 @@ export default function ProfileSettingsPage() {
     }
 
     return (
-        <div className="space-y-8">
+        <div className="space-y-6">
+            <ComingSoonBanner
+                title="Profile Settings Coming Soon"
+                description="Profile updates are currently not saved to the server. Full profile management will be available in a future update."
+            />
             <Card>
                 <CardContent className="flex flex-col items-center py-8 sm:flex-row sm:gap-8">
                     <ProfilePicture
