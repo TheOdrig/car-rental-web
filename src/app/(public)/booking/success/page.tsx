@@ -29,7 +29,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
     } = params;
 
     return (
-        <main className="min-h-screen bg-background">
+        <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <BookingSuccess
                 referenceNumber={ref}
                 carName={car}

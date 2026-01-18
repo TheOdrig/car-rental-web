@@ -1,16 +1,20 @@
 'use client';
 
+import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Fuel, Users, Settings2, Calendar, Gauge, Palette, MapPin, LogIn } from 'lucide-react';
+import {
+    Fuel, Users, Settings2, Calendar, Gauge, Palette,
+    MapPin, LogIn, ChevronLeft, ChevronRight, Loader2
+} from 'lucide-react';
+import { format, addMonths, subMonths, startOfMonth, parse } from 'date-fns';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RentalForm } from '@/components/rentals';
-import { useAuth } from '@/lib/hooks';
-import type { Car, CarAvailabilityCalendar } from '@/types';
+import { useAuth, useCarCalendar } from '@/lib/hooks';
+import type { Car, CarAvailabilityCalendar, DayAvailability } from '@/types';
 
 interface CarDetailProps {
     car: Car;
@@ -32,13 +36,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function getStatusColor(status: string): string {
-    switch (status) {
-        case 'Available': return 'bg-green-500';
-        case 'Unavailable': return 'bg-red-500';
-        default: return 'bg-gray-300';
-    }
-}
 
 export function CarDetail({ car, calendar, showRentalForm = true, className }: CarDetailProps) {
     const { isAuthenticated, isLoading: authLoading } = useAuth();
@@ -67,12 +64,6 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                         className="object-cover"
                         priority
                     />
-                    <Badge
-                        className="absolute top-4 right-4"
-                        variant={isAvailable ? 'default' : 'secondary'}
-                    >
-                        {car.carStatusType}
-                    </Badge>
                 </div>
 
                 {calendar && (
@@ -81,7 +72,7 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                             <CardTitle className="text-lg">Availability</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <AvailabilityCalendar calendar={calendar} />
+                            <AvailabilityCalendar initialCalendar={calendar} carId={car.id} />
                         </CardContent>
                     </Card>
                 )}
@@ -96,7 +87,7 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-primary">
+                    <span className="text-4xl font-bold text-slate-900 dark:text-slate-100">
                         {formatPrice(car.price, car.currencyType)}
                     </span>
                     <span className="text-muted-foreground">/day</span>
@@ -179,47 +170,134 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
     );
 }
 
-function AvailabilityCalendar({ calendar }: { calendar: CarAvailabilityCalendar }) {
-    if (calendar.carBlocked) {
+function AvailabilityCalendar({ initialCalendar, carId }: { initialCalendar: CarAvailabilityCalendar; carId: number }) {
+    const [currentDate, setCurrentDate] = useState(() => {
+        return parse(initialCalendar.month, 'yyyy-MM', new Date());
+    });
+
+    const formattedMonth = useMemo(() => format(currentDate, 'yyyy-MM'), [currentDate]);
+
+    const { data: calendarData, isLoading } = useCarCalendar(carId, formattedMonth);
+
+    const calendar = useMemo<CarAvailabilityCalendar | null>(() => {
+        if (calendarData) return calendarData;
+
+        if (initialCalendar.month === formattedMonth) {
+            return initialCalendar;
+        }
+
+        return null;
+    }, [calendarData, initialCalendar, formattedMonth]);
+
+    const nextMonth = () => setCurrentDate(prev => addMonths(prev, 1));
+    const previousMonth = () => setCurrentDate(prev => subMonths(prev, 1));
+
+    const isPast = useMemo(() => {
+        const today = new Date();
+        return currentDate.getFullYear() <= today.getFullYear() && currentDate.getMonth() <= today.getMonth();
+    }, [currentDate]);
+
+    const isMax = useMemo(() => {
+        const maxDate = addMonths(new Date(), 3);
+        return currentDate.getFullYear() >= maxDate.getFullYear() && currentDate.getMonth() >= maxDate.getMonth();
+    }, [currentDate]);
+
+    if (calendar?.carBlocked) {
         return (
-            <div className="flex items-center gap-2 text-muted-foreground">
+            <div className="flex items-center gap-2 text-muted-foreground border rounded-lg p-4 bg-muted/20">
                 <MapPin className="h-4 w-4" />
                 <span>{calendar.blockReason || 'Currently unavailable'}</span>
             </div>
         );
     }
 
-
     return (
-        <div className="space-y-3">
-            <div className="flex items-center gap-4 text-sm">
-                <div className="flex items-center gap-1">
-                    <div className="h-3 w-3 rounded-full bg-green-500" />
-                    <span>Available</span>
+        <div className="space-y-4">
+            <div className="flex items-center justify-between">
+                <div className="flex flex-col">
+                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                        {format(currentDate, 'MMMM yyyy')}
+                    </span>
+                    <div className="flex items-center gap-3 mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-green-500" />
+                            <span>Available</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <div className="h-2 w-2 rounded-full bg-red-500" />
+                            <span>Booked</span>
+                        </div>
+                    </div>
                 </div>
                 <div className="flex items-center gap-1">
-                    <div className="h-3 w-3 rounded-full bg-red-500" />
-                    <span>Booked</span>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={previousMonth}
+                        disabled={isPast || isLoading}
+                        title={isPast ? "Past months are not available" : ""}
+                    >
+                        <ChevronLeft className="h-4 w-4" />
+                    </Button>
+                    <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={nextMonth}
+                        disabled={isMax || isLoading}
+                        title={isMax ? "Viewing the maximum available range" : ""}
+                    >
+                        <ChevronRight className="h-4 w-4" />
+                    </Button>
                 </div>
             </div>
-            <div className="grid grid-cols-7 gap-1">
-                {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
-                    <div key={i} className="text-center text-xs text-muted-foreground py-1">
-                        {d}
+
+            {isMax && (
+                <p className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100 mt-1">
+                    Calendar is limited to the current month + 3 months ahead.
+                </p>
+            )}
+
+            <div className="relative">
+                {isLoading && (
+                    <div className="absolute inset-0 z-10 flex items-center justify-center bg-background/50 backdrop-blur-[1px] rounded-lg">
+                        <Loader2 className="h-5 w-5 animate-spin text-primary" />
                     </div>
-                ))}
-                {calendar.days.slice(0, 28).map((day, index) => (
-                    <div
-                        key={index}
-                        className={cn(
-                            'aspect-square rounded-md flex items-center justify-center text-xs',
-                            getStatusColor(day.status)
-                        )}
-                        title={`${day.date}: ${day.status}`}
-                    >
-                        {new Date(day.date).getDate()}
-                    </div>
-                ))}
+                )}
+
+                <div className="grid grid-cols-7 gap-1">
+                    {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => (
+                        <div key={i} className="text-center text-[10px] font-bold text-muted-foreground py-1">
+                            {d}
+                        </div>
+                    ))}
+
+                    {Array.from({ length: startOfMonth(currentDate).getDay() }).map((_, i) => (
+                        <div key={`empty-${i}`} className="aspect-square" />
+                    ))}
+
+                    {calendar ? (
+                        calendar.days.map((day: DayAvailability, index: number) => (
+                            <div
+                                key={index}
+                                className={cn(
+                                    'aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs transition-colors',
+                                    day.status === 'Available'
+                                        ? 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20'
+                                        : 'bg-red-500/10 text-red-700 dark:text-red-400'
+                                )}
+                                title={`${day.date}: ${day.status}`}
+                            >
+                                {new Date(day.date).getDate()}
+                            </div>
+                        ))
+                    ) : (
+                        <div className="col-span-7 py-8 text-center text-xs text-muted-foreground">
+                            {!isLoading && "Availability data not available for this month"}
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

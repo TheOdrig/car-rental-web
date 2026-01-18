@@ -2,9 +2,10 @@
 
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { RefreshCw, Plus, Download, Clock } from 'lucide-react';
+import { RefreshCw, Plus, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/shared';
+import { Breadcrumb } from '@/components/layout/breadcrumb';
 import {
     DashboardMetricsGrid,
     PendingRentalsTable,
@@ -164,6 +165,11 @@ export default function AdminDashboardPage() {
     return (
         <ErrorBoundary>
             <div className="space-y-6">
+                <Breadcrumb
+                    items={[
+                        { label: 'Dashboard' },
+                    ]}
+                />
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div className="space-y-1">
                         <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
@@ -179,27 +185,21 @@ export default function AdminDashboardPage() {
                     </div>
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
                         <Button
-                            variant="outline"
                             size="sm"
-                            className="hidden md:flex gap-2"
-                            aria-label="Export monthly report"
-                        >
-                            <Download className="h-4 w-4" aria-hidden="true" />
-                            Export Report
-                        </Button>
-                        <Button
-                            size="sm"
-                            className="gap-2 shrink-0"
+                            className="gap-2 shrink-0 cursor-pointer"
                             aria-label="Add new car to fleet"
+                            asChild
                         >
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            Add New Car
+                            <a href="/admin/fleet/new">
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                Add New Car
+                            </a>
                         </Button>
                         <Button
                             variant="ghost"
                             size="icon"
                             onClick={handleRefresh}
-                            className="shrink-0"
+                            className="shrink-0 cursor-pointer"
                             aria-label={summaryLoading ? "Refreshing data" : "Refresh dashboard data"}
                         >
                             <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} aria-hidden="true" />
@@ -255,7 +255,9 @@ export default function AdminDashboardPage() {
                                 totalCars: 0,
                                 availableCars: 0,
                                 rentedCars: 0,
+                                reservedCars: 0,
                                 maintenanceCars: 0,
+                                inspectionCars: 0,
                                 damagedCars: 0,
                                 occupancyRate: 0,
                                 generatedAt: new Date().toISOString(),

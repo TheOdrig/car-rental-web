@@ -12,7 +12,7 @@ interface HeroSectionProps {
 
 export function HeroSection({
     className,
-    backgroundImage = '/images/hero-car.jpg'
+    backgroundImage = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=100&w=1920'
 }: HeroSectionProps) {
     const [imageError, setImageError] = useState(false);
 

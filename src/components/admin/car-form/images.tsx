@@ -51,7 +51,7 @@ export function ImagesSection({
 
         const validFiles = Array.from(files).filter(file => {
             const isImage = file.type.startsWith('image/');
-            const isValidSize = file.size <= 10 * 1024 * 1024; // 10MB max
+            const isValidSize = file.size <= 10 * 1024 * 1024; 
             return isImage && isValidSize;
         });
 

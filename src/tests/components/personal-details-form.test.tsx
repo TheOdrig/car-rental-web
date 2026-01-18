@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PersonalDetailsForm } from '@/components/settings/personal-details-form';
 
@@ -13,6 +13,16 @@ describe('PersonalDetailsForm', () => {
         email: 'john@example.com',
         emailVerified: true,
         onSubmit: vi.fn(),
+    };
+
+    const getSubmitButton = () => screen.getByRole('button', { name: /save changes/i });
+
+    const submitForm = async () => {
+        const form = getSubmitButton().closest('form');
+        if (form) {
+            fireEvent.submit(form);
+        }
+        await new Promise(resolve => setTimeout(resolve, 0));
     };
 
     describe('rendering', () => {
@@ -68,26 +78,32 @@ describe('PersonalDetailsForm', () => {
     describe('validation', () => {
         it('should show error when first name is empty', async () => {
             const user = userEvent.setup();
-            render(<PersonalDetailsForm initialData={{}} onSubmit={vi.fn()} />);
+            render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={vi.fn()} />);
 
-            // Type something in other fields to enable submit
+            
             await user.type(screen.getByLabelText(/last name/i), 'Doe');
             await user.type(screen.getByLabelText(/phone number/i), '1234567890');
-            await user.click(screen.getByRole('button', { name: /save changes/i }));
 
-            expect(await screen.findByText(/first name is required/i)).toBeInTheDocument();
+            await submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/first name is required/i)).toBeInTheDocument();
+            });
         });
 
         it('should show error when phone is too short', async () => {
             const user = userEvent.setup();
-            render(<PersonalDetailsForm {...defaultProps} initialData={{}} />);
+            render(<PersonalDetailsForm {...defaultProps} initialData={{ firstName: '', lastName: '', phone: '' }} />);
 
             await user.type(screen.getByLabelText(/first name/i), 'John');
             await user.type(screen.getByLabelText(/last name/i), 'Doe');
             await user.type(screen.getByLabelText(/phone number/i), '123');
-            await user.click(screen.getByRole('button', { name: /save changes/i }));
 
-            expect(await screen.findByText(/phone must be at least 10 digits/i)).toBeInTheDocument();
+            await submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/phone must be at least 10 digits/i)).toBeInTheDocument();
+            });
         });
     });
 
@@ -99,6 +115,7 @@ describe('PersonalDetailsForm', () => {
             render(
                 <PersonalDetailsForm
                     initialData={{ firstName: '', lastName: '', phone: '' }}
+                    email="john@example.com"
                     onSubmit={onSubmit}
                 />
             );
@@ -106,9 +123,10 @@ describe('PersonalDetailsForm', () => {
             await user.type(screen.getByLabelText(/first name/i), 'Jane');
             await user.type(screen.getByLabelText(/last name/i), 'Smith');
             await user.type(screen.getByLabelText(/phone number/i), '9876543210');
-            await user.click(screen.getByRole('button', { name: /save changes/i }));
 
-            await vi.waitFor(() => {
+            await submitForm();
+
+            await waitFor(() => {
                 expect(onSubmit).toHaveBeenCalledWith(
                     expect.objectContaining({
                         firstName: 'Jane',
@@ -116,13 +134,13 @@ describe('PersonalDetailsForm', () => {
                         phone: '9876543210',
                     })
                 );
-            });
+            }, { timeout: 3000 });
         });
 
         it('should disable submit button when form is not dirty', () => {
             render(<PersonalDetailsForm {...defaultProps} />);
 
-            const submitButton = screen.getByRole('button', { name: /save changes/i });
+            const submitButton = getSubmitButton();
             expect(submitButton).toBeDisabled();
         });
     });

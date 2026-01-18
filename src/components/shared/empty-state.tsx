@@ -78,15 +78,15 @@ export function EmptyState({
                     />
                 </div>
             ) : (
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <Icon className="h-8 w-8 text-muted-foreground" />
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
+                    <Icon className="h-8 w-8 text-slate-500 dark:text-slate-400" />
                 </div>
             )}
 
             <h3 className="text-lg font-semibold">{title}</h3>
 
             {description && (
-                <p className="mt-2 max-w-sm text-sm text-muted-foreground">
+                <p className="mt-2 max-w-sm text-sm text-slate-600 dark:text-slate-400">
                     {description}
                 </p>
             )}
@@ -111,7 +111,7 @@ export function EmptyState({
                             <Link
                                 key={link.href}
                                 href={link.href}
-                                className="flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                className="flex items-center gap-1.5 text-sm text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100"
                                 {...(link.external && {
                                     target: '_blank',
                                     rel: 'noopener noreferrer',

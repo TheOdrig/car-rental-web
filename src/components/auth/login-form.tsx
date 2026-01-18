@@ -182,7 +182,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-10 flex items-center px-2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-10 flex items-center px-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                         {showPassword ? (

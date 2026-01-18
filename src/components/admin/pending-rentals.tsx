@@ -29,6 +29,7 @@ import {
     ProcessReturnDialog,
     RejectRentalDialog
 } from './index';
+import { safeFormatDate } from '@/lib/utils/format';
 
 
 interface PendingRentalsTableProps {
@@ -50,13 +51,6 @@ interface PendingRentalsSkeletonProps {
 }
 
 
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
-}
 
 function formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
@@ -66,19 +60,46 @@ function formatCurrency(amount: number): string {
     }).format(amount);
 }
 
-function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
-    switch (status) {
-        case 'Requested':
-            return 'secondary';
-        case 'Confirmed':
-            return 'default';
-        case 'In Use':
-            return 'default';
-        case 'Overdue':
-            return 'destructive';
-        default:
-            return 'outline';
-    }
+const statusConfig: Record<string, { label: string; className: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
+    REQUESTED: {
+        label: 'Requested',
+        variant: 'secondary',
+        className: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800',
+    },
+    CONFIRMED: {
+        label: 'Confirmed',
+        variant: 'default',
+        className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+    },
+    IN_USE: {
+        label: 'In Use',
+        variant: 'secondary',
+        className: 'bg-violet-500 hover:bg-violet-600 text-white',
+    },
+    OVERDUE: {
+        label: 'Overdue',
+        variant: 'destructive',
+        className: 'bg-rose-500 hover:bg-rose-600 text-white',
+    },
+    CANCELLED: {
+        label: 'Cancelled',
+        variant: 'outline',
+        className: 'text-slate-500 border-slate-200 dark:border-slate-800',
+    },
+    RETURNED: {
+        label: 'Returned',
+        variant: 'default',
+        className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+    },
+};
+
+function getStatusDisplay(status: string) {
+    const s = status?.toUpperCase();
+    return statusConfig[s] || {
+        label: status,
+        variant: 'outline' as const,
+        className: '',
+    };
 }
 
 
@@ -222,14 +243,14 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader>
-                                <TableRow>
-                                    <TableHead>Customer</TableHead>
-                                    <TableHead>Vehicle</TableHead>
-                                    <TableHead>Dates</TableHead>
-                                    <TableHead>Amount</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    {type === 'overdue' && <TableHead>Late</TableHead>}
-                                    <TableHead className="text-right">Action</TableHead>
+                                <TableRow className="border-b border-slate-200 dark:border-slate-700">
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Customer</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Vehicle</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Dates</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Amount</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Status</TableHead>
+                                    {type === 'overdue' && <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Late</TableHead>}
+                                    <TableHead className="text-right text-slate-600 dark:text-slate-300 font-semibold">Action</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -289,9 +310,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                         </TableCell>
                                         <TableCell>
                                             <div className="text-sm whitespace-nowrap">
-                                                <p>{formatDate(item.startDate)}</p>
+                                                <p>{safeFormatDate(item.startDate)}</p>
                                                 <p className="text-muted-foreground">
-                                                    to {formatDate(item.endDate)}
+                                                    to {safeFormatDate(item.endDate)}
                                                 </p>
                                             </div>
                                         </TableCell>
@@ -299,9 +320,14 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                             {formatCurrency(item.totalAmount)}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant={getStatusBadgeVariant(item.status)}>
-                                                {item.status}
-                                            </Badge>
+                                            {(() => {
+                                                const display = getStatusDisplay(item.status);
+                                                return (
+                                                    <Badge variant={display.variant} className={display.className}>
+                                                        {display.label}
+                                                    </Badge>
+                                                );
+                                            })()}
                                         </TableCell>
                                         {type === 'overdue' && (
                                             <TableCell>

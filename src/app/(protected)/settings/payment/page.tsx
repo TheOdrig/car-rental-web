@@ -25,6 +25,7 @@ import { PaymentCard } from '@/components/settings/payment-card';
 import { AddCardForm } from '@/components/settings/add-card-form';
 import { EmptyState } from '@/components/shared/empty-state';
 import { showToast } from '@/lib/utils/toast';
+import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
 import type { PaymentMethod } from '@/types/payment';
 
 const MOCK_CARDS: PaymentMethod[] = [
@@ -102,6 +103,10 @@ export default function PaymentMethodsPage() {
 
     return (
         <div className="space-y-6">
+            <ComingSoonBanner
+                title="Payment Methods Coming Soon"
+                description="Card management is currently in demo mode. Added cards are stored locally and real payment processing is not yet available."
+            />
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>

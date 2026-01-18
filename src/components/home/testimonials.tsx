@@ -54,14 +54,14 @@ export function Testimonials({
     if (testimonials.length === 0) return null;
 
     return (
-        <section className={cn('py-12 bg-muted/30', className)}>
+        <section className={cn('py-12 bg-slate-50 dark:bg-slate-950', className)}>
             <div className="container mx-auto px-4">
                 <div className="text-center mb-10">
                     <h2 className="text-2xl md:text-3xl font-bold mb-2">
                         What Our Customers Say
                     </h2>
-                    <p className="text-muted-foreground">
-                        Trusted by <span className="font-semibold text-foreground">10,000+</span> travelers worldwide
+                    <p className="text-slate-600 dark:text-slate-400">
+                        Trusted by <span className="font-semibold text-slate-900 dark:text-slate-100">10,000+</span> travelers worldwide
                     </p>
                 </div>
 
@@ -93,13 +93,13 @@ function TestimonialCard({ testimonial }: TestimonialCardProps) {
                                 'h-4 w-4',
                                 i < testimonial.rating
                                     ? 'text-yellow-400 fill-yellow-400'
-                                    : 'text-gray-300'
+                                    : 'text-slate-300 dark:text-slate-600'
                             )}
                         />
                     ))}
                 </div>
 
-                <p className="text-muted-foreground mb-6 leading-relaxed">
+                <p className="text-slate-600 dark:text-slate-400 mb-6 leading-relaxed">
                     &ldquo;{testimonial.text}&rdquo;
                 </p>
 
@@ -122,14 +122,14 @@ function TestimonialCard({ testimonial }: TestimonialCardProps) {
 
                     <div>
                         <p className="font-semibold">{testimonial.name}</p>
-                        <p className="text-sm text-muted-foreground">
+                        <p className="text-sm text-slate-600 dark:text-slate-400">
                             {testimonial.location}
                         </p>
                     </div>
                 </div>
 
                 {testimonial.date && (
-                    <p className="text-xs text-muted-foreground mt-4">
+                    <p className="text-xs text-slate-600 dark:text-slate-400 mt-4">
                         {testimonial.date}
                     </p>
                 )}

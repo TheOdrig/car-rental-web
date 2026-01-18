@@ -1,9 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
+import { getCar, getCarCalendar } from '@/lib/api/cached-fetchers';
 import { CarDetail } from '@/components/cars';
-import type { Car, CarAvailabilityCalendar } from '@/types';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -17,25 +15,16 @@ export default async function CarDetailPage({ params }: PageProps) {
         notFound();
     }
 
-    let car: Car;
-    let calendar: CarAvailabilityCalendar | undefined;
+    let car;
+    let calendar;
 
     try {
-        car = await serverGet<Car>(
-            endpoints.cars.byId(carId),
-            { tags: ['cars', `car-${carId}`] }
-        );
+        [car, calendar] = await Promise.all([
+            getCar(carId),
+            getCarCalendar(carId),
+        ]);
     } catch {
         notFound();
-    }
-
-    try {
-        calendar = await serverGet<CarAvailabilityCalendar>(
-            endpoints.cars.availability.calendar(carId),
-            { tags: [`car-${carId}-calendar`] }
-        );
-    } catch {
-        // Calendar is optional, continue without it
     }
 
     return (
@@ -53,17 +42,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         return { title: 'Car Not Found' };
     }
 
-    try {
-        const car = await serverGet<Car>(
-            endpoints.cars.byId(carId),
-            { tags: ['cars', `car-${carId}`] }
-        );
+    let car;
 
-        return {
-            title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
-            description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
-        };
+    try {
+        car = await getCar(carId);
     } catch {
         return { title: 'Car Not Found' };
     }
+
+    return {
+        title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
+        description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
+    };
 }

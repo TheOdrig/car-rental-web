@@ -64,3 +64,34 @@ Object.defineProperty(window, 'ResizeObserver', {
     writable: true,
     value: MockResizeObserver,
 });
+
+class MockPointerEvent extends Event {
+    button: number;
+    ctrlKey: boolean;
+    pointerType: string;
+
+    constructor(type: string, props: PointerEventInit = {}) {
+        super(type, props);
+        this.button = props.button ?? 0;
+        this.ctrlKey = props.ctrlKey ?? false;
+        this.pointerType = props.pointerType ?? 'mouse';
+    }
+}
+
+window.PointerEvent = MockPointerEvent as unknown as typeof PointerEvent;
+
+if (!Element.prototype.hasPointerCapture) {
+    Element.prototype.hasPointerCapture = vi.fn(() => false);
+}
+
+if (!Element.prototype.setPointerCapture) {
+    Element.prototype.setPointerCapture = vi.fn();
+}
+
+if (!Element.prototype.releasePointerCapture) {
+    Element.prototype.releasePointerCapture = vi.fn();
+}
+
+if (!Element.prototype.scrollIntoView) {
+    Element.prototype.scrollIntoView = vi.fn();
+}

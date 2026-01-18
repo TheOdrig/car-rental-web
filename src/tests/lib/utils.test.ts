@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { cn } from '@/lib/utils';
 import { showToast, toastMessages } from '@/lib/utils/toast';
+import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
 
 vi.mock('sonner', () => ({
     toast: {
@@ -54,6 +55,39 @@ describe('Utils', () => {
 
         it('should deduplicate conflicting tailwind classes', () => {
             expect(cn('bg-red-500', 'bg-blue-500')).toBe('bg-blue-500');
+        });
+    });
+
+    describe('Date Formatting', () => {
+        const testDate = '2024-01-15T12:00:00Z';
+
+        describe('safeFormatDate', () => {
+            it('should format a valid date string', () => {
+                expect(safeFormatDate(testDate)).toBe('Jan 15, 2024');
+            });
+
+            it('should format with custom format string', () => {
+                expect(safeFormatDate(testDate, 'yyyy-MM-dd')).toBe('2024-01-15');
+            });
+
+            it('should return N/A for null/undefined', () => {
+                expect(safeFormatDate(null)).toBe('N/A');
+                expect(safeFormatDate(undefined)).toBe('N/A');
+            });
+
+            it('should return N/A for invalid date string', () => {
+                expect(safeFormatDate('invalid-date')).toBe('N/A');
+            });
+        });
+
+        describe('safeFormatDateTime', () => {
+            it('should format a valid date string with time', () => {
+                expect(safeFormatDateTime(testDate)).toContain('Jan 15, 2024 at');
+            });
+
+            it('should return N/A for invalid inputs', () => {
+                expect(safeFormatDateTime('')).toBe('N/A');
+            });
         });
     });
 });

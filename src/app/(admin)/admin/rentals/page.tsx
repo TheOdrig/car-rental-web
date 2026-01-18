@@ -13,6 +13,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { PendingRentalsTable } from '@/components/admin';
+import { Breadcrumb } from '@/components/layout/breadcrumb';
 import {
     usePendingApprovals,
     usePendingPickups,
@@ -25,8 +26,7 @@ import {
     useInvalidateAdmin,
 } from '@/lib/hooks/use-admin';
 import type { ProcessReturnData } from '@/types';
-import { toast } from 'sonner';
-
+import { showToast } from '@/lib/utils/toast';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -55,16 +55,14 @@ export default function AdminRentalsPage() {
 
     const handleRefresh = () => {
         void invalidate.pending();
-        toast.success('Rentals refreshed');
+        showToast.success('Rentals refreshed');
     };
 
     const handleApprove = async (rentalId: number, notes?: string) => {
         setActionInProgress(rentalId);
         try {
             await approveMutation.mutateAsync({ rentalId, notes });
-            toast.success('Rental approved successfully');
         } catch {
-            toast.error('Failed to approve rental');
         } finally {
             setActionInProgress(null);
         }
@@ -74,9 +72,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await rejectMutation.mutateAsync({ rentalId, reason });
-            toast.success('Rental rejected successfully');
         } catch {
-            toast.error('Failed to reject rental');
         } finally {
             setActionInProgress(null);
         }
@@ -86,9 +82,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await pickupMutation.mutateAsync({ rentalId, notes });
-            toast.success('Pickup processed successfully');
         } catch {
-            toast.error('Failed to process pickup');
         } finally {
             setActionInProgress(null);
         }
@@ -98,9 +92,7 @@ export default function AdminRentalsPage() {
         setActionInProgress(rentalId);
         try {
             await returnMutation.mutateAsync({ rentalId, data });
-            toast.success('Return processed successfully');
         } catch {
-            toast.error('Failed to process return');
         } finally {
             setActionInProgress(null);
         }
@@ -117,6 +109,12 @@ export default function AdminRentalsPage() {
 
     return (
         <div className="space-y-6">
+            <Breadcrumb
+                items={[
+                    { label: 'Dashboard', href: '/admin/dashboard' },
+                    { label: 'Rental Management' },
+                ]}
+            />
             <div className="flex items-center justify-between">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Rental Management</h1>

@@ -86,7 +86,7 @@ export function RevenueChart({
                     <CardTitle className="text-lg font-semibold">
                         Revenue Trends
                     </CardTitle>
-                    <p className="text-2xl font-bold text-primary mt-1">
+                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
                         {formatCurrency(totalRevenue)}
                     </p>
                 </div>

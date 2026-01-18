@@ -74,7 +74,6 @@ const ACTION_BUTTONS_CONFIG: Record<RentalStatus, ActionButton[]> = {
     ],
     Confirmed: [
         { label: 'View Details', action: 'view', variant: 'ghost' },
-        { label: 'Edit', action: 'edit', variant: 'outline' },
     ],
     Returned: [
         { label: 'Receipt', action: 'receipt', variant: 'ghost', icon: 'receipt' },

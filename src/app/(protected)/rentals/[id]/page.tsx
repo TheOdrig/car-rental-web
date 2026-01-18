@@ -2,6 +2,7 @@
 
 import { use } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import { ChevronRight, Home } from 'lucide-react';
 import { useRental } from '@/lib/hooks';
@@ -62,6 +63,7 @@ function BreadcrumbSkeleton() {
 }
 
 export default function RentalDetailPage({ params }: RentalDetailPageProps) {
+    const router = useRouter();
     const { id } = use(params);
     const rentalId = parseInt(id, 10);
 
@@ -70,6 +72,10 @@ export default function RentalDetailPage({ params }: RentalDetailPageProps) {
     }
 
     const { data: rental, isLoading, error } = useRental(rentalId);
+
+    const handleCancelSuccess = () => {
+        router.push('/rentals');
+    };
 
     if (isLoading) {
         return (
@@ -87,7 +93,7 @@ export default function RentalDetailPage({ params }: RentalDetailPageProps) {
     return (
         <div className="container py-8">
             <Breadcrumb rentalId={rental.id} />
-            <RentalDetail rental={rental} />
+            <RentalDetail rental={rental} onCancelSuccess={handleCancelSuccess} />
         </div>
     );
 }

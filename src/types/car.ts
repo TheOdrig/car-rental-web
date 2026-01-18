@@ -2,6 +2,7 @@ import { CurrencyType } from './common';
 
 export type CarStatus =
     | 'Available'
+    | 'Rented'
     | 'Sold'
     | 'Maintenance'
     | 'Reserved'
@@ -146,11 +147,7 @@ export interface DayAvailability {
 export interface CarAvailabilityCalendar {
     carId: number;
     carName: string;
-    month: {
-        year: number;
-        monthValue: number;
-        month: string;
-    };
+    month: string;
     days: DayAvailability[];
     carBlocked: boolean;
     blockReason?: string;
@@ -181,5 +178,5 @@ export interface CarFilters {
     minSeats?: number;
     minProductionYear?: number;
     maxProductionYear?: number;
-    status?: CarStatus;
+    carStatusType?: string;
 }

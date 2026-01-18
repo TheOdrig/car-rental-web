@@ -13,6 +13,7 @@ import { PaymentForm } from './payment-form';
 import { ProtectionExtras } from './protection-extras';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
+import type { Car } from '@/types';
 
 interface CheckoutFormProps {
     carId: string;
@@ -98,14 +99,14 @@ export function CheckoutForm({
         return <CheckoutSkeleton />;
     }
 
-    const car = carData?.car;
+    const car = ((carData as unknown as { car?: Car })?.car || carData) as Car | undefined;
 
     if (carError || !car) {
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-gray-900 mb-2">Car Not Found</h2>
-                    <p className="text-gray-600">The selected car could not be loaded.</p>
+                    <h2 className="text-xl font-bold text-foreground mb-2">Car Not Found</h2>
+                    <p className="text-muted-foreground">The selected car could not be loaded.</p>
                 </div>
             </div>
         );

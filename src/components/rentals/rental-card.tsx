@@ -3,7 +3,6 @@
 import { memo, type ReactNode } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { format } from 'date-fns';
 import {
     Calendar,
     Car,
@@ -15,6 +14,7 @@ import {
     Zap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { safeFormatDate } from '@/lib/utils/format';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -62,9 +62,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function formatDate(dateString: string): string {
-    return format(new Date(dateString), 'MMM d, yyyy');
-}
 
 function getFuelIcon(fuelType?: string): ReactNode {
     if (!fuelType) return null;
@@ -94,6 +91,7 @@ function ActionButtons({
                     key={action.action}
                     variant={action.variant}
                     size="sm"
+                    className="cursor-pointer"
                     onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -138,7 +136,7 @@ export const RentalCard = memo(function RentalCard({
                     <div className="flex flex-col md:flex-row">
                         <div className="relative h-48 w-full md:h-auto md:w-80 shrink-0">
                             <Image
-                                src={carSummary.thumbnailUrl || '/images/car-placeholder.jpg'}
+                                src={carSummary.thumbnailUrl || '/images/car-placeholder.svg'}
                                 alt={`${carSummary.brand} ${carSummary.model}`}
                                 fill
                                 className={cn(
@@ -167,7 +165,11 @@ export const RentalCard = memo(function RentalCard({
                                 </div>
                                 <Badge
                                     variant={getStatusBadgeVariant(status)}
-                                    className={cn('shrink-0 border', getStatusColor(status))}
+                                    className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        e.stopPropagation();
+                                    }}
                                 >
                                     {status}
                                 </Badge>
@@ -176,9 +178,9 @@ export const RentalCard = memo(function RentalCard({
                             <div className="mb-4 grid gap-2 text-sm">
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Calendar className="h-4 w-4 shrink-0" />
-                                    <span>{formatDate(startDate)}</span>
+                                    <span>{safeFormatDate(startDate)}</span>
                                     <ArrowRight className="h-3 w-3" />
-                                    <span>{formatDate(endDate)}</span>
+                                    <span>{safeFormatDate(endDate)}</span>
                                     <Badge variant="outline" className="ml-1 text-xs">
                                         {days} {days === 1 ? 'day' : 'days'}
                                     </Badge>
@@ -204,7 +206,7 @@ export const RentalCard = memo(function RentalCard({
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xl font-bold text-primary">
+                                    <span className="text-xl font-bold text-slate-900 dark:text-white">
                                         {formatPrice(totalPrice, currency)}
                                     </span>
                                     <Badge variant="outline" className="text-xs">
@@ -257,9 +259,9 @@ export const RentalCard = memo(function RentalCard({
 
                         <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="h-4 w-4 shrink-0" />
-                            <span>{formatDate(startDate)}</span>
+                            <span>{safeFormatDate(startDate)}</span>
                             <ArrowRight className="h-3 w-3" />
-                            <span>{formatDate(endDate)}</span>
+                            <span>{safeFormatDate(endDate)}</span>
                         </div>
 
                         <div className="flex items-center gap-4 text-sm">
@@ -269,7 +271,7 @@ export const RentalCard = memo(function RentalCard({
                                     {days} {days === 1 ? 'day' : 'days'}
                                 </span>
                             </div>
-                            <span className="font-semibold text-primary">
+                            <span className="font-semibold text-slate-900 dark:text-white">
                                 {formatPrice(totalPrice, currency)}
                             </span>
                         </div>
@@ -277,7 +279,11 @@ export const RentalCard = memo(function RentalCard({
 
                     <Badge
                         variant={getStatusBadgeVariant(status)}
-                        className={cn('shrink-0 border', getStatusColor(status))}
+                        className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }}
                     >
                         {status}
                     </Badge>

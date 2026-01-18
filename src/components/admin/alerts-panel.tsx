@@ -1,6 +1,5 @@
 'use client';
 
-import { formatDistanceToNow } from 'date-fns';
 import {
     AlertTriangle,
     AlertCircle,
@@ -13,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { getAlertStyles } from '@/lib/utils/admin-utils';
+import { safeFormatDistanceToNow } from '@/lib/utils/format';
 import type { AdminAlert } from '@/types/admin';
 import type { LucideIcon } from 'lucide-react';
 
@@ -76,7 +76,7 @@ export function AlertsPanel({
 
                                 <div className="flex items-center justify-between mt-3">
                                     <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                                        {formatDistanceToNow(new Date(alert.timestamp), { addSuffix: true })}
+                                        {safeFormatDistanceToNow(alert.timestamp, { addSuffix: true })}
                                     </span>
 
                                     {alert.actions && alert.actions.length > 0 && (

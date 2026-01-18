@@ -11,7 +11,6 @@ import {
     ClipboardList,
     ChevronLeft,
     ChevronRight,
-    LogOut,
     User,
 } from 'lucide-react';
 
@@ -33,7 +32,7 @@ const navItems: NavItem[] = [
         icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
-        label: 'Fleet Status',
+        label: 'Fleet Management',
         href: '/admin/fleet',
         icon: <Car className="h-5 w-5" />,
     },
@@ -52,11 +51,11 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
     return (
         <aside
             className={cn(
-                'flex flex-col border-r bg-card transition-all duration-300',
+                'flex flex-col border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-300',
                 collapsed ? 'w-16' : 'w-64'
             )}
         >
-            <div className="flex h-16 items-center justify-between border-b px-4">
+            <div className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4">
                 {!collapsed && (
                     <Link href="/admin/dashboard" className="flex items-center gap-2">
                         <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
@@ -92,7 +91,7 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
                                 'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                                 isActive
                                     ? 'bg-primary text-primary-foreground'
-                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100',
                                 collapsed && 'justify-center px-2'
                             )}
                             title={collapsed ? item.label : undefined}
@@ -104,35 +103,23 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
                 })}
             </nav>
 
-            <div className="border-t p-2">
+            <div className="border-t border-slate-200 dark:border-slate-700 p-2">
                 <div
                     className={cn(
                         'flex items-center gap-3 rounded-lg px-3 py-2',
                         collapsed && 'justify-center px-2'
                     )}
                 >
-                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
                         <User className="h-4 w-4" />
                     </div>
                     {!collapsed && (
                         <div className="flex-1 truncate">
                             <p className="text-sm font-medium truncate">{username}</p>
-                            <p className="text-xs text-muted-foreground">Administrator</p>
+                            <p className="text-xs text-slate-600 dark:text-slate-400">Administrator</p>
                         </div>
                     )}
                 </div>
-
-                <Link
-                    href="/"
-                    className={cn(
-                        'flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors mt-1',
-                        collapsed && 'justify-center px-2'
-                    )}
-                    title={collapsed ? 'Exit Admin' : undefined}
-                >
-                    <LogOut className="h-5 w-5" />
-                    {!collapsed && <span>Exit Admin</span>}
-                </Link>
             </div>
         </aside>
     );

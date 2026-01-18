@@ -70,12 +70,12 @@ describe('ProcessReturnDialog', () => {
             />
         );
 
-        // Fill odometer
+        
         const odometerInput = screen.getByLabelText(/Odometer Reading/i);
         await user.type(odometerInput, '15200');
 
-        // Check boxes (default are checked/true, let's toggle one)
-        await user.click(screen.getByLabelText(/No new damages found/i)); // now false
+        
+        await user.click(screen.getByLabelText(/No new damages found/i)); 
 
         const confirmButton = screen.getByRole('button', { name: /Complete Return/i });
         await user.click(confirmButton);

@@ -53,10 +53,13 @@ export function useAuth(): AuthContextValue {
     } = useQuery({
         queryKey: authKeys.me(),
         queryFn: fetchMe,
-        retry: false,
+        retry: 1,
         staleTime: 5 * 60 * 1000,
         refetchOnWindowFocus: true,
         refetchOnMount: true,
+
+        refetchInterval: 10 * 60 * 1000,
+        refetchIntervalInBackground: false,
     });
 
     const user: User | null = meData
@@ -132,7 +135,7 @@ export function useCurrentUser() {
     } = useQuery({
         queryKey: authKeys.me(),
         queryFn: fetchMe,
-        retry: false,
+        retry: 1,
         staleTime: 5 * 60 * 1000,
     });
 

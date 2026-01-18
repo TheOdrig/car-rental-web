@@ -19,14 +19,14 @@ export function PersonalDetails({
     isLoggedIn,
 }: PersonalDetailsProps) {
     return (
-        <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
+        <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
                     1
                 </span>
-                <h2 className="text-xl font-bold text-foreground">Personal Details</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Personal Details</h2>
                 {isLoggedIn && (
-                    <span className="ml-auto text-xs text-muted-foreground bg-muted px-2 py-1 rounded">
+                    <span className="ml-auto text-xs text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">
                         Auto-filled from profile
                     </span>
                 )}
@@ -86,7 +86,7 @@ export function PersonalDetails({
                         Email Address
                     </Label>
                     <div className="relative">
-                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-muted-foreground pointer-events-none">
+                        <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 dark:text-slate-400 pointer-events-none">
                             <Mail className="h-5 w-5" />
                         </span>
                         <Controller

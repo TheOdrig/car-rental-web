@@ -24,6 +24,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
+import { safeFormatDate } from '@/lib/utils/format';
 
 type UserRole = 'admin' | 'customer' | 'support';
 type UserStatus = 'active' | 'pending' | 'banned';
@@ -138,13 +139,6 @@ function getInitials(name: string): string {
         .slice(0, 2);
 }
 
-function formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
-}
 
 export const UserTable = memo(function UserTable({
     searchQuery = '',
@@ -218,7 +212,7 @@ export const UserTable = memo(function UserTable({
                                                 <div>
                                                     <p className="font-semibold">{user.name}</p>
                                                     <p className="text-xs text-muted-foreground">
-                                                        Joined {formatDate(user.registeredAt)}
+                                                        Joined {safeFormatDate(user.registeredAt)}
                                                     </p>
                                                 </div>
                                             </div>

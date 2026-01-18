@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
+import { routePost } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 import type { QuickActionResult } from '@/types';
@@ -18,10 +18,17 @@ export async function POST(
         );
     }
 
+    let body;
     try {
-        const result = await serverPost<QuickActionResult>(
+        body = await _request.json();
+    } catch {
+        body = undefined;
+    }
+
+    try {
+        const result = await routePost<QuickActionResult>(
             endpoints.admin.quickActions.approve(rentalId),
-            undefined,
+            body,
             { cache: 'no-store' }
         );
 

@@ -11,6 +11,9 @@ async function getAuthHeader(): Promise<Record<string, string>> {
     if (token) {
         return { Authorization: `Bearer ${token}` };
     }
+
+    
+    
     return {};
 }
 

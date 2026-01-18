@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
+import { routeGet } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 import type { DailySummary } from '@/types';
 
 export async function GET() {
     try {
-        const data = await serverGet<DailySummary>(endpoints.admin.dashboard.summary, {
+        const data = await routeGet<DailySummary>(endpoints.admin.dashboard.summary, {
             cache: 'no-store',
             tags: ['admin', 'dashboard', 'summary'],
         });

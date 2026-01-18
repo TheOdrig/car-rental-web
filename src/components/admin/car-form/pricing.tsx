@@ -89,8 +89,8 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
                 </p>
             </div>
 
-            <div className="rounded-lg bg-muted/50 p-4 mt-6">
-                <h4 className="font-medium mb-2">Pricing Summary</h4>
+            <div className="rounded-lg bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 p-4 mt-6">
+                <h4 className="font-medium mb-2 text-slate-900 dark:text-slate-100">Pricing Summary</h4>
                 <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Daily Rate</span>

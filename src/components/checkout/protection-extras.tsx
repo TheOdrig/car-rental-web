@@ -3,6 +3,7 @@
 import { Shield, Navigation, Baby, Users } from 'lucide-react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { cn } from '@/lib/utils';
+import { formatCurrency, formatCurrencyWithDecimals } from '@/lib/utils/format';
 import type { Addon } from '@/types';
 
 interface ProtectionExtrasProps {
@@ -11,15 +12,6 @@ interface ProtectionExtrasProps {
     onAddonChange: (addonId: string, selected: boolean) => void;
     rentalDays: number;
     currency?: string;
-}
-
-function formatPrice(price: number, currency: string = 'TRY'): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency,
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
 }
 
 function getAddonIcon(iconName?: string) {
@@ -43,14 +35,15 @@ export function ProtectionExtras({
     selectedAddons,
     onAddonChange,
     rentalDays,
+    currency = 'USD',
 }: ProtectionExtrasProps) {
     return (
-        <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
+        <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
                     3
                 </span>
-                <h2 className="text-xl font-bold text-foreground">Protection & Extras</h2>
+                <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Protection & Extras</h2>
             </div>
 
             <div className="space-y-4">
@@ -84,13 +77,13 @@ export function ProtectionExtras({
                                     <div className="flex items-center gap-2">
                                         <span
                                             className={cn(
-                                                'text-muted-foreground',
+                                                'text-slate-500 dark:text-slate-400',
                                                 isSelected && 'text-primary'
                                             )}
                                         >
                                             {getAddonIcon(addon.icon)}
                                         </span>
-                                        <span className="text-base font-semibold text-foreground">
+                                        <span className="text-base font-semibold text-slate-900 dark:text-slate-100">
                                             {addon.name}
                                         </span>
                                         {addon.popular && (
@@ -101,19 +94,19 @@ export function ProtectionExtras({
                                     </div>
                                     <div className="text-right">
                                         <span className="text-base font-bold text-primary">
-                                            +{formatPrice(addon.pricePerDay)}
-                                            <span className="text-xs font-normal text-muted-foreground">
+                                            +{formatCurrency(addon.pricePerDay, currency)}
+                                            <span className="text-xs font-normal text-slate-600 dark:text-slate-400">
                                                 /day
                                             </span>
                                         </span>
                                         {rentalDays > 1 && (
-                                            <p className="text-xs text-muted-foreground">
-                                                {formatPrice(totalCost)} total
+                                            <p className="text-xs text-slate-600 dark:text-slate-400">
+                                                {formatCurrencyWithDecimals(totalCost, currency)} total
                                             </p>
                                         )}
                                     </div>
                                 </div>
-                                <p className="text-sm text-muted-foreground mt-1">
+                                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
                                     {addon.description}
                                 </p>
                             </div>
@@ -123,7 +116,7 @@ export function ProtectionExtras({
             </div>
 
             {addons.length === 0 && (
-                <div className="text-center py-8 text-muted-foreground">
+                <div className="text-center py-8 text-slate-600 dark:text-slate-400">
                     <p>No additional options available for this rental.</p>
                 </div>
             )}

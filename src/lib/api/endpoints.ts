@@ -62,6 +62,7 @@ export const endpoints = {
         acknowledgeAlert: (id: number) => `${API_BASE_URL}/api/admin/alerts/${id}/acknowledge`,
         quickActions: {
             approve: (id: number) => `${API_BASE_URL}/api/admin/quick-actions/rentals/${id}/approve`,
+            reject: (id: number) => `${API_BASE_URL}/api/admin/quick-actions/rentals/${id}/reject`,
             pickup: (id: number) => `${API_BASE_URL}/api/admin/quick-actions/rentals/${id}/pickup`,
             return: (id: number) => `${API_BASE_URL}/api/admin/quick-actions/rentals/${id}/return`,
         },
@@ -70,12 +71,12 @@ export const endpoints = {
         penaltyWaive: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/waive`,
         penaltyHistory: (id: number) => `${API_BASE_URL}/api/admin/rentals/${id}/penalty/history`,
         cars: {
-            list: `${API_BASE_URL}/api/admin/cars`,
-            create: `${API_BASE_URL}/api/admin/cars`,
-            byId: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
-            update: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
-            delete: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}`,
-            updateStatus: (id: number) => `${API_BASE_URL}/api/admin/cars/${id}/status`,
+            list: `${API_BASE_URL}/api/cars`,
+            create: `${API_BASE_URL}/api/cars`,
+            byId: (id: number) => `${API_BASE_URL}/api/cars/${id}`,
+            update: (id: number) => `${API_BASE_URL}/api/cars/${id}`,
+            delete: (id: number) => `${API_BASE_URL}/api/cars/${id}`,
+            updateStatus: (id: number) => `${API_BASE_URL}/api/cars/business/${id}/status`,
         },
         users: {
             list: `${API_BASE_URL}/api/admin/users`,

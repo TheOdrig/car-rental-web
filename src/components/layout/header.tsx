@@ -1,9 +1,10 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
-import { Car, Menu, User } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import { useAuth } from '@/lib/hooks/use-auth';
 import { Button } from '@/components/ui/button';
 import {
@@ -36,7 +37,7 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60">
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex items-center gap-4">
                     <MobileNav
@@ -48,7 +49,13 @@ export function Header() {
                         }
                     />
                     <Link href="/" className="flex items-center gap-2 font-bold text-xl">
-                        <Car className="h-6 w-6 text-primary" />
+                        <Image
+                            src="/images/logo.svg"
+                            alt="CarRental"
+                            width={48}
+                            height={48}
+                            className="h-12 w-auto dark:invert"
+                        />
                         <span>CarRental</span>
                     </Link>
                 </div>
@@ -57,10 +64,10 @@ export function Header() {
                     <Link href="/cars" className="transition-colors hover:text-primary">
                         Browse Cars
                     </Link>
-                    <Link href="/locations" className="text-muted-foreground transition-colors hover:text-foreground">
+                    <Link href="/locations" className="text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100">
                         Locations
                     </Link>
-                    <Link href="/about" className="text-muted-foreground transition-colors hover:text-foreground">
+                    <Link href="/about" className="text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100">
                         About
                     </Link>
                 </nav>
@@ -68,12 +75,12 @@ export function Header() {
                 <div className="flex items-center gap-2">
                     <ThemeToggle />
                     {isLoading ? (
-                        <div className="h-9 w-20 animate-pulse rounded bg-muted" />
+                        <div className="h-9 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-muted">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
                                         <User className="h-4 w-4" />
                                     </span>
                                 </Button>
@@ -82,7 +89,7 @@ export function Header() {
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
                                         <p className="text-sm font-medium leading-none">{user?.username}</p>
-                                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
+                                        <p className="text-xs leading-none text-slate-600 dark:text-slate-400">{user?.email}</p>
                                     </div>
                                 </DropdownMenuLabel>
                                 <DropdownMenuSeparator />
@@ -98,7 +105,7 @@ export function Header() {
                                     <Link href="/rentals">My Rentals</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href="/profile">Profile</Link>
+                                    <Link href="/settings/profile">Profile</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">

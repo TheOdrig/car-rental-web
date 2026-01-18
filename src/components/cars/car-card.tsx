@@ -144,7 +144,7 @@ export const CarCard = memo(function CarCard({
 
                 <div className="flex items-baseline justify-between">
                     <div>
-                        <span className="text-xl font-bold text-primary">
+                        <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
                             {formatPrice(price, currency)}
                         </span>
                         {isSearchResult && (

@@ -133,11 +133,19 @@ export function useCarCalendar(id: number | null | undefined, month?: string) {
     return useQuery({
         queryKey: carKeys.calendar(id!, month),
         queryFn: async () => {
-            const response = await fetchCar(id!, {
-                includeCalendar: true,
-                calendarMonth: month,
-            });
-            return response.calendar;
+            try {
+                const params = new URLSearchParams();
+                if (month) params.append('month', month);
+
+                const queryString = params.toString();
+                const url = `/api/cars/${id}/availability/calendar${queryString ? '?' + queryString : ''}`;
+
+                const data = await clientGet<CarAvailabilityCalendar>(url);
+                return data ?? null;
+            } catch (error) {
+                console.error('Error fetching car calendar:', error);
+                return null;
+            }
         },
         enabled: !!id,
         staleTime: 2 * 60 * 1000,
@@ -149,8 +157,9 @@ export function useSimilarCars(id: number | null | undefined) {
     return useQuery({
         queryKey: carKeys.similar(id!),
         queryFn: async () => {
-            const response = await fetchCar(id!, { includeSimilar: true });
-            return response.similarCars ?? [];
+            const url = `/api/cars/${id}/similar`;
+            const data = await clientGet<SimilarCar[]>(url);
+            return data || [];
         },
         enabled: !!id,
         staleTime: 10 * 60 * 1000,

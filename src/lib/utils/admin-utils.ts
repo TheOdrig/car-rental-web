@@ -1,11 +1,5 @@
-export function formatCurrency(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-        style: 'currency',
-        currency: 'USD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(amount);
-}
+import { isValid } from 'date-fns';
+export { formatCurrency } from '@/lib/utils/format';
 
 export function formatTrend(value: number): string {
     const sign = value >= 0 ? '+' : '';
@@ -25,6 +19,7 @@ export function validateRejectForm(reason: string): boolean {
 
 export function formatTime(date: Date | string): string {
     const d = typeof date === 'string' ? new Date(date) : date;
+    if (!isValid(d)) return 'N/A';
     return d.toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
@@ -34,6 +29,7 @@ export function formatTime(date: Date | string): string {
 
 export function formatDate(date: Date | string): string {
     const d = typeof date === 'string' ? new Date(date) : date;
+    if (!isValid(d)) return 'N/A';
     return d.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',

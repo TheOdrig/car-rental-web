@@ -52,7 +52,7 @@ describe('RentalActions', () => {
             expect(screen.getByRole('button', { name: /modify booking/i })).toBeInTheDocument();
         });
 
-        it('should render View Details and Edit for Confirmed status', () => {
+        it('should render View Details for Confirmed status', () => {
             render(
                 <RentalActions
                     rental={createMockRental('Confirmed')}
@@ -61,7 +61,6 @@ describe('RentalActions', () => {
             );
 
             expect(screen.getByRole('button', { name: /view details/i })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /edit/i })).toBeInTheDocument();
         });
 
         it('should render Receipt and Book Again for Returned status', () => {
@@ -126,15 +125,15 @@ describe('RentalActions', () => {
 
         it('should call onAction for each button click', async () => {
             const user = userEvent.setup();
-            const rental = createMockRental('Confirmed');
+            const rental = createMockRental('Returned');
 
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
 
-            await user.click(screen.getByRole('button', { name: /view details/i }));
-            expect(mockOnAction).toHaveBeenCalledWith('view', rental);
+            await user.click(screen.getByRole('button', { name: /receipt/i }));
+            expect(mockOnAction).toHaveBeenCalledWith('receipt', rental);
 
-            await user.click(screen.getByRole('button', { name: /edit/i }));
-            expect(mockOnAction).toHaveBeenCalledWith('edit', rental);
+            await user.click(screen.getByRole('button', { name: /book again/i }));
+            expect(mockOnAction).toHaveBeenCalledWith('book-again', rental);
         });
 
         it('should prevent event propagation', async () => {

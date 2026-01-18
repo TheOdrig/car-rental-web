@@ -1,17 +1,20 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { AlertsPanel } from '@/components/admin/alerts-panel';
 import { renderWithProviders } from '../../test-utils';
 import { AdminAlert } from '@/types/admin';
-import { formatDistanceToNow } from 'date-fns';
 
-vi.mock('date-fns');
+vi.mock('@/lib/utils/format', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/lib/utils/format')>();
+    return {
+        ...original,
+        safeFormatDistanceToNow: vi.fn(() => '2 minutes ago'),
+    };
+});
 
 describe('AlertsPanel', () => {
     const user = userEvent.setup();
-
-    vi.mocked(formatDistanceToNow).mockReturnValue('2 minutes ago');
 
     const mockAlerts: AdminAlert[] = [
         {

@@ -3,11 +3,8 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { format } from 'date-fns';
 import {
     Calendar,
-    Clock,
-    Car,
     CreditCard,
     Loader2,
     X,
@@ -25,6 +22,7 @@ import {
     Users,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -61,20 +59,13 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-function formatDate(dateString: string): string {
-    return format(new Date(dateString), 'EEEE, MMMM d, yyyy');
-}
-
-function formatDateTime(dateString: string): string {
-    return format(new Date(dateString), 'MMM d, yyyy \'at\' h:mm a');
-}
 
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
         case 'Confirmed':
             return 'bg-green-500/10 text-green-600 border-green-200';
         case 'In Use':
-            return 'bg-blue-500/10 text-blue-600 border-blue-200';
+            return 'bg-purple-500/10 text-purple-600 border-purple-200';
         case 'Requested':
             return 'bg-amber-500/10 text-amber-600 border-amber-200';
         case 'Returned':
@@ -108,12 +99,12 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
             setShowCancelDialog(false);
             onCancelSuccess?.();
         } catch {
-            // Error handled by mutation
+            
         }
     };
 
     const handleSupport = () => {
-        showToast.info('Opening support chat...');
+        showToast.info('Support chat coming soon');
     };
 
     const handleModifyDates = () => {
@@ -121,7 +112,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
     };
 
     const handleDownloadInvoice = () => {
-        showToast.info('Downloading invoice...');
+        showToast.info('Invoice download coming soon');
     };
 
     const handleGetDirections = () => {
@@ -139,7 +130,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                         </Badge>
                     </div>
                     <p className="text-muted-foreground">
-                        Booked on {formatDateTime(rental.createTime)}
+                        Booked on {safeFormatDateTime(rental.createTime)}
                     </p>
                 </div>
 
@@ -171,8 +162,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 <div className="space-y-6 lg:col-span-2">
                     <Card>
                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <Car className="h-5 w-5" />
+                            <CardTitle className="text-lg">
                                 Vehicle Details
                             </CardTitle>
                         </CardHeader>
@@ -190,7 +180,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <p className="text-xl font-semibold transition-colors group-hover:text-primary">
+                                    <p className="text-xl font-semibold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
                                         {carSummary.brand} {carSummary.model}
                                     </p>
                                     <p className="mb-3 text-muted-foreground">
@@ -240,27 +230,82 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                         </CardContent>
                     </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <Calendar className="h-5 w-5" />
-                                Rental Period
+                    {(rental.approvalNotes || rental.cancellationReason || rental.pickupNotes || rental.returnNotes) && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2 text-lg">
+                                    <Edit className="h-5 w-5" />
+                                    Notes
+                                </CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-3">
+                                {rental.approvalNotes && (
+                                    <div className="rounded-lg bg-green-50 dark:bg-green-950 p-3 border border-green-200 dark:border-green-800">
+                                        <p className="text-sm font-medium text-green-700 dark:text-green-300 mb-1">Approval Note</p>
+                                        <p className="text-sm text-green-600 dark:text-green-400">{rental.approvalNotes}</p>
+                                    </div>
+                                )}
+                                {rental.cancellationReason && (
+                                    <div className="rounded-lg bg-red-50 dark:bg-red-950 p-3 border border-red-200 dark:border-red-800">
+                                        <p className="text-sm font-medium text-red-700 dark:text-red-300 mb-1">Cancellation Reason</p>
+                                        <p className="text-sm text-red-600 dark:text-red-400">{rental.cancellationReason}</p>
+                                    </div>
+                                )}
+                                {rental.pickupNotes && (
+                                    <div className="rounded-lg bg-purple-50 dark:bg-purple-950 p-3 border border-purple-200 dark:border-purple-800">
+                                        <p className="text-sm font-medium text-purple-700 dark:text-purple-300 mb-1">Pickup Note</p>
+                                        <p className="text-sm text-purple-600 dark:text-purple-400">{rental.pickupNotes}</p>
+                                    </div>
+                                )}
+                                {rental.returnNotes && (
+                                    <div className="rounded-lg bg-slate-50 dark:bg-slate-900 p-3 border border-slate-200 dark:border-slate-700">
+                                        <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Return Note</p>
+                                        <p className="text-sm text-slate-600 dark:text-slate-400">{rental.returnNotes}</p>
+                                    </div>
+                                )}
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    <Card className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-md">
+                        <CardHeader className="border-b border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
+                            <CardTitle className="flex items-center justify-between">
+                                <span className="flex items-center gap-2 text-base font-bold text-slate-900 dark:text-white">
+                                    <div className="p-1.5 rounded-lg bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700">
+                                        <Calendar className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+                                    </div>
+                                    Rental Period
+                                </span>
+                                <Badge variant="secondary" className="bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-none font-bold tabular-nums">
+                                    {days} {days === 1 ? 'DAY' : 'DAYS'}
+                                </Badge>
                             </CardTitle>
                         </CardHeader>
-                        <CardContent>
-                            <div className="grid gap-4 sm:grid-cols-2">
-                                <div className="rounded-lg bg-muted/50 p-4">
-                                    <p className="mb-1 text-sm text-muted-foreground">Pick-up</p>
-                                    <p className="font-semibold">{formatDate(startDate)}</p>
+                        <CardContent className="p-0">
+                            <div className="grid grid-cols-1 md:grid-cols-2 relative">
+                                <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-10 hidden md:block">
+                                    <div className="bg-white dark:bg-slate-950 p-2 rounded-full border border-slate-200 dark:border-slate-800 shadow-sm">
+                                        <ExternalLink className="h-4 w-4 text-slate-400 rotate-45" />
+                                    </div>
                                 </div>
-                                <div className="rounded-lg bg-muted/50 p-4">
-                                    <p className="mb-1 text-sm text-muted-foreground">Return</p>
-                                    <p className="font-semibold">{formatDate(endDate)}</p>
+
+                                <div className="p-6 border-b md:border-b-0 md:border-r border-slate-100 dark:divide-slate-800/50 dark:border-slate-800 group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" />
+                                        Pick-up
+                                    </div>
+                                    <p className="text-xl font-bold dark:text-white mb-1">{safeFormatDate(startDate, 'MMMM d, yyyy')}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">{safeFormatDate(startDate, 'EEEE')} at 10:00 AM</p>
                                 </div>
-                            </div>
-                            <div className="mt-4 flex items-center justify-center gap-2 text-muted-foreground">
-                                <Clock className="h-4 w-4" />
-                                <span>{days} {days === 1 ? 'day' : 'days'} total</span>
+
+                                <div className="p-6 group hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors">
+                                    <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
+                                        Return
+                                    </div>
+                                    <p className="text-xl font-bold dark:text-white mb-1">{safeFormatDate(endDate, 'MMMM d, yyyy')}</p>
+                                    <p className="text-sm text-slate-500 dark:text-slate-400">{safeFormatDate(endDate, 'EEEE')} at 10:00 AM</p>
+                                </div>
                             </div>
                         </CardContent>
                     </Card>
@@ -330,7 +375,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 </div>
 
                 <div className="space-y-6">
-                    <Card className="sticky top-24">
+                    <Card>
                         <CardHeader>
                             <CardTitle className="flex items-center gap-2 text-lg">
                                 <CreditCard className="h-5 w-5" />
@@ -341,15 +386,15 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                             <div className="space-y-3">
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Daily rate</span>
-                                    <span>{formatPrice(dailyPrice, currency)}</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">{formatPrice(dailyPrice, currency)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Duration</span>
-                                    <span>{days} {days === 1 ? 'day' : 'days'}</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">{days} {days === 1 ? 'day' : 'days'}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Subtotal</span>
-                                    <span>{formatPrice(dailyPrice * days, currency)}</span>
+                                    <span className="font-medium text-slate-900 dark:text-white">{formatPrice(dailyPrice * days, currency)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Insurance</span>
@@ -363,7 +408,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                 )}
                                 <div className="flex justify-between border-t pt-3 text-lg font-bold">
                                     <span>Total</span>
-                                    <span className="text-primary">{formatPrice(totalPrice, currency)}</span>
+                                    <span className="text-slate-900 dark:text-white">{formatPrice(totalPrice, currency)}</span>
                                 </div>
                             </div>
 

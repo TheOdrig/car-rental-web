@@ -36,7 +36,7 @@ describe('RejectRentalDialog', () => {
         );
 
         expect(screen.getByText(/Reject Rental Request/i)).toBeInTheDocument();
-        expect(screen.getByText(/Are you sure you want to reject/i)).toBeInTheDocument();
+        expect(screen.getByText(/This action will inform the customer/i)).toBeInTheDocument();
         expect(screen.getByText('Porsche 911')).toBeInTheDocument();
         expect(screen.getByText('FAST-01')).toBeInTheDocument();
         expect(screen.getByText('Bad Driver')).toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('RejectRentalDialog', () => {
             />
         );
 
-        const reasonField = screen.getByPlaceholderText(/Please explain why/i);
+        const reasonField = screen.getByPlaceholderText(/Please explain the reason for rejection/i);
         await user.type(reasonField, 'Vehicle unavailable due to unexpected maintenance.');
 
         const rejectButton = screen.getByRole('button', { name: /Reject Request/i });
@@ -91,6 +91,6 @@ describe('RejectRentalDialog', () => {
             />
         );
 
-        expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
+        expect(screen.getByText(/Rejecting.../i)).toBeInTheDocument();
     });
 });

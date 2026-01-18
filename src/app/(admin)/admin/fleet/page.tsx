@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import { RefreshCw, Plus, Download, Clock, Search, Filter } from 'lucide-react';
+import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -15,26 +15,81 @@ import {
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { FleetStatsCards } from '@/components/admin/fleet-stats';
 import { FleetTable } from '@/components/admin/fleet-table';
-import { useFleetStatus, useInvalidateAdmin } from '@/lib/hooks/use-admin';
+import {
+    useFleetStatus,
+    useInvalidateAdmin,
+    useAdminCars,
+    useDeleteCar,
+    useUpdateCarStatus,
+} from '@/lib/hooks/use-admin';
 import { toast } from 'sonner';
+import type { CarStatus } from '@/types';
 
-type CarStatus = 'all' | 'available' | 'rented' | 'maintenance' | 'damaged';
+type StatusFilter = 'all' | CarStatus;
 
 export default function FleetManagementPage() {
     const [searchQuery, setSearchQuery] = useState('');
-    const [statusFilter, setStatusFilter] = useState<CarStatus>('all');
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
-    const { data: fleetStatus, isLoading } = useFleetStatus();
-    const invalidate = useInvalidateAdmin();
+    
+    const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
+    const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useAdminCars({
+        status: statusFilter !== 'all' ? statusFilter : undefined,
+        brand: brandFilter !== 'all' ? brandFilter : undefined,
+        search: searchQuery || undefined,
+        size: 25,
+    });
+    useInvalidateAdmin();
 
-    const handleRefresh = () => {
-        void invalidate.fleet();
-        toast.success('Fleet data refreshed');
+    const isRefreshing = isFetchingFleet || isFetchingCars;
+
+    
+    const deleteCarMutation = useDeleteCar();
+    const updateStatusMutation = useUpdateCarStatus();
+
+    
+    const carsContent = carsData?.content;
+    const filteredCars = useMemo(() => {
+        if (!carsContent) return [];
+
+        return carsContent.filter((car) => {
+            const matchesSearch =
+                searchQuery === '' ||
+                `${car.brand} ${car.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                car.licensePlate.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesStatus =
+                statusFilter === 'all' || car.carStatusType === statusFilter;
+
+            const matchesBrand =
+                brandFilter === 'all' || car.brand.toLowerCase() === brandFilter.toLowerCase();
+
+            return matchesSearch && matchesStatus && matchesBrand;
+        });
+    }, [carsContent, searchQuery, statusFilter, brandFilter]);
+
+    const handleRefresh = async () => {
+        console.log('[Fleet] Refreshing data...');
+        try {
+            await Promise.all([
+                refetchFleet(),
+                refetchCars(),
+            ]);
+            console.log('[Fleet] Refresh complete');
+            toast.success('Fleet data refreshed');
+        } catch (error) {
+            console.error('[Fleet] Refresh failed:', error);
+            toast.error('Failed to refresh');
+        }
     };
 
-    const handleExport = () => {
-        toast.info('Export feature coming soon');
+    const handleDeleteCar = (carId: number) => {
+        deleteCarMutation.mutate(carId);
+    };
+
+    const handleUpdateStatus = (carId: number, status: CarStatus) => {
+        updateStatusMutation.mutate({ carId, status });
     };
 
     const lastUpdated = fleetStatus?.generatedAt
@@ -45,6 +100,8 @@ export default function FleetManagementPage() {
         })
         : null;
 
+    const isLoading = isLoadingStats || isLoadingCars;
+
     return (
         <div className="space-y-6">
             <Breadcrumb
@@ -54,41 +111,32 @@ export default function FleetManagementPage() {
                 ]}
             />
 
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm bg-white/30 dark:bg-slate-900/30 p-6 rounded-3xl border border-white/50 dark:border-white/5 shadow-sm">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">Fleet Management</h1>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <p className="text-sm">Manage your vehicle inventory</p>
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Fleet Management</h1>
+                    <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                        <span>Manage your vehicle inventory</span>
                         {lastUpdated && (
-                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
+                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-white/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
                                 <Clock className="h-3 w-3" aria-hidden="true" />
                                 Updated {lastUpdated}
                             </span>
                         )}
                     </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     <Button
                         variant="outline"
-                        size="sm"
+                        size="icon"
                         onClick={handleRefresh}
-                        className="gap-2"
+                        disabled={isRefreshing}
+                        className="h-9 w-9 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-white/10 rounded-xl cursor-pointer"
                         aria-label="Refresh fleet data"
                     >
-                        <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden sm:inline">Refresh</span>
+                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
                     </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleExport}
-                        className="gap-2"
-                        aria-label="Export fleet data"
-                    >
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        <span className="hidden sm:inline">Export</span>
-                    </Button>
-                    <Button size="sm" className="gap-2" asChild>
+
+                    <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-blue-500/20 cursor-pointer" asChild>
                         <Link href="/admin/fleet/new">
                             <Plus className="h-4 w-4" aria-hidden="true" />
                             Add New Car
@@ -102,12 +150,14 @@ export default function FleetManagementPage() {
                     totalCars: 0,
                     availableCars: 0,
                     rentedCars: 0,
+                    reservedCars: 0,
                     maintenanceCars: 0,
+                    inspectionCars: 0,
                     damagedCars: 0,
                     occupancyRate: 0,
                     generatedAt: new Date().toISOString(),
                 }}
-                isLoading={isLoading}
+                isLoading={isLoadingStats}
             />
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -122,21 +172,27 @@ export default function FleetManagementPage() {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as CarStatus)}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                    <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by status"
+                        >
                             <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="available">Available</SelectItem>
-                            <SelectItem value="rented">On Road</SelectItem>
-                            <SelectItem value="maintenance">Maintenance</SelectItem>
-                            <SelectItem value="damaged">Damaged</SelectItem>
+                            <SelectItem value="Available">Available</SelectItem>
+                            <SelectItem value="Sold">On Road</SelectItem>
+                            <SelectItem value="Maintenance">Maintenance</SelectItem>
+                            <SelectItem value="Damaged">Damaged</SelectItem>
                         </SelectContent>
                     </Select>
                     <Select value={brandFilter} onValueChange={setBrandFilter}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by brand">
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by brand"
+                        >
                             <SelectValue placeholder="Brand" />
                         </SelectTrigger>
                         <SelectContent>
@@ -150,12 +206,15 @@ export default function FleetManagementPage() {
                 </div>
             </div>
 
-            {/* Fleet Table */}
+            {}
             <FleetTable
-                searchQuery={searchQuery}
-                statusFilter={statusFilter}
-                brandFilter={brandFilter}
+                cars={filteredCars}
+                totalCars={carsData?.totalElements ?? 0}
                 isLoading={isLoading}
+                onDeleteCar={handleDeleteCar}
+                onUpdateStatus={handleUpdateStatus}
+                isDeleting={deleteCarMutation.isPending}
+                isUpdatingStatus={updateStatusMutation.isPending}
             />
         </div>
     );

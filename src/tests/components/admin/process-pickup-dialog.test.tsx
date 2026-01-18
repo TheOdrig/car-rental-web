@@ -40,7 +40,7 @@ describe('ProcessPickupDialog', () => {
         expect(screen.getByText('XYZ-5678')).toBeInTheDocument();
         expect(screen.getByText(/RENT-202/)).toBeInTheDocument();
 
-        // Checklist items
+        
         expect(screen.getByLabelText(/Customer ID Verified/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Vehicle condition inspected/i)).toBeInTheDocument();
     });

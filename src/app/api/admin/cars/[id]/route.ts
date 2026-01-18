@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost, serverGet, serverDelete } from '@/lib/api/server';
+import { routeGet, routePut, routeDelete } from '@/lib/api/route-handler';
 import { endpoints } from '@/lib/api/endpoints';
 import { isApiException } from '@/lib/api/errors';
 
@@ -18,7 +18,7 @@ export async function GET(
             );
         }
 
-        const data = await serverGet(endpoints.admin.cars.byId(carId), {
+        const data = await routeGet(endpoints.admin.cars.byId(carId), {
             cache: 'no-store',
         });
 
@@ -57,7 +57,32 @@ export async function POST(
 
         const body = await request.json();
 
-        const data = await serverPost(endpoints.admin.cars.update(carId), body, {
+        const backendRequest: Record<string, unknown> = {
+            brand: body.brand?.replace(/-/g, ' '),
+            model: body.model,
+            productionYear: Number(body.year),
+            licensePlate: body.licensePlate?.replace(/[^A-Z0-9]/gi, '').toUpperCase(),
+            fuelType: body.fuelType,
+            transmissionType: body.transmissionType,
+            bodyType: body.bodyType,
+            seats: Number(body.seats),
+            color: body.color,
+            price: Number(body.dailyRate),
+            currencyType: 'USD',
+            carStatusType: 'Available',
+            kilometer: Number(body.kilometer) || 0,
+            doors: Number(body.doors) || 4,
+            isFeatured: !!body.isFeatured,
+            isTestDriveAvailable: true,
+            rating: Number(body.rating) || 5.0,
+            imageUrl: body.imageUrl || undefined
+        };
+
+        if (body.vin && body.vin.length === 17) {
+            backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        }
+
+        const data = await routePut(endpoints.admin.cars.update(carId), backendRequest, {
             cache: 'no-store',
         });
 
@@ -94,7 +119,7 @@ export async function DELETE(
             );
         }
 
-        await serverDelete(endpoints.admin.cars.delete(carId), {
+        await routeDelete(endpoints.admin.cars.delete(carId), {
             cache: 'no-store',
         });
 

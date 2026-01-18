@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -132,6 +133,36 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                 <p className="text-xs text-muted-foreground">
                     Optional: 17-character vehicle identification number
                 </p>
+            </div>
+
+            <div className="space-y-2">
+                <Label htmlFor="imageUrl">Image URL</Label>
+                <Input
+                    id="imageUrl"
+                    value={data.imageUrl}
+                    onChange={(e) => onUpdate('imageUrl', e.target.value)}
+                    placeholder="https://example.com/car-image.jpg"
+                    className={cn(errors.imageUrl && 'border-destructive')}
+                />
+                {errors.imageUrl && (
+                    <p className="text-sm text-destructive">{errors.imageUrl}</p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                    Optional: Direct URL to a car image
+                </p>
+                {data.imageUrl && (
+                    <div className="mt-3 rounded-lg border overflow-hidden bg-muted relative h-40">
+                        <Image
+                            src={data.imageUrl}
+                            alt="Car preview"
+                            fill
+                            className="object-cover"
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                            }}
+                        />
+                    </div>
+                )}
             </div>
         </div>
     );

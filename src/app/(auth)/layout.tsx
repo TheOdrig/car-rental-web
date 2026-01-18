@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
-import { Car } from 'lucide-react';
 
 interface AuthLayoutProps {
     children: ReactNode;
@@ -19,10 +18,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/30 z-10" />
 
                 <div className="relative z-20 p-12 max-w-lg text-white">
-                    <div className="mb-6 flex items-center gap-3">
-                        <div className="size-10 rounded-full bg-primary flex items-center justify-center text-white">
-                            <Car className="h-6 w-6" />
-                        </div>
+                    <div className="mb-6">
                         <h3 className="text-xl font-bold tracking-wide">CarRental</h3>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
@@ -44,17 +40,14 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 </div>
             </div>
 
-            <div className="w-full lg:w-1/2 flex flex-col min-h-screen bg-background">
+            <div className="w-full lg:w-1/2 flex flex-col min-h-screen bg-white dark:bg-slate-950">
                 <div className="p-6 flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-2 text-foreground">
-                        <div className="size-8 rounded-full bg-primary flex items-center justify-center text-white">
-                            <Car className="h-4 w-4" />
-                        </div>
+                    <Link href="/" className="text-slate-900 dark:text-slate-100">
                         <span className="font-bold text-lg">CarRental</span>
                     </Link>
                     <Link
                         href="/"
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className="text-sm font-medium text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-colors"
                     >
                         Back to Home
                     </Link>
@@ -67,7 +60,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 </div>
 
                 <div className="p-6 text-center lg:text-left">
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
                         © {new Date().getFullYear()} CarRental Inc. All rights reserved.
                     </p>
                 </div>

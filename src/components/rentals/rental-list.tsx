@@ -112,11 +112,11 @@ export function RentalListEmpty({
 
     return (
         <div className="flex flex-col items-center justify-center px-4 py-16 text-center">
-            <div className="mb-6 rounded-full bg-muted p-6">
-                <Icon className="h-12 w-12 text-muted-foreground" />
+            <div className="mb-6 rounded-full bg-slate-100 dark:bg-slate-800 p-6">
+                <Icon className="h-12 w-12 text-slate-500 dark:text-slate-400" />
             </div>
             <h3 className="mb-2 text-xl font-semibold">{displayTitle}</h3>
-            <p className="mb-6 max-w-sm text-muted-foreground">{displayDescription}</p>
+            <p className="mb-6 max-w-sm text-slate-600 dark:text-slate-400">{displayDescription}</p>
             {showBrowseLink && tab === 'all' && (
                 <Button asChild>
                     <Link href="/cars">Browse Cars</Link>

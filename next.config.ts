@@ -23,6 +23,26 @@ const nextConfig: NextConfig = {
         hostname: 'placehold.co',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.thedrive.com',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.sixt.com.tr',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.log.com.tr',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn3.focus.bg',
+        pathname: '/**',
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -30,8 +50,16 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'http://localhost:8082/api/:path*',
+        source: '/api/cars/:path*',
+        destination: 'http://localhost:8082/api/cars/:path*',
+      },
+      {
+        source: '/api/pricing/:path*',
+        destination: 'http://localhost:8082/api/pricing/:path*',
+      },
+      {
+        source: '/api/exchange-rates/:path*',
+        destination: 'http://localhost:8082/api/exchange-rates/:path*',
       },
     ];
   },

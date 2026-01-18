@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif;
@@ -23,8 +23,8 @@
   --color-popover: hsl(0 0% 100%);
   --color-popover-foreground: hsl(222.2 84% 4.9%);
 
-  --color-primary: hsl(211 100% 50%);
-  --color-primary-foreground: hsl(210 40% 98%);
+  --color-primary: hsl(226 70% 45%);
+  --color-primary-foreground: hsl(0 0% 100%);
 
   --color-secondary: hsl(210 16% 93%);
   --color-secondary-foreground: hsl(222.2 47.4% 11.2%);
@@ -40,9 +40,9 @@
 
   --color-border: hsl(214.3 31.8% 91.4%);
   --color-input: hsl(214.3 31.8% 91.4%);
-  --color-ring: hsl(211 100% 50%);
+  --color-ring: hsl(226 70% 45%);
 
-  --color-chart-1: hsl(211 100% 50%);
+  --color-chart-1: hsl(226 70% 45%);
   --color-chart-2: hsl(145 65% 41%);
   --color-chart-3: hsl(45 93% 48%);
   --color-chart-4: hsl(354 70% 54%);
@@ -50,12 +50,12 @@
 
   --color-sidebar: hsl(0 0% 98%);
   --color-sidebar-foreground: hsl(222.2 84% 4.9%);
-  --color-sidebar-primary: hsl(211 100% 50%);
+  --color-sidebar-primary: hsl(226 70% 45%);
   --color-sidebar-primary-foreground: hsl(210 40% 98%);
   --color-sidebar-accent: hsl(210 16% 93%);
   --color-sidebar-accent-foreground: hsl(222.2 47.4% 11.2%);
   --color-sidebar-border: hsl(214.3 31.8% 91.4%);
-  --color-sidebar-ring: hsl(211 100% 50%);
+  --color-sidebar-ring: hsl(226 70% 45%);
 
   --color-success: hsl(145 65% 41%);
   --color-success-foreground: hsl(210 40% 98%);
@@ -73,7 +73,7 @@
   --color-popover: hsl(222.2 84% 6%);
   --color-popover-foreground: hsl(210 40% 98%);
 
-  --color-primary: hsl(211 90% 57%);
+  --color-primary: hsl(226 80% 65%);
   --color-primary-foreground: hsl(222.2 47.4% 11.2%);
 
   --color-secondary: hsl(217.2 32.6% 17.5%);
@@ -90,9 +90,9 @@
 
   --color-border: hsl(217.2 32.6% 17.5%);
   --color-input: hsl(217.2 32.6% 17.5%);
-  --color-ring: hsl(211 90% 57%);
+  --color-ring: hsl(226 70% 55%);
 
-  --color-chart-1: hsl(211 90% 57%);
+  --color-chart-1: hsl(226 70% 55%);
   --color-chart-2: hsl(145 55% 50%);
   --color-chart-3: hsl(45 85% 55%);
   --color-chart-4: hsl(0 62.8% 55.6%);
@@ -100,12 +100,12 @@
 
   --color-sidebar: hsl(222.2 84% 6%);
   --color-sidebar-foreground: hsl(210 40% 98%);
-  --color-sidebar-primary: hsl(211 90% 57%);
+  --color-sidebar-primary: hsl(226 70% 55%);
   --color-sidebar-primary-foreground: hsl(222.2 47.4% 11.2%);
   --color-sidebar-accent: hsl(217.2 32.6% 17.5%);
   --color-sidebar-accent-foreground: hsl(210 40% 98%);
   --color-sidebar-border: hsl(217.2 32.6% 17.5%);
-  --color-sidebar-ring: hsl(211 90% 57%);
+  --color-sidebar-ring: hsl(226 70% 55%);
 
   --color-success: hsl(145 55% 50%);
   --color-success-foreground: hsl(222.2 47.4% 11.2%);
@@ -153,6 +153,7 @@ body {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -164,6 +165,7 @@ body {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -188,4 +190,22 @@ body {
 
 .animate-delay-300 {
   animation-delay: 300ms;
+}
+
+
+.glass-bg-pattern {
+  background-color: #f8fafc;
+  background-image:
+    radial-gradient(at 40% 20%, hsla(217, 50%, 95%, 0.8) 0px, transparent 50%),
+    radial-gradient(at 80% 0%, hsla(200, 40%, 95%, 0.6) 0px, transparent 50%),
+    radial-gradient(at 0% 50%, hsla(210, 40%, 95%, 0.6) 0px, transparent 50%);
+  min-height: 100vh;
+}
+
+.dark .glass-bg-pattern {
+  background-color: #0f172a;
+  background-image:
+    radial-gradient(at 0% 0%, hsla(253, 16%, 7%, 1) 0, transparent 50%),
+    radial-gradient(at 50% 0%, hsla(225, 39%, 25%, 1) 0, transparent 50%),
+    radial-gradient(at 100% 0%, hsla(220, 45%, 25%, 1) 0, transparent 50%);
 }

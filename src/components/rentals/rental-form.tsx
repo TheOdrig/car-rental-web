@@ -3,13 +3,14 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, addDays, isBefore, startOfDay } from 'date-fns';
-import { CalendarIcon, Loader2, Car } from 'lucide-react';
+import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCreateRental } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
+import { toast } from 'sonner';
 import type { Car as CarType } from '@/types';
 
 function formatPrice(price: number, currency: string): string {
@@ -27,6 +28,8 @@ interface RentalFormProps {
     className?: string;
 }
 
+type PaymentMethod = 'online' | 'cash';
+
 export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
     const router = useRouter();
     const createRentalMutation = useCreateRental();
@@ -34,6 +37,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
     const today = startOfDay(new Date());
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
+    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('online');
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const validateForm = (): boolean => {
@@ -58,7 +62,24 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            toast.error('Please select both start and end dates');
+            return;
+        }
+
+        if (paymentMethod === 'online') {
+            const startStr = format(startDate!, 'yyyy-MM-dd');
+            const endStr = format(endDate!, 'yyyy-MM-dd');
+
+            const params = new URLSearchParams();
+            params.append('carId', car.id.toString());
+            params.append('startDate', startStr);
+            params.append('endDate', endStr);
+
+            const url = `/checkout?${params.toString()}`;
+            router.push(url);
+            return;
+        }
 
         try {
             await createRentalMutation.mutateAsync({
@@ -97,12 +118,11 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 </div>
             )}
 
-            <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50">
-                <Car className="h-5 w-5 text-muted-foreground" />
+            <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <div>
-                    <p className="font-semibold">{car.brand} {car.model}</p>
-                    <p className="text-sm text-muted-foreground">
-                        {formatPrice(car.price, car.currencyType)}
+                    <p className="font-semibold text-slate-900 dark:text-white">{car.brand} {car.model}</p>
+                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                        {formatPrice(car.price, car.currencyType)}/day
                     </p>
                 </div>
             </div>
@@ -187,6 +207,54 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 </div>
             </div>
 
+            <div className="space-y-3">
+                <Label>Payment Method</Label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                    <button
+                        type="button"
+                        onClick={() => setPaymentMethod('online')}
+                        className={cn(
+                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
+                            paymentMethod === 'online'
+                                ? 'border-primary bg-primary/5'
+                                : 'border-muted hover:border-muted-foreground/50'
+                        )}
+                    >
+                        <CreditCard className={cn(
+                            'h-5 w-5 mt-0.5 shrink-0',
+                            paymentMethod === 'online' ? 'text-primary' : 'text-muted-foreground'
+                        )} />
+                        <div>
+                            <p className="font-medium">Pay Now</p>
+                            <p className="text-xs text-muted-foreground">
+                                Credit/Debit Card • Instant confirmation
+                            </p>
+                        </div>
+                    </button>
+                    <button
+                        type="button"
+                        onClick={() => setPaymentMethod('cash')}
+                        className={cn(
+                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
+                            paymentMethod === 'cash'
+                                ? 'border-primary bg-primary/5'
+                                : 'border-muted hover:border-muted-foreground/50'
+                        )}
+                    >
+                        <Banknote className={cn(
+                            'h-5 w-5 mt-0.5 shrink-0',
+                            paymentMethod === 'cash' ? 'text-primary' : 'text-muted-foreground'
+                        )} />
+                        <div>
+                            <p className="font-medium">Pay at Pickup</p>
+                            <p className="text-xs text-muted-foreground">
+                                Cash/Card • Requires approval
+                            </p>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
             {days > 0 && (
                 <div className="rounded-lg border p-4 space-y-2">
                     <div className="flex justify-between text-sm">
@@ -212,7 +280,12 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 {createRentalMutation.isPending ? (
                     <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Submitting Request...
+                        {paymentMethod === 'online' ? 'Redirecting...' : 'Submitting Request...'}
+                    </>
+                ) : paymentMethod === 'online' ? (
+                    <>
+                        <CreditCard className="mr-2 h-4 w-4" />
+                        Proceed to Payment
                     </>
                 ) : (
                     'Request Rental'
@@ -220,7 +293,9 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-                Your request will be reviewed and confirmed shortly.
+                {paymentMethod === 'online'
+                    ? 'You will be redirected to secure payment page.'
+                    : 'Your request will be reviewed and confirmed by our team.'}
             </p>
         </form>
     );

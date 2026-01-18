@@ -101,13 +101,13 @@ describe('Auth Hooks', () => {
         });
 
         it('should return null user when not authenticated', async () => {
-            vi.mocked(clientGet).mockRejectedValueOnce(new Error('Unauthorized'));
+            vi.mocked(clientGet).mockRejectedValue(new Error('Unauthorized'));
 
             const { result } = renderHook(() => useCurrentUser(), {
                 wrapper: createQueryWrapper()
             });
 
-            await waitFor(() => expect(result.current.isLoading).toBe(false));
+            await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 });
 
             expect(result.current.user).toBeNull();
             expect(result.current.isAuthenticated).toBe(false);

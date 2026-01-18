@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Pagination, PaginationInfo } from '@/components/ui/pagination';
@@ -22,9 +23,10 @@ import {
     SortDropdown,
 } from '@/components/cars';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { useCars } from '@/lib/hooks';
+import { useCars, useCarSearchResults } from '@/lib/hooks/use-cars';
 import { useFilterStore, type SortOption } from '@/lib/stores/filter-store';
-import type { Car, AvailableCar } from '@/types';
+import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/types';
+import { getSortParams } from '@/lib/utils/sort-utils';
 
 
 
@@ -56,6 +58,13 @@ function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | Avai
 }
 
 export function CarsListingContent() {
+    const searchParams = useSearchParams();
+    const startDateParam = searchParams.get('startDate');
+    const endDateParam = searchParams.get('endDate');
+    const bodyTypeParam = searchParams.get('bodyType');
+
+    const isSearchMode = !!(startDateParam && endDateParam);
+
     const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
 
     const {
@@ -67,20 +76,67 @@ export function CarsListingContent() {
         setSortBy,
         setPage,
         hasActiveFilters,
+        setFilter,
     } = useFilterStore();
-    const { data, isLoading, error, refetch } = useCars(filters, page);
 
-    const totalCars = data?.totalElements ?? 0;
-    const totalPages = data?.totalPages ?? 0;
+    useEffect(() => {
+        if (bodyTypeParam && bodyTypeParam !== filters.bodyType) {
+            setFilter('bodyType', bodyTypeParam);
+        }
+    }, [bodyTypeParam, filters.bodyType, setFilter]);
+
+    const searchRequest: AvailabilitySearchRequest | null = useMemo(() => {
+        if (!isSearchMode || !startDateParam || !endDateParam) return null;
+
+        const [sortField, sortDirection] = getSortParams(sortBy);
+
+        return {
+            startDate: startDateParam,
+            endDate: endDateParam,
+            brand: filters.brand,
+            model: filters.model,
+            bodyType: filters.bodyType,
+            fuelType: filters.fuelType,
+            transmissionType: filters.transmissionType,
+            minPrice: filters.minPrice,
+            maxPrice: filters.maxPrice,
+            minSeats: filters.minSeats,
+            minProductionYear: filters.minProductionYear,
+            maxProductionYear: filters.maxProductionYear,
+            page: page,
+            size: 12,
+            sortBy: sortField,
+            sortDirection: sortDirection,
+        };
+    }, [isSearchMode, startDateParam, endDateParam, filters, page, sortBy]);
+
+    const publicFilters = { ...filters, carStatusType: 'AVAILABLE' };
+    const defaultQuery = useCars(publicFilters, page);
+    const searchQuery = useCarSearchResults(searchRequest);
+
+    const isLoading = isSearchMode ? searchQuery.isLoading : defaultQuery.isLoading;
+    const error = isSearchMode ? searchQuery.error : defaultQuery.error;
+    const refetch = isSearchMode ? searchQuery.refetch : defaultQuery.refetch;
+
+    const totalCars = isSearchMode
+        ? searchQuery.data?.totalElements ?? 0
+        : defaultQuery.data?.totalElements ?? 0;
+
+    const totalPages = isSearchMode
+        ? searchQuery.data?.totalPages ?? 0
+        : defaultQuery.data?.totalPages ?? 0;
 
     const sortedCars = useMemo(() => {
-        const cars = data?.content ?? data?.cars ?? [];
+        const cars = isSearchMode
+            ? searchQuery.data?.cars ?? []
+            : defaultQuery.data?.content ?? defaultQuery.data?.cars ?? [];
         return sortCars(cars, sortBy);
-    }, [data?.content, data?.cars, sortBy]);
+    }, [isSearchMode, searchQuery.data, defaultQuery.data, sortBy]);
 
     const breadcrumbItems = [{ label: 'Cars' }];
 
     if (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
         return (
             <div className="container mx-auto px-4 py-8">
                 <Breadcrumb items={breadcrumbItems} className="mb-6" />
@@ -88,8 +144,13 @@ export function CarsListingContent() {
                     <AlertCircle className="h-12 w-12 text-destructive mb-4" />
                     <h2 className="text-xl font-semibold mb-2">Failed to load cars</h2>
                     <p className="text-muted-foreground mb-6">
-                        Something went wrong while loading the car listings.
+                        {isSearchMode
+                            ? 'There was an issue searching for available cars with the selected criteria.'
+                            : 'Something went wrong while loading the car listings.'}
                     </p>
+                    <div className="bg-destructive/10 text-destructive p-3 rounded-md mb-6 max-w-md text-sm font-mono break-all">
+                        {errorMessage}
+                    </div>
                     <Button onClick={() => refetch()} variant="outline">
                         <RefreshCw className="h-4 w-4 mr-2" />
                         Try Again
@@ -108,19 +169,21 @@ export function CarsListingContent() {
                 <p className="text-muted-foreground">
                     {isLoading
                         ? 'Loading available cars...'
-                        : `${totalCars} cars available for rent`}
+                        : isSearchMode
+                            ? `${totalCars} available cars found for your dates`
+                            : `${totalCars} cars available for rent`}
                 </p>
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* Desktop Sidebar */}
+                {}
                 <aside className="hidden lg:block w-64 flex-shrink-0">
                     <div className="sticky top-24">
                         <FilterSidebar />
                     </div>
                 </aside>
 
-                {/* Mobile Filter Sheet */}
+                {}
                 <div className="lg:hidden">
                     <Sheet open={mobileFiltersOpen} onOpenChange={setMobileFiltersOpen}>
                         <SheetTrigger asChild>
