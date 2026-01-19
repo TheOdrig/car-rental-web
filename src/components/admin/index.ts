@@ -28,3 +28,10 @@ export { DamageAssessDialog } from './damage-assess-dialog';
 export { DamageResolveDialog } from './damage-resolve-dialog';
 export { VehicleDamageHistory } from './vehicle-damage-history';
 export { CustomerDamageHistory } from './customer-damage-history';
+
+export { LateReturnStatusBadge } from './late-return-status-badge';
+export { LateReturnsTable } from './late-returns-table';
+export { LateReturnFilters } from './late-return-filters';
+export { LateReturnStats } from './late-return-stats';
+export { PenaltyWaiveDialog } from './penalty-waive-dialog';
+export { PenaltyHistorySection } from './penalty-history-section';
