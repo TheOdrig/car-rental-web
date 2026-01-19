@@ -80,10 +80,10 @@ export interface PricingResponse {
 }
 
 export type LateReturnStatus =
-    | 'On Time'
-    | 'Grace Period'
-    | 'Late'
-    | 'Severely Late';
+    | 'ON_TIME'
+    | 'GRACE_PERIOD'
+    | 'LATE'
+    | 'SEVERELY_LATE';
 
 export interface LateReturnReport {
     rentalId: number;
@@ -112,6 +112,22 @@ export interface LateReturnStatistics {
     lateReturnPercentage: number;
 }
 
+export interface LateReturnFilters {
+    startDate?: string;
+    endDate?: string;
+    status?: LateReturnStatus;
+    sortBy?: 'endDate' | 'penaltyAmount' | 'lateHours';
+    sortDirection?: 'ASC' | 'DESC';
+}
+
+export interface PaginatedLateReturns {
+    content: LateReturnReport[];
+    totalElements: number;
+    totalPages: number;
+    size: number;
+    number: number;
+}
+
 export interface PenaltyWaiverRequest {
     waiverAmount?: number;
     reason: string;
@@ -129,6 +145,35 @@ export interface PenaltyWaiverResponse {
     waivedAt: string;
     refundInitiated: boolean;
     refundTransactionId?: string;
+}
+
+export function getLateReturnStatusColor(status: LateReturnStatus): string {
+    const colors: Record<LateReturnStatus, string> = {
+        ON_TIME: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
+        GRACE_PERIOD: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
+        LATE: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
+        SEVERELY_LATE: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
+    };
+    return colors[status];
+}
+
+export function getLateReturnStatusLabel(status: LateReturnStatus): string {
+    const labels: Record<LateReturnStatus, string> = {
+        ON_TIME: 'On Time',
+        GRACE_PERIOD: 'Grace Period',
+        LATE: 'Late',
+        SEVERELY_LATE: 'Severely Late',
+    };
+    return labels[status];
+}
+
+export function formatLateTime(lateHours: number): string {
+    if (lateHours < 24) {
+        return `${lateHours}h`;
+    }
+    const days = Math.floor(lateHours / 24);
+    const hours = lateHours % 24;
+    return hours > 0 ? `${days}d ${hours}h` : `${days}d`;
 }
 
 export type RentalTab = 'all' | 'active' | 'upcoming' | 'completed' | 'cancelled';
