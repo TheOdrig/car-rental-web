@@ -17,3 +17,14 @@ export { ApproveRentalDialog } from './approve-rental-dialog';
 export { ProcessPickupDialog } from './process-pickup-dialog';
 export { ProcessReturnDialog } from './process-return-dialog';
 export { RejectRentalDialog } from './reject-rental-dialog';
+
+export { DamageStatusBadge } from './damage-status-badge';
+export { DamageSeverityBadge } from './damage-severity-badge';
+export { DamageTable } from './damage-table';
+export { DamageFilters } from './damage-filters';
+export { DamageReportForm } from './damage-report-form';
+export { DamagePhotoUpload } from './damage-photo-upload';
+export { DamageAssessDialog } from './damage-assess-dialog';
+export { DamageResolveDialog } from './damage-resolve-dialog';
+export { VehicleDamageHistory } from './vehicle-damage-history';
+export { CustomerDamageHistory } from './customer-damage-history';
