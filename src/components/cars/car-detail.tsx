@@ -14,7 +14,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { RentalForm } from '@/components/rentals';
 import { useAuth, useCarCalendar } from '@/lib/hooks';
-import type { Car, CarAvailabilityCalendar, DayAvailability } from '@/types';
+import { useCurrency } from '@/lib/providers/currency-provider';
+import { mapCurrency, type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/types';
 
 interface CarDetailProps {
     car: Car;
@@ -27,18 +28,14 @@ interface CarDetailSkeletonProps {
     className?: string;
 }
 
-function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
-}
+
+
 
 
 export function CarDetail({ car, calendar, showRentalForm = true, className }: CarDetailProps) {
     const { isAuthenticated, isLoading: authLoading } = useAuth();
+    const { format: formatPrice } = useCurrency();
+    const sourceCurrency = mapCurrency(car.currencyType);
 
     const specs = [
         { icon: Fuel, label: 'Fuel', value: car.fuelType },
@@ -88,7 +85,7 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
 
                 <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold text-slate-900 dark:text-slate-100">
-                        {formatPrice(car.price, car.currencyType)}
+                        {formatPrice(car.price, sourceCurrency)}
                     </span>
                     <span className="text-muted-foreground">/day</span>
                 </div>

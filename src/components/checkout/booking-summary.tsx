@@ -4,7 +4,8 @@ import Image from 'next/image';
 import { format } from 'date-fns';
 import { Lock, ArrowRight, Phone, Headphones } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { formatCurrency } from '@/lib/utils/format';
+import { useCurrency } from '@/lib/providers/currency-provider';
+import { mapCurrency } from '@/types';
 import type { Car, PriceBreakdown } from '@/types';
 
 interface BookingSummaryProps {
@@ -28,6 +29,9 @@ export function BookingSummary({
     isSubmitting,
     isFormValid,
 }: BookingSummaryProps) {
+    const { format: formatPrice } = useCurrency();
+    const sourceCurrency = mapCurrency(priceBreakdown.currency);
+
     return (
         <div className="sticky top-24 space-y-6">
             <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -97,14 +101,14 @@ export function BookingSummary({
                                 {priceBreakdown.rentalDays === 1 ? 'day' : 'days'})
                             </span>
                             <span className="font-medium tabular-nums">
-                                {formatCurrency(priceBreakdown.rentalCost, priceBreakdown.currency)}
+                                {formatPrice(priceBreakdown.rentalCost, sourceCurrency)}
                             </span>
                         </div>
 
                         <div className="flex justify-between text-muted-foreground">
                             <span>Taxes & Fees</span>
                             <span className="font-medium tabular-nums">
-                                {formatCurrency(priceBreakdown.taxesAndFees, priceBreakdown.currency)}
+                                {formatPrice(priceBreakdown.taxesAndFees, sourceCurrency)}
                             </span>
                         </div>
 
@@ -112,7 +116,7 @@ export function BookingSummary({
                             <div key={index} className="flex justify-between text-primary">
                                 <span>{addon.name}</span>
                                 <span className="font-medium tabular-nums">
-                                    +{formatCurrency(addon.cost, priceBreakdown.currency)}
+                                    +{formatPrice(addon.cost, sourceCurrency)}
                                 </span>
                             </div>
                         ))}
@@ -124,7 +128,7 @@ export function BookingSummary({
                         <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total Price</span>
                         <div className="text-right">
                             <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
-                                {formatCurrency(priceBreakdown.total, priceBreakdown.currency)}
+                                {formatPrice(priceBreakdown.total, sourceCurrency)}
                             </span>
                             <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {priceBreakdown.currency}, includes all taxes
