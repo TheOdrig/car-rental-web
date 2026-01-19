@@ -26,3 +26,5 @@ export { DamageReportForm } from './damage-report-form';
 export { DamagePhotoUpload } from './damage-photo-upload';
 export { DamageAssessDialog } from './damage-assess-dialog';
 export { DamageResolveDialog } from './damage-resolve-dialog';
+export { VehicleDamageHistory } from './vehicle-damage-history';
+export { CustomerDamageHistory } from './customer-damage-history';
