@@ -136,7 +136,8 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                 variant="outline"
                                 className={cn(
                                     'h-12 justify-start text-left font-normal',
-                                    !startDate && 'text-muted-foreground',
+                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
+                                    !startDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.startDate && 'border-destructive'
                                 )}
                                 disabled={createRentalMutation.isPending}
@@ -175,7 +176,8 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                 variant="outline"
                                 className={cn(
                                     'h-12 justify-start text-left font-normal',
-                                    !endDate && 'text-muted-foreground',
+                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
+                                    !endDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.endDate && 'border-destructive'
                                 )}
                                 disabled={createRentalMutation.isPending}

@@ -5,6 +5,14 @@ import { format } from 'date-fns';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
+function formatBookingReference(ref: string): string {
+    const numericId = parseInt(ref, 10);
+    if (!isNaN(numericId)) {
+        return `CR-${numericId.toString().padStart(6, '0')}`;
+    }
+    return ref.toUpperCase();
+}
+
 interface BookingSuccessProps {
     referenceNumber: string;
     carName?: string;
@@ -24,6 +32,7 @@ export function BookingSuccess({
     totalPaid,
     currency = 'USD',
 }: BookingSuccessProps) {
+    const formattedRef = formatBookingReference(referenceNumber);
     const handlePrint = () => {
         window.print();
     };
@@ -44,7 +53,7 @@ export function BookingSuccess({
                         <div className="text-center">
                             <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Booking Reference</p>
                             <p className="text-3xl font-mono font-bold text-primary tracking-wider">
-                                {referenceNumber}
+                                {formattedRef}
                             </p>
                         </div>
 

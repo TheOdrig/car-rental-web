@@ -39,6 +39,10 @@ const STATUS_OPTIONS: { value: DamageStatus; label: string }[] = [
     { value: 'RESOLVED', label: 'Resolved' },
 ];
 
+const triggerClassName = "bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100";
+
+const inputClassName = "bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors text-slate-900 dark:text-slate-100";
+
 export function DamageFilters() {
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -74,7 +78,7 @@ export function DamageFilters() {
                 value={searchParams.get('severity') || 'all'}
                 onValueChange={(value) => updateFilter('severity', value)}
             >
-                <SelectTrigger className="w-[140px]">
+                <SelectTrigger className={`w-[140px] ${triggerClassName}`}>
                     <SelectValue placeholder="Severity" />
                 </SelectTrigger>
                 <SelectContent>
@@ -91,7 +95,7 @@ export function DamageFilters() {
                 value={searchParams.get('category') || 'all'}
                 onValueChange={(value) => updateFilter('category', value)}
             >
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
                     <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -108,7 +112,7 @@ export function DamageFilters() {
                 value={searchParams.get('status') || 'all'}
                 onValueChange={(value) => updateFilter('status', value)}
             >
-                <SelectTrigger className="w-[160px]">
+                <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -126,7 +130,7 @@ export function DamageFilters() {
                 placeholder="Start Date"
                 value={searchParams.get('startDate') || ''}
                 onChange={(e) => updateFilter('startDate', e.target.value)}
-                className="w-[150px]"
+                className={`w-[150px] ${inputClassName}`}
             />
 
             <Input
@@ -134,7 +138,7 @@ export function DamageFilters() {
                 placeholder="End Date"
                 value={searchParams.get('endDate') || ''}
                 onChange={(e) => updateFilter('endDate', e.target.value)}
-                className="w-[150px]"
+                className={`w-[150px] ${inputClassName}`}
             />
 
             {hasFilters && (
@@ -151,3 +155,4 @@ export function DamageFilters() {
         </div>
     );
 }
+

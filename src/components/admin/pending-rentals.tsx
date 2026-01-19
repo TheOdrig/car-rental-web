@@ -27,7 +27,8 @@ import {
     ApproveRentalDialog,
     ProcessPickupDialog,
     ProcessReturnDialog,
-    RejectRentalDialog
+    RejectRentalDialog,
+    DamageReportForm
 } from './index';
 import { safeFormatDate } from '@/lib/utils/format';
 
@@ -123,6 +124,8 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         type: null,
         open: false,
     });
+    const [damageDialogOpen, setDamageDialogOpen] = useState(false);
+    const [damageRentalId, setDamageRentalId] = useState<number | null>(null);
 
     const handleAction = (item: PendingItem, action: 'approve' | 'pickup' | 'return' | 'reject') => {
         setSelectedItem(item);
@@ -184,7 +187,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                         size="sm"
                         onClick={() => handleAction(item, 'pickup')}
                         disabled={isProcessing}
-                        className="gap-1"
+                        className="gap-1 cursor-pointer"
                         aria-label={`Process pickup for ${item.customerName}`}
                     >
                         <Car className="h-4 w-4" aria-hidden="true" />
@@ -368,7 +371,11 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                 onOpenChange={(open) => setDialogState({ ...dialogState, open })}
                 item={selectedItem}
                 onConfirm={handleReturnConfirm}
-                onReportDamage={onReportDamage}
+                onReportDamage={(rentalId) => {
+                    setDamageRentalId(rentalId);
+                    setDamageDialogOpen(true);
+                    setDialogState({ ...dialogState, open: false });
+                }}
                 isLoading={actionInProgress !== null}
             />
             <RejectRentalDialog
@@ -378,6 +385,16 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                 onReject={handleRejectConfirm}
                 isLoading={actionInProgress !== null}
             />
+            {damageRentalId && (
+                <DamageReportForm
+                    rentalId={damageRentalId}
+                    open={damageDialogOpen}
+                    onOpenChange={setDamageDialogOpen}
+                    onSuccess={() => {
+                        setDamageRentalId(null);
+                    }}
+                />
+            )}
         </>
     );
 });

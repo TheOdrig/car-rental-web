@@ -209,3 +209,56 @@ body {
     radial-gradient(at 50% 0%, hsla(225, 39%, 25%, 1) 0, transparent 50%),
     radial-gradient(at 100% 0%, hsla(220, 45%, 25%, 1) 0, transparent 50%);
 }
+
+@media print {
+  body {
+    background-color: white !important;
+    color: black !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  header,
+  nav,
+  footer,
+  .no-print {
+    display: none !important;
+  }
+
+  .dark {
+    --color-background: white;
+    --color-foreground: black;
+    --color-card: white;
+    --color-card-foreground: black;
+  }
+
+  .dark *,
+  [class*="dark:"] {
+    background-color: white !important;
+    color: black !important;
+    border-color: #e5e7eb !important;
+  }
+
+  .bg-gradient-to-br {
+    background: #10b981 !important;
+    color: white !important;
+  }
+
+  .bg-gradient-to-br * {
+    color: white !important;
+  }
+
+  .text-primary {
+    color: #2563eb !important;
+  }
+
+  .shadow-xl,
+  .shadow-sm,
+  .shadow-lg {
+    box-shadow: none !important;
+  }
+
+  button:has(.lucide-printer) {
+    display: none !important;
+  }
+}

@@ -63,15 +63,15 @@ function formatPrice(price: number, currency: string): string {
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
         case 'Confirmed':
-            return 'bg-green-500/10 text-green-600 border-green-200';
+            return 'bg-green-500/10 text-green-600 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-700';
         case 'In Use':
-            return 'bg-purple-500/10 text-purple-600 border-purple-200';
+            return 'bg-purple-500/10 text-purple-600 border-purple-200 dark:bg-purple-500/20 dark:text-purple-400 dark:border-purple-700';
         case 'Requested':
-            return 'bg-amber-500/10 text-amber-600 border-amber-200';
+            return 'bg-amber-500/10 text-amber-600 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-700';
         case 'Returned':
-            return 'bg-slate-500/10 text-slate-600 border-slate-200';
+            return 'bg-slate-500/10 text-slate-600 border-slate-200 dark:bg-slate-500/20 dark:text-slate-400 dark:border-slate-600';
         case 'Cancelled':
-            return 'bg-red-500/10 text-red-600 border-red-200';
+            return 'bg-red-500/10 text-red-600 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-700';
         default:
             return '';
     }
@@ -99,7 +99,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
             setShowCancelDialog(false);
             onCancelSuccess?.();
         } catch {
-            
+
         }
     };
 
@@ -187,15 +187,15 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                         {carSummary.productionYear} • {carSummary.licensePlate}
                                     </p>
                                     <div className="flex flex-wrap gap-3">
-                                        <Badge variant="outline" className="gap-1">
+                                        <Badge variant="outline" className="gap-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                             <Fuel className="h-3 w-3" />
                                             {carSummary.color || 'Gasoline'}
                                         </Badge>
-                                        <Badge variant="outline" className="gap-1">
+                                        <Badge variant="outline" className="gap-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                             <Settings2 className="h-3 w-3" />
                                             Automatic
                                         </Badge>
-                                        <Badge variant="outline" className="gap-1">
+                                        <Badge variant="outline" className="gap-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                             <Users className="h-3 w-3" />
                                             5 Seats
                                         </Badge>
@@ -324,17 +324,19 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                         key={item.name}
                                         className={cn(
                                             'flex items-center gap-2 rounded-lg p-2',
-                                            item.included ? 'text-foreground' : 'text-muted-foreground'
+                                            item.included
+                                                ? 'text-slate-900 dark:text-slate-100'
+                                                : 'text-slate-400 dark:text-slate-500'
                                         )}
                                     >
                                         {item.included ? (
-                                            <Check className="h-4 w-4 shrink-0 text-green-500" />
+                                            <Check className="h-4 w-4 shrink-0 text-green-500 dark:text-green-400" />
                                         ) : (
-                                            <XCircle className="h-4 w-4 shrink-0 text-muted-foreground" />
+                                            <XCircle className="h-4 w-4 shrink-0 text-slate-400 dark:text-slate-500" />
                                         )}
                                         <span className="text-sm">{item.name}</span>
                                         {item.included && (
-                                            <Badge variant="secondary" className="ml-auto text-xs">
+                                            <Badge variant="secondary" className="ml-auto text-xs bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-300 border border-green-200 dark:border-green-700">
                                                 Included
                                             </Badge>
                                         )}
@@ -398,7 +400,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                 </div>
                                 <div className="flex justify-between">
                                     <span className="text-muted-foreground">Insurance</span>
-                                    <span className="text-green-600">Included</span>
+                                    <span className="text-green-600 dark:text-green-400 font-medium">Included</span>
                                 </div>
                                 {rental.totalSavings && rental.totalSavings > 0 && (
                                     <div className="flex justify-between text-green-600">

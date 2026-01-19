@@ -39,15 +39,15 @@ interface RentalCardSkeletonProps {
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
         case 'Confirmed':
-            return 'bg-green-500/10 text-green-600 border-green-200';
+            return 'bg-green-500/10 text-green-600 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-700';
         case 'In Use':
-            return 'bg-blue-500/10 text-blue-600 border-blue-200';
+            return 'bg-blue-500/10 text-blue-600 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-700';
         case 'Requested':
-            return 'bg-amber-500/10 text-amber-600 border-amber-200';
+            return 'bg-amber-500/10 text-amber-600 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-700';
         case 'Returned':
-            return 'bg-slate-500/10 text-slate-600 border-slate-200';
+            return 'bg-slate-500/10 text-slate-600 border-slate-200 dark:bg-slate-500/20 dark:text-slate-400 dark:border-slate-600';
         case 'Cancelled':
-            return 'bg-red-500/10 text-red-600 border-red-200';
+            return 'bg-red-500/10 text-red-600 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-700';
         default:
             return '';
     }
@@ -181,7 +181,7 @@ export const RentalCard = memo(function RentalCard({
                                     <span>{safeFormatDate(startDate)}</span>
                                     <ArrowRight className="h-3 w-3" />
                                     <span>{safeFormatDate(endDate)}</span>
-                                    <Badge variant="outline" className="ml-1 text-xs">
+                                    <Badge variant="outline" className="ml-1 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                         {days} {days === 1 ? 'day' : 'days'}
                                     </Badge>
                                 </div>
@@ -209,7 +209,7 @@ export const RentalCard = memo(function RentalCard({
                                     <span className="text-xl font-bold text-slate-900 dark:text-white">
                                         {formatPrice(totalPrice, currency)}
                                     </span>
-                                    <Badge variant="outline" className="text-xs">
+                                    <Badge variant="outline" className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
                                         Paid
                                     </Badge>
                                 </div>

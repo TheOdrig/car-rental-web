@@ -100,7 +100,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                             placeholder="City or airport"
                             value={location}
                             onChange={(e) => setLocation(e.target.value)}
-                            className="pl-10"
+                            className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700"
                         />
                     </div>
                 </div>
@@ -115,7 +115,8 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                                 variant="outline"
                                 className={cn(
                                     'w-full justify-start text-left font-normal',
-                                    !pickupDate && 'text-muted-foreground',
+                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
+                                    !pickupDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.pickupDate && 'border-destructive'
                                 )}
                             >
@@ -150,7 +151,8 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                                 variant="outline"
                                 className={cn(
                                     'w-full justify-start text-left font-normal',
-                                    !returnDate && 'text-muted-foreground',
+                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
+                                    !returnDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.returnDate && 'border-destructive'
                                 )}
                             >
@@ -184,7 +186,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                     <div className="relative">
                         <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400 z-10" />
                         <Select value={vehicleType} onValueChange={setVehicleType}>
-                            <SelectTrigger className="pl-10">
+                            <SelectTrigger className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
