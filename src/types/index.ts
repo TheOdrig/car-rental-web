@@ -7,4 +7,3 @@ export * from './validation';
 export * from './checkout';
 export * from './payment';
 export * from './currency';
-export * from './damage';

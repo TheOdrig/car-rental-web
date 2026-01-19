@@ -111,9 +111,6 @@ export function Header() {
                                     <Link href="/rentals">My Rentals</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                    <Link href="/damages">My Damages</Link>
-                                </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
                                     <Link href="/settings/profile">Profile</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
