@@ -124,12 +124,11 @@ export default function AdminRentalsPage() {
                 </div>
                 <Button
                     variant="outline"
-                    size="sm"
+                    size="icon"
                     onClick={handleRefresh}
-                    className="gap-2"
+                    className="h-9 w-9 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-slate-600 rounded-xl cursor-pointer"
                 >
                     <RefreshCw className="h-4 w-4" />
-                    Refresh
                 </Button>
             </div>
 
@@ -191,7 +190,7 @@ export default function AdminRentalsPage() {
                         value={statusFilter}
                         onValueChange={(value) => setStatusFilter(value as StatusFilter)}
                     >
-                        <SelectTrigger className="w-48">
+                        <SelectTrigger className="w-48 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

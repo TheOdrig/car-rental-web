@@ -37,13 +37,23 @@ export function ProtectionExtras({
     rentalDays,
     currency = 'USD',
 }: ProtectionExtrasProps) {
+    const isComingSoon = true;
+
     return (
-        <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+        <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8 relative">
+            {isComingSoon && (
+                <div className="absolute inset-0 bg-slate-900/5 dark:bg-slate-900/50 rounded-xl z-10 pointer-events-none" />
+            )}
             <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                 <span className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10 text-primary font-bold text-sm">
                     3
                 </span>
                 <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">Protection & Extras</h2>
+                {isComingSoon && (
+                    <span className="text-xs font-semibold bg-amber-500/20 text-amber-600 dark:text-amber-400 px-2.5 py-1 rounded-full">
+                        Coming Soon
+                    </span>
+                )}
             </div>
 
             <div className="space-y-4">
@@ -55,8 +65,11 @@ export function ProtectionExtras({
                         <label
                             key={addon.id}
                             className={cn(
-                                'relative flex items-start p-4 rounded-xl border cursor-pointer transition-colors group',
-                                isSelected
+                                'relative flex items-start p-4 rounded-xl border transition-colors group',
+                                isComingSoon
+                                    ? 'cursor-not-allowed opacity-60 border-border'
+                                    : 'cursor-pointer',
+                                !isComingSoon && isSelected
                                     ? 'border-primary bg-primary/5'
                                     : 'border-border hover:border-primary/50'
                             )}
@@ -66,8 +79,9 @@ export function ProtectionExtras({
                                     id={addon.id}
                                     checked={isSelected}
                                     onCheckedChange={(checked) =>
-                                        onAddonChange(addon.id, checked === true)
+                                        !isComingSoon && onAddonChange(addon.id, checked === true)
                                     }
+                                    disabled={isComingSoon}
                                     className="h-5 w-5"
                                 />
                             </div>

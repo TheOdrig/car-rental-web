@@ -25,7 +25,7 @@ describe('ProcessReturnDialog', () => {
         createdAt: '2025-12-10T11:00:00Z'
     };
 
-    it('should render return details and summary', () => {
+    it('should render return details and vehicle info', () => {
         renderWithProviders(
             <ProcessReturnDialog
                 open={true}
@@ -37,11 +37,11 @@ describe('ProcessReturnDialog', () => {
 
         expect(screen.getByText('Alice Cooper')).toBeInTheDocument();
         expect(screen.getByText('Audi A4')).toBeInTheDocument();
-        expect(screen.getByLabelText(/Odometer Reading/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Fuel Level/i)).toBeInTheDocument();
+        expect(screen.getByText('AUD-9999')).toBeInTheDocument();
+        expect(screen.getByText('Rental #303')).toBeInTheDocument();
     });
 
-    it('should validate odometer reading', async () => {
+    it('should call onConfirm with notes when confirming return', async () => {
         const onConfirm = vi.fn();
         renderWithProviders(
             <ProcessReturnDialog
@@ -52,44 +52,19 @@ describe('ProcessReturnDialog', () => {
             />
         );
 
-        const confirmButton = screen.getByRole('button', { name: /Complete Return/i });
-        await user.click(confirmButton);
-
-        expect(screen.getByText(/Please provide the odometer reading/i)).toBeInTheDocument();
-        expect(onConfirm).not.toHaveBeenCalled();
-    });
-
-    it('should call onConfirm with correct return data', async () => {
-        const onConfirm = vi.fn();
-        renderWithProviders(
-            <ProcessReturnDialog
-                open={true}
-                onOpenChange={() => { }}
-                item={mockItem}
-                onConfirm={onConfirm}
-            />
-        );
-
-        
-        const odometerInput = screen.getByLabelText(/Odometer Reading/i);
-        await user.type(odometerInput, '15200');
-
-        
-        await user.click(screen.getByLabelText(/No new damages found/i)); 
+        const notesInput = screen.getByPlaceholderText(/Add any notes/i);
+        await user.type(notesInput, 'Vehicle returned in good condition');
 
         const confirmButton = screen.getByRole('button', { name: /Complete Return/i });
         await user.click(confirmButton);
 
         expect(onConfirm).toHaveBeenCalledWith(303, {
-            odometerReading: 15200,
-            fuelLevel: 'full',
-            noNewDamages: false,
-            interiorCleaned: true,
-            notes: ''
+            hasDamage: false,
+            notes: 'Vehicle returned in good condition'
         });
     });
 
-    it('should show damage report button when new damages are unchecked', async () => {
+    it('should show damage report button when damage checkbox is checked', async () => {
         const onReportDamage = vi.fn();
         renderWithProviders(
             <ProcessReturnDialog
@@ -101,12 +76,32 @@ describe('ProcessReturnDialog', () => {
             />
         );
 
-        await user.click(screen.getByLabelText(/No new damages found/i));
+        await user.click(screen.getByLabelText(/Vehicle has new damage/i));
 
         const damageButton = screen.getByRole('button', { name: /Create Damage Report/i });
         expect(damageButton).toBeInTheDocument();
 
         await user.click(damageButton);
         expect(onReportDamage).toHaveBeenCalledWith(303);
+    });
+
+    it('should allow return without notes', async () => {
+        const onConfirm = vi.fn();
+        renderWithProviders(
+            <ProcessReturnDialog
+                open={true}
+                onOpenChange={() => { }}
+                item={mockItem}
+                onConfirm={onConfirm}
+            />
+        );
+
+        const confirmButton = screen.getByRole('button', { name: /Complete Return/i });
+        await user.click(confirmButton);
+
+        expect(onConfirm).toHaveBeenCalledWith(303, {
+            hasDamage: false,
+            notes: undefined
+        });
     });
 });

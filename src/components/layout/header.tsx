@@ -85,39 +85,39 @@ export function Header() {
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
-                                        <User className="h-4 w-4" />
+                                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full hover:bg-transparent dark:hover:bg-transparent focus:ring-0 focus:ring-offset-0">
+                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
+                                        <User className="h-4 w-4 text-slate-600 dark:text-slate-300" />
                                     </span>
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56" align="end" forceMount>
+                            <DropdownMenuContent className="w-56 bg-white dark:bg-slate-900 border dark:border-slate-700" align="end" forceMount>
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium leading-none">{user?.username}</p>
+                                        <p className="text-sm font-medium leading-none text-slate-900 dark:text-white">{user?.username}</p>
                                         <p className="text-xs leading-none text-slate-600 dark:text-slate-400">{user?.email}</p>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuSeparator />
+                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                                 {isAdmin && (
                                     <>
-                                        <DropdownMenuItem asChild>
+                                        <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
                                             <Link href="/admin/dashboard">Admin Dashboard</Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuSeparator />
+                                        <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                                     </>
                                 )}
-                                <DropdownMenuItem asChild>
+                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
                                     <Link href="/rentals">My Rentals</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
+                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
                                     <Link href="/damages">My Damages</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild>
+                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
                                     <Link href="/settings/profile">Profile</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 focus:text-red-600">
+                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 focus:bg-red-50 dark:focus:bg-red-900/20">
                                     Log out
                                 </DropdownMenuItem>
                             </DropdownMenuContent>

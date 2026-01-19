@@ -24,6 +24,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
     const registerMutation = useRegister();
 
     const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
         username: '',
         email: '',
         password: '',
@@ -130,6 +132,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
         setFormError(null);
 
         setTouched({
+            firstName: true,
+            lastName: true,
             username: true,
             email: true,
             password: true,
@@ -143,6 +147,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 username: formData.username,
                 email: formData.email,
                 password: formData.password,
+                firstName: formData.firstName || undefined,
+                lastName: formData.lastName || undefined,
             });
             router.push('/');
         } catch {
@@ -178,6 +184,46 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
             />
+
+            <div className="grid grid-cols-2 gap-4">
+                <FormField
+                    label="First Name"
+                    htmlFor="firstName"
+                    isDisabled={registerMutation.isPending}
+                >
+                    <Input
+                        id="firstName"
+                        name="firstName"
+                        type="text"
+                        placeholder="John"
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        disabled={registerMutation.isPending}
+                        className="h-12"
+                    />
+                </FormField>
+
+                <FormField
+                    label="Last Name"
+                    htmlFor="lastName"
+                    isDisabled={registerMutation.isPending}
+                >
+                    <Input
+                        id="lastName"
+                        name="lastName"
+                        type="text"
+                        placeholder="Doe"
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        onFocus={handleFocus}
+                        onBlur={handleBlur}
+                        disabled={registerMutation.isPending}
+                        className="h-12"
+                    />
+                </FormField>
+            </div>
 
             <FormField
                 label="Username"

@@ -68,7 +68,7 @@ function DamagesContent() {
                     >
                         <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                     </Button>
-                    <Button size="sm" variant="outline" className="gap-2 rounded-xl" asChild>
+                    <Button size="sm" variant="outline" className="gap-2 rounded-xl bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100" asChild>
                         <Link href="/admin/damages/statistics">
                             <BarChart3 className="h-4 w-4" />
                             View Statistics

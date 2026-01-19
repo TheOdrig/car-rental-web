@@ -38,7 +38,7 @@ const navItems: NavItem[] = [
         icon: <Car className="h-5 w-5" />,
     },
     {
-        label: 'Rentals',
+        label: 'Rental Management',
         href: '/admin/rentals',
         icon: <ClipboardList className="h-5 w-5" />,
     },

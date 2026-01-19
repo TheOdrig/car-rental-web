@@ -39,7 +39,7 @@ export function DamageList({ damages, isLoading }: DamageListProps) {
                 <DamageCard
                     key={damage.id}
                     damage={damage}
-                    onClick={() => router.push(`/account/damages/${damage.id}`)}
+                    onClick={() => router.push(`/damages/${damage.id}`)}
                 />
             ))}
         </div>

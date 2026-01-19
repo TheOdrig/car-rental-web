@@ -85,9 +85,9 @@ function ActionDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[500px]">
+            <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border dark:border-slate-700">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
+                    <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
                         {isPickup ? (
                             <Car className="h-5 w-5 text-primary" />
                         ) : (
@@ -95,36 +95,36 @@ function ActionDialog({
                         )}
                         {title}
                     </DialogTitle>
-                    <DialogDescription>{description}</DialogDescription>
+                    <DialogDescription className="text-slate-600 dark:text-slate-400">{description}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="rounded-lg border bg-muted/50 p-4">
+                    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4">
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                                <p className="text-muted-foreground">Customer</p>
-                                <p className="font-medium">{item.customerName}</p>
+                                <p className="text-slate-500 dark:text-slate-400">Customer</p>
+                                <p className="font-medium text-slate-900 dark:text-white">{item.customerName}</p>
                             </div>
                             <div>
-                                <p className="text-muted-foreground">Vehicle</p>
-                                <p className="font-medium">
+                                <p className="text-slate-500 dark:text-slate-400">Vehicle</p>
+                                <p className="font-medium text-slate-900 dark:text-white">
                                     {item.carBrand} {item.carModel}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-muted-foreground">License Plate</p>
-                                <p className="font-medium">{item.licensePlate}</p>
+                                <p className="text-slate-500 dark:text-slate-400">License Plate</p>
+                                <p className="font-medium text-slate-900 dark:text-white">{item.licensePlate}</p>
                             </div>
                             <div>
-                                <p className="text-muted-foreground">Rental ID</p>
-                                <p className="font-medium">#{item.rentalId}</p>
+                                <p className="text-slate-500 dark:text-slate-400">Rental ID</p>
+                                <p className="font-medium text-slate-900 dark:text-white">#{item.rentalId}</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="notes">
-                            Notes <span className="text-muted-foreground">(optional)</span>
+                        <Label htmlFor="notes" className="text-slate-700 dark:text-slate-300">
+                            Notes <span className="text-slate-500 dark:text-slate-500">(optional)</span>
                         </Label>
                         <Textarea
                             id="notes"
@@ -133,6 +133,7 @@ function ActionDialog({
                             placeholder={notesPlaceholder}
                             rows={3}
                             disabled={isLoading}
+                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
                         />
                     </div>
                 </div>
@@ -142,10 +143,11 @@ function ActionDialog({
                         variant="outline"
                         onClick={() => handleOpenChange(false)}
                         disabled={isLoading}
+                        className="cursor-pointer border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                     >
                         Cancel
                     </Button>
-                    <Button onClick={handleConfirm} disabled={isLoading}>
+                    <Button onClick={handleConfirm} disabled={isLoading} className="cursor-pointer">
                         {isLoading ? 'Processing...' : confirmLabel}
                     </Button>
                 </DialogFooter>

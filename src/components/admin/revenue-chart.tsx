@@ -67,7 +67,7 @@ export function RevenueChart({
             ...item,
             fill: item.isCurrent
                 ? 'hsl(var(--primary))'
-                : 'hsl(var(--muted-foreground) / 0.3)',
+                : 'hsl(var(--primary) / 0.5)',
         }));
     }, [data]);
 
@@ -95,7 +95,7 @@ export function RevenueChart({
                     onValueChange={(value) => handlePeriodChange(value as RevenuePeriod)}
                 >
                     <SelectTrigger
-                        className="w-[140px]"
+                        className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                         aria-label="Select time period"
                     >
                         <SelectValue placeholder="Select period" />
@@ -140,12 +140,13 @@ export function RevenueChart({
                                     tickLine={false}
                                     axisLine={false}
                                     tickMargin={8}
-                                    tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+                                    tickFormatter={(value) => value >= 1000 ? `$${(value / 1000).toFixed(1)}k` : `$${value}`}
                                     className="text-xs"
-                                    width={50}
+                                    width={55}
+                                    domain={[0, (dataMax: number) => dataMax * 2]}
                                 />
                                 <ChartTooltip
-                                    cursor={{ fill: 'hsl(var(--muted) / 0.3)' }}
+                                    cursor={false}
                                     content={
                                         <ChartTooltipContent
                                             formatter={(value, _name, item) => (
@@ -171,7 +172,7 @@ export function RevenueChart({
                                 <Bar
                                     dataKey="revenue"
                                     radius={[4, 4, 0, 0]}
-                                    className="transition-all duration-200"
+                                    className="transition-all duration-200 fill-primary"
                                 />
                             </BarChart>
                         </ChartContainer>
@@ -179,8 +180,8 @@ export function RevenueChart({
                 )}
 
                 {breakdown && (
-                    <div className="mt-8 pt-6 border-t space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div className="mt-8 pt-6 border-t space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="space-y-1.5">
                                 <div className="flex items-center justify-between text-[13px]">
                                     <span className="text-muted-foreground font-medium">Rentals</span>
@@ -189,11 +190,11 @@ export function RevenueChart({
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                     <div
                                         className="h-full bg-primary rounded-full transition-all duration-1000"
-                                        style={{ width: `${breakdown.rentalPercentage}%` }}
+                                        style={{ width: `${Math.min(breakdown.rentalPercentage, 100)}%` }}
                                     />
                                 </div>
                                 <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
-                                    {breakdown.rentalPercentage}% of total
+                                    {breakdown.rentalPercentage.toFixed(1)}% of gross
                                 </p>
                             </div>
 
@@ -205,29 +206,46 @@ export function RevenueChart({
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                     <div
                                         className="h-full bg-amber-500 rounded-full transition-all duration-1000"
-                                        style={{ width: `${breakdown.penaltyPercentage}%` }}
+                                        style={{ width: `${Math.min(breakdown.penaltyPercentage, 100)}%` }}
                                     />
                                 </div>
                                 <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
-                                    {breakdown.penaltyPercentage}% of total
+                                    {breakdown.penaltyPercentage.toFixed(1)}% of gross
                                 </p>
                             </div>
+                        </div>
 
-                            <div className="space-y-1.5">
-                                <div className="flex items-center justify-between text-[13px]">
-                                    <span className="text-muted-foreground font-medium">Damages</span>
-                                    <span className="font-bold">{formatCurrency(breakdown.damageCharges)}</span>
+                        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-3">
+                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                Damage Summary
+                            </h4>
+                            <div className="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p className="text-[10px] text-muted-foreground font-medium uppercase">Recovered</p>
+                                    <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                        +{formatCurrency(breakdown.damageRecovered)}
+                                    </p>
                                 </div>
-                                <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
-                                    <div
-                                        className="h-full bg-red-500 rounded-full transition-all duration-1000"
-                                        style={{ width: `${breakdown.damagePercentage}%` }}
-                                    />
+                                <div>
+                                    <p className="text-[10px] text-muted-foreground font-medium uppercase">Repair Costs</p>
+                                    <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                                        -{formatCurrency(breakdown.damageRepairCosts)}
+                                    </p>
                                 </div>
-                                <p className="text-[10px] text-muted-foreground font-bold tracking-tight uppercase">
-                                    {breakdown.damagePercentage}% of total
-                                </p>
+                                <div>
+                                    <p className="text-[10px] text-muted-foreground font-medium uppercase">Net Impact</p>
+                                    <p className={`text-sm font-bold ${breakdown.netDamageImpact >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                                        {breakdown.netDamageImpact >= 0 ? '+' : ''}{formatCurrency(breakdown.netDamageImpact)}
+                                    </p>
+                                </div>
                             </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-2 border-t border-dashed">
+                            <span className="text-sm font-semibold text-muted-foreground">Net Revenue</span>
+                            <span className={`text-lg font-bold ${breakdown.netRevenue >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                                {formatCurrency(breakdown.netRevenue)}
+                            </span>
                         </div>
                     </div>
                 )}

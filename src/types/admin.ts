@@ -95,10 +95,8 @@ export interface QuickActionResult {
 }
 
 export interface ProcessReturnData {
+    hasDamage?: boolean;
     notes?: string;
-    condition?: string;
-    damageReported?: boolean;
-    finalMileage?: number;
 }
 
 export interface DailyRevenue {
@@ -121,8 +119,11 @@ export interface MonthlyRevenue {
 export interface RevenueBreakdown {
     rentalRevenue: number;
     penaltyRevenue: number;
-    damageCharges: number;
+    damageRecovered: number;
+    damageRepairCosts: number;
+    netDamageImpact: number;
     totalRevenue: number;
+    netRevenue: number;
     rentalPercentage: number;
     penaltyPercentage: number;
     damagePercentage: number;

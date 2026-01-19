@@ -210,7 +210,7 @@ export default function AdminDashboardPage() {
                             size="sm"
                             onClick={handleRefreshRates}
                             disabled={refreshingRates}
-                            className="gap-2 shrink-0"
+                            className="gap-2 shrink-0 cursor-pointer"
                             aria-label="Refresh exchange rates"
                         >
                             <DollarSign className={cn('h-4 w-4', refreshingRates && 'animate-pulse')} aria-hidden="true" />
