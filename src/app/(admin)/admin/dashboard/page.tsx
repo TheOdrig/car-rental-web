@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { cn } from '@/lib/utils';
-import { RefreshCw, Plus, Clock } from 'lucide-react';
+import { RefreshCw, Plus, Clock, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ErrorBoundary } from '@/components/shared';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
@@ -38,6 +38,7 @@ export default function AdminDashboardPage() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
     const [revenuePeriod, setRevenuePeriod] = useState<RevenuePeriod>('last6months');
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
+    const [refreshingRates, setRefreshingRates] = useState(false);
 
     const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
     const { data: fleetStatus, isLoading: fleetLoading } = useFleetStatus();
@@ -55,6 +56,26 @@ export default function AdminDashboardPage() {
     const handleRefresh = () => {
         void invalidate.dashboard();
         toast.success('Dashboard refreshed');
+    };
+
+    const handleRefreshRates = async () => {
+        setRefreshingRates(true);
+        try {
+            const response = await fetch('/api/exchange-rates/refresh', {
+                method: 'POST',
+                credentials: 'include',
+            });
+            if (response.ok) {
+                toast.success('Exchange rates refreshed');
+                window.location.reload();
+            } else {
+                toast.error('Failed to refresh exchange rates');
+            }
+        } catch {
+            toast.error('Failed to refresh exchange rates');
+        } finally {
+            setRefreshingRates(false);
+        }
     };
 
     const handleCardClick = (type: MetricsCardType) => {
@@ -184,6 +205,17 @@ export default function AdminDashboardPage() {
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleRefreshRates}
+                            disabled={refreshingRates}
+                            className="gap-2 shrink-0"
+                            aria-label="Refresh exchange rates"
+                        >
+                            <DollarSign className={cn('h-4 w-4', refreshingRates && 'animate-pulse')} aria-hidden="true" />
+                            {refreshingRates ? 'Refreshing...' : 'Refresh Rates'}
+                        </Button>
                         <Button
                             size="sm"
                             className="gap-2 shrink-0 cursor-pointer"

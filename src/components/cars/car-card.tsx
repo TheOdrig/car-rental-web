@@ -8,7 +8,8 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Car, AvailableCar } from '@/types';
+import { useCurrency } from '@/lib/providers/currency-provider';
+import { mapCurrency, type Car, type AvailableCar } from '@/types';
 
 
 interface CarCardProps {
@@ -25,14 +26,7 @@ interface CarCardSkeletonProps {
 }
 
 
-function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
-}
+
 
 function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
     switch (status) {
@@ -61,6 +55,7 @@ export const CarCard = memo(function CarCard({
     showStatus = false,
     onSelect,
 }: CarCardProps) {
+    const { format } = useCurrency();
     const isSearchResult = isAvailableCar(car);
 
     const brand = car.brand;
@@ -72,7 +67,7 @@ export const CarCard = memo(function CarCard({
     const seats = car.seats;
 
     const price = isSearchResult ? car.dailyRate : car.price;
-    const currency = isSearchResult ? car.currency : car.currencyType;
+    const sourceCurrency = mapCurrency(isSearchResult ? car.currency : car.currencyType);
     const totalPrice = isSearchResult ? car.totalPrice : undefined;
 
     const status = isSearchResult ? undefined : car.carStatusType;
@@ -145,7 +140,7 @@ export const CarCard = memo(function CarCard({
                 <div className="flex items-baseline justify-between">
                     <div>
                         <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                            {formatPrice(price, currency)}
+                            {format(price, sourceCurrency)}
                         </span>
                         {isSearchResult && (
                             <span className="text-sm text-muted-foreground">/day</span>
@@ -155,7 +150,7 @@ export const CarCard = memo(function CarCard({
                         <div className="text-right">
                             <span className="text-sm text-muted-foreground">Total: </span>
                             <span className="font-semibold">
-                                {formatPrice(totalPrice, currency)}
+                                {format(totalPrice, sourceCurrency)}
                             </span>
                         </div>
                     )}
