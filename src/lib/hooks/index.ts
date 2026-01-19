@@ -44,3 +44,20 @@ export {
 } from './use-filter-options';
 
 export { useCarForm } from './use-car-form';
+
+export {
+    useDamages,
+    useMyDamages,
+    useDamageDetail,
+    useDamageStatistics,
+    useVehicleDamages,
+    useCustomerDamages,
+    useCreateDamage,
+    useUploadPhotos,
+    useDeletePhoto,
+    useAssessDamage,
+    useDisputeDamage,
+    useResolveDamage,
+    useInvalidateDamages,
+    damageKeys,
+} from './use-damages';
