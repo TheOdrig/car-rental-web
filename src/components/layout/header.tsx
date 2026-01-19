@@ -16,7 +16,11 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ThemeToggle } from './theme-toggle';
-import { CurrencySelector } from './currency-selector';
+
+const CurrencySelector = dynamic(
+    () => import('./currency-selector').then(mod => mod.CurrencySelector),
+    { ssr: false }
+);
 
 const MobileNav = dynamic(() => import('./mobile-nav').then(mod => mod.MobileNav), {
     ssr: false,

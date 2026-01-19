@@ -67,6 +67,7 @@ export default function AdminDashboardPage() {
             });
             if (response.ok) {
                 toast.success('Exchange rates refreshed');
+                window.location.reload();
             } else {
                 toast.error('Failed to refresh exchange rates');
             }

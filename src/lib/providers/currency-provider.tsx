@@ -42,7 +42,9 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
 
     const fetchRates = useCallback(async () => {
         try {
-            const response = await fetch('/api/exchange-rates');
+            const response = await fetch('/api/exchange-rates', {
+                cache: 'no-store',
+            });
             if (response.ok) {
                 const data: ExchangeRatesResponse = await response.json();
                 setRates(data.rates);
