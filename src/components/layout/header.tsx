@@ -16,6 +16,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { ThemeToggle } from './theme-toggle';
+import { CurrencySelector } from './currency-selector';
 
 const MobileNav = dynamic(() => import('./mobile-nav').then(mod => mod.MobileNav), {
     ssr: false,
@@ -73,6 +74,7 @@ export function Header() {
                 </nav>
 
                 <div className="flex items-center gap-2">
+                    <CurrencySelector />
                     <ThemeToggle />
                     {isLoading ? (
                         <div className="h-9 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
