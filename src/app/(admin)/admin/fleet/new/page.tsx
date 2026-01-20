@@ -69,7 +69,7 @@ export default function AddCarPage() {
                 <Button
                     variant="outline"
                     onClick={() => router.back()}
-                    className="gap-2"
+                    className="gap-2 bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/40 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
                 >
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                     Back
@@ -153,6 +153,7 @@ export default function AddCarPage() {
                         variant="outline"
                         onClick={() => router.back()}
                         disabled={createCar.isPending}
+                        className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/40 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
                     >
                         Cancel
                     </Button>

@@ -72,7 +72,10 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                     >
                         <SelectTrigger
                             id="fuelType"
-                            className={cn(errors.fuelType && 'border-destructive')}
+                            className={cn(
+                                'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
+                                errors.fuelType && 'border-destructive'
+                            )}
                             aria-label="Select fuel type"
                         >
                             <SelectValue placeholder="Select fuel type" />
@@ -100,7 +103,10 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                     >
                         <SelectTrigger
                             id="transmissionType"
-                            className={cn(errors.transmissionType && 'border-destructive')}
+                            className={cn(
+                                'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
+                                errors.transmissionType && 'border-destructive'
+                            )}
                             aria-label="Select transmission type"
                         >
                             <SelectValue placeholder="Select transmission" />
@@ -126,7 +132,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         value={data.bodyType}
                         onValueChange={(value) => onUpdate('bodyType', value)}
                     >
-                        <SelectTrigger id="bodyType" aria-label="Select body type">
+                        <SelectTrigger id="bodyType" aria-label="Select body type" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select body type" />
                         </SelectTrigger>
                         <SelectContent>
@@ -145,7 +151,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         value={data.seats.toString()}
                         onValueChange={(value) => onUpdate('seats', parseInt(value))}
                     >
-                        <SelectTrigger id="seats" aria-label="Select number of seats">
+                        <SelectTrigger id="seats" aria-label="Select number of seats" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select seats" />
                         </SelectTrigger>
                         <SelectContent>
@@ -165,7 +171,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                     value={data.color}
                     onValueChange={(value) => onUpdate('color', value)}
                 >
-                    <SelectTrigger id="color" aria-label="Select color">
+                    <SelectTrigger id="color" aria-label="Select color" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                         <SelectValue placeholder="Select color" />
                     </SelectTrigger>
                     <SelectContent>
