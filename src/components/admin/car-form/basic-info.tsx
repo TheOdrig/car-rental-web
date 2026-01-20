@@ -43,7 +43,10 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     >
                         <SelectTrigger
                             id="brand"
-                            className={cn(errors.brand && 'border-destructive')}
+                            className={cn(
+                                'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
+                                errors.brand && 'border-destructive'
+                            )}
                             aria-label="Select brand"
                         >
                             <SelectValue placeholder="Select brand" />
@@ -87,7 +90,7 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                         value={data.year.toString()}
                         onValueChange={(value) => onUpdate('year', parseInt(value))}
                     >
-                        <SelectTrigger id="year" aria-label="Select year">
+                        <SelectTrigger id="year" aria-label="Select year" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select year" />
                         </SelectTrigger>
                         <SelectContent>

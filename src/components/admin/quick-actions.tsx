@@ -165,12 +165,20 @@ function QuickActionButton({
     onClick,
     disabled = false,
 }: QuickActionButtonProps) {
+    const isDisabled = disabled || count === 0;
+    const outlineClasses = variant === 'outline'
+        ? 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+        : '';
+    const disabledClasses = isDisabled
+        ? 'disabled:opacity-60 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-500 dark:disabled:text-slate-400 disabled:border-slate-200 dark:disabled:border-slate-700'
+        : '';
+
     return (
         <Button
             variant={variant}
-            className="h-auto flex-col gap-2 py-4 px-6"
+            className={`h-auto flex-col gap-2 py-4 px-6 ${outlineClasses} ${disabledClasses}`}
             onClick={onClick}
-            disabled={disabled || count === 0}
+            disabled={isDisabled}
         >
             <div className="flex items-center gap-2">
                 {icon}
@@ -237,10 +245,10 @@ export const QuickActionsCard = memo(function QuickActionsCard({
                 </CardHeader>
                 <CardContent>
                     {pickupItems.length === 0 && returnItems.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-8 text-center bg-muted/20 rounded-xl border border-dashed">
-                            <CheckCircle className="h-8 w-8 text-green-500 mb-2 opacity-50" />
-                            <p className="text-sm font-medium text-muted-foreground">All caught up!</p>
-                            <p className="text-xs text-muted-foreground">No pending pickups or returns.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
+                            <CheckCircle className="h-8 w-8 text-green-500 dark:text-green-400 mb-2 opacity-60" />
+                            <p className="text-sm font-medium text-slate-600 dark:text-slate-300">All caught up!</p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">No pending pickups or returns.</p>
                         </div>
                     ) : (
                         <div className="flex flex-wrap gap-4">

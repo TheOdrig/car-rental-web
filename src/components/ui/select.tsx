@@ -43,10 +43,11 @@ function SelectTrigger({
       data-validation-state={validationState}
       aria-invalid={validationState === 'invalid' || validationState === 'empty' || undefined}
       className={cn(
-        "data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
-        "dark:bg-input/30 dark:hover:bg-input/50",
+        "data-[placeholder]:text-slate-500 dark:data-[placeholder]:text-slate-400 [&_svg:not([class*='text-'])]:text-slate-500 dark:[&_svg:not([class*='text-'])]:text-slate-400",
+        "bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700/80",
         "flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent",
         "px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-all duration-200 outline-none",
+        "text-slate-900 dark:text-slate-100",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[size=default]:h-9 data-[size=sm]:h-8",
         "*:data-[slot=select-value]:line-clamp-1 *:data-[slot=select-value]:flex *:data-[slot=select-value]:items-center *:data-[slot=select-value]:gap-2",

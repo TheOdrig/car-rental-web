@@ -13,6 +13,7 @@ import {
     ChevronRight,
     User,
     AlertTriangle,
+    Clock,
 } from 'lucide-react';
 
 
@@ -46,6 +47,11 @@ const navItems: NavItem[] = [
         label: 'Damage Reports',
         href: '/admin/damages',
         icon: <AlertTriangle className="h-5 w-5" />,
+    },
+    {
+        label: 'Late Returns',
+        href: '/admin/late-returns',
+        icon: <Clock className="h-5 w-5" />,
     },
 ];
 

@@ -51,7 +51,7 @@ export function ImagesSection({
 
         const validFiles = Array.from(files).filter(file => {
             const isImage = file.type.startsWith('image/');
-            const isValidSize = file.size <= 10 * 1024 * 1024; 
+            const isValidSize = file.size <= 10 * 1024 * 1024;
             return isImage && isValidSize;
         });
 
@@ -96,8 +96,9 @@ export function ImagesSection({
             <div
                 className={cn(
                     'relative border-2 border-dashed rounded-lg p-8 transition-all duration-200',
-                    'hover:border-primary/50 hover:bg-muted/30',
-                    isDragActive && 'border-primary bg-primary/5',
+                    'border-slate-300 dark:border-slate-600',
+                    'hover:border-primary/60 hover:bg-slate-100/50 dark:hover:bg-slate-800/50',
+                    isDragActive && 'border-primary bg-primary/10 dark:bg-primary/20',
                     !canAddMore && 'opacity-50 pointer-events-none'
                 )}
                 onDragEnter={handleDragEnter}
@@ -118,15 +119,15 @@ export function ImagesSection({
                     {isUploading ? (
                         <Loader2 className="h-10 w-10 text-primary animate-spin" />
                     ) : (
-                        <div className="p-3 rounded-full bg-muted">
-                            <Upload className="h-6 w-6 text-muted-foreground" />
+                        <div className="p-3 rounded-full bg-slate-100 dark:bg-slate-800">
+                            <Upload className="h-6 w-6 text-slate-500 dark:text-slate-400" />
                         </div>
                     )}
                     <div className="text-center">
-                        <p className="font-medium">
+                        <p className="font-medium text-slate-700 dark:text-slate-200">
                             {isDragActive ? 'Drop images here' : 'Drag & drop images here'}
                         </p>
-                        <p className="text-sm text-muted-foreground mt-1">
+                        <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
                             or click to browse • Max {maxImages} images, 10MB each
                         </p>
                     </div>
@@ -196,9 +197,9 @@ export function ImagesSection({
             )}
 
             {images.length === 0 && (
-                <div className="flex items-center gap-3 p-4 rounded-lg bg-muted/50 border border-dashed">
-                    <ImageIcon className="h-5 w-5 text-muted-foreground" />
-                    <p className="text-sm text-muted-foreground">
+                <div className="flex items-center gap-3 p-4 rounded-lg bg-slate-50 dark:bg-slate-800/30 border border-dashed border-slate-200 dark:border-slate-700">
+                    <ImageIcon className="h-5 w-5 text-slate-500 dark:text-slate-400" />
+                    <p className="text-sm text-slate-600 dark:text-slate-300">
                         No images uploaded yet. Add images to showcase your vehicle.
                     </p>
                 </div>
