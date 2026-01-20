@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getCar, getCarCalendar } from '@/lib/api/cached-fetchers';
-import { CarDetail } from '@/components/cars';
+import { CarDetail, SimilarCarsSection } from '@/components/cars';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -30,6 +30,7 @@ export default async function CarDetailPage({ params }: PageProps) {
     return (
         <main className="container mx-auto px-4 py-8">
             <CarDetail car={car} calendar={calendar} />
+            <SimilarCarsSection carId={carId} />
         </main>
     );
 }
