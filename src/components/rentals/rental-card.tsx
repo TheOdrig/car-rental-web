@@ -2,7 +2,7 @@
 
 import { memo, type ReactNode } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import {
     Calendar,
     Car,
@@ -135,7 +135,7 @@ export const RentalCard = memo(function RentalCard({
                 <CardContent className="p-0">
                     <div className="flex flex-col md:flex-row">
                         <div className="relative h-48 w-full md:h-auto md:w-80 shrink-0">
-                            <Image
+                            <DynamicImage
                                 src={carSummary.thumbnailUrl || '/images/car-placeholder.svg'}
                                 alt={`${carSummary.brand} ${carSummary.model}`}
                                 fill

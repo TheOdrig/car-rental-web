@@ -34,7 +34,7 @@ export function ThemeToggle() {
           variant="ghost"
           size="icon"
           aria-label="Toggle theme"
-          className="relative"
+          className="relative dark:hover:bg-transparent dark:hover:text-white"
         >
           <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -44,21 +44,21 @@ export function ThemeToggle() {
       <DropdownMenuContent align="end">
         <DropdownMenuItem
           onClick={() => setTheme('light')}
-          className={theme === 'light' ? 'bg-accent' : ''}
+          className={theme === 'light' ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground' : ''}
         >
           <Sun className="mr-2 h-4 w-4" />
           <span>Light</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('dark')}
-          className={theme === 'dark' ? 'bg-accent' : ''}
+          className={theme === 'dark' ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground' : ''}
         >
           <Moon className="mr-2 h-4 w-4" />
           <span>Dark</span>
         </DropdownMenuItem>
         <DropdownMenuItem
           onClick={() => setTheme('system')}
-          className={theme === 'system' ? 'bg-accent' : ''}
+          className={theme === 'system' ? 'bg-primary/10 text-primary dark:bg-primary/20 dark:text-primary-foreground' : ''}
         >
           <Monitor className="mr-2 h-4 w-4" />
           <span>System</span>

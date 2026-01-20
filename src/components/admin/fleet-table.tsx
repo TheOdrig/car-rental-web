@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import { MoreHorizontal, Edit, RefreshCcw, Car, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -190,7 +190,7 @@ export const FleetTable = memo(function FleetTable({
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
                                                     {car.imageUrl ? (
-                                                        <Image
+                                                        <DynamicImage
                                                             src={car.imageUrl}
                                                             alt={`${car.brand} ${car.model}`}
                                                             width={64}
@@ -308,7 +308,7 @@ export const FleetTable = memo(function FleetTable({
                 </CardContent>
             </Card>
 
-            {}
+            { }
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -334,7 +334,7 @@ export const FleetTable = memo(function FleetTable({
                 </AlertDialogContent>
             </AlertDialog>
 
-            {}
+            { }
             <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

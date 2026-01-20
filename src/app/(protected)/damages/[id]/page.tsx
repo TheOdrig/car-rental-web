@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState } from 'react';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, AlertTriangle, FileWarning } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -164,10 +165,11 @@ export default function MyDamageDetailPage({ params }: DamageDetailPageProps) {
                                 <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                     {damage.photos.map((photo) => (
                                         <div key={photo.id} className="aspect-square relative rounded-lg overflow-hidden">
-                                            <img
+                                            <DynamicImage
                                                 src={photo.secureUrl}
                                                 alt={photo.fileName}
-                                                className="w-full h-full object-cover"
+                                                fill
+                                                className="object-cover"
                                             />
                                         </div>
                                     ))}

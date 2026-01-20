@@ -19,7 +19,7 @@ import {
     CheckCircle2
 } from 'lucide-react';
 import { safeFormatDate } from '@/lib/utils/format';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import type { PendingItem } from '@/types/admin';
 
 interface ApproveRentalDialogProps {
@@ -62,9 +62,9 @@ export function ApproveRentalDialog({
                 </DialogHeader>
 
                 <div className="grid gap-6 py-4">
-                    {}
+                    { }
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {}
+                        { }
                         <div className="group relative p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 transition-all hover:bg-slate-100 dark:hover:bg-slate-900 overflow-hidden">
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <Car className="h-12 w-12" />
@@ -76,7 +76,7 @@ export function ApproveRentalDialog({
                             <div className="flex gap-4 relative z-10">
                                 {item.carImage ? (
                                     <div className="relative h-20 w-32 shrink-0 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
-                                        <Image
+                                        <DynamicImage
                                             src={item.carImage}
                                             alt={`${item.carBrand} ${item.carModel}`}
                                             fill
@@ -112,7 +112,7 @@ export function ApproveRentalDialog({
                             </div>
                         </div>
 
-                        {}
+                        { }
                         <div className="group relative p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 transition-all hover:bg-slate-100 dark:hover:bg-slate-900 overflow-hidden">
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <User className="h-12 w-12" />
@@ -124,7 +124,7 @@ export function ApproveRentalDialog({
                             <div className="flex gap-4 relative z-10">
                                 {item.customerImage ? (
                                     <div className="relative h-14 w-14 shrink-0 shadow-sm border border-white dark:border-slate-700 rounded-full overflow-hidden">
-                                        <Image
+                                        <DynamicImage
                                             src={item.customerImage}
                                             alt={item.customerName}
                                             fill
@@ -155,7 +155,7 @@ export function ApproveRentalDialog({
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 shadow-inner">
                         <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl bg-blue-500 rounded-full -mr-4 -mt-4 w-32 h-32" />
 
@@ -194,7 +194,7 @@ export function ApproveRentalDialog({
                         </div>
                     </div>
 
-                    {}
+                    { }
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <label htmlFor="notes" className="text-sm font-bold text-slate-700 dark:text-slate-300">

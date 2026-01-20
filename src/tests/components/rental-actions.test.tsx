@@ -40,7 +40,7 @@ describe('RentalActions', () => {
     });
 
     describe('button rendering by status', () => {
-        it('should render Extend Trip and Modify Booking for In Use status', () => {
+        it('should render View Details for In Use status', () => {
             render(
                 <RentalActions
                     rental={createMockRental('In Use')}
@@ -48,8 +48,7 @@ describe('RentalActions', () => {
                 />
             );
 
-            expect(screen.getByRole('button', { name: /extend trip/i })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /modify booking/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /view details/i })).toBeInTheDocument();
         });
 
         it('should render View Details for Confirmed status', () => {
@@ -107,7 +106,7 @@ describe('RentalActions', () => {
                 />
             );
 
-            expect(screen.getByRole('button', { name: /extend trip/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /view details/i })).toBeInTheDocument();
         });
     });
 
@@ -118,9 +117,9 @@ describe('RentalActions', () => {
 
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
 
-            await user.click(screen.getByRole('button', { name: /extend trip/i }));
+            await user.click(screen.getByRole('button', { name: /view details/i }));
 
-            expect(mockOnAction).toHaveBeenCalledWith('extend', rental);
+            expect(mockOnAction).toHaveBeenCalledWith('view', rental);
         });
 
         it('should call onAction for each button click', async () => {
@@ -147,7 +146,7 @@ describe('RentalActions', () => {
                 </div>
             );
 
-            await user.click(screen.getByRole('button', { name: /extend trip/i }));
+            await user.click(screen.getByRole('button', { name: /view details/i }));
 
             expect(containerClick).not.toHaveBeenCalled();
         });
@@ -163,7 +162,7 @@ describe('RentalActions', () => {
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
-            const button = screen.getByRole('button', { name: /extend trip/i });
+            const button = screen.getByRole('button', { name: /view details/i });
             await user.click(button);
 
             expect(button).toBeDisabled();
@@ -182,9 +181,9 @@ describe('RentalActions', () => {
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
-            await user.click(screen.getByRole('button', { name: /extend trip/i }));
+            await user.click(screen.getByRole('button', { name: /view details/i }));
 
-            expect(screen.getByRole('button', { name: /extend trip/i })).toBeDisabled();
+            expect(screen.getByRole('button', { name: /view details/i })).toBeDisabled();
         });
 
         it('should re-enable button after action completes', async () => {
@@ -194,10 +193,10 @@ describe('RentalActions', () => {
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
-            await user.click(screen.getByRole('button', { name: /extend trip/i }));
+            await user.click(screen.getByRole('button', { name: /view details/i }));
 
             await waitFor(() => {
-                expect(screen.getByRole('button', { name: /extend trip/i })).not.toBeDisabled();
+                expect(screen.getByRole('button', { name: /view details/i })).not.toBeDisabled();
             });
         });
     });

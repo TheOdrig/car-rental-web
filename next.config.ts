@@ -43,6 +43,11 @@ const nextConfig: NextConfig = {
         hostname: 'cdn3.focus.bg',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'tr.semautomobile.com',
+        pathname: '/**',
+      },
     ],
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",

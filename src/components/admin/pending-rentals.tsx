@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -112,7 +112,6 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
     onReject,
     onPickup,
     onReturn,
-    onReportDamage,
     actionInProgress,
     className,
 }: PendingRentalsTableProps) {
@@ -263,7 +262,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                             <div className="flex items-center gap-3">
                                                 {item.customerImage ? (
                                                     <div className="relative h-9 w-9">
-                                                        <Image
+                                                        <DynamicImage
                                                             src={item.customerImage}
                                                             alt={item.customerName}
                                                             fill
@@ -288,7 +287,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                             <div className="flex items-center gap-3">
                                                 {item.carImage ? (
                                                     <div className="relative h-10 w-16">
-                                                        <Image
+                                                        <DynamicImage
                                                             src={item.carImage}
                                                             alt={`${item.carBrand} ${item.carModel}`}
                                                             fill

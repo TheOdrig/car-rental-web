@@ -23,7 +23,7 @@ export function CurrencySelector() {
                     variant="ghost"
                     size="sm"
                     disabled={isLoading}
-                    className="h-9 gap-1 px-2"
+                    className="h-9 gap-1 px-2 dark:hover:bg-transparent dark:hover:text-white"
                     aria-label="Select currency"
                 >
                     <span className="text-base" aria-hidden="true">

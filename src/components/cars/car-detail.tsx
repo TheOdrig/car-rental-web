@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import Image from 'next/image';
+import { useState, useMemo, useSyncExternalStore } from 'react';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import {
     Fuel, Users, Settings2, Calendar, Gauge, Palette,
@@ -32,7 +32,12 @@ interface CarDetailSkeletonProps {
 
 
 
+const subscribe = () => () => { };
+const getSnapshot = () => true;
+const getServerSnapshot = () => false;
+
 export function CarDetail({ car, calendar, showRentalForm = true, className }: CarDetailProps) {
+    const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
     const { isAuthenticated, isLoading: authLoading } = useAuth();
     const { format: formatPrice } = useCurrency();
     const sourceCurrency = mapCurrency(car.currencyType);
@@ -48,12 +53,13 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
 
     const isAvailable = car.carStatusType === 'Available';
     const canBook = isAvailable && showRentalForm;
+    const showAuthLoading = !mounted || authLoading;
 
     return (
         <div className={cn('grid gap-6 lg:grid-cols-2', className)}>
             <div className="space-y-4">
                 <div className="relative aspect-video overflow-hidden rounded-xl">
-                    <Image
+                    <DynamicImage
                         src={car.imageUrl ?? '/images/car-placeholder.svg'}
                         alt={`${car.brand} ${car.model} ${car.productionYear}`}
                         fill
@@ -128,7 +134,7 @@ export function CarDetail({ car, calendar, showRentalForm = true, className }: C
                             <CardTitle className="text-lg">Book This Car</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            {authLoading ? (
+                            {showAuthLoading ? (
                                 <div className="space-y-4">
                                     <Skeleton className="h-12 w-full" />
                                     <Skeleton className="h-12 w-full" />

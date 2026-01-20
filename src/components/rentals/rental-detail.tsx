@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import {
     Calendar,
@@ -135,12 +135,20 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 </div>
 
                 <div className="flex gap-2">
-                    <Button variant="outline" onClick={handleSupport}>
+                    <Button
+                        variant="outline"
+                        onClick={handleSupport}
+                        className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+                    >
                         <Headphones className="mr-2 h-4 w-4" />
                         Support
                     </Button>
                     {canModify && (
-                        <Button variant="outline" onClick={handleModifyDates}>
+                        <Button
+                            variant="outline"
+                            onClick={handleModifyDates}
+                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white"
+                        >
                             <Edit className="mr-2 h-4 w-4" />
                             Modify Dates
                         </Button>
@@ -148,7 +156,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                     {canCancel && (
                         <Button
                             variant="outline"
-                            className="border-destructive text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                            className="bg-red-50 dark:bg-red-950 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 hover:text-red-700 dark:hover:text-red-300"
                             onClick={() => setShowCancelDialog(true)}
                         >
                             <X className="mr-2 h-4 w-4" />
@@ -172,7 +180,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                 className="group flex gap-4"
                             >
                                 <div className="relative h-32 w-48 shrink-0 overflow-hidden rounded-lg">
-                                    <Image
+                                    <DynamicImage
                                         src={carSummary.thumbnailUrl ?? '/images/car-placeholder.svg'}
                                         alt={`${carSummary.brand} ${carSummary.model}`}
                                         fill
@@ -367,7 +375,12 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                         780 S Airport Blvd, San Francisco, CA 94128
                                     </p>
                                 </div>
-                                <Button variant="outline" size="sm" onClick={handleGetDirections}>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={handleGetDirections}
+                                    className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                                >
                                     Get Directions
                                     <ExternalLink className="ml-2 h-3 w-3" />
                                 </Button>
@@ -423,7 +436,11 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                 </p>
                             </div>
 
-                            <Button className="w-full" variant="outline" onClick={handleDownloadInvoice}>
+                            <Button
+                                className="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
+                                variant="outline"
+                                onClick={handleDownloadInvoice}
+                            >
                                 <Download className="mr-2 h-4 w-4" />
                                 Download Invoice
                             </Button>

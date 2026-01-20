@@ -34,11 +34,7 @@ export function HomeContent() {
         <>
             <HeroSection />
 
-            <FeaturedCarousel
-                title="Popular Rentals Near You"
-                subtitle="Discover our most booked vehicles"
-                className="bg-slate-50 dark:bg-slate-950"
-            />
+            <FeaturedCarousel className="bg-slate-50 dark:bg-slate-950" />
 
             <PromotionalBanners />
 
@@ -60,7 +56,7 @@ export function HomeContent() {
                 )}
             </section>
 
-            {}
+            { }
         </>
     );
 }

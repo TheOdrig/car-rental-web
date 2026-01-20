@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import { Fuel, Users, Settings2, Calendar, Star } from 'lucide-react';
 import { Card } from '@/components/ui/card';
@@ -44,7 +44,7 @@ export function CarListItem({ car, className }: CarListItemProps) {
                 <div className="relative w-full sm:w-72 h-48 sm:h-auto sm:min-h-[200px] flex-shrink-0">
                     <Link href={`/cars/${data.id}`}>
                         {data.imageUrl ? (
-                            <Image
+                            <DynamicImage
                                 src={data.imageUrl}
                                 alt={`${data.brand} ${data.model}`}
                                 fill

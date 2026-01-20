@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -13,6 +13,16 @@ import {
 } from '@/components/ui/select';
 import { cn } from '@/lib/utils';
 import type { CarFormData } from './types';
+
+function isValidImageUrl(url: string): boolean {
+    if (!url || url.length < 10) return false;
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch {
+        return false;
+    }
+}
 
 interface BasicInfoSectionProps {
     data: CarFormData;
@@ -153,9 +163,9 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                 <p className="text-xs text-muted-foreground">
                     Optional: Direct URL to a car image
                 </p>
-                {data.imageUrl && (
+                {isValidImageUrl(data.imageUrl) && (
                     <div className="mt-3 rounded-lg border overflow-hidden bg-muted relative h-40">
-                        <Image
+                        <DynamicImage
                             src={data.imageUrl}
                             alt="Car preview"
                             fill

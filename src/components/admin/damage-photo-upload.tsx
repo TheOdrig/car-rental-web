@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { useDropzone } from 'react-dropzone';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -90,10 +91,11 @@ export function DamagePhotoUpload({
                     <Card key={photo.id} className="relative group overflow-hidden">
                         <CardContent className="p-0">
                             <div className="aspect-square relative">
-                                <img
+                                <DynamicImage
                                     src={photo.secureUrl}
                                     alt={photo.fileName}
-                                    className="w-full h-full object-cover"
+                                    fill
+                                    className="object-cover"
                                 />
                                 <Button
                                     variant="destructive"

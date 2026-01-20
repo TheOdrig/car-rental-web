@@ -175,25 +175,17 @@ describe('Rental Utils', () => {
                 createMockRental({ status: 'Confirmed' }),
             ];
 
-            const stats = calculateRentalStats(rentals, 450);
+            const stats = calculateRentalStats(rentals);
 
             expect(stats.totalRentals).toBe(4);
             expect(stats.activeTrips).toBe(2);
-            expect(stats.loyaltyPoints).toBe(450);
-        });
-
-        it('should use default loyalty points of 0', () => {
-            const stats = calculateRentalStats([]);
-
-            expect(stats.loyaltyPoints).toBe(0);
         });
 
         it('should handle empty rentals', () => {
-            const stats = calculateRentalStats([], 100);
+            const stats = calculateRentalStats([]);
 
             expect(stats.totalRentals).toBe(0);
             expect(stats.activeTrips).toBe(0);
-            expect(stats.loyaltyPoints).toBe(100);
         });
     });
 
@@ -201,10 +193,9 @@ describe('Rental Utils', () => {
         it('should return correct buttons for "In Use" status', () => {
             const buttons = getActionButtons('In Use');
 
-            expect(buttons).toHaveLength(2);
-            expect(buttons[0].label).toBe('Extend Trip');
-            expect(buttons[0].action).toBe('extend');
-            expect(buttons[1].label).toBe('Modify Booking');
+            expect(buttons).toHaveLength(1);
+            expect(buttons[0].label).toBe('View Details');
+            expect(buttons[0].action).toBe('view');
         });
 
         it('should return correct buttons for "Confirmed" status', () => {

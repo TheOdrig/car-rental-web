@@ -24,14 +24,25 @@ export interface Addon {
     popular?: boolean;
 }
 
+export interface DiscountDetail {
+    name: string;
+    description: string;
+    percentage: string;
+    isDiscount: boolean;
+}
+
 export interface PriceBreakdown {
     rentalDays: number;
     dailyRate: number;
+    originalDailyRate?: number;
     rentalCost: number;
     taxesAndFees: number;
     addonsCost: number;
     addonsDetail: AddonCostDetail[];
     total: number;
+    originalTotal?: number;
+    totalSavings?: number;
+    appliedDiscounts?: DiscountDetail[];
     currency: CurrencyType;
 }
 

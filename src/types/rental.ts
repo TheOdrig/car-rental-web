@@ -190,7 +190,6 @@ export interface RentalTabCounts {
 export interface RentalStats {
     totalRentals: number;
     activeTrips: number;
-    loyaltyPoints: number;
 }
 
 export interface ActionButton {

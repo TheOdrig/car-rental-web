@@ -1,7 +1,7 @@
 'use client';
 
 import { memo, type ReactNode } from 'react';
-import { History, CalendarClock, Award } from 'lucide-react';
+import { History, CalendarClock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -25,7 +25,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
         <Card
             className={cn(
                 'py-4 transition-all',
-                isHighlighted && 'border-primary ring-1 ring-primary/20'
+                isHighlighted && 'border-emerald-500/50 dark:border-emerald-400/50 ring-1 ring-emerald-500/20 dark:ring-emerald-400/30'
             )}
         >
             <CardContent className="flex items-center gap-4 px-4">
@@ -33,7 +33,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
                     className={cn(
                         'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
                         isHighlighted
-                            ? 'bg-primary/10 text-primary'
+                            ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400'
                             : 'bg-muted text-muted-foreground'
                     )}
                 >
@@ -44,7 +44,9 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
                     <p
                         className={cn(
                             'text-2xl font-bold',
-                            isHighlighted && 'text-primary'
+                            isHighlighted
+                                ? 'text-emerald-600 dark:text-emerald-400'
+                                : 'text-foreground'
                         )}
                     >
                         {value.toLocaleString()}
@@ -78,13 +80,12 @@ export const RentalStats = memo(function RentalStats({
         return (
             <div
                 className={cn(
-                    'grid gap-4 sm:grid-cols-2 lg:grid-cols-3',
+                    'grid gap-4 sm:grid-cols-2',
                     className
                 )}
                 aria-busy="true"
                 aria-label="Loading rental statistics"
             >
-                <StatCardSkeleton />
                 <StatCardSkeleton />
                 <StatCardSkeleton />
             </div>
@@ -94,7 +95,7 @@ export const RentalStats = memo(function RentalStats({
     return (
         <div
             className={cn(
-                'grid gap-4 sm:grid-cols-2 lg:grid-cols-3',
+                'grid gap-4 sm:grid-cols-2',
                 className
             )}
             role="region"
@@ -110,11 +111,6 @@ export const RentalStats = memo(function RentalStats({
                 label="Active Trips"
                 value={stats.activeTrips}
                 isHighlighted
-            />
-            <StatCard
-                icon={<Award className="h-6 w-6" />}
-                label="Loyalty Points"
-                value={stats.loyaltyPoints}
             />
         </div>
     );

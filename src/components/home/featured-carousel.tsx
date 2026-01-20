@@ -17,8 +17,8 @@ interface FeaturedCarouselProps {
 }
 
 export function FeaturedCarousel({
-    title = 'Popular Rentals Near You',
-    subtitle = 'Discover our most booked vehicles',
+    title = 'Featured Vehicles',
+    subtitle = 'Our curated collection of premium rentals',
     viewAllLink = '/cars',
     className,
 }: FeaturedCarouselProps) {

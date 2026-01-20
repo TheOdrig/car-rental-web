@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { format } from 'date-fns';
-import { Lock, ArrowRight, Phone, Headphones } from 'lucide-react';
+import { Lock, ArrowRight, Phone, Headphones, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useCurrency } from '@/lib/providers/currency-provider';
 import { mapCurrency } from '@/types';
@@ -15,6 +15,7 @@ interface BookingSummaryProps {
     pickupLocation: string;
     dropoffLocation: string;
     priceBreakdown: PriceBreakdown;
+    isPricingLoading?: boolean;
     isSubmitting: boolean;
     isFormValid: boolean;
 }
@@ -26,6 +27,7 @@ export function BookingSummary({
     pickupLocation,
     dropoffLocation,
     priceBreakdown,
+    isPricingLoading = false,
     isSubmitting,
     isFormValid,
 }: BookingSummaryProps) {
@@ -51,7 +53,7 @@ export function BookingSummary({
 
                 <div className="px-6 py-4 flex justify-center bg-gradient-to-b from-white dark:from-slate-900 to-slate-50 dark:to-slate-950">
                     <div className="relative w-full max-w-[280px] aspect-[16/9] group">
-                        <Image
+                        <DynamicImage
                             src={car.imageUrl || '/placeholder-car.png'}
                             alt={`${car.brand} ${car.model}`}
                             fill
@@ -124,11 +126,57 @@ export function BookingSummary({
 
                     <div className="h-px bg-border my-4" />
 
+                    {/* Applied Discounts Section */}
+                    {isPricingLoading ? (
+                        <div className="space-y-2 mb-4">
+                            <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-32" />
+                            <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-48" />
+                        </div>
+                    ) : priceBreakdown.appliedDiscounts && priceBreakdown.appliedDiscounts.length > 0 && (
+                        <div className="mb-4">
+                            <div className="flex items-center gap-1.5 mb-2">
+                                <Sparkles className="h-4 w-4 text-emerald-500" />
+                                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Discounts Applied</span>
+                            </div>
+                            <div className="space-y-1.5">
+                                {priceBreakdown.appliedDiscounts.map((discount, index) => (
+                                    <div key={index} className="flex justify-between items-center text-sm">
+                                        <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                            <Tag className="h-3 w-3" />
+                                            {discount.description}
+                                        </span>
+                                        <span className={`font-medium tabular-nums ${discount.isDiscount
+                                            ? 'text-emerald-600 dark:text-emerald-400'
+                                            : 'text-amber-600 dark:text-amber-400'
+                                            }`}>
+                                            {discount.percentage}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                     <div className="flex justify-between items-end mb-6">
                         <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total Price</span>
                         <div className="text-right">
+                            {priceBreakdown.originalTotal && priceBreakdown.totalSavings && priceBreakdown.totalSavings > 0 && (
+                                <div className="flex items-center justify-end gap-2 mb-1">
+                                    <span className="text-sm line-through text-slate-400 dark:text-slate-500 tabular-nums">
+                                        {formatPrice(priceBreakdown.originalTotal, sourceCurrency)}
+                                    </span>
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
+                                        <Sparkles className="h-3 w-3" />
+                                        Save {formatPrice(priceBreakdown.totalSavings, sourceCurrency)}
+                                    </span>
+                                </div>
+                            )}
                             <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
-                                {formatPrice(priceBreakdown.total, sourceCurrency)}
+                                {isPricingLoading ? (
+                                    <span className="inline-block h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                                ) : (
+                                    formatPrice(priceBreakdown.total, sourceCurrency)
+                                )}
                             </span>
                             <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {priceBreakdown.currency}, includes all taxes

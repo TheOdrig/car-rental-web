@@ -30,7 +30,7 @@ export default function MyRentalsPage() {
 
     const tabCounts = useMemo(() => calculateTabCounts(rentals), [rentals]);
 
-    const stats = useMemo(() => calculateRentalStats(rentals, 450), [rentals]);
+    const stats = useMemo(() => calculateRentalStats(rentals), [rentals]);
 
     const filteredRentals = useMemo(
         () => getRentalsByTab(rentals, activeTab),
@@ -43,12 +43,6 @@ export default function MyRentalsPage() {
 
     const handleAction = useCallback((action: string, rental: Rental) => {
         switch (action) {
-            case 'extend':
-                showToast.info(`Extend trip for rental #${rental.id}`);
-                break;
-            case 'modify':
-                showToast.info(`Modify booking for rental #${rental.id}`);
-                break;
             case 'view':
                 window.location.href = `/rentals/${rental.id}`;
                 break;
@@ -93,7 +87,7 @@ export default function MyRentalsPage() {
                     </div>
                     <Button
                         variant="outline"
-                        className="hidden gap-2 md:flex"
+                        className="hidden gap-2 md:flex bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                         onClick={handleExport}
                     >
                         <Download className="h-4 w-4" />
@@ -103,8 +97,7 @@ export default function MyRentalsPage() {
 
                 <div className="mb-8">
                     {isLoading ? (
-                        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                            <Skeleton className="h-24" />
+                        <div className="grid gap-4 sm:grid-cols-2">
                             <Skeleton className="h-24" />
                             <Skeleton className="h-24" />
                         </div>

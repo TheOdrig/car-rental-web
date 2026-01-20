@@ -15,7 +15,12 @@ vi.mock('next/navigation', () => ({
 
 vi.mock('next/image', () => ({
     default: ({ src, alt, ...props }: { src: string; alt: string }) => (
-        
+        <img src={src} alt={alt} {...props} />
+    ),
+}));
+
+vi.mock('@/components/ui/dynamic-image', () => ({
+    DynamicImage: ({ src, alt, ...props }: { src: string; alt: string }) => (
         <img src={src} alt={alt} {...props} />
     ),
 }));
@@ -46,7 +51,7 @@ describe('CarCard', () => {
             const car = createMockCar({ price: 150, currencyType: 'USD' });
             renderWithProviders(<CarCard car={car} />);
 
-            expect(screen.getByText('$150')).toBeInTheDocument();
+            expect(screen.getByText('$150.00')).toBeInTheDocument();
         });
 
         it('should render fuel type when provided', () => {
@@ -142,7 +147,7 @@ describe('CarCard', () => {
             };
             renderWithProviders(<CarCard car={availableCar} />);
 
-            expect(screen.getByText('$200')).toBeInTheDocument();
+            expect(screen.getByText('$200.00')).toBeInTheDocument();
             expect(screen.getByText('/day')).toBeInTheDocument();
         });
 
@@ -158,7 +163,7 @@ describe('CarCard', () => {
             };
             renderWithProviders(<CarCard car={availableCar} />);
 
-            expect(screen.getByText('$600')).toBeInTheDocument();
+            expect(screen.getByText('$600.00')).toBeInTheDocument();
             expect(screen.getByText(/total/i)).toBeInTheDocument();
         });
 

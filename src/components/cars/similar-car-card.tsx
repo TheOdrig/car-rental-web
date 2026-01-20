@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Card, CardContent } from '@/components/ui/card';
@@ -31,7 +31,7 @@ export const SimilarCarCard = memo(function SimilarCarCard({
         >
             <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg focus-within:ring-2 focus-within:ring-primary">
                 <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
+                    <DynamicImage
                         src={imageUrl}
                         alt={`${car.brand} ${car.model} ${car.productionYear} - Available for rent`}
                         fill

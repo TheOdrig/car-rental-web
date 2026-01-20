@@ -1,6 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { CurrencyProvider } from '@/lib/providers/currency-provider';
 
 export function createTestQueryClient() {
     return new QueryClient({
@@ -23,7 +24,9 @@ export function createQueryWrapper() {
     return function QueryWrapper({ children }: { children: ReactNode }) {
         return (
             <QueryClientProvider client={queryClient}>
-                {children}
+                <CurrencyProvider>
+                    {children}
+                </CurrencyProvider>
             </QueryClientProvider>
         );
     };
@@ -35,7 +38,9 @@ export function renderWithProviders(ui: React.ReactElement) {
     return render(ui, {
         wrapper: ({ children }) => (
             <QueryClientProvider client={queryClient}>
-                {children}
+                <CurrencyProvider>
+                    {children}
+                </CurrencyProvider>
             </QueryClientProvider>
         ),
     });

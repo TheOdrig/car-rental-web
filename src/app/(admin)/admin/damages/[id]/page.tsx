@@ -14,7 +14,7 @@ import {
     DamageAssessDialog,
     DamageResolveDialog,
 } from '@/components/admin';
-import { useDamageDetail, useInvalidateDamages } from '@/lib/hooks';
+import { useDamageDetail } from '@/lib/hooks';
 import { getDamageCategoryLabel } from '@/types';
 
 interface DamageDetailPageProps {
@@ -25,7 +25,6 @@ export default function DamageDetailPage({ params }: DamageDetailPageProps) {
     const { id } = use(params);
     const damageId = parseInt(id, 10);
     const router = useRouter();
-    const invalidate = useInvalidateDamages();
 
     const [showAssessDialog, setShowAssessDialog] = useState(false);
     const [showResolveDialog, setShowResolveDialog] = useState(false);

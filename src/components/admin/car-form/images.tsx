@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import { Upload, X, ImageIcon, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
@@ -163,7 +163,7 @@ export function ImagesSection({
                                 key={image.id}
                                 className="relative group aspect-[4/3] rounded-lg overflow-hidden border bg-muted"
                             >
-                                <Image
+                                <DynamicImage
                                     src={image.url}
                                     alt={image.name}
                                     fill

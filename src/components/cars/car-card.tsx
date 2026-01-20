@@ -1,7 +1,7 @@
 'use client';
 
 import { memo } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
 import { Fuel, Users, Settings2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -82,7 +82,7 @@ export const CarCard = memo(function CarCard({
             onClick={() => onSelect?.(car)}
         >
             <div className="relative aspect-[16/10] overflow-hidden">
-                <Image
+                <DynamicImage
                     src={imageUrl}
                     alt={`${brand} ${model} ${year} - Car available for rent`}
                     fill

@@ -1,10 +1,11 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useCar } from '@/lib/hooks/use-cars';
+import { usePricingPreview } from '@/lib/hooks/use-pricing';
 import { useAuth } from '@/lib/hooks';
 import { checkoutFormSchema, type CheckoutFormSchema } from '@/lib/validations/checkout';
 import { calculatePriceBreakdown, calculateRentalDays, DEFAULT_ADDONS } from '@/lib/utils/checkout-utils';
@@ -13,7 +14,7 @@ import { PaymentForm } from './payment-form';
 import { ProtectionExtras } from './protection-extras';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
-import type { Car } from '@/types';
+import type { Car, DiscountDetail, PriceBreakdown } from '@/types';
 
 interface CheckoutFormProps {
     carId: string;
@@ -33,6 +34,11 @@ export function CheckoutForm({
     const router = useRouter();
     const { user } = useAuth();
     const { data: carData, isLoading: carLoading, error: carError } = useCar(Number(carId));
+    const { data: pricingData, isLoading: pricingLoading } = usePricingPreview(
+        Number(carId),
+        startDate,
+        endDate
+    );
 
     const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -95,13 +101,57 @@ export function CheckoutForm({
         }
     };
 
+    const car = ((carData as unknown as { car?: Car })?.car || carData) as Car | undefined;
+
+    const rentalDays = useMemo(() => {
+        return calculateRentalDays(new Date(startDate), new Date(endDate));
+    }, [startDate, endDate]);
+
+    const selectedAddonObjects = useMemo(() => {
+        return DEFAULT_ADDONS.filter((addon) => selectedAddons.includes(addon.id));
+    }, [selectedAddons]);
+
+    const appliedDiscounts: DiscountDetail[] = useMemo(() => {
+        if (!pricingData?.appliedModifiers) return [];
+        return pricingData.appliedModifiers.map((mod) => ({
+            name: mod.strategyName,
+            description: mod.description,
+            percentage: mod.formattedPercentage,
+            isDiscount: mod.isDiscount,
+        }));
+    }, [pricingData?.appliedModifiers]);
+
+    const priceBreakdown: PriceBreakdown | null = useMemo(() => {
+        if (!car) return null;
+
+        const effectiveDailyRate = pricingData?.effectiveDailyPrice ?? car.price;
+        const baseDailyRate = pricingData?.basePrice ?? car.price;
+
+        const base = calculatePriceBreakdown(
+            effectiveDailyRate,
+            rentalDays,
+            selectedAddonObjects,
+            car.currencyType
+        );
+
+        const originalTotal = pricingData
+            ? baseDailyRate * rentalDays + base.addonsCost + (baseDailyRate * rentalDays + base.addonsCost) * 0.12
+            : undefined;
+
+        return {
+            ...base,
+            originalDailyRate: pricingData ? baseDailyRate : undefined,
+            originalTotal: originalTotal ? Math.round(originalTotal * 100) / 100 : undefined,
+            totalSavings: pricingData?.totalSavings,
+            appliedDiscounts: appliedDiscounts.length > 0 ? appliedDiscounts : undefined,
+        };
+    }, [car, pricingData, rentalDays, selectedAddonObjects, appliedDiscounts]);
+
     if (carLoading) {
         return <CheckoutSkeleton />;
     }
 
-    const car = ((carData as unknown as { car?: Car })?.car || carData) as Car | undefined;
-
-    if (carError || !car) {
+    if (carError || !car || !priceBreakdown) {
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="text-center">
@@ -111,17 +161,6 @@ export function CheckoutForm({
             </div>
         );
     }
-
-    const rentalDays = calculateRentalDays(new Date(startDate), new Date(endDate));
-    const selectedAddonObjects = DEFAULT_ADDONS.filter((addon) =>
-        selectedAddons.includes(addon.id)
-    );
-    const priceBreakdown = calculatePriceBreakdown(
-        car.price,
-        rentalDays,
-        selectedAddonObjects,
-        car.currencyType
-    );
 
     return (
         <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -154,6 +193,7 @@ export function CheckoutForm({
                         pickupLocation={pickupLocation}
                         dropoffLocation={dropoffLocation || pickupLocation}
                         priceBreakdown={priceBreakdown}
+                        isPricingLoading={pricingLoading}
                         isSubmitting={isSubmitting}
                         isFormValid={form.formState.isValid}
                     />

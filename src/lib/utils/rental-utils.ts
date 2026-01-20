@@ -55,22 +55,17 @@ export function calculateTabCounts(rentals: Rental[]): RentalTabCounts {
     };
 }
 
-export function calculateRentalStats(
-    rentals: Rental[],
-    loyaltyPoints: number = 0
-): RentalStats {
+export function calculateRentalStats(rentals: Rental[]): RentalStats {
     return {
         totalRentals: rentals.length,
         activeTrips: rentals.filter((r) => r.status === 'In Use').length,
-        loyaltyPoints,
     };
 }
 
 
 const ACTION_BUTTONS_CONFIG: Record<RentalStatus, ActionButton[]> = {
     'In Use': [
-        { label: 'Extend Trip', action: 'extend', variant: 'outline' },
-        { label: 'Modify Booking', action: 'modify', variant: 'default' },
+        { label: 'View Details', action: 'view', variant: 'default' },
     ],
     Confirmed: [
         { label: 'View Details', action: 'view', variant: 'ghost' },
