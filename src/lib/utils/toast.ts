@@ -65,6 +65,16 @@ export const toastMessages = {
         registerSuccess: 'Account created successfully!',
         registerError: 'Failed to create account',
     },
+    profile: {
+        updateSuccess: 'Profile updated successfully',
+        updateError: 'Failed to update profile',
+        avatarUploadSuccess: 'Avatar uploaded successfully',
+        avatarUploadError: 'Failed to upload avatar',
+        avatarDeleteSuccess: 'Avatar deleted successfully',
+        avatarDeleteError: 'Failed to delete avatar',
+        passwordChangeSuccess: 'Password changed successfully',
+        passwordChangeError: 'Failed to change password',
+    },
     generic: {
         saveSuccess: 'Changes saved successfully',
         saveError: 'Failed to save changes',

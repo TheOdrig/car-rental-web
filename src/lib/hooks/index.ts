@@ -66,3 +66,24 @@ export {
     usePricingPreview,
     pricingKeys,
 } from './use-pricing';
+
+export {
+    useProfile,
+    useUpdateProfile,
+    profileKeys,
+} from './use-profile';
+
+export {
+    useUploadAvatar,
+    useDeleteAvatar,
+    validateAvatarFile,
+} from './use-avatar';
+
+export {
+    useChangePassword,
+} from './use-password';
+
+export {
+    useForgotPassword,
+    useResetPassword,
+} from './use-password-reset';
