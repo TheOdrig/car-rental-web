@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Loader2, Eye, EyeOff, Shield, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -11,57 +10,53 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
 import { showToast } from '@/lib/utils/toast';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
-
-const passwordSchema = z
-    .object({
-        currentPassword: z.string().min(1, 'Current password is required'),
-        newPassword: z.string().min(8, 'Password must be at least 8 characters'),
-        confirmPassword: z.string().min(1, 'Please confirm your password'),
-    })
-    .refine((data) => data.newPassword === data.confirmPassword, {
-        message: "Passwords don't match",
-        path: ['confirmPassword'],
-    });
-
-type PasswordFormData = z.infer<typeof passwordSchema>;
+import { useChangePassword } from '@/lib/hooks';
+import {
+    passwordChangeSchema,
+    type PasswordChangeFormData,
+    getPasswordChangeDefaultValues,
+} from '@/lib/validations/settings';
 
 export default function SecuritySettingsPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
+    const changePassword = useChangePassword();
 
     const {
         register,
         handleSubmit,
         reset,
-        formState: { errors, isSubmitting },
-    } = useForm<PasswordFormData>({
-        resolver: zodResolver(passwordSchema),
+        formState: { errors, isDirty },
+    } = useForm<PasswordChangeFormData>({
+        resolver: zodResolver(passwordChangeSchema),
+        defaultValues: getPasswordChangeDefaultValues(),
     });
 
-    const handlePasswordChange = async (data: PasswordFormData) => {
+    const handlePasswordChange = async (data: PasswordChangeFormData) => {
         try {
-            void data;
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            showToast.success('Password changed successfully');
+            await changePassword.mutateAsync({
+                currentPassword: data.currentPassword,
+                newPassword: data.newPassword,
+            });
             reset();
         } catch {
-            showToast.error('Failed to change password');
         }
     };
 
     const handleTwoFactorToggle = (enabled: boolean) => {
         setTwoFactorEnabled(enabled);
-        showToast.info(enabled ? 'Two-factor authentication enabled' : 'Two-factor authentication disabled');
+        showToast.info(
+            enabled
+                ? 'Two-factor authentication feature coming soon'
+                : 'Two-factor authentication disabled'
+        );
     };
 
     return (
         <div className="space-y-6">
-            <ComingSoonBanner
-                title="Security Features Coming Soon"
-                description="Password change and other security features are currently being developed. This form is a preview of the upcoming functionality."
-            />
             <Card>
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
@@ -82,11 +77,13 @@ export default function SecuritySettingsPage() {
                                     type={showCurrentPassword ? 'text' : 'password'}
                                     {...register('currentPassword')}
                                     aria-invalid={!!errors.currentPassword}
+                                    disabled={changePassword.isPending}
                                 />
                                 <button
                                     type="button"
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                                    tabIndex={-1}
                                 >
                                     {showCurrentPassword ? (
                                         <EyeOff className="h-4 w-4" />
@@ -110,11 +107,13 @@ export default function SecuritySettingsPage() {
                                     type={showNewPassword ? 'text' : 'password'}
                                     {...register('newPassword')}
                                     aria-invalid={!!errors.newPassword}
+                                    disabled={changePassword.isPending}
                                 />
                                 <button
                                     type="button"
                                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                                     onClick={() => setShowNewPassword(!showNewPassword)}
+                                    tabIndex={-1}
                                 >
                                     {showNewPassword ? (
                                         <EyeOff className="h-4 w-4" />
@@ -128,16 +127,34 @@ export default function SecuritySettingsPage() {
                                     {errors.newPassword.message}
                                 </p>
                             )}
+                            <p className="text-xs text-muted-foreground">
+                                Password must be at least 8 characters long
+                            </p>
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="confirmPassword">Confirm New Password</Label>
-                            <Input
-                                id="confirmPassword"
-                                type="password"
-                                {...register('confirmPassword')}
-                                aria-invalid={!!errors.confirmPassword}
-                            />
+                            <div className="relative">
+                                <Input
+                                    id="confirmPassword"
+                                    type={showConfirmPassword ? 'text' : 'password'}
+                                    {...register('confirmPassword')}
+                                    aria-invalid={!!errors.confirmPassword}
+                                    disabled={changePassword.isPending}
+                                />
+                                <button
+                                    type="button"
+                                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                    tabIndex={-1}
+                                >
+                                    {showConfirmPassword ? (
+                                        <EyeOff className="h-4 w-4" />
+                                    ) : (
+                                        <Eye className="h-4 w-4" />
+                                    )}
+                                </button>
+                            </div>
                             {errors.confirmPassword && (
                                 <p className="text-sm text-destructive">
                                     {errors.confirmPassword.message}
@@ -145,8 +162,13 @@ export default function SecuritySettingsPage() {
                             )}
                         </div>
 
-                        <Button type="submit" disabled={isSubmitting}>
-                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                        <Button
+                            type="submit"
+                            disabled={changePassword.isPending || !isDirty}
+                        >
+                            {changePassword.isPending && (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
                             Update Password
                         </Button>
                     </form>
@@ -170,10 +192,14 @@ export default function SecuritySettingsPage() {
                             <p className="text-sm text-muted-foreground">
                                 Use an authenticator app for additional security
                             </p>
+                            <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
+                                This feature is coming soon
+                            </p>
                         </div>
                         <Switch
                             checked={twoFactorEnabled}
                             onCheckedChange={handleTwoFactorToggle}
+                            disabled
                         />
                     </div>
                 </CardContent>
@@ -181,4 +207,3 @@ export default function SecuritySettingsPage() {
         </div>
     );
 }
-
