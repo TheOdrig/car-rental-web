@@ -1,81 +1,75 @@
 'use client';
 
-import { useState, useRef, useCallback, type ChangeEvent } from 'react';
+import { useRef, useCallback, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Camera, Trash2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { validateAvatarFile } from '@/lib/hooks/use-avatar';
 import { showToast } from '@/lib/utils/toast';
 
 interface ProfilePictureProps {
-    currentImage?: string;
-    onImageChange?: (file: File | null) => void;
+    avatarUrl?: string | null;
+    onUpload: (file: File) => Promise<void>;
+    onDelete: () => Promise<void>;
+    isUploading?: boolean;
+    isDeleting?: boolean;
     className?: string;
 }
 
 export function ProfilePicture({
-    currentImage,
-    onImageChange,
+    avatarUrl,
+    onUpload,
+    onDelete,
+    isUploading = false,
+    isDeleting = false,
     className,
 }: ProfilePictureProps) {
-    const [preview, setPreview] = useState<string | null>(null);
-    const [isUploading, setIsUploading] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleClick = useCallback(() => {
-        inputRef.current?.click();
-    }, []);
+        if (!isUploading && !isDeleting) {
+            inputRef.current?.click();
+        }
+    }, [isUploading, isDeleting]);
 
     const handleChange = useCallback(
         async (e: ChangeEvent<HTMLInputElement>) => {
             const file = e.target.files?.[0];
             if (!file) return;
 
-            if (!file.type.startsWith('image/')) {
-                showToast.error('Please select an image file');
+            const validationError = validateAvatarFile(file);
+            if (validationError) {
+                showToast.error(validationError.message);
                 return;
             }
 
-            if (file.size > 5 * 1024 * 1024) {
-                showToast.error('Image must be less than 5MB');
-                return;
+            await onUpload(file);
+
+            if (inputRef.current) {
+                inputRef.current.value = '';
             }
-
-            setIsUploading(true);
-
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setPreview(reader.result as string);
-                setIsUploading(false);
-            };
-            reader.readAsDataURL(file);
-
-            onImageChange?.(file);
         },
-        [onImageChange]
+        [onUpload]
     );
 
-    const handleRemove = useCallback(() => {
-        setPreview(null);
-        if (inputRef.current) {
-            inputRef.current.value = '';
-        }
-        onImageChange?.(null);
-        showToast.success('Profile picture removed');
-    }, [onImageChange]);
+    const handleRemove = useCallback(async () => {
+        await onDelete();
+    }, [onDelete]);
 
-    const displayImage = preview || currentImage;
+    const isLoading = isUploading || isDeleting;
 
     return (
         <div className={cn('flex flex-col items-center gap-4', className)}>
             <div className="group relative">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-background shadow-lg">
-                    {displayImage ? (
+                    {avatarUrl ? (
                         <Image
-                            src={displayImage}
+                            src={avatarUrl}
                             alt="Profile picture"
                             fill
                             className="object-cover"
+                            sizes="128px"
                         />
                     ) : (
                         <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -85,7 +79,7 @@ export function ProfilePicture({
                         </div>
                     )}
 
-                    {isUploading && (
+                    {isLoading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-black/50">
                             <Loader2 className="h-8 w-8 animate-spin text-white" />
                         </div>
@@ -95,7 +89,8 @@ export function ProfilePicture({
                 <button
                     type="button"
                     onClick={handleClick}
-                    className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110"
+                    disabled={isLoading}
+                    className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110 disabled:opacity-50 disabled:hover:scale-100"
                     aria-label="Change profile picture"
                 >
                     <Camera className="h-5 w-5" />
@@ -105,20 +100,26 @@ export function ProfilePicture({
             <input
                 ref={inputRef}
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/gif,image/webp"
                 onChange={handleChange}
                 className="hidden"
                 aria-label="Upload profile picture"
+                disabled={isLoading}
             />
 
-            {displayImage && (
+            {avatarUrl && (
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleRemove}
+                    disabled={isLoading}
                     className="text-destructive hover:text-destructive"
                 >
-                    <Trash2 className="mr-2 h-4 w-4" />
+                    {isDeleting ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : (
+                        <Trash2 className="mr-2 h-4 w-4" />
+                    )}
                     Remove Photo
                 </Button>
             )}
