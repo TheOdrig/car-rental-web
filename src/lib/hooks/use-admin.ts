@@ -13,6 +13,13 @@ import type {
     AdminAlert,
     ProcessReturnData,
     Car,
+    RentalDetailResponse,
+    VehicleDetailResponse,
+    CustomerDetailResponse,
+    RentalHistoryItem,
+    PaginatedResponse,
+    AdminNote,
+    AdminRentalStatus,
 } from '@/types';
 
 interface PendingFilters {
@@ -42,6 +49,14 @@ export const adminKeys = {
     alerts: () => [...adminKeys.all, 'alerts'] as const,
     cars: () => [...adminKeys.all, 'cars'] as const,
     carsList: (filters?: AdminCarsFilters) => [...adminKeys.cars(), 'list', filters] as const,
+    rentals: () => [...adminKeys.all, 'rentals'] as const,
+    rentalDetail: (id: number) => [...adminKeys.rentals(), id] as const,
+    vehicleDetail: (id: number) => [...adminKeys.cars(), id] as const,
+    vehicleRentalHistory: (id: number, page: number) => [...adminKeys.cars(), id, 'rentals', page] as const,
+    users: () => [...adminKeys.all, 'users'] as const,
+    customerDetail: (id: number) => [...adminKeys.users(), id] as const,
+    customerRentalHistory: (id: number, page: number, status?: string) => [...adminKeys.users(), id, 'rentals', page, status] as const,
+    customerNotes: (id: number) => [...adminKeys.users(), id, 'notes'] as const,
 };
 
 
@@ -484,3 +499,132 @@ export function useUpdateCarStatus() {
     });
 }
 
+async function fetchRentalDetail(id: number): Promise<RentalDetailResponse> {
+    return clientGet<RentalDetailResponse>(`/api/rentals/${id}`);
+}
+
+async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
+    return clientGet<VehicleDetailResponse>(`/api/admin/cars/${id}`);
+}
+
+async function fetchCustomerDetail(id: number): Promise<CustomerDetailResponse> {
+    return clientGet<CustomerDetailResponse>(`/api/admin/users/${id}`);
+}
+
+async function fetchVehicleRentalHistory(id: number, page: number): Promise<PaginatedResponse<RentalHistoryItem>> {
+    return clientGet<PaginatedResponse<RentalHistoryItem>>(`/api/admin/cars/${id}/rentals?page=${page}&size=10`);
+}
+
+async function fetchCustomerRentalHistory(
+    id: number,
+    page: number,
+    status?: AdminRentalStatus
+): Promise<PaginatedResponse<RentalHistoryItem>> {
+    const statusParam = status ? `&status=${status}` : '';
+    return clientGet<PaginatedResponse<RentalHistoryItem>>(`/api/admin/users/${id}/rentals?page=${page}&size=10${statusParam}`);
+}
+
+async function banCustomer({ userId, reason }: { userId: number; reason: string }): Promise<void> {
+    return clientPost<void>(`/api/admin/users/${userId}/ban`, { reason });
+}
+
+async function unbanCustomer({ userId, note }: { userId: number; note?: string }): Promise<void> {
+    return clientPost<void>(`/api/admin/users/${userId}/unban`, { note });
+}
+
+async function addAdminNote({ userId, text }: { userId: number; text: string }): Promise<AdminNote> {
+    return clientPost<AdminNote>(`/api/admin/users/${userId}/notes`, { text });
+}
+
+export function useRentalDetail(id: number) {
+    return useQuery({
+        queryKey: adminKeys.rentalDetail(id),
+        queryFn: () => fetchRentalDetail(id),
+        staleTime: 30 * 1000,
+        enabled: !!id,
+    });
+}
+
+export function useVehicleDetail(id: number) {
+    return useQuery({
+        queryKey: adminKeys.vehicleDetail(id),
+        queryFn: () => fetchVehicleDetail(id),
+        staleTime: 30 * 1000,
+        enabled: !!id,
+    });
+}
+
+export function useCustomerDetail(id: number) {
+    return useQuery({
+        queryKey: adminKeys.customerDetail(id),
+        queryFn: () => fetchCustomerDetail(id),
+        staleTime: 30 * 1000,
+        enabled: !!id,
+    });
+}
+
+export function useVehicleRentalHistory(id: number, page: number = 0) {
+    return useQuery({
+        queryKey: adminKeys.vehicleRentalHistory(id, page),
+        queryFn: () => fetchVehicleRentalHistory(id, page),
+        staleTime: 30 * 1000,
+        enabled: !!id,
+    });
+}
+
+export function useCustomerRentalHistory(id: number, page: number = 0, status?: AdminRentalStatus) {
+    return useQuery({
+        queryKey: adminKeys.customerRentalHistory(id, page, status),
+        queryFn: () => fetchCustomerRentalHistory(id, page, status),
+        staleTime: 30 * 1000,
+        enabled: !!id,
+    });
+}
+
+export function useBanCustomer() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: banCustomer,
+        onSuccess: (_, variables) => {
+            showToast.success('Customer banned', 'The customer has been banned successfully.');
+            void queryClient.invalidateQueries({ queryKey: adminKeys.customerDetail(variables.userId) });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.users() });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to ban customer', error.message);
+        },
+    });
+}
+
+export function useUnbanCustomer() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: unbanCustomer,
+        onSuccess: (_, variables) => {
+            showToast.success('Customer unbanned', 'The customer has been unbanned successfully.');
+            void queryClient.invalidateQueries({ queryKey: adminKeys.customerDetail(variables.userId) });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.users() });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to unban customer', error.message);
+        },
+    });
+}
+
+export function useAddAdminNote() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: addAdminNote,
+        onSuccess: (_, variables) => {
+            showToast.success('Note added', 'Admin note has been added successfully.');
+            void queryClient.invalidateQueries({ queryKey: adminKeys.customerDetail(variables.userId) });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.customerNotes(variables.userId) });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to add note', error.message);
+        },
+    });
+}
