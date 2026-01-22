@@ -59,3 +59,14 @@ export {
     VehicleActiveRentalCard,
     VehicleRentalHistoryTable,
 } from './vehicle-detail';
+
+export {
+    CustomerDetailInfoCard,
+    CustomerVerificationCard,
+    CustomerStatisticsCard,
+    CustomerStatusCard,
+    CustomerRentalHistoryTable,
+    CustomerNotesCard,
+    BanCustomerDialog,
+    UnbanCustomerDialog,
+} from './customer-detail';
