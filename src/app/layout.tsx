@@ -86,7 +86,7 @@ export default function RootLayout({
           <main id="main-content" className="flex-1">{children}</main>
           <Footer />
         </Providers>
-        <Toaster richColors position="top-right" />
+        <Toaster richColors position="top-right" duration={3000} />
       </body>
     </html>
   );

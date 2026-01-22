@@ -2,7 +2,6 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Loader2, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -10,27 +9,22 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { showToast } from '@/lib/utils/toast';
-
-const personalDetailsSchema = z.object({
-    firstName: z.string().min(1, 'First name is required'),
-    lastName: z.string().min(1, 'Last name is required'),
-    phone: z.string().min(10, 'Phone must be at least 10 digits'),
-    dateOfBirth: z.string().optional(),
-    street: z.string().optional(),
-    city: z.string().optional(),
-    state: z.string().optional(),
-    zipCode: z.string().optional(),
-    country: z.string().optional(),
-});
-
-type PersonalDetailsFormData = z.infer<typeof personalDetailsSchema>;
+import {
+    profileSchema,
+    type ProfileFormData,
+    getProfileDefaultValues,
+} from '@/lib/validations/settings';
 
 interface PersonalDetailsFormProps {
-    initialData?: Partial<PersonalDetailsFormData>;
+    initialData?: {
+        firstName?: string;
+        lastName?: string;
+        phone?: string | null;
+    };
     email?: string;
     emailVerified?: boolean;
-    onSubmit?: (data: PersonalDetailsFormData) => Promise<void>;
+    onSubmit: (data: ProfileFormData) => Promise<void>;
+    isSubmitting?: boolean;
     className?: string;
 }
 
@@ -39,24 +33,20 @@ export function PersonalDetailsForm({
     email,
     emailVerified = false,
     onSubmit,
+    isSubmitting = false,
     className,
 }: PersonalDetailsFormProps) {
     const {
         register,
         handleSubmit,
-        formState: { errors, isSubmitting, isDirty },
-    } = useForm<PersonalDetailsFormData>({
-        resolver: zodResolver(personalDetailsSchema),
-        defaultValues: initialData,
+        formState: { errors, isDirty },
+    } = useForm<ProfileFormData>({
+        resolver: zodResolver(profileSchema),
+        defaultValues: getProfileDefaultValues(initialData),
     });
 
-    const handleFormSubmit = async (data: PersonalDetailsFormData) => {
-        try {
-            await onSubmit?.(data);
-            showToast.success('Profile updated successfully');
-        } catch {
-            showToast.error('Failed to update profile');
-        }
+    const handleFormSubmit = async (data: ProfileFormData) => {
+        await onSubmit(data);
     };
 
     return (
@@ -76,6 +66,7 @@ export function PersonalDetailsForm({
                                 id="firstName"
                                 {...register('firstName')}
                                 aria-invalid={!!errors.firstName}
+                                disabled={isSubmitting}
                             />
                             {errors.firstName && (
                                 <p className="text-sm text-destructive">
@@ -89,6 +80,7 @@ export function PersonalDetailsForm({
                                 id="lastName"
                                 {...register('lastName')}
                                 aria-invalid={!!errors.lastName}
+                                disabled={isSubmitting}
                             />
                             {errors.lastName && (
                                 <p className="text-sm text-destructive">
@@ -115,65 +107,29 @@ export function PersonalDetailsForm({
                                 </Badge>
                             )}
                         </div>
+                        <p className="text-xs text-muted-foreground">
+                            Email cannot be changed
+                        </p>
                     </div>
 
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number</Label>
-                            <Input
-                                id="phone"
-                                type="tel"
-                                {...register('phone')}
-                                aria-invalid={!!errors.phone}
-                            />
-                            {errors.phone && (
-                                <p className="text-sm text-destructive">
-                                    {errors.phone.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="dateOfBirth">Date of Birth</Label>
-                            <Input
-                                id="dateOfBirth"
-                                type="date"
-                                {...register('dateOfBirth')}
-                            />
-                        </div>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Address</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="street">Street Address</Label>
-                        <Input id="street" {...register('street')} />
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="city">City</Label>
-                            <Input id="city" {...register('city')} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="state">State / Province</Label>
-                            <Input id="state" {...register('state')} />
-                        </div>
-                    </div>
-
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <div className="space-y-2">
-                            <Label htmlFor="zipCode">ZIP / Postal Code</Label>
-                            <Input id="zipCode" {...register('zipCode')} />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="country">Country</Label>
-                            <Input id="country" {...register('country')} />
-                        </div>
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input
+                            id="phone"
+                            type="tel"
+                            placeholder="+1234567890"
+                            {...register('phone')}
+                            aria-invalid={!!errors.phone}
+                            disabled={isSubmitting}
+                        />
+                        {errors.phone && (
+                            <p className="text-sm text-destructive">
+                                {errors.phone.message}
+                            </p>
+                        )}
+                        <p className="text-xs text-muted-foreground">
+                            Use international format (e.g., +1234567890)
+                        </p>
                     </div>
                 </CardContent>
             </Card>

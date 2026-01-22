@@ -19,8 +19,8 @@ interface SettingsLayoutProps {
 }
 
 const SETTINGS_TABS = [
-    { label: 'Personal Info', href: '/settings/profile', icon: User, comingSoon: true },
-    { label: 'Security', href: '/settings/security', icon: Shield, comingSoon: true },
+    { label: 'Personal Info', href: '/settings/profile', icon: User, comingSoon: false },
+    { label: 'Security', href: '/settings/security', icon: Shield, comingSoon: false },
     { label: 'Documents', href: '/settings/documents', icon: FileText, comingSoon: true },
     { label: 'Notifications', href: '/settings/notifications', icon: Bell, comingSoon: true },
     { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard, comingSoon: true },
@@ -82,8 +82,7 @@ function SettingsSidebar() {
                             'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
                             isActive
                                 ? 'bg-primary/10 text-primary'
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-muted hover:text-foreground',
-                            tab.comingSoon && 'opacity-80'
+                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
                         )}
                     >
                         <Icon className="h-5 w-5" />

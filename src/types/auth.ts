@@ -117,3 +117,44 @@ export interface FormMessage {
     message: string;
     type: 'error' | 'success' | 'warning' | 'info';
 }
+
+export interface UserProfile {
+    id: number;
+    username: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    phone: string | null;
+    avatarUrl: string | null;
+    roles: Role[];
+    enabled: boolean;
+}
+
+export interface ProfileUpdateData {
+    firstName: string;
+    lastName: string;
+    phone?: string;
+}
+
+export interface PasswordChangeData {
+    currentPassword: string;
+    newPassword: string;
+}
+
+export interface AvatarUploadResponse {
+    avatarUrl: string;
+    message: string;
+}
+
+export interface ForgotPasswordRequest {
+    email: string;
+}
+
+export interface ResetPasswordRequest {
+    token: string;
+    newPassword: string;
+}
+
+export interface MessageResponse {
+    message: string;
+}

@@ -1,56 +1,93 @@
 'use client';
 
-import { useCurrentUser } from '@/lib/hooks';
+import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from '@/lib/hooks';
 import { ProfilePicture, PersonalDetailsForm } from '@/components/settings';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { logger } from '@/lib/utils/logger';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
+import { AlertCircle } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import type { ProfileFormData } from '@/lib/validations/settings';
 
 export default function ProfileSettingsPage() {
-    const { user, isLoading } = useCurrentUser();
+    const { data: profile, isLoading, error, refetch } = useProfile();
+    const updateProfile = useUpdateProfile();
+    const uploadAvatar = useUploadAvatar();
+    const deleteAvatar = useDeleteAvatar();
+
+    const handleProfileUpdate = async (data: ProfileFormData) => {
+        await updateProfile.mutateAsync({
+            firstName: data.firstName,
+            lastName: data.lastName,
+            phone: data.phone || undefined,
+        });
+    };
+
+    const handleAvatarUpload = async (file: File) => {
+        await uploadAvatar.mutateAsync(file);
+    };
+
+    const handleAvatarDelete = async () => {
+        await deleteAvatar.mutateAsync();
+    };
 
     if (isLoading) {
         return <ProfileSettingsSkeleton />;
     }
 
+    if (error) {
+        return (
+            <div className="space-y-6">
+                <Alert variant="destructive">
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>Error loading profile</AlertTitle>
+                    <AlertDescription>
+                        {error.message || 'Failed to load profile data. Please try again.'}
+                    </AlertDescription>
+                </Alert>
+                <Button onClick={() => refetch()}>
+                    Try Again
+                </Button>
+            </div>
+        );
+    }
+
     return (
         <div className="space-y-6">
-            <ComingSoonBanner
-                title="Profile Settings Coming Soon"
-                description="Profile updates are currently not saved to the server. Full profile management will be available in a future update."
-            />
             <Card>
                 <CardContent className="flex flex-col items-center py-8 sm:flex-row sm:gap-8">
                     <ProfilePicture
-                        onImageChange={(file) => {
-                            if (file) {
-                                logger.log('Image changed:', file.name);
-                            }
-                        }}
+                        avatarUrl={profile?.avatarUrl}
+                        onUpload={handleAvatarUpload}
+                        onDelete={handleAvatarDelete}
+                        isUploading={uploadAvatar.isPending}
+                        isDeleting={deleteAvatar.isPending}
                     />
                     <div className="mt-4 text-center sm:mt-0 sm:text-left">
-                        <h2 className="text-xl font-semibold">{user?.username || 'User'}</h2>
-                        <p className="text-muted-foreground">{user?.email || 'No email'}</p>
+                        <h2 className="text-xl font-semibold">
+                            {profile?.firstName && profile?.lastName
+                                ? `${profile.firstName} ${profile.lastName}`
+                                : profile?.username || 'User'}
+                        </h2>
+                        <p className="text-muted-foreground">{profile?.email || 'No email'}</p>
                         <p className="mt-2 text-sm text-muted-foreground">
-                            Member since {new Date().getFullYear()}
+                            @{profile?.username}
                         </p>
                     </div>
                 </CardContent>
             </Card>
 
             <PersonalDetailsForm
+                key={profile?.id}
                 initialData={{
-                    firstName: '',
-                    lastName: '',
-                    phone: '',
+                    firstName: profile?.firstName || '',
+                    lastName: profile?.lastName || '',
+                    phone: profile?.phone,
                 }}
-                email={user?.email || ''}
+                email={profile?.email}
                 emailVerified={true}
-                onSubmit={async (data) => {
-                    logger.log('Submitting profile update', data);
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                }}
+                onSubmit={handleProfileUpdate}
+                isSubmitting={updateProfile.isPending}
             />
         </div>
     );
@@ -78,10 +115,7 @@ function ProfileSettingsSkeleton() {
                         <Skeleton className="h-10 w-full" />
                     </div>
                     <Skeleton className="h-10 w-full" />
-                    <div className="grid gap-4 sm:grid-cols-2">
-                        <Skeleton className="h-10 w-full" />
-                        <Skeleton className="h-10 w-full" />
-                    </div>
+                    <Skeleton className="h-10 w-full" />
                 </CardContent>
             </Card>
         </div>
