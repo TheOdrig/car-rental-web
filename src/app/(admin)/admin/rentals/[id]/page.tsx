@@ -193,6 +193,8 @@ export default function RentalDetailPage({ params }: PageProps) {
                     createdAt={rental.timeline.find(e => e.type === 'created')?.timestamp ?? rental.startDate}
                     startDate={rental.startDate}
                     endDate={rental.endDate}
+                    duration={rental.duration}
+                    pricing={rental.pricing}
                     notes={rental.notes.approval}
                 />
                 <CustomerInfoCard customer={rental.customer} />

@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { formatCurrency } from '@/lib/utils/format';
 import type { RentalPaymentInfo, RentalPricing, LateReturnStatus } from '@/types';
-import { LateReturnStatusBadge } from '@/components/admin';
+import { LateReturnStatusBadge, CopyButton } from '@/components/admin';
 
 interface PaymentInfoCardProps {
     pricing: RentalPricing;
@@ -101,12 +101,27 @@ export function PaymentInfoCard({ pricing, payment, penaltyAmount, lateReturnSta
                 <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-700">
                     <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
                         <CreditCard className="h-4 w-4" />
-                        <span>Payment via {payment.method}</span>
+                        <span>
+                            Payment via {payment.method}
+                            {payment.last4 && <span className="font-mono ml-1">•••• {payment.last4}</span>}
+                        </span>
                     </div>
                     <Badge variant={payment.status === 'CAPTURED' ? 'default' : 'secondary'}>
                         {payment.status}
                     </Badge>
                 </div>
+
+                {payment.paymentIntentId && (
+                    <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-700">
+                        <span className="text-slate-500 dark:text-slate-400">Payment ID</span>
+                        <div className="flex items-center gap-1">
+                            <span className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate max-w-[180px]">
+                                {payment.paymentIntentId}
+                            </span>
+                            <CopyButton value={payment.paymentIntentId} />
+                        </div>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

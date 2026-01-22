@@ -1,11 +1,11 @@
 'use client';
 
-import { FileText } from 'lucide-react';
+import { FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { CopyButton } from '@/components/admin';
-import { safeFormatDate } from '@/lib/utils/format';
-import type { AdminRentalStatus } from '@/types';
+import { safeFormatDate, formatCurrency } from '@/lib/utils/format';
+import type { AdminRentalStatus, RentalPricing } from '@/types';
 
 interface RentalInfoCardProps {
     rentalId: number;
@@ -13,6 +13,8 @@ interface RentalInfoCardProps {
     createdAt: string;
     startDate: string;
     endDate: string;
+    duration: number;
+    pricing?: RentalPricing;
     pickupLocation?: string;
     dropoffLocation?: string;
     notes?: string;
@@ -42,6 +44,8 @@ export function RentalInfoCard({
     createdAt,
     startDate,
     endDate,
+    duration,
+    pricing,
     pickupLocation,
     dropoffLocation,
     notes,
@@ -73,6 +77,14 @@ export function RentalInfoCard({
                 </div>
 
                 <div className="flex items-center justify-between">
+                    <span className="text-sm text-slate-500 dark:text-slate-400">Duration</span>
+                    <div className="flex items-center gap-1 text-slate-900 dark:text-slate-100">
+                        <Calendar className="h-4 w-4 text-slate-400" />
+                        <span className="font-medium">{duration} days</span>
+                    </div>
+                </div>
+
+                <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Created</span>
                     <span className="text-sm text-slate-900 dark:text-slate-100">
                         {safeFormatDate(createdAt, 'datetime')}
@@ -95,6 +107,42 @@ export function RentalInfoCard({
                         </div>
                     </div>
                 </div>
+
+                {pricing && (
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-2">
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-slate-500 dark:text-slate-400">Daily Rate</span>
+                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                                {formatCurrency(pricing.dailyRate, pricing.currency)}
+                            </span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-xs text-slate-500 dark:text-slate-400">Subtotal</span>
+                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                                {formatCurrency(pricing.subtotal, pricing.currency)}
+                            </span>
+                        </div>
+                        {pricing.discounts > 0 && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-xs text-emerald-600 dark:text-emerald-400">Discount</span>
+                                <span className="text-sm text-emerald-600 dark:text-emerald-400">
+                                    -{formatCurrency(pricing.discounts, pricing.currency)}
+                                </span>
+                            </div>
+                        )}
+                        <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Total</span>
+                            <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                {formatCurrency(pricing.finalTotal, pricing.currency)}
+                            </span>
+                        </div>
+                        {pricing.exchangeRate && pricing.exchangeRate !== 1 && (
+                            <div className="text-xs text-slate-500 dark:text-slate-400 text-right">
+                                Exchange rate: {pricing.exchangeRate.toFixed(4)}
+                            </div>
+                        )}
+                    </div>
+                )}
 
                 {(pickupLocation || dropoffLocation) && (
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-4">

@@ -51,3 +51,11 @@ export {
     RentalActionButtons,
 } from './rental-detail';
 
+export {
+    VehicleDetailInfoCard,
+    VehicleImagesCard,
+    VehicleStatisticsCard,
+    VehicleStatusCard,
+    VehicleActiveRentalCard,
+    VehicleRentalHistoryTable,
+} from './vehicle-detail';

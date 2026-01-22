@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { User, Mail, Phone, ExternalLink, ShieldAlert, ShieldCheck } from 'lucide-react';
+import { User, Mail, Phone, ExternalLink, ShieldAlert, ShieldCheck, Car, DollarSign, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { CopyButton } from '@/components/admin';
+import { CopyButton, StatCard } from '@/components/admin';
+import { formatCurrency } from '@/lib/utils/format';
 import type { RentalCustomerInfo } from '@/types';
 
 interface CustomerInfoCardProps {
@@ -57,13 +58,23 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
                         <Mail className="h-4 w-4 text-slate-400" />
-                        <span className="text-slate-700 dark:text-slate-300">{customer.email}</span>
+                        <a
+                            href={`mailto:${customer.email}`}
+                            className="text-slate-700 dark:text-slate-300 hover:underline"
+                        >
+                            {customer.email}
+                        </a>
                         <CopyButton value={customer.email} />
                     </div>
                     {customer.phone && (
                         <div className="flex items-center gap-2 text-sm">
                             <Phone className="h-4 w-4 text-slate-400" />
-                            <span className="text-slate-700 dark:text-slate-300">{customer.phone}</span>
+                            <a
+                                href={`tel:${customer.phone}`}
+                                className="text-slate-700 dark:text-slate-300 hover:underline"
+                            >
+                                {customer.phone}
+                            </a>
                             <CopyButton value={customer.phone} />
                         </div>
                     )}
@@ -81,9 +92,27 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                             Unverified
                         </Badge>
                     )}
-                    <span className="text-xs text-slate-500 dark:text-slate-400">
-                        {customer.stats.totalRentals} total rentals
-                    </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                    <StatCard
+                        label="Rentals"
+                        value={customer.stats.totalRentals}
+                        icon={Car}
+                        className="p-2"
+                    />
+                    <StatCard
+                        label="Spent"
+                        value={formatCurrency(customer.stats.totalSpent, 'USD')}
+                        icon={DollarSign}
+                        className="p-2"
+                    />
+                    <StatCard
+                        label="Damages"
+                        value={customer.stats.damageCount}
+                        icon={AlertTriangle}
+                        className="p-2"
+                    />
                 </div>
             </CardContent>
         </Card>
