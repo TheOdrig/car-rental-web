@@ -41,3 +41,13 @@ export { StatCard } from './stat-card';
 export { ComingSoonPlaceholder } from './coming-soon-placeholder';
 export { DetailPageSkeleton, CardSkeleton, TableSkeleton } from './detail-page-skeleton';
 export { DetailPageError } from './detail-page-error';
+
+export {
+    RentalInfoCard,
+    CustomerInfoCard,
+    VehicleInfoCard,
+    PaymentInfoCard,
+    TimelineCard,
+    RentalActionButtons,
+} from './rental-detail';
+
