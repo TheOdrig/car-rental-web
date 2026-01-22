@@ -8,6 +8,22 @@ import { Button } from '@/components/ui/button';
 import { validateAvatarFile } from '@/lib/hooks/use-avatar';
 import { showToast } from '@/lib/utils/toast';
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082';
+
+function normalizeAvatarUrl(url: string | null | undefined): string | null {
+    if (!url) return null;
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+        return url;
+    }
+
+    if (url.startsWith('/')) {
+        return `${BACKEND_URL}${url}`;
+    }
+
+    return `${BACKEND_URL}/${url}`;
+}
+
 interface ProfilePictureProps {
     avatarUrl?: string | null;
     onUpload: (file: File) => Promise<void>;
@@ -63,13 +79,14 @@ export function ProfilePicture({
         <div className={cn('flex flex-col items-center gap-4', className)}>
             <div className="group relative">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-background shadow-lg">
-                    {avatarUrl ? (
+                    {normalizeAvatarUrl(avatarUrl) ? (
                         <Image
-                            src={avatarUrl}
+                            src={normalizeAvatarUrl(avatarUrl)!}
                             alt="Profile picture"
                             fill
                             className="object-cover"
                             sizes="128px"
+                            unoptimized
                         />
                     ) : (
                         <div className="flex h-full w-full items-center justify-center bg-muted">
@@ -107,13 +124,13 @@ export function ProfilePicture({
                 disabled={isLoading}
             />
 
-            {avatarUrl && (
+            {normalizeAvatarUrl(avatarUrl) && (
                 <Button
                     variant="ghost"
                     size="sm"
                     onClick={handleRemove}
                     disabled={isLoading}
-                    className="text-destructive hover:text-destructive"
+                    className="text-destructive hover:text-destructive hover:!bg-destructive/10 dark:hover:!bg-destructive/20"
                 >
                     {isDeleting ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

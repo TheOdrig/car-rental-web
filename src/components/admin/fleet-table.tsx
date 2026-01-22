@@ -61,8 +61,8 @@ const statusConfig: Record<CarStatus, { label: string; dotColor: string; textCol
     },
     Reserved: {
         label: 'Reserved',
-        dotColor: 'bg-amber-500',
-        textColor: 'text-amber-700 dark:text-amber-400',
+        dotColor: 'bg-blue-500',
+        textColor: 'text-blue-700 dark:text-blue-400',
     },
     Maintenance: {
         label: 'Maintenance',
