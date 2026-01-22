@@ -1,6 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
+import Link from 'next/link';
 import { MoreHorizontal, Edit, Shield, Ban, UserCheck, Mail, CheckCircle2, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -210,7 +211,12 @@ export const UserTable = memo(function UserTable({
                                                     </AvatarFallback>
                                                 </Avatar>
                                                 <div>
-                                                    <p className="font-semibold">{user.name}</p>
+                                                    <Link
+                                                        href={`/admin/users/${user.id}`}
+                                                        className="font-semibold hover:text-primary hover:underline transition-colors"
+                                                    >
+                                                        {user.name}
+                                                    </Link>
                                                     <p className="text-xs text-muted-foreground">
                                                         Joined {safeFormatDate(user.registeredAt)}
                                                     </p>

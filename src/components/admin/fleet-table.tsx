@@ -203,9 +203,12 @@ export const FleetTable = memo(function FleetTable({
                                                         </div>
                                                     )}
                                                     <div>
-                                                        <p className="font-semibold">
+                                                        <Link
+                                                            href={`/admin/fleet/${car.id}`}
+                                                            className="font-semibold hover:text-primary hover:underline transition-colors"
+                                                        >
                                                             {car.brand} {car.model}
-                                                        </p>
+                                                        </Link>
                                                         <p className="text-xs text-muted-foreground">
                                                             {car.productionYear} • {car.fuelType || 'N/A'}
                                                         </p>
@@ -308,7 +311,7 @@ export const FleetTable = memo(function FleetTable({
                 </CardContent>
             </Card>
 
-            { }
+
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -334,7 +337,7 @@ export const FleetTable = memo(function FleetTable({
                 </AlertDialogContent>
             </AlertDialog>
 
-            { }
+
             <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
