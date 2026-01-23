@@ -118,32 +118,34 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
                     </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                    <div className="flex items-center gap-2 mb-3">
-                        <CreditCard className="h-4 w-4 text-slate-400" />
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Pricing</span>
+                {vehicle.pricing && (
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                        <div className="flex items-center gap-2 mb-3">
+                            <CreditCard className="h-4 w-4 text-slate-400" />
+                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Pricing</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-3">
+                            <div>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Daily Rate</span>
+                                <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                    {formatCurrency(vehicle.pricing.dailyRate, vehicle.pricing.currency)}
+                                </span>
+                            </div>
+                            <div>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Weekly Rate</span>
+                                <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                    {formatCurrency(vehicle.pricing.weeklyRate, vehicle.pricing.currency)}
+                                </span>
+                            </div>
+                            <div>
+                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Deposit</span>
+                                <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                    {formatCurrency(vehicle.pricing.depositAmount, vehicle.pricing.currency)}
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-3">
-                        <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Daily Rate</span>
-                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                {formatCurrency(vehicle.pricing.dailyRate, vehicle.pricing.currency)}
-                            </span>
-                        </div>
-                        <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Weekly Rate</span>
-                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                {formatCurrency(vehicle.pricing.weeklyRate, vehicle.pricing.currency)}
-                            </span>
-                        </div>
-                        <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Deposit</span>
-                            <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                {formatCurrency(vehicle.pricing.depositAmount, vehicle.pricing.currency)}
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                )}
             </CardContent>
         </Card>
     );

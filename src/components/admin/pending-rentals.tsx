@@ -277,7 +277,12 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                                     </div>
                                                 )}
                                                 <div className="min-w-0">
-                                                    <p className="font-semibold text-sm truncate">{item.customerName}</p>
+                                                    <Link
+                                                        href={`/admin/users/${item.customerId ?? 0}`}
+                                                        className="font-semibold text-sm truncate hover:text-primary hover:underline transition-colors block"
+                                                    >
+                                                        {item.customerName}
+                                                    </Link>
                                                     <p className="text-xs text-muted-foreground truncate">
                                                         {item.customerEmail}
                                                     </p>

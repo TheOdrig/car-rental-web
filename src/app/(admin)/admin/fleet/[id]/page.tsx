@@ -164,21 +164,23 @@ export default function VehicleDetailPage({ params }: PageProps) {
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
-                <VehicleImagesCard images={vehicle.images} vehicleName={vehicleName} />
+                <VehicleImagesCard images={vehicle.images ?? { primary: '', additional: [] }} vehicleName={vehicleName} />
                 <VehicleDetailInfoCard vehicle={vehicle} />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                <VehicleStatusCard currentStatus={vehicle.currentStatus} />
+                {vehicle.currentStatus && <VehicleStatusCard currentStatus={vehicle.currentStatus} />}
                 {hasActiveRental && vehicle.activeRental && (
                     <VehicleActiveRentalCard activeRental={vehicle.activeRental} />
                 )}
             </div>
 
-            <VehicleStatisticsCard
-                statistics={vehicle.statistics}
-                currency={vehicle.pricing.currency}
-            />
+            {vehicle.statistics && (
+                <VehicleStatisticsCard
+                    statistics={vehicle.statistics}
+                    currency={vehicle.pricing?.currency ?? 'USD'}
+                />
+            )}
 
             <VehicleRentalHistoryTable vehicleId={vehicleId} />
 

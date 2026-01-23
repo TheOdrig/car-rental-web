@@ -184,13 +184,13 @@ export interface VehicleDetailResponse {
     bodyType: string;
     seats: number;
     color: string;
-    pricing: VehiclePricing;
-    images: VehicleImages;
-    statistics: VehicleStatistics;
-    currentStatus: VehicleCurrentStatus;
+    pricing?: VehiclePricing;
+    images?: VehicleImages;
+    statistics?: VehicleStatistics;
+    currentStatus?: VehicleCurrentStatus;
     activeRental?: VehicleActiveRental;
-    rentalHistory: RentalHistoryItem[];
-    rentalHistoryTotal: number;
+    rentalHistory?: RentalHistoryItem[];
+    rentalHistoryTotal?: number;
 }
 
 export interface CustomerVerification {

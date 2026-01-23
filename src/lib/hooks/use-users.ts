@@ -46,6 +46,12 @@ interface UpdateRoleRequest {
     role: UserRole;
 }
 
+export interface UserStats {
+    totalUsers: number;
+    activeUsers: number;
+    bannedUsers: number;
+}
+
 export const userKeys = {
     all: ['users'] as const,
     list: (filters?: UserFilters) => [...userKeys.all, 'list', filters] as const,
@@ -97,6 +103,19 @@ export function useUserList(filters?: UserFilters) {
         staleTime: 2 * 60 * 1000,
     });
 }
+
+async function fetchUserStats(): Promise<UserStats> {
+    return clientGet<UserStats>('/api/admin/users/stats');
+}
+
+export function useUserStats() {
+    return useQuery({
+        queryKey: userKeys.stats(),
+        queryFn: fetchUserStats,
+        staleTime: 2 * 60 * 1000,
+    });
+}
+
 
 export function useUser(id: number | null | undefined) {
     return useQuery({

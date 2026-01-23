@@ -67,6 +67,7 @@ export interface Alert {
 
 export interface PendingItem {
     rentalId: number;
+    customerId?: number;
     customerName: string;
     customerEmail: string;
     customerImage?: string;

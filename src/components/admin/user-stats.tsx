@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo } from 'react';
-import { Users, UserCheck, UserX, Clock } from 'lucide-react';
+import { Users, UserCheck, UserX } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
@@ -9,7 +9,6 @@ import { cn } from '@/lib/utils';
 interface UserStatsData {
     totalUsers: number;
     activeUsers: number;
-    pendingUsers: number;
     bannedUsers: number;
 }
 
@@ -23,21 +22,19 @@ interface StatCardProps {
     title: string;
     value: number;
     icon: React.ReactNode;
-    variant?: 'default' | 'success' | 'warning' | 'danger';
+    variant?: 'default' | 'success' | 'danger';
     subtitle?: string;
 }
 
 const variantStyles = {
     default: 'bg-card',
     success: 'bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800',
-    warning: 'bg-amber-50 dark:bg-amber-950/20 border-amber-200 dark:border-amber-800',
     danger: 'bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800',
 };
 
 const iconStyles = {
     default: 'bg-muted text-muted-foreground',
     success: 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400',
-    warning: 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400',
     danger: 'bg-red-100 dark:bg-red-900/30 text-red-600 dark:text-red-400',
 };
 
@@ -71,11 +68,11 @@ export const UserStatsCards = memo(function UserStatsCards({
         return <UserStatsCardsSkeleton className={className} />;
     }
 
-    const { totalUsers, activeUsers, pendingUsers, bannedUsers } = data;
+    const { totalUsers, activeUsers, bannedUsers } = data;
     const activePercentage = totalUsers > 0 ? Math.round((activeUsers / totalUsers) * 100) : 0;
 
     return (
-        <div className={cn('grid gap-4 sm:grid-cols-2 lg:grid-cols-4', className)}>
+        <div className={cn('grid gap-4 sm:grid-cols-3', className)}>
             <StatCard
                 title="Total Users"
                 value={totalUsers}
@@ -90,12 +87,6 @@ export const UserStatsCards = memo(function UserStatsCards({
                 subtitle={`${activePercentage}% of total`}
             />
             <StatCard
-                title="Pending Verification"
-                value={pendingUsers}
-                icon={<Clock className="h-6 w-6" aria-hidden="true" />}
-                variant="warning"
-            />
-            <StatCard
                 title="Banned Users"
                 value={bannedUsers}
                 icon={<UserX className="h-6 w-6" aria-hidden="true" />}
@@ -107,8 +98,8 @@ export const UserStatsCards = memo(function UserStatsCards({
 
 function UserStatsCardsSkeleton({ className }: { className?: string }) {
     return (
-        <div className={cn('grid gap-4 sm:grid-cols-2 lg:grid-cols-4', className)}>
-            {[...Array(4)].map((_, i) => (
+        <div className={cn('grid gap-4 sm:grid-cols-3', className)}>
+            {[...Array(3)].map((_, i) => (
                 <Card key={i}>
                     <CardContent className="p-6">
                         <div className="flex items-center justify-between">
