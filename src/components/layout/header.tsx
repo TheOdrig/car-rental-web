@@ -124,10 +124,10 @@ export function Header() {
                         </DropdownMenu>
                     ) : (
                         <div className="hidden md:flex items-center gap-2">
-                            <Button variant="ghost" asChild>
+                            <Button variant="ghost" asChild className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800">
                                 <Link href="/login">Log in</Link>
                             </Button>
-                            <Button asChild>
+                            <Button asChild className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200">
                                 <Link href="/register">Sign up</Link>
                             </Button>
                         </div>

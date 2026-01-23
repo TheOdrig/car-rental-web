@@ -35,7 +35,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
         );
     };
 
-    const sortedNotes = [...notes].sort(
+    const sortedNotes = [...(notes || [])].sort(
         (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
     );
 
@@ -48,7 +48,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                         Admin Notes
                     </CardTitle>
                     {!isAdding && (
-                        <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
+                        <Button variant="admin-outline" size="sm" onClick={() => setIsAdding(true)}>
                             <Plus className="h-4 w-4 mr-1" />
                             Add Note
                         </Button>

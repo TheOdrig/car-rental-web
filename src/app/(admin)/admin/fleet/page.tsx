@@ -32,7 +32,7 @@ export default function FleetManagementPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
-    
+
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
     const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useAdminCars({
         status: statusFilter !== 'all' ? statusFilter : undefined,
@@ -44,11 +44,11 @@ export default function FleetManagementPage() {
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
-    
+
     const deleteCarMutation = useDeleteCar();
     const updateStatusMutation = useUpdateCarStatus();
 
-    
+
     const carsContent = carsData?.content;
     const filteredCars = useMemo(() => {
         if (!carsContent) return [];
@@ -126,11 +126,10 @@ export default function FleetManagementPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
-                        variant="outline"
+                        variant="admin-icon"
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
-                        className="h-9 w-9 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-white/10 rounded-xl cursor-pointer"
                         aria-label="Refresh fleet data"
                     >
                         <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
@@ -206,7 +205,7 @@ export default function FleetManagementPage() {
                 </div>
             </div>
 
-            {}
+            { }
             <FleetTable
                 cars={filteredCars}
                 totalCars={carsData?.totalElements ?? 0}

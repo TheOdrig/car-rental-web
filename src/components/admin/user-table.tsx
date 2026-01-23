@@ -2,10 +2,9 @@
 
 import React, { memo, useState } from 'react';
 import Link from 'next/link';
-import { MoreHorizontal, Edit, Shield, Ban, UserCheck, Mail, CheckCircle2, User, Eye, AlertCircle } from 'lucide-react';
+import { MoreHorizontal, Ban, UserCheck, Mail, CheckCircle2, User, Eye, AlertCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
     Table,
@@ -47,25 +46,29 @@ interface UserForAction {
     banReason?: string;
 }
 
-const roleConfig: Record<UserRole, { label: string; className: string }> = {
+const roleConfig: Record<UserRole, { label: string; dotColor: string; textColor: string }> = {
     ADMIN: {
         label: 'Admin',
-        className: 'bg-purple-500 hover:bg-purple-600 text-white',
+        dotColor: 'bg-purple-500',
+        textColor: 'text-purple-700 dark:text-purple-400',
     },
     USER: {
         label: 'Customer',
-        className: 'bg-blue-500 hover:bg-blue-600 text-white',
+        dotColor: 'bg-blue-500',
+        textColor: 'text-blue-700 dark:text-blue-400',
     },
 };
 
-const statusConfig: Record<UserStatus, { label: string; className: string }> = {
+const statusConfig: Record<UserStatus, { label: string; dotColor: string; textColor: string }> = {
     ACTIVE: {
         label: 'Active',
-        className: 'bg-green-500 hover:bg-green-600 text-white',
+        dotColor: 'bg-emerald-500',
+        textColor: 'text-emerald-700 dark:text-emerald-400',
     },
     BANNED: {
         label: 'Banned',
-        className: 'bg-red-500 hover:bg-red-600 text-white',
+        dotColor: 'bg-red-500',
+        textColor: 'text-red-700 dark:text-red-400',
     },
 };
 
@@ -115,6 +118,8 @@ function UserTableSkeleton({ className }: { className?: string }) {
     );
 }
 
+const PAGE_SIZE = 20;
+
 export const UserTable = memo(function UserTable({
     searchQuery = '',
     roleFilter = 'all',
@@ -122,10 +127,14 @@ export const UserTable = memo(function UserTable({
     isLoading = false,
     className,
 }: UserTableProps) {
+    const [currentPage, setCurrentPage] = useState(0);
+
     const { data, isLoading: isDataLoading, error } = useUserList({
         search: searchQuery || undefined,
         role: roleFilter !== 'all' ? roleFilter : undefined,
         status: statusFilter !== 'all' ? statusFilter : undefined,
+        page: currentPage,
+        size: PAGE_SIZE,
     });
 
     const banMutation = useBanUser();
@@ -135,8 +144,16 @@ export const UserTable = memo(function UserTable({
     const [unbanDialogOpen, setUnbanDialogOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState<UserForAction | null>(null);
 
+    React.useEffect(() => {
+        setCurrentPage(0);
+    }, [searchQuery, roleFilter, statusFilter]);
+
     const users = data?.content || [];
     const totalUsers = data?.totalElements || 0;
+    const totalPages = data?.totalPages || 1;
+    const hasNextPage = currentPage < totalPages - 1;
+    const hasPrevPage = currentPage > 0;
+
 
     const handleBanClick = (user: UserForAction) => {
         setSelectedUser(user);
@@ -197,7 +214,7 @@ export const UserTable = memo(function UserTable({
 
     return (
         <>
-            <Card className={className}>
+            <Card className={cn("bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800", className)}>
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
                         <CardTitle className="text-lg">User Accounts</CardTitle>
@@ -231,9 +248,10 @@ export const UserTable = memo(function UserTable({
                                 ) : (
                                     users.map((user) => {
                                         const displayName = getDisplayName(user.firstName, user.lastName, user.email);
-                                        const roles = Array.isArray(user.role)
-                                            ? user.role
-                                            : (typeof user.role === 'string' ? [user.role] : []);
+                                        const userRoles = (user as unknown as { roles?: string[]; role?: string | string[] }).roles || user.role;
+                                        const roles = Array.isArray(userRoles)
+                                            ? userRoles
+                                            : (typeof userRoles === 'string' ? [userRoles] : []);
                                         const primaryRole = getPrimaryRole(roles);
                                         const status = (user.status?.toUpperCase() || 'ACTIVE') as UserStatus;
 
@@ -250,7 +268,7 @@ export const UserTable = memo(function UserTable({
                                                         <div>
                                                             <Link
                                                                 href={`/admin/users/${user.id}`}
-                                                                className="font-semibold text-foreground hover:text-primary hover:underline transition-colors"
+                                                                className="font-semibold text-slate-900 dark:text-slate-100 hover:text-primary hover:underline transition-colors"
                                                             >
                                                                 {displayName}
                                                             </Link>
@@ -262,7 +280,7 @@ export const UserTable = memo(function UserTable({
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="flex items-center gap-2">
-                                                        <span className="text-sm text-foreground">{user.email}</span>
+                                                        <span className="text-sm text-slate-900 dark:text-slate-100">{user.email}</span>
                                                         {user.isEmailVerified && (
                                                             <CheckCircle2
                                                                 className="h-4 w-4 text-green-500"
@@ -272,14 +290,20 @@ export const UserTable = memo(function UserTable({
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={cn(roleConfig[primaryRole]?.className)}>
-                                                        {roleConfig[primaryRole]?.label || primaryRole}
-                                                    </Badge>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={cn('w-2 h-2 rounded-full', roleConfig[primaryRole]?.dotColor)} />
+                                                        <span className={cn('text-sm font-medium', roleConfig[primaryRole]?.textColor)}>
+                                                            {roleConfig[primaryRole]?.label || primaryRole}
+                                                        </span>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Badge className={cn(statusConfig[status]?.className)}>
-                                                        {statusConfig[status]?.label || status}
-                                                    </Badge>
+                                                    <div className="flex items-center gap-2">
+                                                        <span className={cn('w-2 h-2 rounded-full', statusConfig[status]?.dotColor)} />
+                                                        <span className={cn('text-sm font-medium', statusConfig[status]?.textColor)}>
+                                                            {statusConfig[status]?.label || status}
+                                                        </span>
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
@@ -288,8 +312,11 @@ export const UserTable = memo(function UserTable({
                                                             size="icon"
                                                             className="h-8 w-8"
                                                             title="Send email"
+                                                            asChild
                                                         >
-                                                            <Mail className="h-4 w-4" />
+                                                            <a href={`mailto:${user.email}`}>
+                                                                <Mail className="h-4 w-4" />
+                                                            </a>
                                                         </Button>
                                                         <DropdownMenu>
                                                             <DropdownMenuTrigger asChild>
@@ -306,14 +333,6 @@ export const UserTable = memo(function UserTable({
                                                                         <Eye className="mr-2 h-4 w-4" />
                                                                         View Profile
                                                                     </Link>
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
-                                                                    <Edit className="mr-2 h-4 w-4" />
-                                                                    Edit Details
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
-                                                                    <Shield className="mr-2 h-4 w-4" />
-                                                                    Change Role
                                                                 </DropdownMenuItem>
                                                                 <DropdownMenuSeparator />
                                                                 {status === 'BANNED' ? (
@@ -352,6 +371,34 @@ export const UserTable = memo(function UserTable({
                             </TableBody>
                         </Table>
                     </div>
+
+                    {totalPages > 1 && (
+                        <div className="flex items-center justify-between border-t pt-4 mt-4">
+                            <p className="text-sm text-muted-foreground">
+                                Page {currentPage + 1} of {totalPages}
+                            </p>
+                            <div className="flex items-center gap-2">
+                                <Button
+                                    variant="admin-nav"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(p => p - 1)}
+                                    disabled={!hasPrevPage}
+                                >
+                                    <ChevronLeft className="h-4 w-4 mr-1" />
+                                    Previous
+                                </Button>
+                                <Button
+                                    variant="admin-nav"
+                                    size="sm"
+                                    onClick={() => setCurrentPage(p => p + 1)}
+                                    disabled={!hasNextPage}
+                                >
+                                    Next
+                                    <ChevronRight className="h-4 w-4 ml-1" />
+                                </Button>
+                            </div>
+                        </div>
+                    )}
                 </CardContent>
             </Card>
 

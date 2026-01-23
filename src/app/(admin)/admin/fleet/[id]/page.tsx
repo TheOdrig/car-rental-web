@@ -126,13 +126,13 @@ export default function VehicleDetailPage({ params }: PageProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href="/admin/fleet">
                             <ArrowLeft className="h-4 w-4" />
                             Back to Fleet
                         </Link>
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href={`/admin/fleet/${vehicleId}/edit`}>
                             <Edit className="h-4 w-4" />
                             Edit Vehicle
@@ -154,7 +154,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
                             ))}
                         </SelectContent>
                     </Select>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href={`/admin/damages?carId=${vehicleId}`}>
                             <AlertTriangle className="h-4 w-4" />
                             View Damages

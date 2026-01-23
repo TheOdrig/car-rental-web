@@ -13,6 +13,7 @@ import type {
     AdminAlert,
     ProcessReturnData,
     Car,
+    CarStatus,
     RentalDetailResponse,
     VehicleDetailResponse,
     CustomerDetailResponse,
@@ -20,6 +21,7 @@ import type {
     PaginatedResponse,
     AdminNote,
     AdminRentalStatus,
+    CurrencyType,
 } from '@/types';
 
 interface PendingFilters {
@@ -161,19 +163,19 @@ async function markAllAlertsRead(): Promise<void> {
 }
 
 async function approveRental({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`, { notes });
+    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/confirm`, { notes });
 }
 
 async function processPickup({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
+    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/pickup`, { notes });
 }
 
 async function processReturn({ rentalId, data }: { rentalId: number; data?: string | ProcessReturnData }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
+    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/return`, data);
 }
 
 async function rejectRental({ rentalId, reason }: { rentalId: number; reason: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
+    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/cancel`, { reason });
 }
 
 
@@ -500,11 +502,134 @@ export function useUpdateCarStatus() {
 }
 
 async function fetchRentalDetail(id: number): Promise<RentalDetailResponse> {
-    return clientGet<RentalDetailResponse>(`/api/rentals/${id}`);
+    const response = await clientGet<{
+        id: number;
+        carSummary?: { id: number; brand: string; model: string; licensePlate: string; imageUrl?: string; status?: string; fuelType?: string; transmissionType?: string };
+        userSummary?: { id: number; username: string; email: string; firstName?: string; lastName?: string; phone?: string };
+        startDate: string;
+        endDate: string;
+        days: number;
+        dailyPrice: number;
+        totalPrice: number;
+        currency: string;
+        status: string;
+        pickupNotes?: string;
+        returnNotes?: string;
+        approvalNotes?: string;
+        cancellationReason?: string;
+        createTime?: string;
+        updateTime?: string;
+    }>(`/api/rentals/${id}`);
+
+    const statusMap: Record<string, AdminRentalStatus> = {
+        'REQUESTED': 'PENDING',
+        'Requested': 'PENDING',
+        'CONFIRMED': 'CONFIRMED',
+        'Confirmed': 'CONFIRMED',
+        'IN_USE': 'ACTIVE',
+        'In Use': 'ACTIVE',
+        'RETURNED': 'COMPLETED',
+        'Returned': 'COMPLETED',
+        'CANCELLED': 'CANCELLED',
+        'Cancelled': 'CANCELLED',
+    };
+
+    return {
+        id: response.id,
+        status: statusMap[response.status] ?? 'PENDING',
+        startDate: response.startDate,
+        endDate: response.endDate,
+        duration: response.days,
+        pricing: {
+            dailyRate: response.dailyPrice,
+            totalDays: response.days,
+            subtotal: response.totalPrice,
+            discounts: 0,
+            finalTotal: response.totalPrice,
+            currency: response.currency as 'USD' | 'EUR' | 'TRY',
+        },
+        customer: {
+            id: response.userSummary?.id ?? 0,
+            firstName: response.userSummary?.firstName ?? response.userSummary?.username ?? 'Unknown',
+            lastName: response.userSummary?.lastName ?? '',
+            email: response.userSummary?.email ?? '',
+            phone: response.userSummary?.phone ?? '',
+            emailVerified: true,
+            phoneVerified: false,
+            stats: { totalRentals: 0, totalSpent: 0, damageCount: 0 },
+        },
+        vehicle: {
+            id: response.carSummary?.id ?? 0,
+            brand: response.carSummary?.brand ?? 'Unknown',
+            model: response.carSummary?.model ?? 'Unknown',
+            licensePlate: response.carSummary?.licensePlate ?? '',
+            imageUrl: response.carSummary?.imageUrl,
+            status: 'Available' as CarStatus,
+            fuelType: response.carSummary?.fuelType ?? '',
+            transmissionType: response.carSummary?.transmissionType ?? '',
+        },
+        payment: {
+            totalAmount: response.totalPrice,
+            status: 'CAPTURED',
+            method: 'card',
+        },
+        timeline: [
+            { type: 'created' as const, timestamp: response.createTime ?? response.startDate },
+        ],
+        damages: [],
+        notes: {
+            approval: response.approvalNotes,
+            pickup: response.pickupNotes,
+            return: response.returnNotes,
+            cancellation: response.cancellationReason,
+        },
+    };
 }
 
 async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
-    return clientGet<VehicleDetailResponse>(`/api/admin/cars/${id}`);
+    const response = await clientGet<{
+        id: number;
+        brand: string;
+        model: string;
+        productionYear: number;
+        licensePlate: string;
+        vinNumber?: string;
+        carStatusType: string;
+        fuelType: string;
+        transmissionType: string;
+        bodyType: string;
+        seats: number;
+        color: string;
+        price: number;
+        currencyType: string;
+        imageUrl?: string;
+        thumbnailUrl?: string;
+    }>(`/api/cars/${id}`);
+
+    return {
+        id: response.id,
+        brand: response.brand,
+        model: response.model,
+        year: response.productionYear,
+        licensePlate: response.licensePlate,
+        vin: response.vinNumber,
+        status: response.carStatusType as CarStatus,
+        fuelType: response.fuelType,
+        transmissionType: response.transmissionType,
+        bodyType: response.bodyType,
+        seats: response.seats,
+        color: response.color,
+        pricing: {
+            dailyRate: response.price,
+            weeklyRate: response.price * 6,
+            depositAmount: response.price * 3,
+            currency: response.currencyType as CurrencyType,
+        },
+        images: {
+            primary: response.imageUrl || '',
+            additional: [],
+        },
+    };
 }
 
 async function fetchCustomerDetail(id: number): Promise<CustomerDetailResponse> {

@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { verifyToken, type TokenPayload } from '@/lib/auth/jwt-verifier';
 
-const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback'];
-const AUTH_ROUTES = ['/login', '/register', '/callback'];
+const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback', '/forgot-password', '/reset-password'];
+const AUTH_ROUTES = ['/login', '/register', '/callback', '/forgot-password', '/reset-password'];
 const ADMIN_ROUTES = ['/admin', '/dashboard'];
 const PROTECTED_ROUTES = ['/rentals', '/profile', '/settings'];
 
@@ -38,16 +38,16 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.next();
     }
 
-    
-    
+
+
     const hasAccessToken = !!token;
     const hasRefreshToken = !!request.cookies.get('refresh_token')?.value;
 
     let payload: TokenPayload | null = null;
     const isAuthenticated = hasAccessToken || hasRefreshToken;
 
-    
-    
+
+
     if (token && isAdminRoute(pathname)) {
         const result = await verifyToken(token);
         if (result.valid && result.payload) {
@@ -66,8 +66,8 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
             return redirectToLogin(request, pathname);
         }
 
-        
-        
+
+
         if (!isAdmin && !hasRefreshToken) {
             return NextResponse.redirect(new URL('/forbidden', request.url));
         }

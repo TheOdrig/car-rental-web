@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { RefreshCw, Download, UserPlus, Clock, Search } from 'lucide-react';
+import { RefreshCw, Clock, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -33,14 +33,6 @@ export default function UserManagementPage() {
         toast.success('User data refreshed');
     };
 
-    const handleExport = () => {
-        toast.info('Export feature coming soon');
-    };
-
-    const handleAddUser = () => {
-        toast.info('Add user feature coming soon');
-    };
-
     const lastUpdated = new Date().toLocaleTimeString('en-US', {
         hour: 'numeric',
         minute: '2-digit',
@@ -67,42 +59,22 @@ export default function UserManagementPage() {
                     <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <p className="text-sm">Manage customer and admin accounts</p>
-                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
+                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-white/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
                             <Clock className="h-3 w-3" aria-hidden="true" />
                             Updated {lastUpdated}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleRefresh}
-                        disabled={isLoadingStats}
-                        className="gap-2"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} aria-hidden="true" />
-                        Refresh
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleExport}
-                        className="gap-2"
-                    >
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        Export
-                    </Button>
-                    <Button
-                        size="sm"
-                        onClick={handleAddUser}
-                        className="gap-2"
-                    >
-                        <UserPlus className="h-4 w-4" aria-hidden="true" />
-                        Add User
-                    </Button>
-                </div>
+                <Button
+                    variant="admin-outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                    disabled={isLoadingStats}
+                >
+                    <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} aria-hidden="true" />
+                    Refresh
+                </Button>
             </div>
 
             <UserStatsCards
@@ -122,7 +94,10 @@ export default function UserManagementPage() {
                 </div>
                 <div className="flex gap-2">
                     <Select value={roleFilter} onValueChange={(v) => setRoleFilter(v as UserRole)}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by role">
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by role"
+                        >
                             <SelectValue placeholder="Role" />
                         </SelectTrigger>
                         <SelectContent>
@@ -132,7 +107,10 @@ export default function UserManagementPage() {
                         </SelectContent>
                     </Select>
                     <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as UserStatus)}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by status"
+                        >
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
@@ -150,6 +128,6 @@ export default function UserManagementPage() {
                 statusFilter={statusFilter}
                 isLoading={isLoadingStats}
             />
-        </div>
+        </div >
     );
 }

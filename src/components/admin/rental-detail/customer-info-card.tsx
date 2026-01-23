@@ -26,12 +26,14 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         <User className="h-5 w-5 text-emerald-500" />
                         Customer
                     </CardTitle>
-                    <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/users/${customer.id}`}>
-                            <ExternalLink className="h-4 w-4 mr-1" />
-                            View Profile
-                        </Link>
-                    </Button>
+                    {customer.id > 0 && (
+                        <Button variant="ghost" size="sm" asChild>
+                            <Link href={`/admin/users/${customer.id}`}>
+                                <ExternalLink className="h-4 w-4 mr-1" />
+                                View Profile
+                            </Link>
+                        </Button>
+                    )}
                 </div>
             </CardHeader>
             <CardContent className="space-y-4">

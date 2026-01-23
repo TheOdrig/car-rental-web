@@ -113,13 +113,13 @@ export default function CustomerDetailPage({ params }: PageProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href="/admin/users">
                             <ArrowLeft className="h-4 w-4" />
                             Back to Users
                         </Link>
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href={`/admin/users/${customerId}/edit`}>
                             <Edit className="h-4 w-4" />
                             Edit Customer
@@ -129,7 +129,6 @@ export default function CustomerDetailPage({ params }: PageProps) {
                         <Button
                             variant="destructive"
                             size="sm"
-                            className="gap-2"
                             onClick={() => setIsBanDialogOpen(true)}
                         >
                             <Ban className="h-4 w-4" />
@@ -138,28 +137,27 @@ export default function CustomerDetailPage({ params }: PageProps) {
                     )}
                     {isBanned && (
                         <Button
-                            variant="outline"
+                            variant="admin-success"
                             size="sm"
-                            className="gap-2 border-green-500 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/20"
                             onClick={() => setIsUnbanDialogOpen(true)}
                         >
                             <ShieldCheck className="h-4 w-4" />
                             Unban Customer
                         </Button>
                     )}
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <a href={`mailto:${customer.email}`}>
                             <Mail className="h-4 w-4" />
                             Send Email
                         </a>
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href={`/admin/rentals?userId=${customerId}`}>
                             <History className="h-4 w-4" />
                             View All Rentals
                         </Link>
                     </Button>
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href={`/admin/damages?userId=${customerId}`}>
                             <AlertTriangle className="h-4 w-4" />
                             View Damages

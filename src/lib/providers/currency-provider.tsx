@@ -40,7 +40,24 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
     const [rates, setRates] = useState<Record<CurrencyCode, number> | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
-    const fetchRates = useCallback(async () => {
+    const fetchRates = useCallback(async (force = false) => {
+        if (!force && typeof window !== 'undefined') {
+            const cached = localStorage.getItem('exchange_rates_cache');
+            const cacheTime = localStorage.getItem('exchange_rates_cache_time');
+            if (cached && cacheTime) {
+                const age = Date.now() - parseInt(cacheTime, 10);
+                if (age < 5 * 60 * 1000) {
+                    try {
+                        const data = JSON.parse(cached);
+                        setRates(data.rates);
+                        setIsLoading(false);
+                        return;
+                    } catch {
+                    }
+                }
+            }
+        }
+
         try {
             const response = await fetch('/api/exchange-rates', {
                 cache: 'no-store',
@@ -48,6 +65,10 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
             if (response.ok) {
                 const data: ExchangeRatesResponse = await response.json();
                 setRates(data.rates);
+                if (typeof window !== 'undefined') {
+                    localStorage.setItem('exchange_rates_cache', JSON.stringify(data));
+                    localStorage.setItem('exchange_rates_cache_time', Date.now().toString());
+                }
             }
         } catch (error) {
             console.error('Failed to fetch exchange rates:', error);
@@ -96,7 +117,7 @@ export function CurrencyProvider({ children }: CurrencyProviderProps) {
 
     const refreshRates = useCallback(async () => {
         setIsLoading(true);
-        await fetchRates();
+        await fetchRates(true);
     }, [fetchRates]);
 
     useEffect(() => {

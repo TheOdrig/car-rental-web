@@ -5,6 +5,15 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import {
     DetailPageSkeleton,
@@ -45,6 +54,8 @@ export default function RentalDetailPage({ params }: PageProps) {
     const processReturn = useProcessReturn();
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
 
     const isActionLoading =
         approveRental.isPending ||
@@ -110,10 +121,15 @@ export default function RentalDetailPage({ params }: PageProps) {
     };
 
     const handleReject = () => {
-        const reason = window.prompt('Enter rejection reason:');
-        if (reason) {
-            rejectRental.mutate({ rentalId, reason }, {
+        setRejectDialogOpen(true);
+    };
+
+    const confirmReject = () => {
+        if (rejectionReason.trim()) {
+            rejectRental.mutate({ rentalId, reason: rejectionReason }, {
                 onSuccess: () => {
+                    setRejectDialogOpen(false);
+                    setRejectionReason('');
                     void refetch();
                 }
             });
@@ -158,7 +174,7 @@ export default function RentalDetailPage({ params }: PageProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href="/admin/rentals">
                             <ArrowLeft className="h-4 w-4" />
                             Back to List
@@ -230,6 +246,42 @@ export default function RentalDetailPage({ params }: PageProps) {
                     />
                 </>
             )}
+
+            <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Cancel Rental</DialogTitle>
+                        <DialogDescription>
+                            Please provide a reason for cancelling this rental.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Input
+                            placeholder="Enter cancellation reason..."
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setRejectDialogOpen(false);
+                                setRejectionReason('');
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={confirmReject}
+                            disabled={!rejectionReason.trim() || rejectRental.isPending}
+                        >
+                            {rejectRental.isPending ? 'Cancelling...' : 'Confirm Cancel'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }
