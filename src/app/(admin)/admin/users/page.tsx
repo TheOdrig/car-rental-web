@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { RefreshCw, Download, UserPlus, Clock, Search } from 'lucide-react';
+import { RefreshCw, Clock, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -14,31 +14,23 @@ import {
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import { UserStatsCards } from '@/components/admin/user-stats';
 import { UserTable } from '@/components/admin/user-table';
+import { useUserStats, useInvalidateUsers } from '@/lib/hooks/use-users';
 import { toast } from 'sonner';
 
-type UserRole = 'all' | 'admin' | 'customer' | 'support';
-type UserStatus = 'all' | 'active' | 'pending' | 'banned';
+type UserRole = 'all' | 'ADMIN' | 'USER';
+type UserStatus = 'all' | 'ACTIVE' | 'BANNED';
 
 export default function UserManagementPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [roleFilter, setRoleFilter] = useState<UserRole>('all');
     const [statusFilter, setStatusFilter] = useState<UserStatus>('all');
-    const [isLoading, setIsLoading] = useState(false);
 
-    const handleRefresh = () => {
-        setIsLoading(true);
-        setTimeout(() => {
-            setIsLoading(false);
-            toast.success('User data refreshed');
-        }, 500);
-    };
+    const { data: stats, isLoading: isLoadingStats } = useUserStats();
+    const invalidateUsers = useInvalidateUsers();
 
-    const handleExport = () => {
-        toast.info('Export feature coming soon');
-    };
-
-    const handleAddUser = () => {
-        toast.info('Add user feature coming soon');
+    const handleRefresh = async () => {
+        await invalidateUsers.all();
+        toast.success('User data refreshed');
     };
 
     const lastUpdated = new Date().toLocaleTimeString('en-US', {
@@ -46,6 +38,12 @@ export default function UserManagementPage() {
         minute: '2-digit',
         hour12: true
     });
+
+    const statsData = {
+        totalUsers: stats?.totalUsers ?? 0,
+        activeUsers: stats?.activeUsers ?? 0,
+        bannedUsers: stats?.bannedUsers ?? 0,
+    };
 
     return (
         <div className="space-y-6">
@@ -61,52 +59,27 @@ export default function UserManagementPage() {
                     <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <p className="text-sm">Manage customer and admin accounts</p>
-                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted px-2 py-0.5 rounded-full border border-dashed">
+                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-white/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
                             <Clock className="h-3 w-3" aria-hidden="true" />
                             Updated {lastUpdated}
                         </span>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleRefresh}
-                        disabled={isLoading}
-                        className="gap-2"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} aria-hidden="true" />
-                        Refresh
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleExport}
-                        className="gap-2"
-                    >
-                        <Download className="h-4 w-4" aria-hidden="true" />
-                        Export
-                    </Button>
-                    <Button
-                        size="sm"
-                        onClick={handleAddUser}
-                        className="gap-2"
-                    >
-                        <UserPlus className="h-4 w-4" aria-hidden="true" />
-                        Add User
-                    </Button>
-                </div>
+                <Button
+                    variant="admin-outline"
+                    size="sm"
+                    onClick={handleRefresh}
+                    disabled={isLoadingStats}
+                >
+                    <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} aria-hidden="true" />
+                    Refresh
+                </Button>
             </div>
 
             <UserStatsCards
-                data={{
-                    totalUsers: 1247,
-                    activeUsers: 1089,
-                    pendingUsers: 43,
-                    bannedUsers: 12,
-                }}
-                isLoading={isLoading}
+                data={statsData}
+                isLoading={isLoadingStats}
             />
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -121,25 +94,29 @@ export default function UserManagementPage() {
                 </div>
                 <div className="flex gap-2">
                     <Select value={roleFilter} onValueChange={(v) => setRoleFilter(v as UserRole)}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by role">
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by role"
+                        >
                             <SelectValue placeholder="Role" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Roles</SelectItem>
-                            <SelectItem value="admin">Admin</SelectItem>
-                            <SelectItem value="customer">Customer</SelectItem>
-                            <SelectItem value="support">Support</SelectItem>
+                            <SelectItem value="ADMIN">Admin</SelectItem>
+                            <SelectItem value="USER">Customer</SelectItem>
                         </SelectContent>
                     </Select>
                     <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as UserStatus)}>
-                        <SelectTrigger className="w-[140px]" aria-label="Filter by status">
+                        <SelectTrigger
+                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by status"
+                        >
                             <SelectValue placeholder="Status" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="active">Active</SelectItem>
-                            <SelectItem value="pending">Pending</SelectItem>
-                            <SelectItem value="banned">Banned</SelectItem>
+                            <SelectItem value="ACTIVE">Active</SelectItem>
+                            <SelectItem value="BANNED">Banned</SelectItem>
                         </SelectContent>
                     </Select>
                 </div>
@@ -149,8 +126,8 @@ export default function UserManagementPage() {
                 searchQuery={searchQuery}
                 roleFilter={roleFilter}
                 statusFilter={statusFilter}
-                isLoading={isLoading}
+                isLoading={isLoadingStats}
             />
-        </div>
+        </div >
     );
 }

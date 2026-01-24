@@ -35,3 +35,38 @@ export { LateReturnFilters } from './late-return-filters';
 export { LateReturnStats } from './late-return-stats';
 export { PenaltyWaiveDialog } from './penalty-waive-dialog';
 export { PenaltyHistorySection } from './penalty-history-section';
+
+export { CopyButton } from './copy-button';
+export { StatCard } from './stat-card';
+export { ComingSoonPlaceholder } from './coming-soon-placeholder';
+export { DetailPageSkeleton, CardSkeleton, TableSkeleton } from './detail-page-skeleton';
+export { DetailPageError } from './detail-page-error';
+
+export {
+    RentalInfoCard,
+    CustomerInfoCard,
+    VehicleInfoCard,
+    PaymentInfoCard,
+    TimelineCard,
+    RentalActionButtons,
+} from './rental-detail';
+
+export {
+    VehicleDetailInfoCard,
+    VehicleImagesCard,
+    VehicleStatisticsCard,
+    VehicleStatusCard,
+    VehicleActiveRentalCard,
+    VehicleRentalHistoryTable,
+} from './vehicle-detail';
+
+export {
+    CustomerDetailInfoCard,
+    CustomerVerificationCard,
+    CustomerStatisticsCard,
+    CustomerStatusCard,
+    CustomerRentalHistoryTable,
+    CustomerNotesCard,
+    BanCustomerDialog,
+    UnbanCustomerDialog,
+} from './customer-detail';

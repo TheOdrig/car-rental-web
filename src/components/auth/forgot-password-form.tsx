@@ -64,7 +64,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full"
+                    className="w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100"
                     onClick={() => {
                         setIsSubmitted(false);
                         setEmail('');

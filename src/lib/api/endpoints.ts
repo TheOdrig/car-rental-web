@@ -87,10 +87,11 @@ export const endpoints = {
         },
         users: {
             list: `${API_BASE_URL}/api/admin/users`,
+            stats: `${API_BASE_URL}/api/admin/users/stats`,
             byId: (id: number) => `${API_BASE_URL}/api/admin/users/${id}`,
-            updateRole: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/role`,
             ban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/ban`,
             unban: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/unban`,
+            notes: (id: number) => `${API_BASE_URL}/api/admin/users/${id}/notes`,
         },
     },
     damages: {

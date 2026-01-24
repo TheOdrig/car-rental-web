@@ -3,17 +3,40 @@
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Clock, DollarSign, Car, User, Calendar, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, DollarSign } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Input } from '@/components/ui/input';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { PenaltyWaiveDialog, PenaltyHistorySection, LateReturnStatusBadge } from '@/components/admin';
-import { useRental } from '@/lib/hooks';
-import { formatCurrency } from '@/lib/utils/format';
-import { safeFormatDate } from '@/lib/utils/format';
-import type { LateReturnStatus } from '@/types';
+import {
+    DetailPageSkeleton,
+    DetailPageError,
+    RentalInfoCard,
+    CustomerInfoCard,
+    VehicleInfoCard,
+    PaymentInfoCard,
+    TimelineCard,
+    RentalActionButtons,
+    PenaltyWaiveDialog,
+    PenaltyHistorySection,
+    VehicleDamageHistory,
+} from '@/components/admin';
+import {
+    useRentalDetail,
+    useApproveRental,
+    useRejectRental,
+    useProcessPickup,
+    useProcessReturn,
+} from '@/lib/hooks/use-admin';
+import { showToast } from '@/lib/utils/toast';
+import type { LateReturnStatus, RentalDetailResponse } from '@/types';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -24,8 +47,21 @@ export default function RentalDetailPage({ params }: PageProps) {
     const router = useRouter();
     const rentalId = parseInt(id, 10);
 
-    const { data: rental, isLoading, isError } = useRental(rentalId);
+    const { data: rental, isLoading, isError, refetch } = useRentalDetail(rentalId);
+    const approveRental = useApproveRental();
+    const rejectRental = useRejectRental();
+    const processPickup = useProcessPickup();
+    const processReturn = useProcessReturn();
+
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
+    const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
+    const [rejectionReason, setRejectionReason] = useState('');
+
+    const isActionLoading =
+        approveRental.isPending ||
+        rejectRental.isPending ||
+        processPickup.isPending ||
+        processReturn.isPending;
 
     if (isNaN(rentalId)) {
         router.push('/admin/rentals');
@@ -33,32 +69,88 @@ export default function RentalDetailPage({ params }: PageProps) {
     }
 
     if (isLoading) {
-        return <RentalDetailSkeleton />;
-    }
-
-    if (isError || !rental) {
         return (
-            <div className="flex flex-col items-center justify-center py-12">
-                <AlertTriangle className="h-12 w-12 text-red-500 mb-4" />
-                <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                    Rental Not Found
-                </h2>
-                <p className="text-slate-500 dark:text-slate-400 mt-2">
-                    The rental you are looking for does not exist.
-                </p>
-                <Button asChild className="mt-4">
-                    <Link href="/admin/rentals">Back to Rentals</Link>
-                </Button>
+            <div className="space-y-6">
+                <Breadcrumb
+                    items={[
+                        { label: 'Dashboard', href: '/admin/dashboard' },
+                        { label: 'Rentals', href: '/admin/rentals' },
+                        { label: 'Loading...' },
+                    ]}
+                />
+                <DetailPageSkeleton />
             </div>
         );
     }
 
-    const rentalWithPenalty = rental as typeof rental & {
+    if (isError || !rental) {
+        return (
+            <div className="space-y-6">
+                <Breadcrumb
+                    items={[
+                        { label: 'Dashboard', href: '/admin/dashboard' },
+                        { label: 'Rentals', href: '/admin/rentals' },
+                        { label: `Rental #${rentalId}` },
+                    ]}
+                />
+                <DetailPageError
+                    title="Rental Not Found"
+                    message="The rental you are looking for does not exist or could not be loaded."
+                    onRetry={() => refetch()}
+                    backUrl="/admin/rentals"
+                    backLabel="Back to Rentals"
+                />
+            </div>
+        );
+    }
+
+    const rentalWithPenalty = rental as RentalDetailResponse & {
         penaltyAmount?: number;
         lateReturnStatus?: LateReturnStatus;
     };
 
     const hasPenalty = (rentalWithPenalty.penaltyAmount ?? 0) > 0;
+    const referenceNumber = `CR-${String(rentalId).padStart(6, '0')}`;
+
+    const handleApprove = () => {
+        approveRental.mutate({ rentalId }, {
+            onSuccess: () => {
+                void refetch();
+            }
+        });
+    };
+
+    const handleReject = () => {
+        setRejectDialogOpen(true);
+    };
+
+    const confirmReject = () => {
+        if (rejectionReason.trim()) {
+            rejectRental.mutate({ rentalId, reason: rejectionReason }, {
+                onSuccess: () => {
+                    setRejectDialogOpen(false);
+                    setRejectionReason('');
+                    void refetch();
+                }
+            });
+        }
+    };
+
+    const handlePickup = () => {
+        processPickup.mutate({ rentalId }, {
+            onSuccess: () => {
+                void refetch();
+            }
+        });
+    };
+
+    const handleReturn = () => {
+        processReturn.mutate({ rentalId }, {
+            onSuccess: () => {
+                void refetch();
+            }
+        });
+    };
 
     return (
         <div className="space-y-6">
@@ -66,7 +158,7 @@ export default function RentalDetailPage({ params }: PageProps) {
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },
                     { label: 'Rentals', href: '/admin/rentals' },
-                    { label: `Rental #${rentalId}` },
+                    { label: referenceNumber },
                 ]}
             />
 
@@ -74,23 +166,28 @@ export default function RentalDetailPage({ params }: PageProps) {
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
-                            Rental #{rentalId}
+                            {referenceNumber}
                         </h1>
-                        <Badge variant="outline" className="text-sm">
-                            {rental.status}
-                        </Badge>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {rental.carSummary?.brand} {rental.carSummary?.model}
+                        {rental.vehicle.brand} {rental.vehicle.model} • {rental.customer.firstName} {rental.customer.lastName}
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href="/admin/rentals">
                             <ArrowLeft className="h-4 w-4" />
                             Back to List
                         </Link>
                     </Button>
+                    <RentalActionButtons
+                        status={rental.status}
+                        onApprove={handleApprove}
+                        onReject={handleReject}
+                        onPickup={handlePickup}
+                        onReturn={handleReturn}
+                        isLoading={isActionLoading}
+                    />
                     {hasPenalty && (
                         <Button
                             variant="destructive"
@@ -106,157 +203,85 @@ export default function RentalDetailPage({ params }: PageProps) {
             </div>
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                            <User className="h-5 w-5 text-blue-500" />
-                            Customer
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                            {rental.userSummary?.username}
-                        </div>
-                        <div className="text-sm text-slate-500 dark:text-slate-400">
-                            {rental.userSummary?.email}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                            <Car className="h-5 w-5 text-green-500" />
-                            Vehicle
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                            {rental.carSummary?.brand} {rental.carSummary?.model}
-                        </div>
-                        <div className="text-sm text-slate-500 dark:text-slate-400">
-                            {rental.carSummary?.licensePlate}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
-                    <CardHeader className="pb-3">
-                        <CardTitle className="flex items-center gap-2 text-lg">
-                            <Calendar className="h-5 w-5 text-purple-500" />
-                            Duration
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
-                            {rental.days} days
-                        </div>
-                        <div className="text-sm text-slate-500 dark:text-slate-400">
-                            {safeFormatDate(rental.startDate)} - {safeFormatDate(rental.endDate)}
-                        </div>
-                    </CardContent>
-                </Card>
+                <RentalInfoCard
+                    rentalId={rental.id}
+                    status={rental.status}
+                    createdAt={rental.timeline.find(e => e.type === 'created')?.timestamp ?? rental.startDate}
+                    startDate={rental.startDate}
+                    endDate={rental.endDate}
+                    duration={rental.duration}
+                    pricing={rental.pricing}
+                    notes={rental.notes.approval}
+                />
+                <CustomerInfoCard customer={rental.customer} />
+                <VehicleInfoCard vehicle={rental.vehicle} />
             </div>
 
-            <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
-                <CardHeader className="pb-3">
-                    <CardTitle className="flex items-center gap-2 text-lg">
-                        <DollarSign className="h-5 w-5 text-orange-500" />
-                        Pricing
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="grid gap-4 md:grid-cols-3">
-                        <div>
-                            <div className="text-sm text-slate-500 dark:text-slate-400">Daily Rate</div>
-                            <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                                {formatCurrency(rental.dailyPrice, rental.currency)}
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-sm text-slate-500 dark:text-slate-400">Total Price</div>
-                            <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
-                                {formatCurrency(rental.totalPrice, rental.currency)}
-                            </div>
-                        </div>
-                        {hasPenalty && (
-                            <div>
-                                <div className="text-sm text-slate-500 dark:text-slate-400 flex items-center gap-2">
-                                    Late Return Penalty
-                                    {rentalWithPenalty.lateReturnStatus && (
-                                        <LateReturnStatusBadge status={rentalWithPenalty.lateReturnStatus} />
-                                    )}
-                                </div>
-                                <div className="text-xl font-bold text-red-600 dark:text-red-400">
-                                    {formatCurrency(rentalWithPenalty.penaltyAmount ?? 0, rental.currency)}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                </CardContent>
-            </Card>
+            <div className="grid gap-6 md:grid-cols-2">
+                <PaymentInfoCard
+                    pricing={rental.pricing}
+                    payment={rental.payment}
+                    penaltyAmount={rentalWithPenalty.penaltyAmount}
+                    lateReturnStatus={rentalWithPenalty.lateReturnStatus}
+                />
+                <TimelineCard events={rental.timeline} />
+            </div>
+
+            {rental.damages.length > 0 && (
+                <VehicleDamageHistory carId={rental.vehicle.id} />
+            )}
 
             {hasPenalty && (
                 <>
-                    <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
-                        <CardHeader className="pb-3">
-                            <CardTitle className="flex items-center gap-2 text-lg">
-                                <Clock className="h-5 w-5 text-red-500" />
-                                Late Return Details
-                            </CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center gap-4">
-                                {rentalWithPenalty.lateReturnStatus && (
-                                    <LateReturnStatusBadge status={rentalWithPenalty.lateReturnStatus} />
-                                )}
-                                <div className="text-slate-600 dark:text-slate-400">
-                                    Penalty: <span className="font-bold text-red-600 dark:text-red-400">
-                                        {formatCurrency(rentalWithPenalty.penaltyAmount ?? 0, rental.currency)}
-                                    </span>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <PenaltyHistorySection rentalId={rentalId} currency={rental.currency} />
+                    <PenaltyHistorySection
+                        rentalId={rentalId}
+                        currency={rental.pricing.currency}
+                    />
+                    <PenaltyWaiveDialog
+                        open={waiveDialogOpen}
+                        onOpenChange={setWaiveDialogOpen}
+                        rentalId={rentalId}
+                        originalPenalty={rentalWithPenalty.penaltyAmount ?? 0}
+                        currency={rental.pricing.currency}
+                    />
                 </>
             )}
 
-            {hasPenalty && (
-                <PenaltyWaiveDialog
-                    open={waiveDialogOpen}
-                    onOpenChange={setWaiveDialogOpen}
-                    rentalId={rentalId}
-                    originalPenalty={rentalWithPenalty.penaltyAmount ?? 0}
-                    currency={rental.currency}
-                />
-            )}
-        </div>
-    );
-}
-
-function RentalDetailSkeleton() {
-    return (
-        <div className="space-y-6">
-            <Skeleton className="h-8 w-64" />
-            <div className="flex justify-between">
-                <Skeleton className="h-10 w-48" />
-                <Skeleton className="h-10 w-32" />
-            </div>
-            <div className="grid gap-6 md:grid-cols-3">
-                {Array.from({ length: 3 }).map((_, i) => (
-                    <Card key={i}>
-                        <CardHeader>
-                            <Skeleton className="h-6 w-24" />
-                        </CardHeader>
-                        <CardContent>
-                            <Skeleton className="h-5 w-32 mb-2" />
-                            <Skeleton className="h-4 w-24" />
-                        </CardContent>
-                    </Card>
-                ))}
-            </div>
+            <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle>Cancel Rental</DialogTitle>
+                        <DialogDescription>
+                            Please provide a reason for cancelling this rental.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4">
+                        <Input
+                            placeholder="Enter cancellation reason..."
+                            value={rejectionReason}
+                            onChange={(e) => setRejectionReason(e.target.value)}
+                        />
+                    </div>
+                    <DialogFooter>
+                        <Button
+                            variant="outline"
+                            onClick={() => {
+                                setRejectDialogOpen(false);
+                                setRejectionReason('');
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            variant="destructive"
+                            onClick={confirmReject}
+                            disabled={!rejectionReason.trim() || rejectRental.isPending}
+                        >
+                            {rejectRental.isPending ? 'Cancelling...' : 'Confirm Cancel'}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

@@ -135,11 +135,12 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         {CAPACITY_OPTIONS.map((capacity) => (
                             <Button
                                 key={capacity}
-                                variant={filters.minSeats === capacity ? 'default' : 'outline'}
+                                variant="filter-toggle"
                                 size="sm"
                                 onClick={() => handleCapacityChange(capacity)}
                                 className="min-w-[48px]"
                                 aria-pressed={filters.minSeats === capacity}
+                                data-selected={filters.minSeats === capacity}
                             >
                                 {capacity === 7 ? '7+' : capacity}
                             </Button>
@@ -152,11 +153,12 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         {TRANSMISSION_TYPES.map((type) => (
                             <Button
                                 key={type.value}
-                                variant={filters.transmissionType === type.value ? 'default' : 'outline'}
+                                variant="filter-toggle"
                                 size="sm"
                                 onClick={() => handleTransmissionChange(type.value)}
                                 className="flex-1"
                                 aria-pressed={filters.transmissionType === type.value}
+                                data-selected={filters.transmissionType === type.value}
                             >
                                 {type.label}
                             </Button>

@@ -156,14 +156,6 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 required
                 validationState={passwordValidationState}
                 isDisabled={loginMutation.isPending}
-                description={
-                    <Link
-                        href="/forgot-password"
-                        className="text-sm font-semibold text-primary hover:text-primary/80"
-                    >
-                        Forgot Password?
-                    </Link>
-                }
             >
                 <div className="relative">
                     <Input
@@ -193,6 +185,15 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                     </button>
                 </div>
             </FormField>
+
+            <div className="flex justify-end">
+                <Link
+                    href="/forgot-password"
+                    className="text-sm font-semibold text-primary hover:text-primary/80 hover:underline"
+                >
+                    Forgot Password?
+                </Link>
+            </div>
 
             <Button
                 type="submit"

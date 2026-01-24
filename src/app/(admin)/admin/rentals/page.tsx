@@ -123,10 +123,9 @@ export default function AdminRentalsPage() {
                     </p>
                 </div>
                 <Button
-                    variant="outline"
+                    variant="admin-icon"
                     size="icon"
                     onClick={handleRefresh}
-                    className="h-9 w-9 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-slate-600 rounded-xl cursor-pointer"
                 >
                     <RefreshCw className="h-4 w-4" />
                 </Button>

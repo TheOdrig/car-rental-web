@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
+import Link from 'next/link';
 import { DynamicImage } from '@/components/ui/dynamic-image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -276,7 +277,18 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                                     </div>
                                                 )}
                                                 <div className="min-w-0">
-                                                    <p className="font-semibold text-sm truncate">{item.customerName}</p>
+                                                    {item.customerId && item.customerId > 0 ? (
+                                                        <Link
+                                                            href={`/admin/users/${item.customerId}`}
+                                                            className="font-semibold text-sm truncate hover:text-primary hover:underline transition-colors block"
+                                                        >
+                                                            {item.customerName}
+                                                        </Link>
+                                                    ) : (
+                                                        <span className="font-semibold text-sm truncate block">
+                                                            {item.customerName}
+                                                        </span>
+                                                    )}
                                                     <p className="text-xs text-muted-foreground truncate">
                                                         {item.customerEmail}
                                                     </p>
@@ -301,12 +313,18 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                                     </div>
                                                 )}
                                                 <div className="min-w-0">
-                                                    <p className="font-semibold text-sm truncate">
+                                                    <Link
+                                                        href={`/admin/fleet/${item.carId}`}
+                                                        className="font-semibold text-sm truncate hover:text-primary hover:underline transition-colors block"
+                                                    >
                                                         {item.carBrand} {item.carModel}
-                                                    </p>
-                                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">
-                                                        {item.licensePlate}
-                                                    </p>
+                                                    </Link>
+                                                    <Link
+                                                        href={`/admin/rentals/${item.rentalId}`}
+                                                        className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight hover:text-primary transition-colors block"
+                                                    >
+                                                        {item.licensePlate} • CR-{String(item.rentalId).padStart(4, '0')}
+                                                    </Link>
                                                 </div>
                                             </div>
                                         </TableCell>

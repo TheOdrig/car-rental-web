@@ -3,7 +3,7 @@
 import { memo, useState } from 'react';
 import { DynamicImage } from '@/components/ui/dynamic-image';
 import Link from 'next/link';
-import { MoreHorizontal, Edit, RefreshCcw, Car, Trash2 } from 'lucide-react';
+import { MoreHorizontal, Edit, RefreshCcw, Car, Trash2, Eye } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import {
@@ -203,9 +203,12 @@ export const FleetTable = memo(function FleetTable({
                                                         </div>
                                                     )}
                                                     <div>
-                                                        <p className="font-semibold">
+                                                        <Link
+                                                            href={`/admin/fleet/${car.id}`}
+                                                            className="font-semibold hover:text-primary hover:underline transition-colors"
+                                                        >
                                                             {car.brand} {car.model}
-                                                        </p>
+                                                        </Link>
                                                         <p className="text-xs text-muted-foreground">
                                                             {car.productionYear} • {car.fuelType || 'N/A'}
                                                         </p>
@@ -264,6 +267,12 @@ export const FleetTable = memo(function FleetTable({
                                                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem asChild>
+                                                                <Link href={`/admin/fleet/${car.id}`}>
+                                                                    <Eye className="h-4 w-4 mr-2" />
+                                                                    View Details
+                                                                </Link>
+                                                            </DropdownMenuItem>
+                                                            <DropdownMenuItem asChild>
                                                                 <Link href={`/admin/fleet/${car.id}/edit`}>
                                                                     <Edit className="h-4 w-4 mr-2" />
                                                                     Edit Details
@@ -308,7 +317,7 @@ export const FleetTable = memo(function FleetTable({
                 </CardContent>
             </Card>
 
-            { }
+
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -334,7 +343,7 @@ export const FleetTable = memo(function FleetTable({
                 </AlertDialogContent>
             </AlertDialog>
 
-            { }
+
             <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>

@@ -8,3 +8,4 @@ export * from './checkout';
 export * from './payment';
 export * from './currency';
 export * from './damage';
+export * from './admin-detail';

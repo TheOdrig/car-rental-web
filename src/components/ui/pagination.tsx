@@ -29,7 +29,7 @@ export function Pagination({
             className={cn('flex items-center justify-center gap-1', className)}
         >
             <Button
-                variant="outline"
+                variant="admin-nav"
                 size="icon"
                 onClick={() => onPageChange(currentPage - 1)}
                 disabled={currentPage === 0}
@@ -57,11 +57,12 @@ export function Pagination({
                 return (
                     <Button
                         key={pageNumber}
-                        variant={isActive ? 'default' : 'outline'}
+                        variant="admin-page"
                         size="icon"
                         onClick={() => onPageChange(pageNumber)}
                         aria-label={`Page ${pageNumber + 1}`}
                         aria-current={isActive ? 'page' : undefined}
+                        data-active={isActive}
                     >
                         {pageNumber + 1}
                     </Button>
@@ -69,7 +70,7 @@ export function Pagination({
             })}
 
             <Button
-                variant="outline"
+                variant="admin-nav"
                 size="icon"
                 onClick={() => onPageChange(currentPage + 1)}
                 disabled={currentPage === totalPages - 1}

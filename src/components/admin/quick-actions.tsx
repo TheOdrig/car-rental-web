@@ -166,25 +166,43 @@ function QuickActionButton({
     disabled = false,
 }: QuickActionButtonProps) {
     const isDisabled = disabled || count === 0;
-    const outlineClasses = variant === 'outline'
-        ? 'border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-        : '';
-    const disabledClasses = isDisabled
-        ? 'disabled:opacity-60 disabled:bg-slate-100 dark:disabled:bg-slate-800 disabled:text-slate-500 dark:disabled:text-slate-400 disabled:border-slate-200 dark:disabled:border-slate-700'
-        : '';
+
+    const buttonVariant = variant === 'outline' ? 'admin-nav' : variant;
 
     return (
         <Button
-            variant={variant}
-            className={`h-auto flex-col gap-2 py-4 px-6 ${outlineClasses} ${disabledClasses}`}
+            variant={buttonVariant}
+            className={cn(
+                "h-auto flex-1 flex-col gap-2 py-5 px-6 rounded-2xl transition-all duration-300",
+                !isDisabled && "hover:scale-[1.02] hover:shadow-md",
+                isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer",
+                variant === 'default' && "shadow-lg shadow-blue-500/20"
+            )}
             onClick={onClick}
             disabled={isDisabled}
         >
-            <div className="flex items-center gap-2">
-                {icon}
-                <span className="text-2xl font-bold">{count}</span>
+            <div className="flex items-center gap-3">
+                <div className={cn(
+                    "p-2 rounded-lg",
+                    variant === 'default' ? "bg-white/20" : "bg-primary/10 dark:bg-primary/20"
+                )}>
+                    {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<any>, {
+                        className: cn("h-5 w-5", variant === 'default' ? "text-white" : "text-primary")
+                    }) : icon}
+                </div>
+                <span className={cn(
+                    "text-3xl font-bold tracking-tight",
+                    variant === 'default' ? "text-white" : "text-slate-900 dark:text-white"
+                )}>
+                    {count}
+                </span>
             </div>
-            <span className="text-sm font-medium">{label}</span>
+            <span className={cn(
+                "text-xs font-semibold uppercase tracking-wider",
+                variant === 'default' ? "text-blue-100" : "text-slate-500 dark:text-slate-400"
+            )}>
+                {label}
+            </span>
         </Button>
     );
 }
@@ -236,7 +254,7 @@ export const QuickActionsCard = memo(function QuickActionsCard({
 
     return (
         <>
-            <Card className={className}>
+            <Card className={cn("border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm", className)}>
                 <CardHeader>
                     <CardTitle className="text-lg">Quick Actions</CardTitle>
                     <CardDescription>

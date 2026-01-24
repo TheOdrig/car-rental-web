@@ -19,6 +19,22 @@ const buttonVariants = cva(
         ghost:
           "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
         link: "text-primary underline-offset-4 hover:underline",
+        "admin-outline":
+          "border border-input bg-white dark:bg-slate-800/80 text-slate-900 dark:text-slate-100 hover:bg-slate-50 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-slate-100 shadow-xs",
+        "admin-success":
+          "border border-green-500/50 bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 hover:border-green-500 hover:text-green-600 dark:hover:text-green-400",
+        "admin-icon":
+          "border bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-white/10 rounded-xl text-slate-700 dark:text-slate-300",
+        "admin-nav":
+          "border bg-white/80 dark:bg-slate-800/80 hover:bg-white dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 border-slate-200 dark:border-slate-600 backdrop-blur-sm",
+        "admin-page":
+          "border bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-700 data-[active=true]:bg-primary data-[active=true]:text-white data-[active=true]:border-primary",
+        "filter-toggle":
+          "border bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-200 dark:hover:bg-slate-700 data-[selected=true]:bg-slate-700 dark:data-[selected=true]:bg-slate-600 data-[selected=true]:text-white data-[selected=true]:border-slate-700 dark:data-[selected=true]:border-slate-500",
+        "oauth":
+          "border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-700",
+        "auth-primary":
+          "bg-emerald-600 text-white hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700",
       },
       size: {
         default: "h-9 px-4 py-2 has-[>svg]:px-3",

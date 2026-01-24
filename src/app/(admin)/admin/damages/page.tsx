@@ -60,15 +60,14 @@ function DamagesContent() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
-                        variant="outline"
+                        variant="admin-icon"
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isFetching}
-                        className="h-9 w-9 bg-white/60 dark:bg-slate-800/60 hover:bg-white/80 dark:hover:bg-slate-700/60 backdrop-blur-md border-white/40 dark:border-white/10 rounded-xl cursor-pointer"
                     >
                         <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                     </Button>
-                    <Button size="sm" variant="outline" className="gap-2 rounded-xl bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100" asChild>
+                    <Button variant="admin-outline" size="sm" asChild>
                         <Link href="/admin/damages/statistics">
                             <BarChart3 className="h-4 w-4" />
                             View Statistics

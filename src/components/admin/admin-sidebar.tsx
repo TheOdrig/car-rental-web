@@ -12,6 +12,7 @@ import {
     ChevronLeft,
     ChevronRight,
     User,
+    Users,
     AlertTriangle,
     Clock,
 } from 'lucide-react';
@@ -37,6 +38,11 @@ const navItems: NavItem[] = [
         label: 'Fleet Management',
         href: '/admin/fleet',
         icon: <Car className="h-5 w-5" />,
+    },
+    {
+        label: 'Customers',
+        href: '/admin/users',
+        icon: <Users className="h-5 w-5" />,
     },
     {
         label: 'Rental Management',

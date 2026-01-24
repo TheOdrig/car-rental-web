@@ -41,9 +41,12 @@ interface BanUserRequest {
     reason: string;
 }
 
-interface UpdateRoleRequest {
-    userId: number;
-    role: UserRole;
+
+
+export interface UserStats {
+    totalUsers: number;
+    activeUsers: number;
+    bannedUsers: number;
 }
 
 export const userKeys = {
@@ -78,9 +81,7 @@ async function fetchUserList(filters?: UserFilters): Promise<PageResponse<User>>
     return clientGet<PageResponse<User>>(url);
 }
 
-async function updateUserRole(params: UpdateRoleRequest): Promise<User> {
-    return clientPost<User>(`/api/admin/users/${params.userId}/role`, { role: params.role });
-}
+
 
 async function banUser(params: BanUserRequest): Promise<User> {
     return clientPost<User>(`/api/admin/users/${params.userId}/ban`, { reason: params.reason });
@@ -98,6 +99,19 @@ export function useUserList(filters?: UserFilters) {
     });
 }
 
+async function fetchUserStats(): Promise<UserStats> {
+    return clientGet<UserStats>('/api/admin/users/stats');
+}
+
+export function useUserStats() {
+    return useQuery({
+        queryKey: userKeys.stats(),
+        queryFn: fetchUserStats,
+        staleTime: 2 * 60 * 1000,
+    });
+}
+
+
 export function useUser(id: number | null | undefined) {
     return useQuery({
         queryKey: userKeys.detail(id!),
@@ -107,20 +121,7 @@ export function useUser(id: number | null | undefined) {
     });
 }
 
-export function useUpdateUserRole() {
-    const queryClient = useQueryClient();
 
-    return useMutation({
-        mutationFn: updateUserRole,
-        onSuccess: (result) => {
-            showToast.success('Role updated', `${result.firstName} ${result.lastName}'s role has been changed to ${result.role}.`);
-            void queryClient.invalidateQueries({ queryKey: userKeys.all });
-        },
-        onError: (error: Error) => {
-            showToast.error('Failed to update role', error.message);
-        },
-    });
-}
 
 export function useBanUser() {
     const queryClient = useQueryClient();

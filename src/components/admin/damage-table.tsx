@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import {
     Table,
@@ -67,9 +68,17 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                             onClick={() => handleRowClick(damage)}
                         >
                             <TableCell className="font-medium text-slate-900 dark:text-white">
-                                {damage.carLicensePlate}
+                                <Link
+                                    href={`/admin/fleet/${damage.carId}`}
+                                    className="hover:text-primary hover:underline transition-colors"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {damage.carLicensePlate}
+                                </Link>
                             </TableCell>
-                            <TableCell className="text-slate-700 dark:text-slate-300">{damage.customerName}</TableCell>
+                            <TableCell className="text-slate-700 dark:text-slate-300">
+                                {damage.customerName}
+                            </TableCell>
                             <TableCell className="max-w-[200px] truncate text-slate-700 dark:text-slate-300">
                                 {damage.description}
                             </TableCell>
