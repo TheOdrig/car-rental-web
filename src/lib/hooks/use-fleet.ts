@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete } from '@/lib/api/client';
+import { clientGet, clientPost, clientDelete, clientPatch } from '@/lib/api/client';
 import { showToast } from '@/lib/utils/toast';
 import type { Car, PageResponse } from '@/types';
 

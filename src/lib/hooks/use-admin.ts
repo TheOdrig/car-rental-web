@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete } from '@/lib/api/client';
+import { clientGet, clientPost, clientDelete, clientPut, clientPatch } from '@/lib/api/client';
 import { showToast, toastMessages } from '@/lib/utils/toast';
 import type {
     DailySummary,
@@ -637,7 +637,22 @@ async function fetchCustomerDetail(id: number): Promise<CustomerDetailResponse> 
 }
 
 async function fetchVehicleRentalHistory(id: number, page: number): Promise<PaginatedResponse<RentalHistoryItem>> {
-    return clientGet<PaginatedResponse<RentalHistoryItem>>(`/api/admin/cars/${id}/rentals?page=${page}&size=10`);
+    const data = await clientGet<PaginatedResponse<any>>(`/api/admin/cars/${id}/rentals?page=${page}&size=10`);
+    return {
+        ...data,
+        content: data.content.map(rental => ({
+            id: rental.id,
+            customerId: rental.userSummary?.id,
+            customerName: `${rental.userSummary?.firstName || ''} ${rental.userSummary?.lastName || ''}`.trim() || rental.userSummary?.username,
+            carId: rental.carSummary?.id,
+            vehicleName: `${rental.carSummary?.brand || ''} ${rental.carSummary?.model || ''}`.trim(),
+            startDate: rental.startDate,
+            endDate: rental.endDate,
+            duration: rental.days,
+            totalAmount: rental.totalPrice,
+            status: rental.status as AdminRentalStatus,
+        })),
+    };
 }
 
 async function fetchCustomerRentalHistory(
@@ -646,7 +661,22 @@ async function fetchCustomerRentalHistory(
     status?: AdminRentalStatus
 ): Promise<PaginatedResponse<RentalHistoryItem>> {
     const statusParam = status ? `&status=${status}` : '';
-    return clientGet<PaginatedResponse<RentalHistoryItem>>(`/api/admin/users/${id}/rentals?page=${page}&size=10${statusParam}`);
+    const data = await clientGet<PaginatedResponse<any>>(`/api/admin/users/${id}/rentals?page=${page}&size=10${statusParam}`);
+    return {
+        ...data,
+        content: data.content.map(rental => ({
+            id: rental.id,
+            customerId: rental.userSummary?.id,
+            customerName: `${rental.userSummary?.firstName || ''} ${rental.userSummary?.lastName || ''}`.trim() || rental.userSummary?.username,
+            carId: rental.carSummary?.id,
+            vehicleName: `${rental.carSummary?.brand || ''} ${rental.carSummary?.model || ''}`.trim(),
+            startDate: rental.startDate,
+            endDate: rental.endDate,
+            duration: rental.days,
+            totalAmount: rental.totalPrice,
+            status: rental.status as AdminRentalStatus,
+        })),
+    };
 }
 
 async function banCustomer({ userId, reason }: { userId: number; reason: string }): Promise<void> {
