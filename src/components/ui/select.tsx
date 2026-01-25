@@ -42,6 +42,7 @@ function SelectTrigger({
       data-size={size}
       data-validation-state={validationState}
       aria-invalid={validationState === 'invalid' || validationState === 'empty' || undefined}
+      suppressHydrationWarning
       className={cn(
         "data-[placeholder]:text-slate-500 dark:data-[placeholder]:text-slate-400 [&_svg:not([class*='text-'])]:text-slate-500 dark:[&_svg:not([class*='text-'])]:text-slate-400",
         "bg-white dark:bg-slate-800/80 dark:hover:bg-slate-700/80",
