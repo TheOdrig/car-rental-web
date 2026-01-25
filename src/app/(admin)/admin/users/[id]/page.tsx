@@ -3,7 +3,7 @@
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Edit, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Breadcrumb } from '@/components/layout/breadcrumb';
 import {
@@ -119,12 +119,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
                             Back to Users
                         </Link>
                     </Button>
-                    <Button variant="admin-outline" size="sm" asChild>
-                        <Link href={`/admin/users/${customerId}/edit`}>
-                            <Edit className="h-4 w-4" />
-                            Edit Customer
-                        </Link>
-                    </Button>
+
                     {isActive && (
                         <Button
                             variant="destructive"
