@@ -3,7 +3,7 @@
 import { Activity, Clock, User, Ban } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { safeFormatDate } from '@/lib/utils/format';
+import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
 import type { CustomerAccountStatus, AccountStatusType } from '@/types';
 
 interface CustomerStatusCardProps {
@@ -71,7 +71,7 @@ export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
                         <Clock className="h-4 w-4 text-slate-400" />
                         <span className="text-slate-500 dark:text-slate-400">Last status change:</span>
                         <span className="text-slate-900 dark:text-slate-100">
-                            {safeFormatDate(accountStatus.lastStatusChange, 'datetime')}
+                            {safeFormatDateTime(accountStatus.lastStatusChange)}
                         </span>
                     </div>
                 </div>
