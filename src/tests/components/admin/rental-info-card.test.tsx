@@ -18,6 +18,7 @@ describe('RentalInfoCard', () => {
 
     const mockPricing: RentalPricing = {
         dailyRate: 100,
+        totalDays: 5,
         subtotal: 500,
         discounts: 50,
         finalTotal: 450,

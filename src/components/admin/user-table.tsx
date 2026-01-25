@@ -90,7 +90,7 @@ function getPrimaryRole(roles: string[]): UserRole {
     return 'USER';
 }
 
-function UserTableSkeleton({ className }: { className?: string }) {
+export function UserTableSkeleton({ className }: { className?: string }) {
     return (
         <Card className={className}>
             <CardHeader className="pb-3">
