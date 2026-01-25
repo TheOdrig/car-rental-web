@@ -62,15 +62,15 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/cars/:path*',
-        destination: 'http://localhost:8082/api/cars/:path*',
+        destination: `${process.env.API_URL || 'http://localhost:8082'}/api/cars/:path*`,
       },
       {
         source: '/api/pricing/:path*',
-        destination: 'http://localhost:8082/api/pricing/:path*',
+        destination: `${process.env.API_URL || 'http://localhost:8082'}/api/pricing/:path*`,
       },
       {
         source: '/api/exchange-rates/:path*',
-        destination: 'http://localhost:8082/api/exchange-rates/:path*',
+        destination: `${process.env.API_URL || 'http://localhost:8082'}/api/exchange-rates/:path*`,
       },
     ];
   },
