@@ -174,7 +174,7 @@ export default function RentalDetailPage({ params }: PageProps) {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="admin-outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild>
                         <Link href="/admin/rentals">
                             <ArrowLeft className="h-4 w-4" />
                             Back to List
