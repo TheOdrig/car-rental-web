@@ -163,19 +163,19 @@ async function markAllAlertsRead(): Promise<void> {
 }
 
 async function approveRental({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/confirm`, { notes });
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`, { notes });
 }
 
 async function processPickup({ rentalId, notes }: { rentalId: number; notes?: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/pickup`, { notes });
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
 }
 
 async function processReturn({ rentalId, data }: { rentalId: number; data?: string | ProcessReturnData }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/return`, data);
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
 }
 
 async function rejectRental({ rentalId, reason }: { rentalId: number; reason: string }): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/rentals/${rentalId}/cancel`, { reason });
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
 }
 
 

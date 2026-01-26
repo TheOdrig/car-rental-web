@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { Download } from 'lucide-react';
 import { logger } from '@/lib/utils/logger';
-import { useMyRentals } from '@/lib/hooks';
+import { useMyRentals, useCancelRental } from '@/lib/hooks';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ErrorBoundary } from '@/components/shared';
@@ -21,10 +21,23 @@ import {
     calculateRentalStats,
 } from '@/lib/utils/rental-utils';
 import { showToast } from '@/lib/utils/toast';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 
 export default function MyRentalsPage() {
     const { data, isLoading, error } = useMyRentals();
+    const cancelMutation = useCancelRental();
     const [activeTab, setActiveTab] = useState<RentalTab>('all');
+    const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+    const [rentalToCancel, setRentalToCancel] = useState<Rental | null>(null);
 
     const rentals = useMemo(() => data?.content ?? [], [data]);
 
@@ -53,12 +66,21 @@ export default function MyRentalsPage() {
                 window.location.href = `/cars/${rental.carSummary.id}`;
                 break;
             case 'cancel':
-                showToast.warning(`Cancel rental #${rental.id}`);
+                setRentalToCancel(rental);
+                setCancelDialogOpen(true);
                 break;
             default:
                 logger.warn(`Unknown action: ${action}`);
         }
     }, []);
+
+    const handleConfirmCancel = useCallback(() => {
+        if (rentalToCancel) {
+            cancelMutation.mutate(rentalToCancel.id);
+            setCancelDialogOpen(false);
+            setRentalToCancel(null);
+        }
+    }, [rentalToCancel, cancelMutation]);
 
     const handleExport = useCallback(() => {
         showToast.info('Exporting rental history...');
@@ -140,6 +162,44 @@ export default function MyRentalsPage() {
                         />
                     )}
                 </div>
+
+                <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+                    <AlertDialogContent>
+                        <AlertDialogHeader>
+                            <AlertDialogTitle>Cancel Rental Reservation?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                                Are you sure you want to cancel this rental? This action cannot be undone.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        {rentalToCancel && (
+                            <div className="my-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 space-y-2">
+                                <div className="flex items-center gap-2 text-sm">
+                                    <span className="font-semibold">🚗 Vehicle:</span>
+                                    <span>{rentalToCancel.carSummary.brand} {rentalToCancel.carSummary.model}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <span className="font-semibold">📅 Dates:</span>
+                                    <span>{new Date(rentalToCancel.startDate).toLocaleDateString()} - {new Date(rentalToCancel.endDate).toLocaleDateString()}</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-sm">
+                                    <span className="font-semibold">💰 Total:</span>
+                                    <span>${rentalToCancel.totalPrice}</span>
+                                </div>
+                            </div>
+                        )}
+                        <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setRentalToCancel(null)}>
+                                Keep Rental
+                            </AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={handleConfirmCancel}
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                                Yes, Cancel Rental
+                            </AlertDialogAction>
+                        </AlertDialogFooter>
+                    </AlertDialogContent>
+                </AlertDialog>
             </div>
         </ErrorBoundary>
     );
