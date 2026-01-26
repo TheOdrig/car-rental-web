@@ -40,3 +40,4 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
         </div>
     );
 }
+

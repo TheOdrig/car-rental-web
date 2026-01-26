@@ -63,3 +63,4 @@ describe('RentalActionButtons', () => {
         expect(screen.getByRole('button', { name: /Reject/i })).toBeDisabled();
     });
 });
+

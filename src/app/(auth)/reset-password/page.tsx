@@ -68,3 +68,4 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
         </div>
     );
 }
+

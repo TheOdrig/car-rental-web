@@ -120,3 +120,4 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
         </form>
     );
 }
+

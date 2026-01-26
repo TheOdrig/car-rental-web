@@ -77,3 +77,4 @@ describe('CustomerInfoCard', () => {
         expect(screen.queryByRole('link', { name: /\+/i })).not.toBeInTheDocument();
     });
 });
+

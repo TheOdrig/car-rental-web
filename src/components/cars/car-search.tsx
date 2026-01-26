@@ -129,3 +129,4 @@ export function CarSearch({ className, variant = 'default', onSearch }: CarSearc
         </form>
     );
 }
+

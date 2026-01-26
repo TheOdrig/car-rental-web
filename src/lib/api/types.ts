@@ -15,3 +15,4 @@ export interface ServerRequestOptions extends BaseRequestOptions {
     revalidate?: number | false;
     tags?: string[];
 }
+

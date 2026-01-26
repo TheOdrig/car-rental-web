@@ -115,3 +115,4 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
         </Card>
     );
 }
+

@@ -88,3 +88,4 @@ export function SimilarCarCardSkeleton({ className }: { className?: string }) {
         </Card>
     );
 }
+

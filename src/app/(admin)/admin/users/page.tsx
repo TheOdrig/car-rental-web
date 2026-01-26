@@ -67,7 +67,7 @@ export default function UserManagementPage() {
                 </div>
 
                 <Button
-                    variant="admin-outline"
+                    variant="outline"
                     size="sm"
                     onClick={handleRefresh}
                     disabled={isLoadingStats}
@@ -131,3 +131,4 @@ export default function UserManagementPage() {
         </div >
     );
 }
+

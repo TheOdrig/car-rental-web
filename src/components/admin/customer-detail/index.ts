@@ -6,3 +6,4 @@ export { CustomerRentalHistoryTable } from './customer-rental-history-table';
 export { CustomerNotesCard } from './customer-notes-card';
 export { BanCustomerDialog } from './ban-customer-dialog';
 export { UnbanCustomerDialog } from './unban-customer-dialog';
+

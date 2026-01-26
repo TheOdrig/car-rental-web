@@ -167,3 +167,4 @@ export const ValidationMessages = {
     required: 'You must accept the terms and conditions',
   },
 } as const;
+

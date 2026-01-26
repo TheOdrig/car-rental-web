@@ -150,3 +150,4 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
         </Card>
     );
 }
+

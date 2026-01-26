@@ -40,3 +40,4 @@ export function SortDropdown({ value, onChange, className }: SortDropdownProps) 
         </Select>
     );
 }
+

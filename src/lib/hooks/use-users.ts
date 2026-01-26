@@ -162,3 +162,4 @@ export function useInvalidateUsers() {
         single: (id: number) => queryClient.invalidateQueries({ queryKey: userKeys.detail(id) }),
     };
 }
+

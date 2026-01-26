@@ -26,3 +26,4 @@ export function ComingSoonPlaceholder({ title, description, className }: ComingS
         </Card>
     );
 }
+

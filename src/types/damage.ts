@@ -159,3 +159,4 @@ export function getDamageSeverityLabel(severity: DamageSeverity): string {
     };
     return labels[severity];
 }
+

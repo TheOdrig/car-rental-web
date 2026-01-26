@@ -71,3 +71,4 @@ export function validateParamsObject<T extends Record<string, z.ZodType>>(
         data: result as { [K in keyof T]: z.infer<T[K]> },
     };
 }
+

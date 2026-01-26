@@ -110,3 +110,4 @@ export function useInvalidateFleet() {
         single: (id: number) => queryClient.invalidateQueries({ queryKey: fleetKeys.detail(id) }),
     };
 }
+

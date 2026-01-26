@@ -214,3 +214,4 @@ export function SearchWidget({ className }: SearchWidgetProps) {
         </div>
     );
 }
+

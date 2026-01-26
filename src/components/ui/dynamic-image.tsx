@@ -37,3 +37,4 @@ export function DynamicImage({ src, alt, ...props }: ImageProps) {
         />
     );
 }
+

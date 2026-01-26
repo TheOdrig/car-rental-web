@@ -90,3 +90,4 @@ export function CustomerDamageHistory({ userId, maxItems = 5 }: CustomerDamageHi
         </Card>
     );
 }
+

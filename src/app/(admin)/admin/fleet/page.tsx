@@ -126,7 +126,7 @@ export default function FleetManagementPage() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
-                        variant="admin-icon"
+                        variant="ghost"
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isRefreshing}
@@ -218,3 +218,4 @@ export default function FleetManagementPage() {
         </div>
     );
 }
+

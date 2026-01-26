@@ -105,3 +105,4 @@ export function CustomerVerificationCard({ verification, customerId }: CustomerV
         </Card>
     );
 }
+

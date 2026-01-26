@@ -80,3 +80,4 @@ describe('StatCard', () => {
         expect(screen.getByText('$1,234,567.89')).toBeInTheDocument();
     });
 });
+

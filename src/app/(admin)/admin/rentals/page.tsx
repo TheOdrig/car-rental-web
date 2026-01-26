@@ -123,7 +123,7 @@ export default function AdminRentalsPage() {
                     </p>
                 </div>
                 <Button
-                    variant="admin-icon"
+                    variant="ghost"
                     size="icon"
                     onClick={handleRefresh}
                 >
@@ -251,3 +251,4 @@ export default function AdminRentalsPage() {
         </div>
     );
 }
+

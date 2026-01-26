@@ -180,3 +180,4 @@ function StatisticsSkeleton() {
         </div>
     );
 }
+

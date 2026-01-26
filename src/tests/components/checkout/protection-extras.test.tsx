@@ -181,3 +181,4 @@ describe('ProtectionExtras', () => {
         expect(DEFAULT_ADDONS.some((addon) => addon.id === 'cdw')).toBe(true);
     });
 });
+

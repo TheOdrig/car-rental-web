@@ -113,3 +113,4 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
         </div>
     );
 }
+

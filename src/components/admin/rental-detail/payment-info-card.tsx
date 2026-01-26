@@ -126,3 +126,4 @@ export function PaymentInfoCard({ pricing, payment, penaltyAmount, lateReturnSta
         </Card>
     );
 }
+

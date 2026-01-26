@@ -94,3 +94,4 @@ describe('RejectRentalDialog', () => {
         expect(screen.getByText(/Rejecting.../i)).toBeInTheDocument();
     });
 });
+

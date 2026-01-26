@@ -56,3 +56,4 @@ export const useFilterStore = create<FilterState>((set, get) => ({
 
     setPage: (page) => set({ page }),
 }));
+

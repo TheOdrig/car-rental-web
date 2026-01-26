@@ -198,3 +198,4 @@ export interface ActionButton {
     variant: 'default' | 'outline' | 'ghost' | 'destructive';
     icon?: string;
 }
+

@@ -117,3 +117,4 @@ export const RentalStats = memo(function RentalStats({
 });
 
 export { RentalStats as default };
+

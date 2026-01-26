@@ -137,3 +137,4 @@ export async function routePatch<T>(url: string, body?: unknown, options?: Omit<
     return authenticatedFetch<T>(url, { ...options, method: 'PATCH', body });
 }
 
+

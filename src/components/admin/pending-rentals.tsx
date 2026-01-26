@@ -449,3 +449,4 @@ export function PendingRentalsSkeleton({ rows = 3, className }: PendingRentalsSk
         </Card>
     );
 }
+

@@ -148,3 +148,4 @@ export function useInvalidateRentals() {
         single: (id: number) => queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) }),
     };
 }
+

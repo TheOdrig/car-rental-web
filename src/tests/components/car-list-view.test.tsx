@@ -138,3 +138,4 @@ describe('CarListViewSkeleton', () => {
         expect(skeletonCards.length).toBe(2);
     });
 });
+

@@ -69,3 +69,4 @@ export function VehicleStatisticsCard({ statistics, currency }: VehicleStatistic
         </Card>
     );
 }
+

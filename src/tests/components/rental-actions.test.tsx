@@ -264,3 +264,4 @@ describe('RentalActionsSkeleton', () => {
         expect(container.firstChild).toHaveClass('flex-col');
     });
 });
+

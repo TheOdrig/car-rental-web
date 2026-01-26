@@ -95,3 +95,4 @@ export function ActiveFilters({ className }: ActiveFiltersProps) {
         </div>
     );
 }
+

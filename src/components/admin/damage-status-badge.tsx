@@ -19,3 +19,4 @@ export function DamageStatusBadge({ status, className }: DamageStatusBadgeProps)
         </Badge>
     );
 }
+

@@ -104,3 +104,4 @@ describe('AlertsPanel', () => {
         expect(times).toHaveLength(3);
     });
 });
+

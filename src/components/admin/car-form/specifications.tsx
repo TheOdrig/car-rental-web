@@ -194,3 +194,4 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
         </div>
     );
 }
+

@@ -194,3 +194,4 @@ export function CarCardSkeleton({ variant = 'default', className }: CarCardSkele
         </Card>
     );
 }
+

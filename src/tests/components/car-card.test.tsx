@@ -196,3 +196,4 @@ describe('CarCardSkeleton', () => {
         expect(container.firstChild).toBeInTheDocument();
     });
 });
+

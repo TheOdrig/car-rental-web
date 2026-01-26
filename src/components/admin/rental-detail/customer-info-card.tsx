@@ -120,3 +120,4 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
         </Card>
     );
 }
+

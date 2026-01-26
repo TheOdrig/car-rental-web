@@ -37,3 +37,4 @@ export const defaultCarFormData: CarFormData = {
     depositAmount: 0,
     imageUrl: '',
 };
+

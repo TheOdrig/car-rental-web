@@ -90,3 +90,4 @@ export const RentalTabs = memo(function RentalTabs({
         </div>
     );
 });
+

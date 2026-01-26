@@ -180,3 +180,4 @@ export interface CarFilters {
     maxProductionYear?: number;
     carStatusType?: string;
 }
+

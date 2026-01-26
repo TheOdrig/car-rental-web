@@ -421,3 +421,4 @@ export function QuickActionsSkeleton({ className }: QuickActionsSkeletonProps) {
         </Card>
     );
 }
+

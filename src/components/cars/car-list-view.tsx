@@ -185,3 +185,4 @@ export function CarListViewSkeleton({ count = 4 }: { count?: number }) {
         </div>
     );
 }
+

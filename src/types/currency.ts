@@ -64,3 +64,4 @@ export function mapCurrency(currency: string | undefined | null): CurrencyCode {
 
     return 'USD';
 }
+

@@ -77,3 +77,4 @@ export function VehicleActiveRentalCard({ activeRental }: VehicleActiveRentalCar
         </Card>
     );
 }
+

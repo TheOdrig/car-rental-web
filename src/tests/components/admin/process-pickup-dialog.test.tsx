@@ -100,3 +100,4 @@ describe('ProcessPickupDialog', () => {
         expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
     });
 });
+

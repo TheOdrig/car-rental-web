@@ -212,3 +212,4 @@ export function useInvalidateCars() {
         search: () => queryClient.invalidateQueries({ queryKey: carKeys.search() }),
     };
 }
+

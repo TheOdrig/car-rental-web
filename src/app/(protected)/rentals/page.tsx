@@ -204,3 +204,4 @@ export default function MyRentalsPage() {
         </ErrorBoundary>
     );
 }
+

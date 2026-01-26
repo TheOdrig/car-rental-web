@@ -139,3 +139,4 @@ export function useInvalidateLateReturns() {
             queryClient.invalidateQueries({ queryKey: lateReturnKeys.penaltyHistory(rentalId) }),
     };
 }
+

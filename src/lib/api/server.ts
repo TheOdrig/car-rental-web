@@ -107,3 +107,4 @@ export async function serverDelete<T>(
 ): Promise<T> {
     return serverFetch<T>(url, { ...options, method: 'DELETE' });
 }
+

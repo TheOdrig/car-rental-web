@@ -246,3 +246,4 @@ export const TAX_RATES: Record<string, number> = {
     UK: 0.2,
     DEFAULT: 0.12,
 };
+

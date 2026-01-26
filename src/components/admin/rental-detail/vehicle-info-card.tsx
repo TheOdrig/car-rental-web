@@ -90,3 +90,4 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
         </Card>
     );
 }
+

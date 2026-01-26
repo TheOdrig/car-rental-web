@@ -23,3 +23,4 @@ export interface AddCardRequest {
 export interface PaymentMethodsResponse {
     methods: PaymentMethod[];
 }
+

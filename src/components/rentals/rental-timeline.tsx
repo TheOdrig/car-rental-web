@@ -232,3 +232,4 @@ export const RentalTimeline = memo(function RentalTimeline({
         </div>
     );
 });
+

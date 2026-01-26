@@ -132,3 +132,4 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
         </Card>
     );
 }
+

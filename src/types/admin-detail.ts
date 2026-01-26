@@ -264,3 +264,4 @@ export interface DamageSummary {
     reportedAt: string;
     estimatedCost?: number;
 }
+

@@ -50,3 +50,4 @@ export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps
         </section>
     );
 }
+

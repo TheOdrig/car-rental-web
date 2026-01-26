@@ -125,3 +125,4 @@ export interface CheckoutSearchParams {
 }
 
 export type { CardType };
+

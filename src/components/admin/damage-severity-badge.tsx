@@ -19,3 +19,4 @@ export function DamageSeverityBadge({ severity, className }: DamageSeverityBadge
         </Badge>
     );
 }
+

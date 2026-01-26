@@ -59,14 +59,14 @@ function LateReturnsContent() {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                     <Button
-                        variant="admin-icon"
+                        variant="ghost"
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isFetching}
                     >
                         <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
                     </Button>
-                    <Button variant="admin-outline" size="sm" asChild>
+                    <Button variant="outline" size="sm" asChild>
                         <Link href="/admin/late-returns/statistics">
                             <BarChart3 className="h-4 w-4" />
                             View Statistics
@@ -95,3 +95,4 @@ export default function LateReturnsPage() {
         </Suspense>
     );
 }
+

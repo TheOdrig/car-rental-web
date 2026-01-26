@@ -79,3 +79,4 @@ export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
         </Card>
     );
 }
+

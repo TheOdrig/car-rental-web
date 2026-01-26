@@ -103,3 +103,4 @@ describe('RentalInfoCard', () => {
         expect(screen.getByText('Downtown Office')).toBeInTheDocument();
     });
 });
+

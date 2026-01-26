@@ -302,3 +302,4 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
         </form>
     );
 }
+

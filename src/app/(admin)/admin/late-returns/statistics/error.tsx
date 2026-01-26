@@ -33,3 +33,4 @@ export default function StatisticsError({ error, reset }: ErrorProps) {
         </div>
     );
 }
+

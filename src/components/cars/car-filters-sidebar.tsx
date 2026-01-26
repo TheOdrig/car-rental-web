@@ -205,3 +205,4 @@ function FilterSection({ title, children }: FilterSectionProps) {
         </div>
     );
 }
+

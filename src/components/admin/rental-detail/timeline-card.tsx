@@ -103,3 +103,4 @@ export function TimelineCard({ events }: TimelineCardProps) {
         </Card>
     );
 }
+

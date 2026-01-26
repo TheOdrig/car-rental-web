@@ -39,3 +39,4 @@ export function CopyButton({ value, className }: CopyButtonProps) {
         </Button>
     );
 }
+

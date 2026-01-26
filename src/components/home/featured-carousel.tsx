@@ -60,7 +60,7 @@ export function FeaturedCarousel({
                     <div className="flex items-center gap-2">
                         <div className="hidden md:flex items-center gap-2">
                             <Button
-                                variant="admin-nav"
+                                variant="ghost"
                                 size="icon"
                                 onClick={() => scroll('left')}
                                 aria-label="Scroll left"
@@ -68,7 +68,7 @@ export function FeaturedCarousel({
                                 <ChevronLeft className="h-4 w-4" />
                             </Button>
                             <Button
-                                variant="admin-nav"
+                                variant="ghost"
                                 size="icon"
                                 onClick={() => scroll('right')}
                                 aria-label="Scroll right"
@@ -140,3 +140,4 @@ function FeaturedCarouselEmpty() {
 }
 
 export { FeaturedCarouselSkeleton };
+

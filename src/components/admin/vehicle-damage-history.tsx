@@ -92,3 +92,4 @@ export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHisto
         </Card>
     );
 }
+

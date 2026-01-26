@@ -133,3 +133,4 @@ function DamageTableSkeleton() {
         </div>
     );
 }
+

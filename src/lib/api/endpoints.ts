@@ -120,3 +120,4 @@ export const endpoints = {
 } as const;
 
 export { API_BASE_URL };
+

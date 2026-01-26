@@ -121,3 +121,4 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
         </Card>
     );
 }
+

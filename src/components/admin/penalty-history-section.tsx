@@ -132,3 +132,4 @@ function PenaltyHistorySkeleton() {
         </Card>
     );
 }
+

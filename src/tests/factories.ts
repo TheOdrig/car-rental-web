@@ -242,3 +242,4 @@ export function resetMockFactories() {
     rentalIdCounter = 1;
     bookingIdCounter = 1;
 }
+

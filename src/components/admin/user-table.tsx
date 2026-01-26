@@ -379,7 +379,7 @@ export const UserTable = memo(function UserTable({
                             </p>
                             <div className="flex items-center gap-2">
                                 <Button
-                                    variant="admin-nav"
+                                    variant="ghost"
                                     size="sm"
                                     onClick={() => setCurrentPage(p => p - 1)}
                                     disabled={!hasPrevPage}
@@ -388,7 +388,7 @@ export const UserTable = memo(function UserTable({
                                     Previous
                                 </Button>
                                 <Button
-                                    variant="admin-nav"
+                                    variant="ghost"
                                     size="sm"
                                     onClick={() => setCurrentPage(p => p + 1)}
                                     disabled={!hasNextPage}
@@ -421,3 +421,4 @@ export const UserTable = memo(function UserTable({
         </>
     );
 });
+

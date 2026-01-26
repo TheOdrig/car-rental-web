@@ -175,3 +175,4 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
         </Card>
     );
 }
+

@@ -282,3 +282,4 @@ export function RevenueChartSkeleton({ className }: RevenueChartSkeletonProps) {
         </Card>
     );
 }
+

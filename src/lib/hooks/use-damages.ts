@@ -301,3 +301,4 @@ export function useInvalidateDamages() {
         statistics: () => queryClient.invalidateQueries({ queryKey: [...damageKeys.all, 'statistics'] }),
     };
 }
+

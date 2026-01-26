@@ -120,3 +120,4 @@ export async function clientDelete<T>(
 ): Promise<T> {
     return clientFetch<T>(url, { ...options, method: 'DELETE' });
 }
+

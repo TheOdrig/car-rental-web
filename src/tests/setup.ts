@@ -95,3 +95,4 @@ if (!Element.prototype.releasePointerCapture) {
 if (!Element.prototype.scrollIntoView) {
     Element.prototype.scrollIntoView = vi.fn();
 }
+

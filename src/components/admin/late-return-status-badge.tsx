@@ -19,3 +19,4 @@ export function LateReturnStatusBadge({ status, className }: LateReturnStatusBad
         </Badge>
     );
 }
+

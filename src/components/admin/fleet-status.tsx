@@ -205,3 +205,4 @@ export function FleetStatusSkeleton({ className }: FleetStatusSkeletonProps) {
         </Card>
     );
 }
+

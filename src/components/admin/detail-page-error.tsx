@@ -46,7 +46,7 @@ export function DetailPageError({
                         Retry
                     </Button>
                 )}
-                <Button onClick={handleBack} variant="admin-outline">
+                <Button onClick={handleBack} variant="outline">
                     <ArrowLeft className="h-4 w-4 mr-2" />
                     {backLabel}
                 </Button>
@@ -54,3 +54,4 @@ export function DetailPageError({
         </div>
     );
 }
+

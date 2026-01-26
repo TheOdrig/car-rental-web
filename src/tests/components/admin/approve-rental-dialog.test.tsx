@@ -126,3 +126,4 @@ describe('ApproveRentalDialog', () => {
         expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 });
+

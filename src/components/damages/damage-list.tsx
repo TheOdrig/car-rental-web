@@ -45,3 +45,4 @@ export function DamageList({ damages, isLoading }: DamageListProps) {
         </div>
     );
 }
+

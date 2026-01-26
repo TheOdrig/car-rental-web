@@ -187,3 +187,4 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
         </Dialog>
     );
 }
+

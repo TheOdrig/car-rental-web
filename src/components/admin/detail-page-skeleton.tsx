@@ -86,3 +86,4 @@ export function TableSkeleton({ rows = 5, className }: { rows?: number; classNam
         </Card>
     );
 }
+

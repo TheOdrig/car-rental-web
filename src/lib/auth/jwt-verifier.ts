@@ -95,3 +95,4 @@ export function isTokenExpired(payload: TokenPayload): boolean {
   const now = Math.floor(Date.now() / 1000);
   return payload.exp < now;
 }
+

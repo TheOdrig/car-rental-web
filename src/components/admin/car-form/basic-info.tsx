@@ -180,3 +180,4 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
         </div>
     );
 }
+

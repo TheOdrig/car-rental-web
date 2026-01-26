@@ -324,3 +324,4 @@ export function CarDetailSkeleton({ className }: CarDetailSkeletonProps) {
         </div>
     );
 }
+

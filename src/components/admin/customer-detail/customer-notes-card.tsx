@@ -48,7 +48,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                         Admin Notes
                     </CardTitle>
                     {!isAdding && (
-                        <Button variant="admin-outline" size="sm" onClick={() => setIsAdding(true)}>
+                        <Button variant="outline" size="sm" onClick={() => setIsAdding(true)}>
                             <Plus className="h-4 w-4 mr-1" />
                             Add Note
                         </Button>
@@ -125,3 +125,4 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
         </Card>
     );
 }
+
