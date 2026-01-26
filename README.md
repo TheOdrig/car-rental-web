@@ -8,6 +8,70 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 [![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)](/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
+> **🚀 Live Demo:** [arabakiralama.site](https://arabakiralama.site)
+
+---
+
+## 📸 Screenshots
+
+<details open>
+<summary><b>🏠 Landing Page</b></summary>
+
+![Landing Page](docs/screenshots/01-landing-page.png)
+*Hero section with featured cars and search functionality*
+
+</details>
+
+<details>
+<summary><b>🚗 Car Catalog</b></summary>
+
+![Car Catalog](docs/screenshots/02-car-catalog.png)
+*Advanced filtering with brand, transmission, fuel type, and availability dates*
+
+</details>
+
+<details>
+<summary><b>📊 Admin Dashboard</b></summary>
+
+![Admin Dashboard](docs/screenshots/03-admin-dashboard.png)
+*Real-time metrics, alerts, and quick actions for fleet management*
+
+</details>
+
+<details>
+<summary><b>🔍 Car Detail</b></summary>
+
+![Car Detail](docs/screenshots/04-car-detail.png)
+*Interactive availability calendar and comprehensive vehicle specifications*
+
+</details>
+
+<details>
+<summary><b>👤 User Dashboard</b></summary>
+
+![User Dashboard](docs/screenshots/05-user-dashboard.png)
+*Rental history and status tracking*
+
+</details>
+
+<details>
+<summary><b>🛡️ Admin Fleet Management</b></summary>
+
+![Admin Fleet](docs/screenshots/06-admin-fleet.png)
+*Fleet status overview and vehicle management*
+
+</details>
+
+<details>
+<summary><b>🌙 Dark Mode Support</b></summary>
+
+![Dark Mode](docs/screenshots/07-dark-mode.png)
+*Admin Fleet Management with dark theme - Seamless theme switching*
+
+</details>
+
+---
+
 
 ## ✨ Features
 
@@ -19,7 +83,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 | **User Dashboard** | Manage rentals, view history, update profile, payment methods |
 | **Admin Dashboard** | Fleet management, rental approvals, revenue analytics, quick actions |
 | **Authentication** | JWT + OAuth2 (Google, GitHub), HTTP-Only cookies, secure sessions |
-| **Payment Integration** | Stripe checkout (Planned), payment history, refund management |
+| **Payment Integration** | Stripe checkout, payment history, refund management |
 | **Damage Reporting** | Photo upload, assessment workflow, dispute resolution |
 | **Currency Conversion** | Real-time exchange rates, multi-currency support |
 | **Responsive Design** | Mobile-first, dark/light mode, accessibility compliant |
@@ -29,7 +93,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 This frontend uses **Next.js App Router** with API Proxy pattern for secure backend communication.
 
 <details>
-<summary>📊 <b>View Application Structure</b></summary>
+<summary>� <b>View Application Structure</b></summary>
 
 ```mermaid
 graph TD
@@ -49,7 +113,7 @@ graph TD
     end
     
     subgraph Backend
-        API[car-rental-api]
+        API[Spring Boot API<br/>car-rental-api]
     end
     
     UI --> Pages
@@ -85,28 +149,23 @@ Client → Next.js API Route → Backend API
 - ✅ Centralized error handling
 - ✅ Request/response transformation
 
+### Architecture Roadmap
 
-## ✨ Key Features
+**v1.0.0 (Current) - Monolithic Structure**
+- ✅ Next.js App Router with route groups
+- ✅ API Proxy pattern
+- ✅ Zustand + TanStack Query
+- ❌ No architectural boundaries
+- ❌ No automated verification
+- ❌ Tight coupling between features
 
-### 🌍 Public & Customer Features
-*   **Smart Search & Filtering**: Filter cars by brand, transmission, fuel type, and availability dates.
-*   **Interactive Car Details**: View comprehensive specs, pricing, and real-time availability calendars.
-*   **Seamless Booking Flow**: Easy-to-use rental request system with instant feedback using Toast notifications.
-*   **User Dashboard**: Track rental status (Requested, Confirmed, In Use, Returned) and manage active bookings.
-*   **Secure Authentication**:
-    *   Email/Password Login & Registration.
-    *   OAuth2 Integration (Google & GitHub).
-    *   Secure Session Management via HTTP-Only Cookies.
+**v2.0.0 (Planned) - Feature-Sliced Design**
+- 🔄 6-layer architecture (app, pages, widgets, features, entities, shared)
+- 🔄 Automated boundary enforcement (ESLint + Vitest)
+- 🔄 Event-driven feature communication
+- 🔄 80%+ test coverage
+- 🔄 Backend-level discipline
 
-### 🛡️ Admin Dashboard
-*   **Live Metrics**: Real-time overview of total rentals, revenue, and active fleet status.
-*   **Fleet Management**: Visual status of the entire fleet (Available, Rented, Maintenance).
-*   **Rental Operations**:
-    *   **Approval Workflow**: Review and approve/reject incoming rental requests.
-    *   **Handover Management**: Process vehicle pickups and returns with condition checks.
-    *   **Quick Actions**: Fast access to common tasks like "Process Return" or "Approve Pending".
-
-## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
@@ -235,17 +294,22 @@ src/
 See `.env.example` for required environment variables:
 
 ```env
-# Backend API
-NEXT_PUBLIC_API_URL=http://localhost:8082/api
-BACKEND_URL=http://localhost:8082
+# Backend API URL (Browser Access)
+NEXT_PUBLIC_API_URL=http://localhost:8082
 
-# OAuth2 (optional)
-NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id
-NEXT_PUBLIC_GITHUB_CLIENT_ID=your_github_client_id
+# Internal API URL (Server-side Access / Docker Network)
+API_URL=http://localhost:8082
+
+# JWT Secret - Must match the backend JWT signing key
+JWT_SECRET=your-jwt-secret-key-here
 ```
 
+**Environment Variables:**
+- `NEXT_PUBLIC_API_URL` - Backend API URL (accessible from browser)
+- `API_URL` - Internal API URL (server-side only, for Docker/production)
+- `JWT_SECRET` - JWT signing key (must match backend configuration)
 
-📖 See [FSD Refactor Spec](.kiro/specs/frontend-architecture-fsd/) for details.
+
 
 ## 🤝 Contributing
 
@@ -265,7 +329,6 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and notable changes.
 ## 📝 Documentation
 
 - **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
-
 
 ## 📄 License
 
