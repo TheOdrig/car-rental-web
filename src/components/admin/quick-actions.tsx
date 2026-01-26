@@ -167,7 +167,7 @@ function QuickActionButton({
 }: QuickActionButtonProps) {
     const isDisabled = disabled || count === 0;
 
-    const buttonVariant = variant === 'outline' ? 'admin-nav' : variant;
+    const buttonVariant = variant === 'outline' ? 'ghost' : variant;
 
     return (
         <Button

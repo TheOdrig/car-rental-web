@@ -62,7 +62,7 @@ export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps
         <div className={cn('grid grid-cols-2 gap-4', className)}>
             <Button
                 type="button"
-                variant="oauth"
+                variant="outline"
                 className="h-12 gap-3"
                 onClick={() => handleOAuthLogin('google')}
                 disabled={disabled || isLoading}
@@ -77,7 +77,7 @@ export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps
 
             <Button
                 type="button"
-                variant="oauth"
+                variant="outline"
                 className="h-12 gap-3"
                 onClick={() => handleOAuthLogin('github')}
                 disabled={disabled || isLoading}

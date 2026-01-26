@@ -135,7 +135,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         {CAPACITY_OPTIONS.map((capacity) => (
                             <Button
                                 key={capacity}
-                                variant="filter-toggle"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleCapacityChange(capacity)}
                                 className="min-w-[48px]"
@@ -153,7 +153,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         {TRANSMISSION_TYPES.map((type) => (
                             <Button
                                 key={type.value}
-                                variant="filter-toggle"
+                                variant="outline"
                                 size="sm"
                                 onClick={() => handleTransmissionChange(type.value)}
                                 className="flex-1"
