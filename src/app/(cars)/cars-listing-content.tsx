@@ -136,7 +136,7 @@ export function CarsListingContent() {
     const breadcrumbItems = [{ label: 'Cars' }];
 
     if (error) {
-        const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+        const errorMessage = error.message;
         return (
             <div className="container mx-auto px-4 py-8">
                 <Breadcrumb items={breadcrumbItems} className="mb-6" />
