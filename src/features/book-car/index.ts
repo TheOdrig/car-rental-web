@@ -8,5 +8,8 @@ export type {
     BookingValidation,
 } from './model/types';
 
+export { bookingActions } from './model/booking-store';
+export { BOOKING_EVENTS, publishBookingCreated, publishBookingUpdated, publishBookingCancelled } from './model/booking-events';
+
 export { createBooking, getAvailableCars, getBooking, cancelBooking } from './api/booking-api';
 
