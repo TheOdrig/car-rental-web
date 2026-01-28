@@ -12,6 +12,11 @@ export const getDisplayName = (user: User | null): string => {
 export const getInitials = (user: User | null): string => {
     if (!user) return '?';
     const name = user.name || user.email;
+
+    if (!user.name || name.split(' ').length === 1) {
+        return name.slice(0, 2).toUpperCase();
+    }
+
     return name
         .split(' ')
         .map((n) => n[0])

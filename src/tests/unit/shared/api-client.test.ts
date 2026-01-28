@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { apiClient } from '@/shared/api/client';
 import { ApiError } from '@/shared/api/error';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 global.fetch = vi.fn();
 
 describe('apiClient', () => {
