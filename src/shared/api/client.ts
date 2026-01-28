@@ -22,9 +22,28 @@ async function handleResponse<T>(response: Response): Promise<T> {
     return data as T;
 }
 
+const getConfig = (options: RequestOptions = {}): RequestInit => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+
+    const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+        ...(options.headers as Record<string, string>),
+    };
+
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return {
+        ...options,
+        headers,
+    };
+};
+
 export const apiClient = {
     async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-        const { params, ...init } = options;
+        const { params } = options;
+        const config = getConfig(options);
         const url = new URL(`${BASE_URL}${endpoint}`);
 
         if (params) {
@@ -36,25 +55,18 @@ export const apiClient = {
         }
 
         const response = await fetch(url.toString(), {
-            ...init,
+            ...config,
             method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                ...init.headers,
-            },
         });
 
         return handleResponse<T>(response);
     },
 
     async post<T>(endpoint: string, body: unknown, options: RequestOptions = {}): Promise<T> {
+        const config = getConfig(options);
         const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...options,
+            ...config,
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
             body: JSON.stringify(body),
         });
 
@@ -62,13 +74,10 @@ export const apiClient = {
     },
 
     async put<T>(endpoint: string, body: unknown, options: RequestOptions = {}): Promise<T> {
+        const config = getConfig(options);
         const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...options,
+            ...config,
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
             body: JSON.stringify(body),
         });
 
@@ -76,13 +85,10 @@ export const apiClient = {
     },
 
     async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
+        const config = getConfig(options);
         const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...options,
+            ...config,
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                ...options.headers,
-            },
         });
 
         return handleResponse<T>(response);
