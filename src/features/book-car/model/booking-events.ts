@@ -1,15 +1,9 @@
-import { eventBus } from '@/shared/events/event-bus';
-import { AUTH_EVENTS } from '@/features/auth/model/auth-events';
+import { eventBus, AUTH_EVENTS, BOOKING_EVENTS } from '@/shared/events';
 import { bookingActions } from './booking-store';
 import type { Booking } from './types';
 
-export const BOOKING_EVENTS = {
-    CREATED: 'booking:created',
-    UPDATED: 'booking:updated',
-    CANCELLED: 'booking:cancelled',
-} as const;
-
-export type BookingEventType = typeof BOOKING_EVENTS[keyof typeof BOOKING_EVENTS];
+export { BOOKING_EVENTS } from '@/shared/events';
+export type { BookingEventType } from '@/shared/events';
 
 export function publishBookingCreated(booking: Booking): void {
     eventBus.publish(BOOKING_EVENTS.CREATED, booking);
