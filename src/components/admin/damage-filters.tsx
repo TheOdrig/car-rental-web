@@ -49,14 +49,14 @@ export function DamageFilters() {
 
     const updateFilter = useCallback(
         (key: string, value: string | null) => {
-            const params = new URLSearchParams(searchParams.toString());
+            const params = new URLSearchParams(searchParams?.toString());
             if (value && value !== 'all') {
-                params.set(key, value);
+                params?.set(key, value);
             } else {
-                params.delete(key);
+                params?.delete(key);
             }
-            params.set('page', '0');
-            router.push(`?${params.toString()}`);
+            params?.set('page', '0');
+            router.push(`?${params?.toString()}`);
         },
         [router, searchParams]
     );
@@ -66,16 +66,16 @@ export function DamageFilters() {
     }, [router]);
 
     const hasFilters =
-        searchParams.has('severity') ||
-        searchParams.has('category') ||
-        searchParams.has('status') ||
-        searchParams.has('startDate') ||
-        searchParams.has('endDate');
+        searchParams?.has('severity') ||
+        searchParams?.has('category') ||
+        searchParams?.has('status') ||
+        searchParams?.has('startDate') ||
+        searchParams?.has('endDate');
 
     return (
         <div className="flex flex-wrap items-center gap-3">
             <Select
-                value={searchParams.get('severity') || 'all'}
+                value={searchParams?.get('severity') || 'all'}
                 onValueChange={(value) => updateFilter('severity', value)}
             >
                 <SelectTrigger className={`w-[140px] ${triggerClassName}`}>
@@ -92,7 +92,7 @@ export function DamageFilters() {
             </Select>
 
             <Select
-                value={searchParams.get('category') || 'all'}
+                value={searchParams?.get('category') || 'all'}
                 onValueChange={(value) => updateFilter('category', value)}
             >
                 <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
@@ -109,7 +109,7 @@ export function DamageFilters() {
             </Select>
 
             <Select
-                value={searchParams.get('status') || 'all'}
+                value={searchParams?.get('status') || 'all'}
                 onValueChange={(value) => updateFilter('status', value)}
             >
                 <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
@@ -128,7 +128,7 @@ export function DamageFilters() {
             <Input
                 type="date"
                 placeholder="Start Date"
-                value={searchParams.get('startDate') || ''}
+                value={searchParams?.get('startDate') || ''}
                 onChange={(e) => updateFilter('startDate', e.target.value)}
                 className={`w-[150px] ${inputClassName}`}
             />
@@ -136,7 +136,7 @@ export function DamageFilters() {
             <Input
                 type="date"
                 placeholder="End Date"
-                value={searchParams.get('endDate') || ''}
+                value={searchParams?.get('endDate') || ''}
                 onChange={(e) => updateFilter('endDate', e.target.value)}
                 className={`w-[150px] ${inputClassName}`}
             />

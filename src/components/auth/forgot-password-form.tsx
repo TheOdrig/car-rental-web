@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForgotPassword } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
-import { FormError } from './form-error';
+import { FormError } from '@/features/auth';
 
 interface ForgotPasswordFormProps {
     className?: string;

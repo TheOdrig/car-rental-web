@@ -21,7 +21,7 @@ export default function EditCarPage() {
     const router = useRouter();
     const params = useParams();
 
-    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const rawId = Array.isArray(params?.id) ? params.id[0] : params?.id;
     const carId = rawId ? Number(rawId) : null;
 
     const { data: carData, isLoading: isLoadingCar } = useCar(carId);

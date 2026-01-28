@@ -121,7 +121,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                     </p>
                                     {adminLinks.map((link) => {
                                         const Icon = link.icon;
-                                        const isActive = pathname.startsWith(link.href);
+                                        const isActive = pathname?.startsWith(link.href);
 
                                         return (
                                             <SheetClose asChild key={link.href}>

@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { FormField } from '@/components/ui/form-field';
 import { useLogin } from '@/lib/hooks';
 import { cn } from '@/lib/utils';
-import { FormError } from './form-error';
+import { FormError } from '@/features/auth';
 import { validateEmail } from '@/lib/utils/validation';
 import { determineValidationState } from '@/lib/utils/validation-ui';
 import type { ValidationState } from '@/types/validation';

@@ -18,8 +18,8 @@ function OAuthCallbackContent() {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const error = searchParams.get('error');
-            const success = searchParams.get('success');
+            const error = searchParams?.get('error');
+            const success = searchParams?.get('success');
 
             if (error) {
                 setStatus('error');

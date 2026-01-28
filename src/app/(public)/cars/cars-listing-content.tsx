@@ -59,9 +59,9 @@ function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | Avai
 
 export function CarsListingContent() {
     const searchParams = useSearchParams();
-    const startDateParam = searchParams.get('startDate');
-    const endDateParam = searchParams.get('endDate');
-    const bodyTypeParam = searchParams.get('bodyType');
+    const startDateParam = searchParams?.get('startDate');
+    const endDateParam = searchParams?.get('endDate');
+    const bodyTypeParam = searchParams?.get('bodyType');
 
     const isSearchMode = !!(startDateParam && endDateParam);
 

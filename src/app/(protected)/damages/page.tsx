@@ -12,14 +12,14 @@ import { DamageList } from '@/components/damages';
 export default function MyDamagesPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const page = parseInt(searchParams.get('page') || '0', 10);
+    const page = parseInt(searchParams?.get('page') || '0', 10);
 
     const { data, isLoading, error } = useMyDamages(page, 10);
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('page', String(newPage));
-        router.push(`/damages?${params.toString()}`);
+        const params = new URLSearchParams(searchParams?.toString());
+        params?.set('page', String(newPage));
+        router.push(`/damages?${params?.toString()}`);
     }, [router, searchParams]);
 
     if (error) {

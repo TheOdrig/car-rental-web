@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { LoginForm } from '@/components/auth/login-form';
+import { LoginForm } from '@/features/auth';
 import { OAuthButtons, OAuthDivider } from '@/components/auth/oauth-buttons';
 
 export const metadata: Metadata = {

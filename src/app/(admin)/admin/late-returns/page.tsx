@@ -15,13 +15,13 @@ function LateReturnsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const page = parseInt(searchParams.get('page') || '0', 10);
+    const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: LateReturnFiltersType = {
-        status: searchParams.get('status') as LateReturnStatus || undefined,
-        startDate: searchParams.get('startDate') || undefined,
-        endDate: searchParams.get('endDate') || undefined,
-        sortBy: searchParams.get('sortBy') as LateReturnFiltersType['sortBy'] || 'endDate',
-        sortDirection: searchParams.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
+        status: searchParams?.get('status') as LateReturnStatus || undefined,
+        startDate: searchParams?.get('startDate') || undefined,
+        endDate: searchParams?.get('endDate') || undefined,
+        sortBy: searchParams?.get('sortBy') as LateReturnFiltersType['sortBy'] || 'endDate',
+        sortDirection: searchParams?.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
     };
 
     const { data, isLoading, isFetching, refetch } = useLateReturns(filters, page, 20);
@@ -36,9 +36,9 @@ function LateReturnsContent() {
     };
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('page', String(newPage));
-        router.push(`/admin/late-returns?${params.toString()}`);
+        const params = new URLSearchParams(searchParams?.toString());
+        params?.set('page', String(newPage));
+        router.push(`/admin/late-returns?${params?.toString()}`);
     }, [router, searchParams]);
 
     return (

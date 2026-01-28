@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LoginForm } from '@/components/auth/login-form';
+import { LoginForm } from '@/features/auth';
 import { renderWithProviders } from '../test-utils';
 
 const mockPush = vi.fn();

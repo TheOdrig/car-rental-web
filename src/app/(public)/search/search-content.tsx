@@ -10,8 +10,8 @@ import type { AvailabilitySearchRequest } from '@/types';
 function SearchResults() {
     const searchParams = useSearchParams();
 
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const startDate = searchParams?.get('startDate');
+    const endDate = searchParams?.get('endDate');
 
     const searchRequest: AvailabilitySearchRequest | null =
         startDate && endDate ? { startDate, endDate } : null;

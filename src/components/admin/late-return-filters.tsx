@@ -41,14 +41,14 @@ export function LateReturnFilters() {
 
     const updateFilter = useCallback(
         (key: string, value: string | null) => {
-            const params = new URLSearchParams(searchParams.toString());
+            const params = new URLSearchParams(searchParams?.toString());
             if (value && value !== 'all') {
-                params.set(key, value);
+                params?.set(key, value);
             } else {
-                params.delete(key);
+                params?.delete(key);
             }
-            params.set('page', '0');
-            router.push(`?${params.toString()}`);
+            params?.set('page', '0');
+            router.push(`?${params?.toString()}`);
         },
         [router, searchParams]
     );
@@ -58,16 +58,16 @@ export function LateReturnFilters() {
     }, [router]);
 
     const hasFilters =
-        searchParams.has('status') ||
-        searchParams.has('startDate') ||
-        searchParams.has('endDate') ||
-        searchParams.has('sortBy') ||
-        searchParams.has('sortDirection');
+        searchParams?.has('status') ||
+        searchParams?.has('startDate') ||
+        searchParams?.has('endDate') ||
+        searchParams?.has('sortBy') ||
+        searchParams?.has('sortDirection');
 
     return (
         <div className="flex flex-wrap items-center gap-3">
             <Select
-                value={searchParams.get('status') || 'all'}
+                value={searchParams?.get('status') || 'all'}
                 onValueChange={(value) => updateFilter('status', value)}
             >
                 <SelectTrigger className={`w-[150px] ${triggerClassName}`}>
@@ -86,7 +86,7 @@ export function LateReturnFilters() {
             <Input
                 type="date"
                 placeholder="Start Date"
-                value={searchParams.get('startDate') || ''}
+                value={searchParams?.get('startDate') || ''}
                 onChange={(e) => updateFilter('startDate', e.target.value)}
                 className={`w-[150px] ${inputClassName}`}
             />
@@ -94,13 +94,13 @@ export function LateReturnFilters() {
             <Input
                 type="date"
                 placeholder="End Date"
-                value={searchParams.get('endDate') || ''}
+                value={searchParams?.get('endDate') || ''}
                 onChange={(e) => updateFilter('endDate', e.target.value)}
                 className={`w-[150px] ${inputClassName}`}
             />
 
             <Select
-                value={searchParams.get('sortBy') || 'endDate'}
+                value={searchParams?.get('sortBy') || 'endDate'}
                 onValueChange={(value) => updateFilter('sortBy', value)}
             >
                 <SelectTrigger className={`w-[150px] ${triggerClassName}`}>
@@ -116,7 +116,7 @@ export function LateReturnFilters() {
             </Select>
 
             <Select
-                value={searchParams.get('sortDirection') || 'DESC'}
+                value={searchParams?.get('sortDirection') || 'DESC'}
                 onValueChange={(value) => updateFilter('sortDirection', value)}
             >
                 <SelectTrigger className={`w-[140px] ${triggerClassName}`}>
