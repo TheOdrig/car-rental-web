@@ -2,19 +2,17 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { login, register, handleAuthError } from '@/features/auth/api/auth-api';
 import { apiClient } from '@/shared/api';
 import { ApiError } from '@/shared/api/error';
+import { createMockLoginRequest, createMockRegisterRequest, createMockAuthResponse } from './fixtures';
 
-vi.mock('@/shared/api', () => ({
-    apiClient: {
-        post: vi.fn(),
-    },
-    ApiError: class extends Error {
-        status: number;
-        constructor(status: number, message: string) {
-            super(message);
-            this.status = status;
-        }
-    },
-}));
+vi.mock('@/shared/api', async () => {
+    const actual = await vi.importActual('@/shared/api');
+    return {
+        ...actual,
+        apiClient: {
+            post: vi.fn(),
+        },
+    };
+});
 
 describe('Auth API', () => {
     beforeEach(() => {
@@ -23,8 +21,8 @@ describe('Auth API', () => {
 
     describe('login', () => {
         it('should call apiClient.post with correct params', async () => {
-            const mockData = { email: 'test@example.com', password: 'password' };
-            const mockResponse = { token: 'token', user: { id: 1, email: 'test@example.com' } };
+            const mockData = createMockLoginRequest();
+            const mockResponse = createMockAuthResponse();
 
             (apiClient.post as any).mockResolvedValue(mockResponse);
 
@@ -37,13 +35,8 @@ describe('Auth API', () => {
 
     describe('register', () => {
         it('should call apiClient.post with correct params', async () => {
-            const mockData = {
-                email: 'test@example.com',
-                password: 'password',
-                name: 'Test User',
-                phone: '1234567890'
-            };
-            const mockResponse = { token: 'token', user: { id: 1, email: 'test@example.com' } };
+            const mockData = createMockRegisterRequest();
+            const mockResponse = createMockAuthResponse();
 
             (apiClient.post as any).mockResolvedValue(mockResponse);
 

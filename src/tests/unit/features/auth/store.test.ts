@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { authActions } from '@/features/auth/model/store';
 import * as authApi from '@/features/auth/api/auth-api';
 import { useUserStore } from '@/entities/user';
+import { createMockUser, createMockAuthResponse, createMockLoginRequest, createMockRegisterRequest } from './fixtures';
 
 vi.mock('@/features/auth/api/auth-api');
 vi.mock('@/entities/user');
@@ -30,8 +31,9 @@ Object.defineProperty(window, 'localStorage', {
 void mockLocalStorage.removeItem;
 
 describe('Auth Store', () => {
-    const mockUser = { id: 1, email: 'test@example.com', name: 'Test User', roles: [] };
-    const mockToken = 'mock-token-123';
+    const mockUser = createMockUser();
+    const mockAuthResponse = createMockAuthResponse();
+    const mockToken = mockAuthResponse.token;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -41,19 +43,14 @@ describe('Auth Store', () => {
     describe('login', () => {
         it('should successfully login and store token', async () => {
             const mockSetUser = vi.fn();
-            (authApi.login as any).mockResolvedValue({ token: mockToken, user: mockUser });
+            const loginData = createMockLoginRequest();
+            (authApi.login as any).mockResolvedValue(mockAuthResponse);
             (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
 
-            const result = await authActions.login({
-                email: 'test@example.com',
-                password: 'password'
-            });
+            const result = await authActions.login(loginData);
 
             expect(result.success).toBe(true);
-            expect(authApi.login).toHaveBeenCalledWith({
-                email: 'test@example.com',
-                password: 'password',
-            });
+            expect(authApi.login).toHaveBeenCalledWith(loginData);
             expect(mockLocalStorage.getItem('accessToken')).toBe(mockToken);
             expect(mockSetUser).toHaveBeenCalledWith(mockUser);
         });
@@ -64,10 +61,7 @@ describe('Auth Store', () => {
             (authApi.handleAuthError as any).mockReturnValue('Invalid credentials');
             (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
 
-            const result = await authActions.login({
-                email: 'test@example.com',
-                password: 'wrong'
-            });
+            const result = await authActions.login(createMockLoginRequest({ password: 'wrong' }));
 
             expect(result.success).toBe(false);
             expect(result.error).toBe('Invalid credentials');
@@ -79,15 +73,10 @@ describe('Auth Store', () => {
     describe('register', () => {
         it('should successfully register and store token', async () => {
             const mockSetUser = vi.fn();
-            (authApi.register as any).mockResolvedValue({ token: mockToken, user: mockUser });
+            (authApi.register as any).mockResolvedValue(mockAuthResponse);
             (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
 
-            const result = await authActions.register({
-                email: 'new@example.com',
-                password: 'password',
-                name: 'New User',
-                phone: '1234567890'
-            });
+            const result = await authActions.register(createMockRegisterRequest());
 
             expect(result.success).toBe(true);
             expect(mockLocalStorage.getItem('accessToken')).toBe(mockToken);
@@ -100,12 +89,7 @@ describe('Auth Store', () => {
             (authApi.handleAuthError as any).mockReturnValue('Email already exists');
             (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
 
-            const result = await authActions.register({
-                email: 'existing@example.com',
-                password: 'password',
-                name: 'User',
-                phone: '1234567890'
-            });
+            const result = await authActions.register(createMockRegisterRequest({ email: 'existing@example.com' }));
 
             expect(result.success).toBe(false);
             expect(result.error).toBe('Email already exists');

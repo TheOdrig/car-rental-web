@@ -38,6 +38,8 @@ export const authActions = {
     async logout(): Promise<void> {
         try {
             await logoutApi();
+        } catch {
+
         } finally {
             if (typeof window !== 'undefined') {
                 localStorage.removeItem('accessToken');
