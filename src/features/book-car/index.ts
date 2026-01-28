@@ -8,3 +8,5 @@ export type {
     BookingValidation,
 } from './model/types';
 
+export { createBooking, getAvailableCars, getBooking, cancelBooking } from './api/booking-api';
+
