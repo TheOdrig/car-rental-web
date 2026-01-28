@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
-import { Header } from "@/components/layout/header";
+import { Header } from '@/widgets/header';
 import { Footer } from "@/components/layout/footer";
 import React from "react";
 
