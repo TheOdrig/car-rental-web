@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { notFound } from 'next/navigation';
 import { ChevronRight, Home } from 'lucide-react';
 import { useRental } from '@/lib/hooks';
-import { RentalDetail, RentalDetailSkeleton } from '@/components/rentals';
+import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
 import { Skeleton } from '@/components/ui/skeleton';
 
 interface RentalDetailPageProps {

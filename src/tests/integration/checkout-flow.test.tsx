@@ -173,7 +173,7 @@ describe('Success/Failure Pages', () => {
     });
 
     it('should display success confirmation', async () => {
-        const { BookingSuccess } = await import('@/components/booking/booking-success');
+        const { BookingSuccess } = await import('@/features/book-car');
 
         render(<BookingSuccess referenceNumber="ABC12345" />);
 
@@ -182,7 +182,7 @@ describe('Success/Failure Pages', () => {
     });
 
     it('should display failure message', async () => {
-        const { BookingFailure } = await import('@/components/booking/booking-failure');
+        const { BookingFailure } = await import('@/features/book-car');
 
         render(<BookingFailure errorMessage="Your card was declined" />);
 
@@ -191,7 +191,7 @@ describe('Success/Failure Pages', () => {
     });
 
     it('should navigate back on Try Again click', async () => {
-        const { BookingFailure } = await import('@/components/booking/booking-failure');
+        const { BookingFailure } = await import('@/features/book-car');
 
         render(<BookingFailure />);
 

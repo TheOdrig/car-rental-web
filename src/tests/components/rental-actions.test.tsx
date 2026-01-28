@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RentalActions, RentalActionsSkeleton } from '@/components/rentals/rental-actions';
+import { RentalActions, RentalActionsSkeleton } from '@/features/manage-rentals';
 import type { Rental, RentalStatus } from '@/types';
 
 const createMockRental = (status: RentalStatus): Rental => ({

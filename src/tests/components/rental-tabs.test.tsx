@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RentalTabs } from '@/components/rentals/rental-tabs';
+import { RentalTabs } from '@/features/manage-rentals';
 import type { RentalTab, RentalTabCounts } from '@/types';
 
 const mockCounts: RentalTabCounts = {

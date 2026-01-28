@@ -14,4 +14,6 @@ export { BOOKING_EVENTS, publishBookingCreated, publishBookingUpdated, publishBo
 export { createBooking, getAvailableCars, getBooking, cancelBooking } from './api/booking-api';
 
 export { BookingForm } from './ui/booking-form';
+export { BookingSuccess } from './ui/booking-success';
+export { BookingFailure } from './ui/booking-failure';
 

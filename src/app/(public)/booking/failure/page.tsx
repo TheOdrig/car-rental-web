@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { BookingFailure } from '@/components/booking/booking-failure';
+import { BookingFailure } from '@/features/book-car';
 
 export const metadata: Metadata = {
     title: 'Payment Failed | Car Rental',

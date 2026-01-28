@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { RentalTimeline } from '@/components/rentals/rental-timeline';
+import { RentalTimeline } from '@/features/manage-rentals';
 import type { RentalStatus } from '@/types';
 
 describe('RentalTimeline', () => {

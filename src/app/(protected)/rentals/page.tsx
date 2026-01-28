@@ -13,7 +13,7 @@ import {
     RentalListEmpty,
     RentalStats,
     RentalTabs,
-} from '@/components/rentals';
+} from '@/features/manage-rentals';
 import type { RentalTab, Rental } from '@/types';
 import {
     getRentalsByTab,

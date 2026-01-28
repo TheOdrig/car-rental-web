@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { BookingFailure } from '@/components/booking/booking-failure';
+import { BookingFailure } from '@/features/book-car';
 
 const mockBack = vi.fn();
 

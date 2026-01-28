@@ -1,34 +1,26 @@
-# auth
+# Auth Feature
 
-Authentication feature (login, register, logout).
+Authentication and user management functionality.
 
-## Structure
-
-```
-auth/
-├── api/       # API integration
-├── model/     # Types, schemas, and store
-├── ui/        # Form components
-└── lib/       # Validation utilities
-```
-
-## Usage
+## Public API
 
 ```typescript
-import { authActions, LoginForm } from '@/features/auth';
+// Types
+export type { LoginRequest, RegisterRequest, AuthResponse };
 
-// Login action
-const result = await authActions.login({
-  email: 'user@example.com',
-  password: 'password123',
-});
+// API
+export { login, register, logout };
 
-// UI component
-<LoginForm />
+// State
+export { authActions };
+export { AUTH_EVENTS };
+
+// UI
+export { LoginForm, RegisterForm, FormError, PasswordStrengthIndicator };
 ```
 
 ## FSD Rules
 
-- Only import from `shared/` and `entities/`
+- Import only from `@/shared` and `@/entities`
 - Export via `index.ts` (public API)
 - No cross-feature imports

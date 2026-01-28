@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BookingSuccess } from '@/components/booking/booking-success';
+import { BookingSuccess } from '@/features/book-car';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({

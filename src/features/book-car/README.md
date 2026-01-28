@@ -1,31 +1,26 @@
-# book-car
+# Book Car Feature
 
-Car booking/reservation feature.
+Car booking and reservation functionality.
 
-## Structure
-
-```
-book-car/
-├── api/       # API integration
-├── model/     # Types and business logic
-├── ui/        # Components
-└── lib/       # Utilities
-```
-
-## Usage
+## Public API
 
 ```typescript
-import { BookingRequest, createBooking } from '@/features/book-car';
+// Types
+export type { BookingRequest, Booking, AvailabilityFilters, AvailableCar };
 
-const booking: BookingRequest = {
-  carId: 1,
-  startDate: '2025-02-01T00:00:00Z',
-  endDate: '2025-02-05T00:00:00Z',
-};
+// API
+export { createBooking, getAvailableCars, getBooking, cancelBooking };
+
+// State
+export { bookingActions };
+export { BOOKING_EVENTS };
+
+// UI
+export { BookingForm, BookingSuccess, BookingFailure };
 ```
 
 ## FSD Rules
 
-- Only import from `shared/` and `entities/`
+- Import only from `@/shared` and `@/entities`
 - Export via `index.ts` (public API)
 - No cross-feature imports

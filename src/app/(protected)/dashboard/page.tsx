@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useMyRentals } from '@/lib/hooks';
-import { RentalCard, RentalCardSkeleton } from '@/components/rentals';
+import { RentalCard, RentalCardSkeleton } from '@/features/manage-rentals';
 
 export default function UserDashboardPage() {
     const { data, isLoading } = useMyRentals({ size: 3 });

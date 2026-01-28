@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { RentalForm } from '@/components/rentals';
+import { RentalForm } from '@/features/manage-rentals';
 import { useAuth, useCarCalendar } from '@/lib/hooks';
 import { useCurrency } from '@/lib/providers/currency-provider';
 import { mapCurrency, type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/types';
