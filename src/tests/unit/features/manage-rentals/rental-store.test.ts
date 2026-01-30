@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { rentalActions, rentalStore } from '@/features/manage-rentals/model/rental-store';
+import { rentalActions, rentalStore } from '@/features/manage-rentals';
 import { createMockRental, createMockPaginatedRentals } from './fixtures';
 
 describe('Rental Store', () => {

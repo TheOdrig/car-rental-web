@@ -89,4 +89,3 @@ describe('BookingSuccess', () => {
         expect(screen.getByRole('button', { name: /print receipt/i })).toBeInTheDocument();
     });
 });
-

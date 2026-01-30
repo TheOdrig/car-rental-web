@@ -3,27 +3,27 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { FleetStatsCards } from '@/components/admin/fleet-stats';
-import { FleetTable } from '@/components/admin/fleet-table';
+} from '@/shared/ui/select';
+import { Breadcrumb } from '@/widgets/layout';
+import { FleetStatsCards } from '@/features/admin';
+import { FleetTable } from '@/features/admin';
 import {
     useFleetStatus,
     useInvalidateAdmin,
     useAdminCars,
     useDeleteCar,
     useUpdateCarStatus,
-} from '@/lib/hooks/use-admin';
+} from '@/features/admin';
 import { toast } from 'sonner';
-import type { CarStatus } from '@/types';
+import type { Car, CarStatus } from '@/entities/car';
 
 type StatusFilter = 'all' | CarStatus;
 
@@ -53,7 +53,7 @@ export default function FleetManagementPage() {
     const filteredCars = useMemo(() => {
         if (!carsContent) return [];
 
-        return carsContent.filter((car) => {
+        return carsContent.filter((car: Car) => {
             const matchesSearch =
                 searchQuery === '' ||
                 `${car.brand} ${car.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -218,4 +218,6 @@ export default function FleetManagementPage() {
         </div>
     );
 }
+
+
 

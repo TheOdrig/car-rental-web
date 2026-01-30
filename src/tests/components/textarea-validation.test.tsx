@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Textarea } from '@/components/ui/textarea';
+import { Textarea } from '@/shared/ui/textarea';
 
 describe('Textarea Component - Validation States', () => {
     describe('Idle State', () => {

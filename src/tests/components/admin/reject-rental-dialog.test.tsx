@@ -3,9 +3,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RejectRentalDialog } from '@/components/admin/reject-rental-dialog';
+import { RejectRentalDialog } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { PendingItem } from '@/types/admin';
+import type { PendingItem } from '@/features/admin';
 
 describe('RejectRentalDialog', () => {
     const user = userEvent.setup();
@@ -94,4 +94,5 @@ describe('RejectRentalDialog', () => {
         expect(screen.getByText(/Rejecting.../i)).toBeInTheDocument();
     });
 });
+
 

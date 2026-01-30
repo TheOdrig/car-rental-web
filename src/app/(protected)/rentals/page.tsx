@@ -2,11 +2,11 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { Download } from 'lucide-react';
-import { logger } from '@/lib/utils/logger';
-import { useMyRentals, useCancelRental } from '@/lib/hooks';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ErrorBoundary } from '@/components/shared';
+import { logger } from '@/shared/lib';
+import { useMyRentals, useCancelRental } from '@/entities/rental';
+import { Button } from '@/shared/ui/button';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import {
     RentalList,
     RentalListSkeleton,
@@ -14,13 +14,9 @@ import {
     RentalStats,
     RentalTabs,
 } from '@/features/manage-rentals';
-import type { RentalTab, Rental } from '@/types';
-import {
-    getRentalsByTab,
-    calculateTabCounts,
-    calculateRentalStats,
-} from '@/lib/utils/rental-utils';
-import { showToast } from '@/lib/utils/toast';
+import type { RentalTab, Rental } from '@/entities/rental';
+import { getRentalsByTab, calculateTabCounts, calculateRentalStats } from '@/entities/rental';
+import { showToast } from '@/shared/lib';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -30,7 +26,7 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/shared/ui/alert-dialog';
 
 export default function MyRentalsPage() {
     const { data, isLoading, error } = useMyRentals();
@@ -63,7 +59,9 @@ export default function MyRentalsPage() {
                 showToast.info(`Downloading receipt for rental #${rental.id}`);
                 break;
             case 'book-again':
-                window.location.href = `/cars/${rental.carSummary.id}`;
+                if (rental.carSummary?.id) {
+                    window.location.href = `/cars/${rental.carSummary.id}`;
+                }
                 break;
             case 'cancel':
                 setRentalToCancel(rental);
@@ -175,7 +173,7 @@ export default function MyRentalsPage() {
                             <div className="my-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 space-y-2">
                                 <div className="flex items-center gap-2 text-sm">
                                     <span className="font-semibold">🚗 Vehicle:</span>
-                                    <span>{rentalToCancel.carSummary.brand} {rentalToCancel.carSummary.model}</span>
+                                    <span>{rentalToCancel.carSummary?.brand} {rentalToCancel.carSummary?.model}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
                                     <span className="font-semibold">📅 Dates:</span>
@@ -204,4 +202,6 @@ export default function MyRentalsPage() {
         </ErrorBoundary>
     );
 }
+
+
 

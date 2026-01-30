@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi } from 'vitest';
-import { ViewToggle } from '@/components/cars/view-toggle';
+import { ViewToggle } from '@/widgets/car-filters';
 
 describe('ViewToggle', () => {
     describe('rendering', () => {

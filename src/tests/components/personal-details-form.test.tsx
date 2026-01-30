@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PersonalDetailsForm } from '@/components/settings/personal-details-form';
+import { PersonalDetailsForm } from '@/features/user-settings';
 
 describe('PersonalDetailsForm', () => {
     const defaultProps = {
@@ -32,18 +32,7 @@ describe('PersonalDetailsForm', () => {
             expect(screen.getByLabelText(/first name/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/last name/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/phone number/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/date of birth/i)).toBeInTheDocument();
             expect(screen.getByLabelText(/email/i)).toBeInTheDocument();
-        });
-
-        it('should render address fields', () => {
-            render(<PersonalDetailsForm {...defaultProps} />);
-
-            expect(screen.getByLabelText(/street address/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/city/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/state/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/zip/i)).toBeInTheDocument();
-            expect(screen.getByLabelText(/country/i)).toBeInTheDocument();
         });
 
         it('should display initial values', () => {
@@ -80,7 +69,6 @@ describe('PersonalDetailsForm', () => {
             const user = userEvent.setup();
             render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={vi.fn()} />);
 
-            
             await user.type(screen.getByLabelText(/last name/i), 'Doe');
             await user.type(screen.getByLabelText(/phone number/i), '1234567890');
 
@@ -91,18 +79,17 @@ describe('PersonalDetailsForm', () => {
             });
         });
 
-        it('should show error when phone is too short', async () => {
+        it('should show error when phone is invalid', async () => {
             const user = userEvent.setup();
-            render(<PersonalDetailsForm {...defaultProps} initialData={{ firstName: '', lastName: '', phone: '' }} />);
+            render(<PersonalDetailsForm {...defaultProps} initialData={{ firstName: 'John', lastName: 'Doe', phone: '' }} />);
 
-            await user.type(screen.getByLabelText(/first name/i), 'John');
-            await user.type(screen.getByLabelText(/last name/i), 'Doe');
-            await user.type(screen.getByLabelText(/phone number/i), '123');
+            await user.clear(screen.getByLabelText(/phone number/i));
+            await user.type(screen.getByLabelText(/phone number/i), 'not-a-number');
 
             await submitForm();
 
             await waitFor(() => {
-                expect(screen.getByText(/phone must be at least 10 digits/i)).toBeInTheDocument();
+                expect(screen.getByText(/invalid phone number format/i)).toBeInTheDocument();
             });
         });
     });

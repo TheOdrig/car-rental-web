@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
-import { getAccessToken } from '@/lib/auth/cookies';
-import { AdminSidebar } from '@/components/admin';
-import type { MeResponse } from '@/types';
+import { getAccessToken } from '@/features/auth';
+import { AdminSidebar } from '@/features/admin';
+import type { MeResponse } from '@/features/auth';
 import React from "react";
 
 interface AdminLayoutProps {

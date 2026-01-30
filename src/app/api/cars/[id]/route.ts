@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import { carIdSchema, validateParams } from '@/lib/validations/api-params';
-import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/types';
+import { serverGet } from '@/shared/api/server';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import { carIdSchema, validateParams } from '@/shared/lib/validations';
+import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/entities/car';
 
 
 export async function GET(
@@ -87,7 +87,7 @@ export async function GET(
     } catch (error) {
         console.error(`[API] GET /api/cars/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }

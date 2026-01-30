@@ -1,11 +1,54 @@
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeAll, vi } from 'vitest';
+import React from 'react';
 
 process.env.NEXT_PUBLIC_API_URL = 'http://localhost:8082';
 
+Object.defineProperty(window, 'location', {
+    writable: true,
+    value: {
+        href: 'http://localhost:3000',
+        origin: 'http://localhost:3000',
+        protocol: 'http:',
+        host: 'localhost:3000',
+        hostname: 'localhost',
+        port: '3000',
+        pathname: '/',
+        search: '',
+        hash: '',
+    },
+});
+
+global.fetch = vi.fn((input: RequestInfo | URL) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+
+    if (url.includes('/api/exchange-rates')) {
+        return Promise.resolve({
+            ok: true,
+            json: async () => ({
+                rates: {
+                    USD: 1,
+                    EUR: 0.85,
+                    GBP: 0.73,
+                    JPY: 110.0,
+                    TRY: 27.0,
+                },
+                timestamp: Date.now(),
+            }),
+        } as Response);
+    }
+
+    return Promise.resolve({
+        ok: false,
+        status: 404,
+        json: async () => ({ error: 'Not found' }),
+    } as Response);
+}) as typeof fetch;
+
 afterEach(() => {
     cleanup();
+    vi.clearAllMocks();
 });
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
@@ -96,3 +139,19 @@ if (!Element.prototype.scrollIntoView) {
     Element.prototype.scrollIntoView = vi.fn();
 }
 
+vi.mock('@/entities/currency', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/entities/currency')>();
+    return {
+        ...original,
+        CurrencyProvider: ({ children }: { children: React.ReactNode }) => React.createElement(React.Fragment, null, children),
+        useCurrency: () => ({
+            currency: 'USD',
+            setCurrency: vi.fn(),
+            rates: { USD: 1, TRY: 30, EUR: 0.9, GBP: 0.8 },
+            isLoading: false,
+            convert: (amount: number) => amount,
+            format: (amount: number) => `$${amount.toFixed(2)}`,
+            refreshRates: vi.fn(),
+        }),
+    };
+});

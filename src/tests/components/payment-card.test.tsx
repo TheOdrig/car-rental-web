@@ -1,8 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PaymentCard } from '@/components/settings/payment-card';
-import type { PaymentMethod } from '@/types/payment';
+import { PaymentCard } from '@/features/user-settings';
+import type { PaymentMethod } from '@/features/book-car';
 
 const mockCard: PaymentMethod = {
     id: '1',

@@ -2,9 +2,9 @@
 
 import Link from 'next/link';
 import { Calendar, Car } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useMyRentals } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { useMyRentals } from '@/entities/rental';
 import { StatsCard } from './stats-card';
 import { RecentRentals } from './recent-rentals';
 

@@ -2,10 +2,10 @@
 
 import { memo, useState, useCallback } from 'react';
 import { Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import type { Rental, RentalStatus, ActionButton } from '@/types';
-import { getActionButtons } from '@/lib/utils/rental-utils';
+import { cn } from '@/shared/lib';
+import { Button } from '@/shared/ui/button';
+import type { Rental, RentalStatus, ActionButton } from '@/entities/rental';
+import { getActionButtons } from '@/entities/rental';
 
 interface RentalActionsProps {
     rental: Rental;

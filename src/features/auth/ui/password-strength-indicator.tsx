@@ -1,6 +1,6 @@
 'use client';
 
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib';
 import {
     calculatePasswordStrength,
     getPasswordStrengthColor,
@@ -8,7 +8,7 @@ import {
     getPasswordStrengthProgress,
     getPasswordStrengthTextColor,
     getPasswordSuggestions,
-} from '@/lib/utils/validation';
+} from '@/shared/lib';
 
 interface PasswordStrengthIndicatorProps {
     password: string;

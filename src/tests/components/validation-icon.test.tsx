@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render} from '@testing-library/react';
-import { ValidationIcon } from '@/components/shared/validation-icon';
+import { ValidationIcon } from '@/shared/ui/validation-icon';
 
 describe('ValidationIcon', () => {
     describe('Valid State', () => {

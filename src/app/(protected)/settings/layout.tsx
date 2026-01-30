@@ -12,7 +12,7 @@ import {
     ChevronRight,
     Home,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib';
 
 interface SettingsLayoutProps {
     children: ReactNode;
@@ -121,4 +121,3 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
         </div>
     );
 }
-

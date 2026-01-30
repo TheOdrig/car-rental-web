@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifyToken, type TokenPayload } from '@/lib/auth/jwt-verifier';
+import { verifyToken, type TokenPayload } from '@/features/auth';
 
 const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback', '/forgot-password', '/reset-password'];
 const AUTH_ROUTES = ['/login', '/register', '/callback', '/forgot-password', '/reset-password'];
@@ -89,5 +89,4 @@ export const config = {
         '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
     ],
 };
-
 

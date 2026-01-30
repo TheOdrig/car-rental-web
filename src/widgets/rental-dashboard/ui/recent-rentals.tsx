@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { ArrowRight, Car } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { RentalCard, RentalCardSkeleton } from '@/features/manage-rentals';
-import type { Rental } from '@/types';
+import type { Rental } from '@/entities/rental';
 
 interface RecentRentalsProps {
     rentals: Rental[];

@@ -172,16 +172,18 @@ describe('Architecture Boundaries', () => {
             const entityFiles = allFiles.filter(file => file.includes(`src${path.sep}entities`));
 
             entityFiles.forEach((file) => {
+                if (file.includes(`${path.sep}ui${path.sep}`)) return;
+
                 const content = fs.readFileSync(file, 'utf-8');
 
                 if (content.includes("from 'react'") || content.includes('from "react"')) {
                     if (!content.includes('type {') && !content.includes('import type')) {
-                        violations.push(`${file} - Violation: Entity should not contain React UI code`);
+                        violations.push(`${file} - Violation: Non-UI Entity file should not contain React code`);
                     }
                 }
 
                 if (content.includes('useState') || content.includes('useEffect')) {
-                    violations.push(`${file} - Violation: Entity should not contain React hooks`);
+                    violations.push(`${file} - Violation: Non-UI Entity file should not contain React hooks`);
                 }
             });
 

@@ -10,9 +10,9 @@ import {
     CheckSquare,
     XCircle,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
-import type { RentalStatus } from '@/types';
+import { cn } from '@/shared/lib';
+import { Card, CardContent } from '@/shared/ui/card';
+import type { RentalStatus } from '@/entities/rental';
 
 interface RentalTimelineProps {
     status: RentalStatus;

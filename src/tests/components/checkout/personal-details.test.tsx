@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { PersonalDetails } from '@/components/checkout/personal-details';
-import { checkoutFormSchema, type CheckoutFormSchema } from '@/lib/validations/checkout';
+import { PersonalDetails } from '@/features/book-car';
+import { checkoutFormSchema, type CheckoutFormSchema } from '@/features/book-car';
 
 function PersonalDetailsTestWrapper({
     defaultValues = {},

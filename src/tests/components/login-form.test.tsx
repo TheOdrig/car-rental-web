@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LoginForm } from '@/features/auth';
 import { renderWithProviders } from '../test-utils';
 
 const mockPush = vi.fn();
@@ -19,14 +18,17 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/login',
 }));
 
-vi.mock('@/lib/hooks', () => ({
-    useLogin: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
+vi.mock('@/features/auth/lib/use-auth', () => ({
+    useLogin: vi.fn(),
+    useLogout: vi.fn(),
+    useRegister: vi.fn(),
+    useAuth: vi.fn(),
+    useCurrentUser: vi.fn(),
+    authKeys: { all: ['auth'] },
 }));
 
-import { useLogin } from '@/lib/hooks';
+import { LoginForm } from '@/features/auth';
+import { useLogin } from '@/features/auth/lib/use-auth';
 
 describe('LoginForm', () => {
     const user = userEvent.setup();
@@ -283,4 +285,3 @@ describe('LoginForm', () => {
         });
     });
 });
-

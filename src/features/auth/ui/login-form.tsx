@@ -4,15 +4,15 @@ import { useState, useMemo, type FormEvent, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { FormField } from '@/components/ui/form-field';
-import { useLogin } from '@/lib/hooks';
-import { cn } from '@/lib/utils';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { FormField } from '@/shared/ui/form-field';
+import { useLogin } from '@/features/auth';
+import { cn } from '@/shared/lib';
 import { FormError } from '@/features/auth';
-import { validateEmail } from '@/lib/utils/validation';
-import { determineValidationState } from '@/lib/utils/validation-ui';
-import type { ValidationState } from '@/types/validation';
+import { validateEmail } from '@/shared/lib';
+import { determineValidationState } from '@/shared/lib';
+import type { ValidationState } from '@/shared/types';
 
 interface LoginFormProps {
     callbackUrl?: string;

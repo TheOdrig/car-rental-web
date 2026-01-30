@@ -1,26 +1,28 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { useCarStore } from '@/entities/car/model/store';
-import { Car, CarStatus, FuelType, TransmissionType } from '@/entities/car/model/types';
+import { Car, FuelType, TransmissionType } from '@/entities/car/model/types';
 import { isAvailable, getCarTitle, getFormattedPrice } from '@/entities/car/lib/utils';
 import { act } from 'react';
 
 const mockCar: Car = {
     id: 1,
+    licensePlate: 'ABC-123',
     brand: 'Tesla',
     model: 'Model 3',
-    year: 2023,
+    productionYear: 2023,
     color: 'White',
-    dailyPrice: 100,
-    status: CarStatus.AVAILABLE,
+    price: 100,
+    currencyType: 'USD',
+    carStatusType: 'Available',
     imageUrl: 'tesla.jpg',
     fuelType: FuelType.ELECTRIC,
-    transmission: TransmissionType.AUTOMATIC,
+    transmissionType: TransmissionType.AUTOMATIC,
 };
 
 const rentedCar: Car = {
     ...mockCar,
     id: 2,
-    status: CarStatus.RENTED,
+    carStatusType: 'Rented',
 };
 
 describe('Car Entity', () => {
@@ -84,14 +86,14 @@ describe('Car Entity', () => {
             act(() => {
                 setCars([mockCar]);
                 selectCar(mockCar);
-                updateCarStatus(1, CarStatus.MAINTENANCE);
+                updateCarStatus(1, 'Maintenance');
             })
 
             const state = useCarStore.getState();
 
-            expect(state.cars[0].status).toBe(CarStatus.MAINTENANCE);
+            expect(state.cars[0].carStatusType).toBe('Maintenance');
 
-            expect(state.selectedCar?.status).toBe(CarStatus.MAINTENANCE);
+            expect(state.selectedCar?.carStatusType).toBe('Maintenance');
         });
 
         it('should not update selected car if ids do not match', () => {
@@ -100,13 +102,13 @@ describe('Car Entity', () => {
             act(() => {
                 setCars([mockCar, rentedCar]);
                 selectCar(rentedCar);
-                updateCarStatus(1, CarStatus.MAINTENANCE);
+                updateCarStatus(1, 'Maintenance');
             })
 
             const state = useCarStore.getState();
-            expect(state.cars.find(c => c.id === 1)?.status).toBe(CarStatus.MAINTENANCE);
+            expect(state.cars.find(c => c.id === 1)?.carStatusType).toBe('Maintenance');
             expect(state.selectedCar?.id).toBe(2);
-            expect(state.selectedCar?.status).toBe(CarStatus.RENTED);
+            expect(state.selectedCar?.carStatusType).toBe('Rented');
         });
     });
 });

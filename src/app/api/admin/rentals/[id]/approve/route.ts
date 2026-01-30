@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routePost } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { QuickActionResult } from '@/types';
+import { routePost } from '@/shared/api/route-handler';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import type { QuickActionResult } from '@/features/admin';
 
 export async function POST(
     _request: NextRequest,
@@ -36,7 +36,7 @@ export async function POST(
     } catch (error) {
         console.error(`[API] POST /api/admin/rentals/${id}/approve error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

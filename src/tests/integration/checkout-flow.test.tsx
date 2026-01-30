@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CurrencyProvider } from '@/lib/providers/currency-provider';
+import { CurrencyProvider } from '@/entities/currency';
 
 const mockPush = vi.fn();
 const mockBack = vi.fn();
@@ -20,13 +20,13 @@ vi.mock('next/image', () => ({
     ),
 }));
 
-vi.mock('@/components/ui/dynamic-image', () => ({
+vi.mock('@/shared/ui/dynamic-image', () => ({
     DynamicImage: ({ src, alt, ...props }: { src: string; alt: string }) => (
         <img src={src} alt={alt} {...props} />
     ),
 }));
 
-vi.mock('@/lib/hooks/use-cars', () => ({
+vi.mock('@/entities/car', () => ({
     useCar: vi.fn(() => ({
         data: {
             car: {
@@ -46,13 +46,17 @@ vi.mock('@/lib/hooks/use-cars', () => ({
     })),
 }));
 
-vi.mock('@/lib/hooks', () => ({
-    useAuth: vi.fn(() => ({
-        user: null,
-    })),
-}));
+vi.mock('@/features/auth', async () => {
+    const actual = await vi.importActual('@/features/auth');
+    return {
+        ...actual,
+        useAuth: vi.fn(() => ({
+            user: null,
+        })),
+    };
+});
 
-import { CheckoutForm } from '@/components/checkout/checkout-form';
+import { CheckoutForm } from '@/features/book-car';
 import React from "react";
 
 function createTestQueryClient() {
@@ -201,4 +205,5 @@ describe('Success/Failure Pages', () => {
         expect(mockBack).toHaveBeenCalled();
     });
 });
+
 

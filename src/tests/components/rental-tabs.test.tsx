@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RentalTabs } from '@/features/manage-rentals';
-import type { RentalTab, RentalTabCounts } from '@/types';
+import type { RentalTab, RentalTabCounts } from '@/entities/rental';
 
 const mockCounts: RentalTabCounts = {
     all: 10,
@@ -276,4 +276,3 @@ describe('RentalTabs', () => {
         });
     });
 });
-

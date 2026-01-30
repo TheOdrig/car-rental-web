@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RegisterForm } from '@/features/auth';
 import { renderWithProviders } from '../test-utils';
 
 const mockPush = vi.fn();
@@ -15,21 +14,26 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/register',
 }));
 
-vi.mock('@/lib/hooks', () => ({
-    useRegister: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
+vi.mock('@/features/auth/lib/use-auth', () => ({
+    useRegister: vi.fn(),
+    useLogin: vi.fn(),
+    useLogout: vi.fn(),
+    useAuth: vi.fn(),
+    useCurrentUser: vi.fn(),
+    authKeys: { all: ['auth'] },
 }));
 
-import { useRegister } from '@/lib/hooks';
+import { RegisterForm } from '@/features/auth';
+import { useRegister } from '@/features/auth/lib/use-auth';
 
 describe('RegisterForm', () => {
-    const user = userEvent.setup();
+    let user: ReturnType<typeof userEvent.setup>;
+    const mockRegister = vi.mocked(useRegister);
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(useRegister).mockReturnValue({
+        user = userEvent.setup();
+        mockRegister.mockReturnValue({
             mutateAsync: vi.fn(),
             isPending: false,
         } as unknown as ReturnType<typeof useRegister>);
@@ -42,12 +46,11 @@ describe('RegisterForm', () => {
     const getSubmitButton = () => screen.getByRole('button', { name: /create account|creating account/i });
     const getTermsCheckbox = () => screen.getByRole('checkbox');
 
-    const submitForm = async () => {
+    const submitForm = () => {
         const form = getSubmitButton().closest('form');
         if (form) {
             fireEvent.submit(form);
         }
-        await new Promise(resolve => setTimeout(resolve, 0));
     };
 
     describe('Rendering', () => {
@@ -197,7 +200,7 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             fireEvent.click(getTermsCheckbox());
-            await submitForm();
+            submitForm();
 
             await waitFor(() => {
                 expect(mockMutateAsync).toHaveBeenCalledWith({
@@ -222,7 +225,7 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             fireEvent.click(getTermsCheckbox());
-            await submitForm();
+            submitForm();
 
             await waitFor(() => {
                 expect(mockPush).toHaveBeenCalledWith('/');
@@ -245,7 +248,7 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             fireEvent.click(getTermsCheckbox());
-            await submitForm();
+            submitForm();
 
             await waitFor(() => {
                 expect(mockMutateAsync).toHaveBeenCalled();
@@ -309,7 +312,7 @@ describe('RegisterForm', () => {
             await user.type(getPasswordInput(), 'Password123!');
             await user.type(getConfirmPasswordInput(), 'Password123!');
             fireEvent.click(getTermsCheckbox());
-            await submitForm();
+            submitForm();
 
             await waitFor(() => {
                 expect(mockMutateAsync).toHaveBeenCalled();
@@ -327,4 +330,3 @@ describe('RegisterForm', () => {
         });
     });
 });
-

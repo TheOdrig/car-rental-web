@@ -3,9 +3,10 @@
 import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { AlertCircle } from 'lucide-react';
-import { CarGrid, CarGridSkeleton, CarGridEmpty, CarSearch } from '@/components/cars';
-import { useCarSearchResults } from '@/lib/hooks';
-import type { AvailabilitySearchRequest } from '@/types';
+import { CarGrid, CarGridSkeleton, CarGridEmpty } from '@/entities/car';
+import { CarSearch } from '@/widgets/car-search';
+import { useCarSearchResults } from '@/entities/car';
+import type { AvailabilitySearchRequest } from '@/entities/car';
 
 function SearchResults() {
     const searchParams = useSearchParams();
@@ -76,4 +77,5 @@ export function SearchContent() {
         </Suspense>
     );
 }
+
 

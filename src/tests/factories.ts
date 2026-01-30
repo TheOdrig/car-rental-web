@@ -1,8 +1,8 @@
-import type { Car, CarSummary, CarStatus } from '@/types/car';
-import type { Rental, RentalStatus } from '@/types/rental';
-import type { User, UserSummary, Role } from '@/types/auth';
-import type { DailySummary, FleetStatus, QuickActionResult } from '@/types/admin';
-import type { CurrencyType } from '@/types/common';
+import type { Car, CarSummary, CarStatus } from '@/entities/car';
+import type { Rental, RentalStatus } from '@/entities/rental';
+import type { User, UserSummary, Role } from '@/features/auth';
+import type { DailySummary, FleetStatus, QuickActionResult } from '@/features/admin';
+import type { CurrencyType } from '@/shared/types';
 
 let carIdCounter = 1;
 
@@ -155,7 +155,7 @@ import type {
     PriceBreakdown,
     BookingConfirmation,
     CheckoutFormData,
-} from '@/types/checkout';
+} from '@/features/book-car';
 
 let bookingIdCounter = 1;
 
@@ -242,4 +242,3 @@ export function resetMockFactories() {
     rentalIdCounter = 1;
     bookingIdCounter = 1;
 }
-

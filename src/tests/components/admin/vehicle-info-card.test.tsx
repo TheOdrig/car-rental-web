@@ -2,9 +2,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { VehicleInfoCard } from '@/components/admin/rental-detail/vehicle-info-card';
+import { VehicleInfoCard } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { RentalVehicleInfo } from '@/types';
+import type { RentalVehicleInfo } from '@/features/admin';
 
 describe('VehicleInfoCard', () => {
     const mockVehicle: RentalVehicleInfo = {
@@ -12,6 +12,7 @@ describe('VehicleInfoCard', () => {
         brand: 'Tesla',
         model: 'Model 3',
         licensePlate: 'ABC-1234',
+        year: 2023,
         imageUrl: '/cars/tesla-model-3.jpg',
         status: 'Rented',
         fuelType: 'Electric',
@@ -73,4 +74,5 @@ describe('VehicleInfoCard', () => {
         });
     });
 });
+
 

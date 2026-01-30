@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Input } from '@/shared/ui';
 import { Button } from '@/shared/ui';
-import type { BookingRequest } from '@/features/book-car';
+import type { CreateBookingRequest } from '@/features/book-car';
 import { createBooking } from '@/features/book-car';
 import { validateDateRange } from '../lib/date-validation';
 import { bookingActions } from '@/features/book-car';
@@ -43,11 +43,17 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
         setIsSubmitting(true);
 
         try {
-            const request: BookingRequest = {
+            const request: CreateBookingRequest = {
                 carId,
                 startDate: start.toISOString(),
                 endDate: end.toISOString(),
-                notes: notes || undefined,
+                pickupLocation: 'Default Location',
+                dropoffLocation: 'Default Location',
+                addons: [],
+                firstName: '',
+                lastName: '',
+                email: '',
+                phone: '',
             };
 
             const booking = await createBooking(request);
@@ -55,8 +61,8 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
             publishBookingCreated(booking);
 
             onSuccess?.();
-        } catch (err: any) {
-            const errorMessage = err.message || 'Failed to create booking';
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to create booking';
             setError(errorMessage);
             onError?.(errorMessage);
         } finally {

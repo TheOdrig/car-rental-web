@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { endpoints } from '@/lib/api/endpoints';
-import { routeDelete } from '@/lib/api/route-handler';
-import { isApiException } from '@/lib/api/errors';
+import { endpoints } from '@/shared/api';
+import { routeDelete } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
 
 export async function POST(
     request: NextRequest,
@@ -50,7 +50,7 @@ export async function POST(
         return NextResponse.json(data, { status: 201 });
     } catch (error) {
         console.error('[API] POST /api/admin/damages/[id]/photos error:', error);
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -84,7 +84,7 @@ export async function DELETE(
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('[API] DELETE /api/admin/damages/[id]/photos error:', error);
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

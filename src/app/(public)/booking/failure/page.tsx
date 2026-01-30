@@ -26,4 +26,3 @@ export default async function BookingFailurePage({ searchParams }: FailurePagePr
         </main>
     );
 }
-

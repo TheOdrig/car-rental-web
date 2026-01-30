@@ -1,44 +1,72 @@
-import { describe, it, expect, vi } from 'vitest';
-import { eventBus } from '@/shared/events';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { EventBus } from '@/shared/lib/event-bus';
 
 describe('EventBus', () => {
-    it('should subscribe and publish events', () => {
+    let eventBus: EventBus;
+
+    beforeEach(() => {
+        eventBus = new EventBus();
+    });
+
+    it('should subscribe and emit events', () => {
         const handler = vi.fn();
-        const eventType = 'test:event';
-        const payload = { data: 'test' };
+        eventBus.subscribe('TEST_EVENT', handler);
+        eventBus.emit('TEST_EVENT', { data: 'test' });
 
-        eventBus.subscribe(eventType, handler);
-        eventBus.publish(eventType, payload);
+        expect(handler).toHaveBeenCalledWith({ data: 'test' });
+    });
 
-        expect(handler).toHaveBeenCalledTimes(1);
-        expect(handler).toHaveBeenCalledWith(expect.objectContaining({
-            type: eventType,
-            payload,
-            timestamp: expect.any(Date),
-        }));
+    it('should support multiple subscribers', () => {
+        const handler1 = vi.fn();
+        const handler2 = vi.fn();
+
+        eventBus.subscribe('TEST_EVENT', handler1);
+        eventBus.subscribe('TEST_EVENT', handler2);
+        eventBus.emit('TEST_EVENT', { data: 'test' });
+
+        expect(handler1).toHaveBeenCalled();
+        expect(handler2).toHaveBeenCalled();
     });
 
     it('should unsubscribe correctly', () => {
         const handler = vi.fn();
-        const eventType = 'test:event';
+        const unsubscribe = eventBus.subscribe('TEST_EVENT', handler);
 
-        const unsubscribe = eventBus.subscribe(eventType, handler);
         unsubscribe();
-        eventBus.publish(eventType, {});
+        eventBus.emit('TEST_EVENT', { data: 'test' });
 
         expect(handler).not.toHaveBeenCalled();
     });
 
-    it('should handle multiple subscribers', () => {
-        const handler1 = vi.fn();
-        const handler2 = vi.fn();
-        const eventType = 'test:event';
+    it('should handle errors gracefully', () => {
+        const consoleError = vi.spyOn(console, 'error').mockImplementation(() => { });
+        const errorHandler = vi.fn(() => { throw new Error('Test error'); });
+        const normalHandler = vi.fn();
 
-        eventBus.subscribe(eventType, handler1);
-        eventBus.subscribe(eventType, handler2);
-        eventBus.publish(eventType, {});
+        eventBus.subscribe('TEST_EVENT', errorHandler);
+        eventBus.subscribe('TEST_EVENT', normalHandler);
+        eventBus.emit('TEST_EVENT', { data: 'test' });
 
-        expect(handler1).toHaveBeenCalled();
-        expect(handler2).toHaveBeenCalled();
+        expect(consoleError).toHaveBeenCalled();
+        expect(normalHandler).toHaveBeenCalled();
+
+        consoleError.mockRestore();
+    });
+
+    it('should clear all subscribers', () => {
+        const handler = vi.fn();
+        eventBus.subscribe('TEST_EVENT', handler);
+
+        eventBus.clear();
+        eventBus.emit('TEST_EVENT', { data: 'test' });
+
+        expect(handler).not.toHaveBeenCalled();
+    });
+
+    it('should return subscriber count', () => {
+        expect(eventBus.getSubscriberCount('TEST_EVENT')).toBe(0);
+
+        eventBus.subscribe('TEST_EVENT', vi.fn());
+        expect(eventBus.getSubscriberCount('TEST_EVENT')).toBe(1);
     });
 });

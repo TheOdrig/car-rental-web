@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api';
-import { setAuthTokens } from '@/lib/auth';
-import { AuthResponse } from '@/types';
+import { endpoints } from '@/shared/api';
+import { setAuthTokens } from '@/features/auth';
+import { AuthResponse } from '@/features/auth';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;

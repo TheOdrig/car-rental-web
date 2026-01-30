@@ -2,7 +2,7 @@
 
 import { CheckCircle, Calendar, MapPin, Clock, Mail, FileText, Printer } from 'lucide-react';
 import { format } from 'date-fns';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 
 function formatBookingReference(ref: string): string {

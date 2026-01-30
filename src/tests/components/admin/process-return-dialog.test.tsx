@@ -3,9 +3,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProcessReturnDialog } from '@/components/admin/process-return-dialog';
+import { ProcessReturnDialog } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { PendingItem } from '@/types/admin';
+import type { PendingItem } from '@/features/admin';
 
 describe('ProcessReturnDialog', () => {
     const user = userEvent.setup();
@@ -105,4 +105,5 @@ describe('ProcessReturnDialog', () => {
         });
     });
 });
+
 

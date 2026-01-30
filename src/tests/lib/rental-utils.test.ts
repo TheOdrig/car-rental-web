@@ -1,17 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
-import type { Rental, RentalStatus } from '@/types';
-import {
-    getRentalsByTab,
-    calculateTabCounts,
-    calculateRentalStats,
-    getActionButtons,
-    RENTAL_TABS,
-    getTabLabel,
-    isUpcomingRental,
-    getStatusBadgeVariant,
-    formatRentalDuration,
-    calculateDaysBetween,
-} from '@/lib/utils/rental-utils';
+import type { Rental } from '@/entities/rental';
+import { RentalStatus } from '@/entities/rental';
+import { getRentalsByTab, calculateTabCounts, calculateRentalStats, getActionButtons, RENTAL_TABS, getTabLabel, isUpcomingRental, getStatusBadgeVariant, formatRentalDuration, calculateDaysBetween } from '@/entities/rental';
 
 const createMockRental = (overrides: Partial<Rental> = {}): Rental => ({
     id: 1,
@@ -36,7 +26,7 @@ const createMockRental = (overrides: Partial<Rental> = {}): Rental => ({
     dailyPrice: 50,
     totalPrice: 200,
     currency: 'USD',
-    status: 'Confirmed',
+    status: RentalStatus.CONFIRMED,
     createTime: '2024-12-25T10:00:00Z',
     updateTime: '2024-12-25T10:00:00Z',
     ...overrides,
@@ -51,12 +41,12 @@ describe('Rental Utils', () => {
             vi.setSystemTime(new Date('2025-01-01'));
 
             mockRentals = [
-                createMockRental({ id: 1, status: 'In Use' }),
-                createMockRental({ id: 2, status: 'Confirmed', startDate: '2025-01-10' }),
-                createMockRental({ id: 3, status: 'Confirmed', startDate: '2024-12-20' }),
-                createMockRental({ id: 4, status: 'Returned' }),
-                createMockRental({ id: 5, status: 'Cancelled' }),
-                createMockRental({ id: 6, status: 'Requested' }),
+                createMockRental({ id: 1, status: RentalStatus.ACTIVE }),
+                createMockRental({ id: 2, status: RentalStatus.CONFIRMED, startDate: '2025-01-10' }),
+                createMockRental({ id: 3, status: RentalStatus.CONFIRMED, startDate: '2024-12-20' }),
+                createMockRental({ id: 4, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 5, status: RentalStatus.CANCELLED }),
+                createMockRental({ id: 6, status: RentalStatus.REQUESTED }),
             ];
         });
 
@@ -72,14 +62,14 @@ describe('Rental Utils', () => {
         it('should return only active rentals for "active" tab', () => {
             const result = getRentalsByTab(mockRentals, 'active');
             expect(result).toHaveLength(1);
-            expect(result[0].status).toBe('In Use');
+            expect(result[0].status).toBe(RentalStatus.ACTIVE);
         });
 
         it('should return only upcoming rentals for "upcoming" tab', () => {
             const result = getRentalsByTab(mockRentals, 'upcoming');
             expect(result).toHaveLength(1);
             expect(result[0].id).toBe(2);
-            expect(result[0].status).toBe('Confirmed');
+            expect(result[0].status).toBe(RentalStatus.CONFIRMED);
         });
 
         it('should not include past confirmed rentals in "upcoming" tab', () => {
@@ -91,13 +81,13 @@ describe('Rental Utils', () => {
         it('should return only completed rentals for "completed" tab', () => {
             const result = getRentalsByTab(mockRentals, 'completed');
             expect(result).toHaveLength(1);
-            expect(result[0].status).toBe('Returned');
+            expect(result[0].status).toBe(RentalStatus.COMPLETED);
         });
 
         it('should return only cancelled rentals for "cancelled" tab', () => {
             const result = getRentalsByTab(mockRentals, 'cancelled');
             expect(result).toHaveLength(1);
-            expect(result[0].status).toBe('Cancelled');
+            expect(result[0].status).toBe(RentalStatus.CANCELLED);
         });
 
         it('should return all rentals for unknown tab', () => {
@@ -119,14 +109,14 @@ describe('Rental Utils', () => {
             vi.setSystemTime(new Date('2025-01-01'));
 
             mockRentals = [
-                createMockRental({ id: 1, status: 'In Use' }),
-                createMockRental({ id: 2, status: 'In Use' }),
-                createMockRental({ id: 3, status: 'Confirmed', startDate: '2025-01-10' }),
-                createMockRental({ id: 4, status: 'Confirmed', startDate: '2024-12-20' }),
-                createMockRental({ id: 5, status: 'Returned' }),
-                createMockRental({ id: 6, status: 'Returned' }),
-                createMockRental({ id: 7, status: 'Returned' }),
-                createMockRental({ id: 8, status: 'Cancelled' }),
+                createMockRental({ id: 1, status: RentalStatus.ACTIVE }),
+                createMockRental({ id: 2, status: RentalStatus.ACTIVE }),
+                createMockRental({ id: 3, status: RentalStatus.CONFIRMED, startDate: '2025-01-10' }),
+                createMockRental({ id: 4, status: RentalStatus.CONFIRMED, startDate: '2024-12-20' }),
+                createMockRental({ id: 5, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 6, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 7, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 8, status: RentalStatus.CANCELLED }),
             ];
         });
 
@@ -156,9 +146,9 @@ describe('Rental Utils', () => {
 
         it('should count upcoming correctly based on future dates', () => {
             const futureDateRentals = [
-                createMockRental({ id: 1, status: 'Confirmed', startDate: '2025-01-05' }),
-                createMockRental({ id: 2, status: 'Confirmed', startDate: '2025-02-01' }),
-                createMockRental({ id: 3, status: 'Confirmed', startDate: '2024-12-15' }),
+                createMockRental({ id: 1, status: RentalStatus.CONFIRMED, startDate: '2025-01-05' }),
+                createMockRental({ id: 2, status: RentalStatus.CONFIRMED, startDate: '2025-02-01' }),
+                createMockRental({ id: 3, status: RentalStatus.CONFIRMED, startDate: '2024-12-15' }),
             ];
 
             const counts = calculateTabCounts(futureDateRentals);
@@ -169,10 +159,10 @@ describe('Rental Utils', () => {
     describe('calculateRentalStats', () => {
         it('should calculate correct stats', () => {
             const rentals = [
-                createMockRental({ status: 'In Use' }),
-                createMockRental({ status: 'In Use' }),
-                createMockRental({ status: 'Returned' }),
-                createMockRental({ status: 'Confirmed' }),
+                createMockRental({ status: RentalStatus.ACTIVE }),
+                createMockRental({ status: RentalStatus.ACTIVE }),
+                createMockRental({ status: RentalStatus.COMPLETED }),
+                createMockRental({ status: RentalStatus.CONFIRMED }),
             ];
 
             const stats = calculateRentalStats(rentals);
@@ -191,7 +181,7 @@ describe('Rental Utils', () => {
 
     describe('getActionButtons', () => {
         it('should return correct buttons for "In Use" status', () => {
-            const buttons = getActionButtons('In Use');
+            const buttons = getActionButtons(RentalStatus.ACTIVE);
 
             expect(buttons).toHaveLength(1);
             expect(buttons[0].label).toBe('View Details');
@@ -199,7 +189,7 @@ describe('Rental Utils', () => {
         });
 
         it('should return correct buttons for "Confirmed" status', () => {
-            const buttons = getActionButtons('Confirmed');
+            const buttons = getActionButtons(RentalStatus.CONFIRMED);
 
             expect(buttons).toHaveLength(1);
             expect(buttons[0].label).toBe('View Details');
@@ -207,7 +197,7 @@ describe('Rental Utils', () => {
         });
 
         it('should return correct buttons for "Returned" status', () => {
-            const buttons = getActionButtons('Returned');
+            const buttons = getActionButtons(RentalStatus.COMPLETED);
 
             expect(buttons).toHaveLength(2);
             expect(buttons[0].label).toBe('Receipt');
@@ -216,7 +206,7 @@ describe('Rental Utils', () => {
         });
 
         it('should return correct buttons for "Requested" status', () => {
-            const buttons = getActionButtons('Requested');
+            const buttons = getActionButtons(RentalStatus.REQUESTED);
 
             expect(buttons).toHaveLength(2);
             expect(buttons[0].label).toBe('View Details');
@@ -225,7 +215,7 @@ describe('Rental Utils', () => {
         });
 
         it('should return empty array for "Cancelled" status', () => {
-            const buttons = getActionButtons('Cancelled');
+            const buttons = getActionButtons(RentalStatus.CANCELLED);
             expect(buttons).toHaveLength(0);
         });
 
@@ -277,7 +267,7 @@ describe('Rental Utils', () => {
 
         it('should return true for confirmed rental with future start date', () => {
             const rental = createMockRental({
-                status: 'Confirmed',
+                status: RentalStatus.CONFIRMED,
                 startDate: '2025-01-10',
             });
 
@@ -286,7 +276,7 @@ describe('Rental Utils', () => {
 
         it('should return false for confirmed rental with past start date', () => {
             const rental = createMockRental({
-                status: 'Confirmed',
+                status: RentalStatus.CONFIRMED,
                 startDate: '2024-12-20',
             });
 
@@ -295,7 +285,7 @@ describe('Rental Utils', () => {
 
         it('should return false for non-confirmed rental even with future date', () => {
             const rental = createMockRental({
-                status: 'In Use',
+                status: RentalStatus.ACTIVE,
                 startDate: '2025-01-10',
             });
 
@@ -304,7 +294,7 @@ describe('Rental Utils', () => {
 
         it('should return false for confirmed rental starting today', () => {
             const rental = createMockRental({
-                status: 'Confirmed',
+                status: RentalStatus.CONFIRMED,
                 startDate: '2025-01-01',
             });
 
@@ -314,23 +304,23 @@ describe('Rental Utils', () => {
 
     describe('getStatusBadgeVariant', () => {
         it('should return "default" for "In Use"', () => {
-            expect(getStatusBadgeVariant('In Use')).toBe('default');
+            expect(getStatusBadgeVariant(RentalStatus.ACTIVE)).toBe('default');
         });
 
         it('should return "secondary" for "Confirmed"', () => {
-            expect(getStatusBadgeVariant('Confirmed')).toBe('secondary');
+            expect(getStatusBadgeVariant(RentalStatus.CONFIRMED)).toBe('secondary');
         });
 
         it('should return "outline" for "Returned"', () => {
-            expect(getStatusBadgeVariant('Returned')).toBe('outline');
+            expect(getStatusBadgeVariant(RentalStatus.COMPLETED)).toBe('outline');
         });
 
         it('should return "secondary" for "Requested"', () => {
-            expect(getStatusBadgeVariant('Requested')).toBe('secondary');
+            expect(getStatusBadgeVariant(RentalStatus.REQUESTED)).toBe('secondary');
         });
 
         it('should return "destructive" for "Cancelled"', () => {
-            expect(getStatusBadgeVariant('Cancelled')).toBe('destructive');
+            expect(getStatusBadgeVariant(RentalStatus.CANCELLED)).toBe('destructive');
         });
 
         it('should return "outline" for unknown status', () => {

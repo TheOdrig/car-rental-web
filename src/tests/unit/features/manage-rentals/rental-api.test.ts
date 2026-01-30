@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getRentals, getRentalById, performRentalAction, cancelRental, updateRental } from '@/features/manage-rentals/api/rental-api';
+import { getRentals, getRentalById, performRentalAction, cancelRental, updateRental } from '@/features/manage-rentals';
 import { apiClient } from '@/shared/api';
-import { ApiError } from '@/shared/api/error';
+import { ApiError } from '@/shared/api';
 import {
     createMockRentalFilter,
     createMockPaginatedRentals,
@@ -31,7 +31,7 @@ describe('Rental API', () => {
             const mockFilter = createMockRentalFilter();
             const mockResponse = createMockPaginatedRentals();
 
-            (apiClient.get as any).mockResolvedValue(mockResponse);
+            vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
 
             const result = await getRentals(mockFilter);
 
@@ -44,7 +44,7 @@ describe('Rental API', () => {
         it('should fetch all rentals without filter', async () => {
             const mockResponse = createMockPaginatedRentals();
 
-            (apiClient.get as any).mockResolvedValue(mockResponse);
+            vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
 
             const result = await getRentals();
 
@@ -59,7 +59,7 @@ describe('Rental API', () => {
         it('should fetch rental by id', async () => {
             const mockRental = createMockRental();
 
-            (apiClient.get as any).mockResolvedValue(mockRental);
+            vi.mocked(apiClient.get).mockResolvedValue(mockRental);
 
             const result = await getRentalById(1);
 
@@ -70,7 +70,7 @@ describe('Rental API', () => {
         it('should handle rental not found', async () => {
             const error = new ApiError(404, 'Rental not found');
 
-            (apiClient.get as any).mockRejectedValue(error);
+            vi.mocked(apiClient.get).mockRejectedValue(error);
 
             await expect(getRentalById(999)).rejects.toThrow('Rental not found');
         });
@@ -81,7 +81,7 @@ describe('Rental API', () => {
             const mockRequest = createMockRentalActionRequest({ action: 'approve' });
             const mockRental = createMockRental({ status: 'Confirmed' });
 
-            (apiClient.post as any).mockResolvedValue(mockRental);
+            vi.mocked(apiClient.post).mockResolvedValue(mockRental);
 
             const result = await performRentalAction(mockRequest);
 
@@ -93,7 +93,7 @@ describe('Rental API', () => {
             const mockRequest = createMockRentalActionRequest({ action: 'reject', reason: 'Invalid documents' });
             const mockRental = createMockRental({ status: 'Cancelled' });
 
-            (apiClient.post as any).mockResolvedValue(mockRental);
+            vi.mocked(apiClient.post).mockResolvedValue(mockRental);
 
             const result = await performRentalAction(mockRequest);
 
@@ -102,7 +102,7 @@ describe('Rental API', () => {
         });
 
         it('should handle unknown action', async () => {
-            const mockRequest = { rentalId: 1, action: 'unknown' as any };
+            const mockRequest = { rentalId: 1, action: 'unknown' as never };
 
             await expect(performRentalAction(mockRequest)).rejects.toThrow('Unknown action: unknown');
         });
@@ -112,7 +112,7 @@ describe('Rental API', () => {
         it('should cancel rental with reason', async () => {
             const mockRental = createMockRental({ status: 'Cancelled' });
 
-            (apiClient.post as any).mockResolvedValue(mockRental);
+            vi.mocked(apiClient.post).mockResolvedValue(mockRental);
 
             const result = await cancelRental(1, 'Customer request');
 
@@ -126,7 +126,7 @@ describe('Rental API', () => {
             const updateData = { pickupNotes: 'Check fuel level' };
             const mockRental = createMockRental({ pickupNotes: 'Check fuel level' });
 
-            (apiClient.put as any).mockResolvedValue(mockRental);
+            vi.mocked(apiClient.put).mockResolvedValue(mockRental);
 
             const result = await updateRental(1, updateData);
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { cn } from '@/lib/utils';
-import { showToast, toastMessages } from '@/lib/utils/toast';
-import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
+import { cn } from '@/shared/lib';
+import { showToast, toastMessages } from '@/shared/lib';
+import { safeFormatDate, safeFormatDateTime } from '@/shared/lib';
 
 vi.mock('sonner', () => ({
     toast: {
@@ -208,4 +208,3 @@ describe('toastMessages', () => {
         });
     });
 });
-

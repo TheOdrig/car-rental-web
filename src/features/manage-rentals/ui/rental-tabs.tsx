@@ -1,9 +1,9 @@
 'use client';
 
 import { memo, useCallback } from 'react';
-import { cn } from '@/lib/utils';
-import type { RentalTab, RentalTabCounts } from '@/types';
-import { RENTAL_TABS } from '@/lib/utils/rental-utils';
+import { cn } from '@/shared/lib';
+import type { RentalTab, RentalTabCounts } from '@/entities/rental';
+import { RENTAL_TABS } from '@/entities/rental';
 
 interface RentalTabsProps {
     activeTab: RentalTab;
@@ -90,4 +90,3 @@ export const RentalTabs = memo(function RentalTabs({
         </div>
     );
 });
-

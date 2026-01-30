@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useFilterStore } from '@/lib/stores/filter-store';
+import { useFilterStore } from '@/widgets/car-filters';
 
 describe('useFilterStore', () => {
     beforeEach(() => {
@@ -318,4 +318,3 @@ describe('useFilterStore', () => {
         });
     });
 });
-

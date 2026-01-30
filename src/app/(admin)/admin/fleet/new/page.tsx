@@ -3,15 +3,17 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { BasicInfoSection } from '@/components/admin/car-form/basic-info';
-import { SpecificationsSection } from '@/components/admin/car-form/specifications';
-import { PricingSection } from '@/components/admin/car-form/pricing';
-import { ImagesSection } from '@/components/admin/car-form/images';
-import { useCreateCar } from '@/lib/hooks/use-admin';
-import { useCarForm } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Breadcrumb } from '@/widgets/layout';
+import {
+    BasicInfoSection,
+    SpecificationsSection,
+    PricingSection,
+    ImagesSection,
+} from '@/features/admin';
+import { useCreateCar } from '@/features/admin';
+import { useCarForm } from '@/features/admin';
 import { toast } from 'sonner';
 
 interface ImageFile {
@@ -175,4 +177,5 @@ export default function AddCarPage() {
         </div>
     );
 }
+
 

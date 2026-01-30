@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { FormField } from '@/components/ui/form-field';
-import { Input } from '@/components/ui/input';
+import { FormField } from '@/shared/ui/form-field';
+import { Input } from '@/shared/ui/input';
 
 describe('FormField', () => {
     describe('Label Rendering', () => {

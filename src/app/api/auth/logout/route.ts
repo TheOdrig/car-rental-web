@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { clearAuthTokens } from '@/lib/auth';
+import { clearAuthTokens } from '@/features/auth';
 
 export async function POST() {
     try {
@@ -14,4 +14,3 @@ export async function POST() {
         );
     }
 }
-

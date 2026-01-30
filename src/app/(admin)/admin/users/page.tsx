@@ -2,19 +2,19 @@
 
 import React, { useState } from 'react';
 import { RefreshCw, Clock, Search } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { UserStatsCards } from '@/components/admin/user-stats';
-import { UserTable } from '@/components/admin/user-table';
-import { useUserStats, useInvalidateUsers } from '@/lib/hooks/use-users';
+} from '@/shared/ui/select';
+import { Breadcrumb } from '@/widgets/layout';
+import { UserStatsCards } from '@/features/admin';
+import { UserTable } from '@/features/admin';
+import { useUserStats, useInvalidateUsers } from '@/features/admin';
 import { toast } from 'sonner';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
@@ -131,4 +131,7 @@ export default function UserManagementPage() {
         </div >
     );
 }
+
+
+
 

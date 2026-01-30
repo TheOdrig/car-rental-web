@@ -1,8 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { apiClient } from '@/shared/api/client';
-import { ApiError } from '@/shared/api/error';
+import { apiClient, ApiError } from '@/shared/api';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 global.fetch = vi.fn();
 
 describe('apiClient', () => {
@@ -13,11 +11,11 @@ describe('apiClient', () => {
     describe('GET request', () => {
         it('should perform GET request correctly', async () => {
             const mockData = { id: 1, name: 'Test' };
-            (global.fetch as any).mockResolvedValueOnce({
+            vi.mocked(fetch).mockResolvedValueOnce({
                 ok: true,
-                headers: { get: () => 'application/json' },
+                headers: { get: () => 'application/json' } as unknown as Headers,
                 json: async () => mockData,
-            });
+            } as unknown as Response);
 
             const result = await apiClient.get('/test');
 
@@ -29,23 +27,23 @@ describe('apiClient', () => {
         });
 
         it('should throw ApiError on failure', async () => {
-            (global.fetch as any).mockResolvedValueOnce({
+            vi.mocked(fetch).mockResolvedValueOnce({
                 ok: false,
                 status: 404,
                 statusText: 'Not Found',
-                headers: { get: () => 'application/json' },
+                headers: { get: () => 'application/json' } as unknown as Headers,
                 json: async () => ({ message: 'Not Found' }),
-            });
+            } as unknown as Response);
 
             await expect(apiClient.get('/not-found')).rejects.toThrow(ApiError);
         });
 
         it('should handle query params', async () => {
-            (global.fetch as any).mockResolvedValueOnce({
+            vi.mocked(fetch).mockResolvedValueOnce({
                 ok: true,
-                headers: { get: () => 'application/json' },
+                headers: { get: () => 'application/json' } as unknown as Headers,
                 json: async () => ({}),
-            });
+            } as unknown as Response);
 
             await apiClient.get('/search', { params: { q: 'car', limit: 10 } });
 
@@ -65,11 +63,11 @@ describe('apiClient', () => {
             const mockData = { success: true };
             const body = { name: 'New Car' };
 
-            (global.fetch as any).mockResolvedValueOnce({
+            vi.mocked(fetch).mockResolvedValueOnce({
                 ok: true,
-                headers: { get: () => 'application/json' },
+                headers: { get: () => 'application/json' } as unknown as Headers,
                 json: async () => mockData,
-            });
+            } as unknown as Response);
 
             const result = await apiClient.post('/create', body);
 

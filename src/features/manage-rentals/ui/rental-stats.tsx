@@ -2,10 +2,10 @@
 
 import { memo, type ReactNode } from 'react';
 import { History, CalendarClock } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { RentalStats as RentalStatsType } from '@/types';
+import { cn } from '@/shared/lib';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
+import type { RentalStats as RentalStatsType } from '@/entities/rental';
 
 interface RentalStatsProps {
     stats: RentalStatsType;

@@ -6,9 +6,9 @@ import {
     useLogout,
     useRegister,
     authKeys
-} from '@/lib/hooks/use-auth';
+} from '@/features/auth';
 import { createQueryWrapper } from '../test-utils';
-import type { MeResponse, LoginResponse } from '@/types';
+import type { MeResponse, LoginResponse } from '@/features/auth';
 
 const mockPush = vi.fn();
 
@@ -25,12 +25,12 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/',
 }));
 
-vi.mock('@/lib/api/client', () => ({
+vi.mock('@/shared/api', () => ({
     clientGet: vi.fn(),
     clientPost: vi.fn(),
 }));
 
-vi.mock('@/lib/utils/toast', () => ({
+vi.mock('@/shared/lib', () => ({
     showToast: {
         success: vi.fn(),
         error: vi.fn(),
@@ -44,7 +44,7 @@ vi.mock('@/lib/utils/toast', () => ({
     },
 }));
 
-import { clientGet, clientPost } from '@/lib/api/client';
+import { clientGet, clientPost } from '@/shared/api';
 
 const mockMeResponse: MeResponse = {
     id: 1,

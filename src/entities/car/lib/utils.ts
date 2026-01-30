@@ -1,14 +1,35 @@
-import { Car, CarStatus } from '../model/types';
-import { formatCurrency } from '@/shared/lib/format';
+import { Car, SortOption } from '../model/types';
+import { formatCurrency } from '@/shared/lib';
 
 export const isAvailable = (car: Car): boolean => {
-    return car.status === CarStatus.AVAILABLE;
+    return car.carStatusType === 'Available';
 };
 
 export const getCarTitle = (car: Car): string => {
-    return `${car.brand} ${car.model} (${car.year})`;
+    return `${car.brand} ${car.model} (${car.productionYear})`;
 };
 
 export const getFormattedPrice = (car: Car): string => {
-    return formatCurrency(car.dailyPrice);
+    return formatCurrency(car.price);
 };
+
+export function getSortParams(sortBy: SortOption): [string, string] {
+    switch (sortBy) {
+        case 'price-asc':
+            return ['price', 'asc'];
+        case 'price-desc':
+            return ['price', 'desc'];
+        case 'name-asc':
+            return ['brand', 'asc'];
+        case 'rating-desc':
+            return ['rating', 'desc'];
+        case 'recommended':
+        default:
+            return ['createTime', 'desc'];
+    }
+}
+
+export function sortOptionToParam(sortBy: SortOption): string {
+    const [field, direction] = getSortParams(sortBy);
+    return `${field},${direction}`;
+}

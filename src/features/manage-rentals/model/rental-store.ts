@@ -1,4 +1,4 @@
-import type { Rental } from '@/types/rental';
+import type { Rental } from '@/entities/rental';
 import type { PaginatedRentals } from './types';
 
 interface RentalState {

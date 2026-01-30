@@ -1,16 +1,17 @@
 'use client';
 
 import { AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { CarGrid, CarGridSkeleton, CarFilters } from '@/components/cars';
-import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/components/home';
-import { useCars } from '@/lib/hooks';
-import { useFilterStore } from '@/lib/stores/filter-store';
+import { Button } from '@/shared/ui/button';
+import { CarGrid, CarGridSkeleton } from '@/entities/car';
+import { CarFilters } from '@/widgets/car-filters';
+import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/widgets/home';
+import { useCars } from '@/entities/car';
+import { useFilterStore } from '@/widgets/car-filters';
 
 export function HomeContent() {
-    const { filters } = useFilterStore();
+    const { filters, sortBy } = useFilterStore();
     const homeFilters = { ...filters, carStatusType: 'AVAILABLE' };
-    const { data, isLoading, error, refetch } = useCars(homeFilters);
+    const { data, isLoading, error, refetch } = useCars(homeFilters, 0, sortBy);
 
     const cars = data?.content ?? data?.cars ?? [];
 
@@ -60,3 +61,4 @@ export function HomeContent() {
         </>
     );
 }
+

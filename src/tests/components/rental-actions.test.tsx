@@ -2,7 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RentalActions, RentalActionsSkeleton } from '@/features/manage-rentals';
-import type { Rental, RentalStatus } from '@/types';
+import type { Rental } from '@/entities/rental';
+import { RentalStatus } from '@/entities/rental';
 
 const createMockRental = (status: RentalStatus): Rental => ({
     id: 1,
@@ -43,7 +44,7 @@ describe('RentalActions', () => {
         it('should render View Details for In Use status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('In Use')}
+                    rental={createMockRental(RentalStatus.ACTIVE)}
                     onAction={mockOnAction}
                 />
             );
@@ -54,7 +55,7 @@ describe('RentalActions', () => {
         it('should render View Details for Confirmed status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('Confirmed')}
+                    rental={createMockRental(RentalStatus.CONFIRMED)}
                     onAction={mockOnAction}
                 />
             );
@@ -65,7 +66,7 @@ describe('RentalActions', () => {
         it('should render Receipt and Book Again for Returned status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('Returned')}
+                    rental={createMockRental(RentalStatus.COMPLETED)}
                     onAction={mockOnAction}
                 />
             );
@@ -77,7 +78,7 @@ describe('RentalActions', () => {
         it('should render View Details and Cancel for Requested status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('Requested')}
+                    rental={createMockRental(RentalStatus.REQUESTED)}
                     onAction={mockOnAction}
                 />
             );
@@ -89,7 +90,7 @@ describe('RentalActions', () => {
         it('should render no buttons for Cancelled status', () => {
             const { container } = render(
                 <RentalActions
-                    rental={createMockRental('Cancelled')}
+                    rental={createMockRental(RentalStatus.CANCELLED)}
                     onAction={mockOnAction}
                 />
             );
@@ -100,8 +101,8 @@ describe('RentalActions', () => {
         it('should use status prop over rental.status when provided', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('Cancelled')}
-                    status="In Use"
+                    rental={createMockRental(RentalStatus.CANCELLED)}
+                    status={RentalStatus.ACTIVE}
                     onAction={mockOnAction}
                 />
             );
@@ -113,7 +114,7 @@ describe('RentalActions', () => {
     describe('button click handlers', () => {
         it('should call onAction with correct action and rental', async () => {
             const user = userEvent.setup();
-            const rental = createMockRental('In Use');
+            const rental = createMockRental(RentalStatus.ACTIVE);
 
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
 
@@ -124,7 +125,7 @@ describe('RentalActions', () => {
 
         it('should call onAction for each button click', async () => {
             const user = userEvent.setup();
-            const rental = createMockRental('Returned');
+            const rental = createMockRental(RentalStatus.COMPLETED);
 
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
 
@@ -138,7 +139,7 @@ describe('RentalActions', () => {
         it('should prevent event propagation', async () => {
             const user = userEvent.setup();
             const containerClick = vi.fn();
-            const rental = createMockRental('In Use');
+            const rental = createMockRental(RentalStatus.ACTIVE);
 
             render(
                 <div onClick={containerClick}>
@@ -158,7 +159,7 @@ describe('RentalActions', () => {
             const asyncAction = vi.fn(
                 (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 100))
             );
-            const rental = createMockRental('In Use');
+            const rental = createMockRental(RentalStatus.ACTIVE);
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
@@ -177,7 +178,7 @@ describe('RentalActions', () => {
             const asyncAction = vi.fn(
                 (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 50))
             );
-            const rental = createMockRental('In Use');
+            const rental = createMockRental(RentalStatus.ACTIVE);
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
@@ -189,7 +190,7 @@ describe('RentalActions', () => {
         it('should re-enable button after action completes', async () => {
             const user = userEvent.setup();
             const asyncAction = vi.fn(() => Promise.resolve());
-            const rental = createMockRental('In Use');
+            const rental = createMockRental(RentalStatus.ACTIVE);
 
             render(<RentalActions rental={rental} onAction={asyncAction} />);
 
@@ -205,7 +206,7 @@ describe('RentalActions', () => {
         it('should apply horizontal layout by default', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('In Use')}
+                    rental={createMockRental(RentalStatus.ACTIVE)}
                     onAction={mockOnAction}
                 />
             );
@@ -217,7 +218,7 @@ describe('RentalActions', () => {
         it('should apply vertical layout when specified', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('In Use')}
+                    rental={createMockRental(RentalStatus.ACTIVE)}
                     onAction={mockOnAction}
                     orientation="vertical"
                 />
@@ -232,7 +233,7 @@ describe('RentalActions', () => {
         it('should have role group with aria-label', () => {
             render(
                 <RentalActions
-                    rental={createMockRental('In Use')}
+                    rental={createMockRental(RentalStatus.ACTIVE)}
                     onAction={mockOnAction}
                 />
             );
@@ -264,4 +265,3 @@ describe('RentalActionsSkeleton', () => {
         expect(container.firstChild).toHaveClass('flex-col');
     });
 });
-

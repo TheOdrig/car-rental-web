@@ -90,4 +90,3 @@ describe('BookingFailure', () => {
         expect(mockBack).toHaveBeenCalled();
     });
 });
-

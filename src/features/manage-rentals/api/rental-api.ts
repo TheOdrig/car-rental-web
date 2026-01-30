@@ -1,5 +1,5 @@
 import { apiClient } from '@/shared/api';
-import type { Rental } from '@/types/rental';
+import type { Rental } from '@/entities/rental';
 import type { RentalFilter, RentalActionRequest, PaginatedRentals } from '../model/types';
 import { RENTAL_ENDPOINTS } from './endpoints';
 

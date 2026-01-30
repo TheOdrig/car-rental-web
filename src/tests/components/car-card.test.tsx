@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { CarCard, CarCardSkeleton } from '@/components/cars/car-card';
+import { CarCard, CarCardSkeleton } from '@/entities/car';
 import { renderWithProviders } from '../test-utils';
 import { createMockCar, resetMockFactories } from '../factories';
-import type { AvailableCar } from '@/types';
+import type { AvailableCar } from '@/entities/car';
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
@@ -19,7 +19,7 @@ vi.mock('next/image', () => ({
     ),
 }));
 
-vi.mock('@/components/ui/dynamic-image', () => ({
+vi.mock('@/shared/ui/dynamic-image', () => ({
     DynamicImage: ({ src, alt, ...props }: { src: string; alt: string }) => (
         <img src={src} alt={alt} {...props} />
     ),

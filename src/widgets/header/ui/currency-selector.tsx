@@ -1,16 +1,16 @@
 'use client';
 
 import { ChevronDown } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { useCurrency } from '@/lib/providers/currency-provider';
-import { CURRENCIES, getCurrencyByCode } from '@/types';
-import { cn } from '@/lib/utils';
+} from '@/shared/ui/dropdown-menu';
+import { useCurrency } from '@/entities/currency';
+import { CURRENCIES, getCurrencyByCode } from '@/entities/currency';
+import { cn } from '@/shared/lib';
 
 export function CurrencySelector() {
     const { currency, setCurrency, isLoading } = useCurrency();

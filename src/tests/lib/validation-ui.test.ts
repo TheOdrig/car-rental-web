@@ -7,7 +7,7 @@ import {
     getValidationMessageClasses,
     determineValidationState,
     getValidationRingClasses,
-} from '@/lib/utils/validation-ui';
+} from '@/shared/lib';
 
 describe('validation-ui utilities', () => {
     describe('getValidationConfig', () => {
@@ -238,4 +238,3 @@ describe('validation-ui utilities', () => {
         });
     });
 });
-

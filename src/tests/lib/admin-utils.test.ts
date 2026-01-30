@@ -1,16 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import {
-    formatCurrency,
-    formatTrend,
-    formatDate,
-    formatTime,
-    validatePickupForm,
-    validateRejectForm,
-    calculateFleetPercentages,
-    processRevenueData,
-    getAlertStyles,
-} from '@/lib/utils/admin-utils';
-import { MonthlyRevenue } from '@/types/admin';
+import { formatCurrency, formatDate, formatTime } from '@/shared/lib';
+import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPercentages, processRevenueData, getAlertStyles } from '@/features/admin';
+import { MonthlyRevenue } from '@/features/admin';
 
 
 describe('formatCurrency', () => {
@@ -205,7 +196,7 @@ describe('calculateFleetPercentages', () => {
             damagedCars: 0,
         });
 
-        
+
         expect(result.available).toBe(33);
         expect(result.rented).toBe(33);
         expect(result.maintenance).toBe(33);

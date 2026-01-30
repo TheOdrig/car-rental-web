@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
+import { routeGet } from '@/shared/api/route-handler';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
 
 export async function GET(
     request: NextRequest,
@@ -24,7 +24,7 @@ export async function GET(
         return NextResponse.json(data);
     } catch (error) {
         console.error('[API] GET /api/admin/damages/[id] error:', error);
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

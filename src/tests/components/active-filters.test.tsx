@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ActiveFilters } from '@/components/cars/active-filters';
-import { useFilterStore } from '@/lib/stores/filter-store';
+import { ActiveFilters } from '@/widgets/car-filters';
+import { useFilterStore } from '@/widgets/car-filters';
 
 describe('ActiveFilters', () => {
     beforeEach(() => {

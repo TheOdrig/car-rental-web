@@ -1,8 +1,8 @@
 'use client';
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { CopyButton } from '@/components/admin/copy-button';
+import { CopyButton } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
 
 describe('CopyButton', () => {
@@ -33,4 +33,5 @@ describe('CopyButton', () => {
         expect(button).toHaveClass('h-6', 'w-6');
     });
 });
+
 

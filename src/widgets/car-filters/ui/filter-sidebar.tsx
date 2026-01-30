@@ -2,12 +2,12 @@
 
 import React, { useCallback } from 'react';
 import { RotateCcw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Label } from '@/components/ui/label';
-import { useFilterStore } from '@/lib/stores/filter-store';
+import { Button } from '@/shared/ui/button';
+import { Checkbox } from '@/shared/ui/checkbox';
+import { Label } from '@/shared/ui/label';
+import { useFilterStore } from '@/widgets/car-filters';
 import { PriceRangeSlider } from './price-range-slider';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib';
 
 interface FilterSidebarProps {
     className?: string;

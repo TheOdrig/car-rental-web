@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { SearchWidget } from '@/components/home/search-widget';
+import { SearchWidget } from '@/widgets/home';
 
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({

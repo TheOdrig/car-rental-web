@@ -2,9 +2,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { RentalInfoCard } from '@/components/admin/rental-detail/rental-info-card';
+import { RentalInfoCard } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { AdminRentalStatus, RentalPricing } from '@/types';
+import type { AdminRentalStatus, RentalPricing } from '@/features/admin';
 
 describe('RentalInfoCard', () => {
     const defaultProps = {
@@ -103,4 +103,5 @@ describe('RentalInfoCard', () => {
         expect(screen.getByText('Downtown Office')).toBeInTheDocument();
     });
 });
+
 

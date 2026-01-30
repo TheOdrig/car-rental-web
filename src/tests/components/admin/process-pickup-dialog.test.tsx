@@ -3,9 +3,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProcessPickupDialog } from '@/components/admin/process-pickup-dialog';
+import { ProcessPickupDialog } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { PendingItem } from '@/types/admin';
+import type { PendingItem } from '@/features/admin';
 
 describe('ProcessPickupDialog', () => {
     const user = userEvent.setup();
@@ -40,7 +40,7 @@ describe('ProcessPickupDialog', () => {
         expect(screen.getByText('XYZ-5678')).toBeInTheDocument();
         expect(screen.getByText(/RENT-202/)).toBeInTheDocument();
 
-        
+
         expect(screen.getByLabelText(/Customer ID Verified/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Vehicle condition inspected/i)).toBeInTheDocument();
     });
@@ -100,4 +100,5 @@ describe('ProcessPickupDialog', () => {
         expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
     });
 });
+
 

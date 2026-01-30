@@ -3,12 +3,12 @@
 import { useState, useRef, useCallback, type ChangeEvent } from 'react';
 import Image from 'next/image';
 import { Upload, FileText, CheckCircle, Clock, XCircle, Trash2, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
-import { showToast } from '@/lib/utils/toast';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Badge } from '@/shared/ui/badge';
+import { cn } from '@/shared/lib';
+import { showToast } from '@/shared/lib';
+import { ComingSoonBanner } from '@/shared/ui/coming-soon-banner';
 
 type VerificationStatus = 'none' | 'pending' | 'verified' | 'rejected';
 

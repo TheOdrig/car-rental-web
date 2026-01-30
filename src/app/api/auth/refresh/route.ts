@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api';
-import { getRefreshToken, setAuthTokens, clearAuthTokens } from '@/lib/auth';
-import { AuthResponse } from '@/types';
+import { endpoints } from '@/shared/api';
+import { getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
+import { AuthResponse } from '@/features/auth';
 
 export async function POST() {
     try {
@@ -45,4 +45,3 @@ export async function POST() {
         );
     }
 }
-

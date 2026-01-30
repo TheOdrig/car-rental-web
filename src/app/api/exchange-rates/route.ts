@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api/endpoints';
+import { endpoints } from '@/shared/api';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,4 +27,3 @@ export async function GET() {
         );
     }
 }
-

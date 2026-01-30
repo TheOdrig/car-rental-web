@@ -1,11 +1,11 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { useFilterStore } from '@/lib/stores/filter-store';
-import { cn } from '@/lib/utils';
-import type { CarFilters } from '@/types';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { useFilterStore } from '@/widgets/car-filters';
+import { cn } from '@/shared/lib';
+import type { CarFilters } from '@/entities/car';
 
 interface ActiveFiltersProps {
     className?: string;

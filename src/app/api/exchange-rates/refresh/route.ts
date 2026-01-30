@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { endpoints } from '@/lib/api/endpoints';
+import { endpoints } from '@/shared/api';
 import { cookies } from 'next/headers';
 
 export async function POST() {
@@ -40,5 +40,4 @@ export async function POST() {
         );
     }
 }
-
 

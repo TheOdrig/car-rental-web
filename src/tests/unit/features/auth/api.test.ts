@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { login, register, handleAuthError } from '@/features/auth/api/auth-api';
 import { apiClient } from '@/shared/api';
-import { ApiError } from '@/shared/api/error';
+import { ApiError } from '@/shared/api';
 import { createMockLoginRequest, createMockRegisterRequest, createMockAuthResponse } from './fixtures';
 
 vi.mock('@/shared/api', async () => {
@@ -24,7 +24,7 @@ describe('Auth API', () => {
             const mockData = createMockLoginRequest();
             const mockResponse = createMockAuthResponse();
 
-            (apiClient.post as any).mockResolvedValue(mockResponse);
+            vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
 
             const result = await login(mockData);
 
@@ -38,7 +38,7 @@ describe('Auth API', () => {
             const mockData = createMockRegisterRequest();
             const mockResponse = createMockAuthResponse();
 
-            (apiClient.post as any).mockResolvedValue(mockResponse);
+            vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
 
             const result = await register(mockData);
 

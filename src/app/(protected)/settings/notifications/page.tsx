@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { Bell, Mail, Smartphone, MessageSquare } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { showToast } from '@/lib/utils/toast';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Switch } from '@/shared/ui/switch';
+import { showToast } from '@/shared/lib';
+import { ComingSoonBanner } from '@/shared/ui/coming-soon-banner';
 
 interface NotificationSetting {
     id: string;

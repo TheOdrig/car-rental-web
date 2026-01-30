@@ -18,14 +18,14 @@ describe('Booking Store', () => {
         });
 
         it('should replace existing booking', () => {
-            const firstBooking = createMockBooking({ id: 1 });
-            const secondBooking = createMockBooking({ id: 2 });
+            const firstBooking = createMockBooking({ referenceNumber: 'BOOK-1' });
+            const secondBooking = createMockBooking({ referenceNumber: 'BOOK-2' });
 
             bookingActions.setBooking(firstBooking);
-            expect(bookingStore.currentBooking?.id).toBe(1);
+            expect(bookingStore.currentBooking?.referenceNumber).toBe('BOOK-1');
 
             bookingActions.setBooking(secondBooking);
-            expect(bookingStore.currentBooking?.id).toBe(2);
+            expect(bookingStore.currentBooking?.referenceNumber).toBe('BOOK-2');
         });
     });
 

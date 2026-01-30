@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { formatCurrency, formatDate } from '@/shared/lib/format';
-import { safeJSONParse } from '@/shared/lib/utils';
-import { cn } from '@/shared/lib/cn';
+import { formatCurrency, formatDate, safeJSONParse, cn } from '@/shared/lib';
 
 describe('Shared Utilities', () => {
     describe('formatCurrency', () => {

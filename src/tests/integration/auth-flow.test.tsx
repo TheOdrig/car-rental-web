@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { screen, waitFor, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { LoginForm, RegisterForm } from '@/features/auth';
-import { OAuthButtons } from '@/components/auth/oauth-buttons';
+import { LoginForm, RegisterForm, OAuthButtons } from '@/features/auth';
 import { renderWithProviders } from '../test-utils';
 
 const mockPush = vi.fn();
@@ -21,18 +20,22 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/login',
 }));
 
-vi.mock('@/lib/hooks', () => ({
-    useLogin: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
-    useRegister: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
-}));
+vi.mock('@/features/auth', async () => {
+    const actual = await vi.importActual('@/features/auth');
+    return {
+        ...actual,
+        useLogin: vi.fn(() => ({
+            mutateAsync: vi.fn(),
+            isPending: false,
+        })),
+        useRegister: vi.fn(() => ({
+            mutateAsync: vi.fn(),
+            isPending: false,
+        })),
+    };
+});
 
-import { useLogin, useRegister } from '@/lib/hooks';
+import { useLogin, useRegister } from '@/features/auth';
 
 describe('Authentication Integration Tests', () => {
     const user = userEvent.setup();

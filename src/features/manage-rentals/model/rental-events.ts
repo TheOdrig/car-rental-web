@@ -1,6 +1,6 @@
 import { eventBus, AUTH_EVENTS, RENTAL_EVENTS } from '@/shared/events';
 import { rentalActions } from './rental-store';
-import type { Rental } from '@/types/rental';
+import type { Rental } from '@/entities/rental';
 
 export { RENTAL_EVENTS } from '@/shared/events';
 export type { RentalEventType } from '@/shared/events';

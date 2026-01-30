@@ -2,19 +2,21 @@
 
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { CustomerInfoCard } from '@/components/admin/rental-detail/customer-info-card';
+import { CustomerInfoCard } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { RentalCustomerInfo } from '@/types';
+import type { RentalCustomerInfo } from '@/features/admin';
 
 describe('CustomerInfoCard', () => {
     const mockCustomer: RentalCustomerInfo = {
         id: 42,
+        name: 'John Doe',
         firstName: 'John',
         lastName: 'Doe',
         email: 'john.doe@example.com',
         phone: '+1234567890',
-        emailVerified: true,
-        phoneVerified: false,
+        isEmailVerified: true,
+        isPhoneVerified: false,
+        isVerified: false,
         avatarUrl: '/avatars/john.jpg',
         stats: {
             totalRentals: 15,
@@ -71,10 +73,11 @@ describe('CustomerInfoCard', () => {
     });
 
     it('should handle missing phone gracefully', () => {
-        const { phone, ...customerWithoutPhone } = mockCustomer;
-        renderWithProviders(<CustomerInfoCard customer={customerWithoutPhone as any} />);
+        const customerWithoutPhone = { ...mockCustomer, phone: undefined };
+        renderWithProviders(<CustomerInfoCard customer={customerWithoutPhone as unknown as RentalCustomerInfo} />);
 
         expect(screen.queryByRole('link', { name: /\+/i })).not.toBeInTheDocument();
     });
 });
+
 

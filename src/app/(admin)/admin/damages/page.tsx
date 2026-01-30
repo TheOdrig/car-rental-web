@@ -4,13 +4,13 @@ import { Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { DamageTable, DamageFilters } from '@/components/admin';
-import { Pagination } from '@/components/ui/pagination';
-import { useDamages } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/widgets/layout';
+import { DamageTable, DamageFilters } from '@/features/admin';
+import { Pagination } from '@/shared/ui/pagination';
+import { useDamages } from '@/features/manage-damages';
 import { toast } from 'sonner';
-import type { DamageSearchFilters } from '@/types';
+import type { DamageSearchFilters } from '@/entities/damage';
 
 function DamagesContent() {
     const searchParams = useSearchParams();
@@ -101,4 +101,5 @@ export default function DamagesPage() {
         </Suspense>
     );
 }
+
 

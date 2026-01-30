@@ -7,7 +7,7 @@ import {
     createCVCSchema,
     validateCheckoutForm,
     CheckoutValidationMessages,
-} from '@/lib/validations/checkout';
+} from '@/features/book-car';
 import { createMockCheckoutFormData } from '@/tests/factories';
 
 describe('checkout validation schemas', () => {
@@ -211,7 +211,7 @@ describe('checkout validation schemas', () => {
             const data = {
                 firstName: 'John',
                 lastName: 'Doe',
-                
+
             };
 
             const result = checkoutFormSchema.safeParse(data);
@@ -252,7 +252,7 @@ describe('checkout validation schemas', () => {
         it('should reject wrong CVC length for Amex', () => {
             const data = createMockCheckoutFormData({
                 cardNumber: '341111111111111',
-                cvc: '123', 
+                cvc: '123',
             });
             const result = validateCheckoutForm(data, '341111111111111');
             expect(result.success).toBe(false);
@@ -278,4 +278,3 @@ describe('checkout validation schemas', () => {
         });
     });
 });
-

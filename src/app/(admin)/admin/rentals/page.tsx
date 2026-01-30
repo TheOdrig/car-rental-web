@@ -2,18 +2,18 @@
 
 import { useState } from 'react';
 import { RefreshCw, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Badge } from '@/shared/ui/badge';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { PendingRentalsTable } from '@/components/admin';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
+} from '@/shared/ui/select';
+import { PendingRentalsTable } from '@/features/admin';
+import { Breadcrumb } from '@/widgets/layout';
 import {
     usePendingApprovals,
     usePendingPickups,
@@ -24,9 +24,9 @@ import {
     useProcessPickup,
     useProcessReturn,
     useInvalidateAdmin,
-} from '@/lib/hooks/use-admin';
-import type { ProcessReturnData } from '@/types';
-import { showToast } from '@/lib/utils/toast';
+} from '@/features/admin';
+import type { ProcessReturnData } from '@/features/admin';
+import { showToast } from '@/shared/lib';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -251,4 +251,5 @@ export default function AdminRentalsPage() {
         </div>
     );
 }
+
 

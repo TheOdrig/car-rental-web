@@ -1,7 +1,7 @@
-import type { Booking } from './types';
+import type { BookingConfirmation } from './types';
 
 interface BookingState {
-    currentBooking: Booking | null;
+    currentBooking: BookingConfirmation | null;
 }
 
 export const bookingStore: BookingState = {
@@ -9,7 +9,7 @@ export const bookingStore: BookingState = {
 };
 
 export const bookingActions = {
-    setBooking(booking: Booking): void {
+    setBooking(booking: BookingConfirmation): void {
         bookingStore.currentBooking = booking;
     },
 
@@ -17,7 +17,7 @@ export const bookingActions = {
         bookingStore.currentBooking = null;
     },
 
-    getBooking(): Booking | null {
+    getBooking(): BookingConfirmation | null {
         return bookingStore.currentBooking;
     },
 };

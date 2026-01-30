@@ -4,18 +4,18 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2, Eye, EyeOff, Shield, Smartphone } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
-import { showToast } from '@/lib/utils/toast';
-import { useChangePassword } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Switch } from '@/shared/ui/switch';
+import { showToast } from '@/shared/lib';
+import { useChangePassword } from '@/features/auth';
 import {
     passwordChangeSchema,
     type PasswordChangeFormData,
     getPasswordChangeDefaultValues,
-} from '@/lib/validations/settings';
+} from '@/features/user-settings';
 
 export default function SecuritySettingsPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);

@@ -2,9 +2,9 @@
 
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { RentalActionButtons } from '@/components/admin/rental-detail/rental-action-buttons';
+import { RentalActionButtons } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { AdminRentalStatus } from '@/types';
+import type { AdminRentalStatus } from '@/features/admin';
 
 describe('RentalActionButtons', () => {
     const defaultProps = {
@@ -63,4 +63,5 @@ describe('RentalActionButtons', () => {
         expect(screen.getByRole('button', { name: /Reject/i })).toBeDisabled();
     });
 });
+
 

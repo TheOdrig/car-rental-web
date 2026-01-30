@@ -1,8 +1,8 @@
 import type { RentalFilter, RentalActionRequest, RentalListItem, PaginatedRentals } from '@/features/manage-rentals';
-import type { Rental } from '@/types/rental';
+import { type Rental, RentalStatus } from '@/entities/rental';
 
 export const createMockRentalFilter = (overrides = {}): RentalFilter => ({
-    status: 'Requested',
+    status: RentalStatus.REQUESTED,
     ...overrides,
 });
 
@@ -12,7 +12,7 @@ export const createMockRentalListItem = (overrides = {}): RentalListItem => ({
     userName: 'John Doe',
     startDate: '2025-02-01T00:00:00Z',
     endDate: '2025-02-05T00:00:00Z',
-    status: 'Requested',
+    status: RentalStatus.REQUESTED,
     totalPrice: 200,
     currency: 'USD',
     ...overrides,
@@ -50,7 +50,7 @@ export const createMockRental = (overrides = {}): Rental => ({
     dailyPrice: 50,
     totalPrice: 200,
     currency: 'USD',
-    status: 'Requested',
+    status: RentalStatus.REQUESTED,
     createTime: '2025-01-28T00:00:00Z',
     updateTime: '2025-01-28T00:00:00Z',
     ...overrides,

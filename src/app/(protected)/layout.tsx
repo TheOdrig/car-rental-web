@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getAccessToken } from '@/lib/auth/cookies';
+import { getAccessToken } from '@/features/auth';
 import React from "react";
 
 interface ProtectedLayoutProps {
@@ -15,4 +15,3 @@ export default async function ProtectedLayout({ children }: ProtectedLayoutProps
 
     return <>{children}</>;
 }
-

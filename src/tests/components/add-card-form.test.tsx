@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AddCardForm } from '@/components/settings/add-card-form';
+import { AddCardForm } from '@/features/user-settings';
 
 describe('AddCardForm', () => {
     const defaultProps = {

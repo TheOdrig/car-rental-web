@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { DynamicImage } from '@/components/ui/dynamic-image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import Link from 'next/link';
 import {
     Calendar,
@@ -21,12 +21,12 @@ import {
     Settings2,
     Users,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { safeFormatDate, safeFormatDateTime } from '@/lib/utils/format';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/shared/lib';
+import { safeFormatDate, safeFormatDateTime } from '@/shared/lib';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { Skeleton } from '@/shared/ui/skeleton';
 import {
     Dialog,
     DialogContent,
@@ -34,11 +34,11 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/shared/ui/dialog';
 import { RentalTimeline } from './rental-timeline';
-import { useCancelRental } from '@/lib/hooks';
-import { showToast } from '@/lib/utils/toast';
-import type { Rental, RentalStatus } from '@/types';
+import { useCancelRental } from '@/entities/rental';
+import { showToast } from '@/shared/lib';
+import type { Rental, RentalStatus } from '@/entities/rental';
 
 interface RentalDetailProps {
     rental: Rental;
@@ -89,7 +89,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const cancelMutation = useCancelRental();
 
-    const { carSummary, startDate, endDate, days, dailyPrice, totalPrice, currency, status } = rental;
+    const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status } = rental;
     const canCancel = status === 'Requested';
     const canModify = status === 'Requested' || status === 'Confirmed';
 
@@ -176,28 +176,28 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                         </CardHeader>
                         <CardContent>
                             <Link
-                                href={`/cars/${carSummary.id}`}
+                                href={`/cars/${carSummary?.id}`}
                                 className="group flex gap-4"
                             >
                                 <div className="relative h-32 w-48 shrink-0 overflow-hidden rounded-lg">
                                     <DynamicImage
-                                        src={carSummary.thumbnailUrl ?? '/images/car-placeholder.svg'}
-                                        alt={`${carSummary.brand} ${carSummary.model}`}
+                                        src={carSummary?.thumbnailUrl ?? '/images/car-placeholder.svg'}
+                                        alt={`${carSummary?.brand} ${carSummary?.model}`}
                                         fill
                                         className="object-cover transition-transform group-hover:scale-105"
                                     />
                                 </div>
                                 <div className="flex-1">
                                     <p className="text-xl font-semibold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
-                                        {carSummary.brand} {carSummary.model}
+                                        {carSummary?.brand} {carSummary?.model}
                                     </p>
                                     <p className="mb-3 text-muted-foreground">
-                                        {carSummary.productionYear} • {carSummary.licensePlate}
+                                        {carSummary?.productionYear} • {carSummary?.licensePlate}
                                     </p>
                                     <div className="flex flex-wrap gap-3">
                                         <Badge variant="outline" className="gap-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                             <Fuel className="h-3 w-3" />
-                                            {carSummary.color || 'Gasoline'}
+                                            {carSummary?.color || 'Gasoline'}
                                         </Badge>
                                         <Badge variant="outline" className="gap-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                             <Settings2 className="h-3 w-3" />
@@ -224,7 +224,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                             <div className="grid gap-4 sm:grid-cols-3">
                                 <div>
                                     <p className="mb-1 text-sm text-muted-foreground">Full Name</p>
-                                    <p className="font-medium">{rental.userSummary.username}</p>
+                                    <p className="font-medium">{rental.userSummary?.username}</p>
                                 </div>
                                 <div>
                                     <p className="mb-1 text-sm text-muted-foreground">License Number</p>
@@ -232,7 +232,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                                 </div>
                                 <div>
                                     <p className="mb-1 text-sm text-muted-foreground">Contact</p>
-                                    <p className="font-medium">{rental.userSummary.email}</p>
+                                    <p className="font-medium">{rental.userSummary?.email}</p>
                                 </div>
                             </div>
                         </CardContent>

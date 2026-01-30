@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAccessToken } from '@/lib/auth/cookies';
-import { endpoints } from '@/lib/api/endpoints';
-import type { AvatarUploadResponse } from '@/types';
+import { getAccessToken } from '@/features/auth';
+import { endpoints } from '@/shared/api';
+import type { AvatarUploadResponse } from '@/features/auth';
 
 export async function POST(request: NextRequest) {
     try {
@@ -66,4 +66,3 @@ export async function DELETE() {
 }
 
 export const dynamic = 'force-dynamic';
-

@@ -4,12 +4,12 @@ import { Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { LateReturnsTable, LateReturnFilters } from '@/components/admin';
-import { useLateReturns } from '@/lib/hooks/use-late-returns';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/widgets/layout';
+import { LateReturnsTable, LateReturnFilters } from '@/features/admin';
+import { useLateReturns } from '@/features/admin';
 import { toast } from 'sonner';
-import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/types';
+import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/entities/rental';
 
 function LateReturnsContent() {
     const searchParams = useSearchParams();
@@ -95,4 +95,6 @@ export default function LateReturnsPage() {
         </Suspense>
     );
 }
+
+
 

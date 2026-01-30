@@ -2,11 +2,11 @@
 
 import { ArrowLeft, TrendingUp, TrendingDown, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { Skeleton } from '@/components/ui/skeleton';
-import { useDamageStatistics } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Breadcrumb } from '@/widgets/layout';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { useDamageStatistics } from '@/features/manage-damages';
 
 export default function DamageStatisticsPage() {
     const router = useRouter();
@@ -180,4 +180,5 @@ function StatisticsSkeleton() {
         </div>
     );
 }
+
 

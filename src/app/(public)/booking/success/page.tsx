@@ -41,4 +41,3 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
         </main>
     );
 }
-

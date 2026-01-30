@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Card } from '@/shared/ui';
-import type { Rental } from '@/types/rental';
+import type { Rental } from '@/entities/rental';
 
 interface RentalListProps {
     rentals: Rental[];
@@ -29,10 +29,10 @@ export function RentalList({ rentals, onRentalClick }: RentalListProps) {
                     <div className="flex justify-between items-start">
                         <div>
                             <h3 className="font-semibold text-lg">
-                                {rental.carSummary.brand} {rental.carSummary.model}
+                                {rental.carSummary?.brand} {rental.carSummary?.model}
                             </h3>
                             <p className="text-sm text-gray-600">
-                                {rental.userSummary.username} ({rental.userSummary.email})
+                                {rental.userSummary?.username} ({rental.userSummary?.email})
                             </p>
                             <p className="text-sm text-gray-500 mt-2">
                                 {new Date(rental.startDate).toLocaleDateString()} - {new Date(rental.endDate).toLocaleDateString()}
@@ -43,7 +43,7 @@ export function RentalList({ rentals, onRentalClick }: RentalListProps) {
                                 {rental.status}
                             </div>
                             <p className="mt-2 font-semibold">
-                                {rental.totalPrice} {rental.currency}
+                                {rental.totalPrice} {rental.currency || 'USD'}
                             </p>
                         </div>
                     </div>

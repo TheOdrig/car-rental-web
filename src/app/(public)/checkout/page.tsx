@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import { ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 import type { Metadata } from 'next';
-import { CheckoutForm } from '@/components/checkout';
-import { CheckoutSkeleton } from '@/components/checkout';
+import { CheckoutForm } from '@/features/book-car';
+import { CheckoutSkeleton } from '@/features/book-car';
 
 export const metadata: Metadata = {
     title: 'Checkout | Car Rental',

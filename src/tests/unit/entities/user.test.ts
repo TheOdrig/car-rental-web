@@ -1,7 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { useUserStore } from '@/entities/user/model/store';
-import { User, UserRole } from '@/entities/user/model/types';
-import { isAdmin, getDisplayName, getInitials } from '@/entities/user/lib/utils';
+import { useUserStore, type User, UserRole, isAdmin, getDisplayName, getInitials } from '@/entities/user';
 import { act } from 'react';
 
 const mockUser: User = {
@@ -99,7 +97,7 @@ describe('User Entity', () => {
 
             const state = useUserStore.getState();
             expect(state.user?.name).toBe('Updated Name');
-            expect(state.user?.email).toBe(mockUser.email); // Should persist other fields
+            expect(state.user?.email).toBe(mockUser.email);
         });
 
         it('should not update user if user is null', () => {

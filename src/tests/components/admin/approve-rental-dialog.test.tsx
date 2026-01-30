@@ -3,9 +3,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ApproveRentalDialog } from '@/components/admin/approve-rental-dialog';
+import { ApproveRentalDialog } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import type { PendingItem } from '@/types/admin';
+import type { PendingItem } from '@/features/admin';
 
 describe('ApproveRentalDialog', () => {
     const user = userEvent.setup();
@@ -126,4 +126,5 @@ describe('ApproveRentalDialog', () => {
         expect(onOpenChange).toHaveBeenCalledWith(false);
     });
 });
+
 

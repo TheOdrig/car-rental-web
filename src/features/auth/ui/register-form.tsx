@@ -1,18 +1,16 @@
 'use client';
 
-import { useState, useMemo, type FormEvent, type ChangeEvent } from 'react';
+import { useState, type FormEvent, type ChangeEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { FormField } from '@/components/ui/form-field';
-import { useRegister } from '@/lib/hooks';
-import { cn } from '@/lib/utils';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { FormField } from '@/shared/ui/form-field';
+import { useRegister } from '@/features/auth';
+import { cn } from '@/shared/lib';
 import { FormError, PasswordStrengthIndicator } from '@/features/auth';
-import { validateEmail, validatePassword, validatePasswordMatch } from '@/lib/utils/validation';
-import { determineValidationState } from '@/lib/utils/validation-ui';
-import type { ValidationState } from '@/types/validation';
+import { validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
 
 interface RegisterFormProps {
     className?: string;
@@ -34,62 +32,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [acceptedTerms, setAcceptedTerms] = useState(false);
     const [errors, setErrors] = useState<Record<string, string>>({});
-    const [touched, setTouched] = useState<Record<string, boolean>>({});
-    const [focused, setFocused] = useState<Record<string, boolean>>({});
     const [formError, setFormError] = useState<string | null>(null);
 
-    const isUsernameValid = formData.username.length >= 3;
-    const isEmailValid = validateEmail(formData.email);
-    const isPasswordValid = validatePassword(formData.password);
-    const isConfirmPasswordValid = validatePasswordMatch(formData.password, formData.confirmPassword) && formData.confirmPassword.length > 0;
 
-    const usernameValidationState: ValidationState = useMemo(() =>
-        determineValidationState({
-            value: formData.username,
-            error: errors.username,
-            isTouched: touched.username,
-            isFocused: focused.username,
-            isDisabled: registerMutation.isPending,
-            isRequired: true,
-            isValid: isUsernameValid,
-        }), [formData.username, errors.username, touched.username, focused.username, registerMutation.isPending, isUsernameValid]
-    );
-
-    const emailValidationState: ValidationState = useMemo(() =>
-        determineValidationState({
-            value: formData.email,
-            error: errors.email,
-            isTouched: touched.email,
-            isFocused: focused.email,
-            isDisabled: registerMutation.isPending,
-            isRequired: true,
-            isValid: isEmailValid,
-        }), [formData.email, errors.email, touched.email, focused.email, registerMutation.isPending, isEmailValid]
-    );
-
-    const passwordValidationState: ValidationState = useMemo(() =>
-        determineValidationState({
-            value: formData.password,
-            error: errors.password,
-            isTouched: touched.password,
-            isFocused: focused.password,
-            isDisabled: registerMutation.isPending,
-            isRequired: true,
-            isValid: isPasswordValid,
-        }), [formData.password, errors.password, touched.password, focused.password, registerMutation.isPending, isPasswordValid]
-    );
-
-    const confirmPasswordValidationState: ValidationState = useMemo(() =>
-        determineValidationState({
-            value: formData.confirmPassword,
-            error: errors.confirmPassword,
-            isTouched: touched.confirmPassword,
-            isFocused: focused.confirmPassword,
-            isDisabled: registerMutation.isPending,
-            isRequired: true,
-            isValid: isConfirmPasswordValid,
-        }), [formData.confirmPassword, errors.confirmPassword, touched.confirmPassword, focused.confirmPassword, registerMutation.isPending, isConfirmPasswordValid]
-    );
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -130,14 +75,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
         e.preventDefault();
         setFormError(null);
 
-        setTouched({
-            firstName: true,
-            lastName: true,
-            username: true,
-            email: true,
-            password: true,
-            confirmPassword: true
-        });
 
         if (!validateForm()) return;
 
@@ -166,16 +103,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
         }
     };
 
-    const handleFocus = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name } = e.target;
-        setFocused(prev => ({ ...prev, [name]: true }));
-    };
-
-    const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name } = e.target;
-        setTouched(prev => ({ ...prev, [name]: true }));
-        setFocused(prev => ({ ...prev, [name]: false }));
-    };
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
@@ -197,8 +124,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="John"
                         value={formData.firstName}
                         onChange={handleChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
                         disabled={registerMutation.isPending}
                         className="h-12"
                     />
@@ -216,8 +141,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Doe"
                         value={formData.lastName}
                         onChange={handleChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
                         disabled={registerMutation.isPending}
                         className="h-12"
                     />
@@ -229,7 +152,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 htmlFor="username"
                 error={errors.username}
                 required
-                validationState={usernameValidationState}
                 isDisabled={registerMutation.isPending}
             >
                 <Input
@@ -239,10 +161,10 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     placeholder="e.g. johndoe"
                     value={formData.username}
                     onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    onBlur={() => setErrors(prev => ({ ...prev, username: formData.username ? '' : 'Username is required' }))}
                     disabled={registerMutation.isPending}
-                    validationState={usernameValidationState}
+                    error={errors.username}
+                    success={formData.username.length >= 3 && !errors.username ? 'Valid!' : undefined}
                     className="h-12 pr-10"
                 />
             </FormField>
@@ -252,7 +174,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 htmlFor="email"
                 error={errors.email}
                 required
-                validationState={emailValidationState}
                 isDisabled={registerMutation.isPending}
             >
                 <Input
@@ -262,10 +183,10 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    onBlur={() => setErrors(prev => ({ ...prev, email: validateEmail(formData.email) ? '' : 'Please enter a valid email address' }))}
                     disabled={registerMutation.isPending}
-                    validationState={emailValidationState}
+                    error={errors.email}
+                    success={validateEmail(formData.email) && !errors.email ? 'Valid!' : undefined}
                     className="h-12 pr-10"
                 />
             </FormField>
@@ -275,7 +196,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 htmlFor="password"
                 error={errors.password}
                 required
-                validationState={passwordValidationState}
                 isDisabled={registerMutation.isPending}
                 showIcon={false}
             >
@@ -287,10 +207,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Create a strong password"
                         value={formData.password}
                         onChange={handleChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
+                        onBlur={() => setErrors(prev => ({ ...prev, password: formData.password.length >= 8 ? '' : 'Password must be at least 8 characters' }))}
                         disabled={registerMutation.isPending}
-                        validationState={passwordValidationState}
+                        error={errors.password}
                         className="h-12 pr-12"
                     />
                     <button
@@ -314,7 +233,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 htmlFor="confirmPassword"
                 error={errors.confirmPassword}
                 required
-                validationState={confirmPasswordValidationState}
                 isDisabled={registerMutation.isPending}
             >
                 <div className="relative">
@@ -325,10 +243,10 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
+                        onBlur={() => setErrors(prev => ({ ...prev, confirmPassword: formData.password === formData.confirmPassword ? '' : 'Passwords do not match' }))}
                         disabled={registerMutation.isPending}
-                        validationState={confirmPasswordValidationState}
+                        error={errors.confirmPassword}
+                        success={formData.password === formData.confirmPassword && formData.confirmPassword !== '' ? 'Match!' : undefined}
                         className="h-12 pr-20"
                     />
                     <button
@@ -406,4 +324,5 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </form>
     );
 }
+
 

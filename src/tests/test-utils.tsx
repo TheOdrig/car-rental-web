@@ -1,7 +1,7 @@
 import React, { type ReactNode } from 'react';
 import { render } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { CurrencyProvider } from '@/lib/providers/currency-provider';
+import { CurrencyProvider } from '@/entities/currency';
 
 export function createTestQueryClient() {
     return new QueryClient({
@@ -61,4 +61,3 @@ export function createMockResponse<T>(data: T, options?: { status?: number; ok?:
         headers: new Headers({ 'Content-Type': 'application/json' }),
     } as Response;
 }
-

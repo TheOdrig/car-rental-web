@@ -1,96 +1,120 @@
-import { ApiError } from './error';
+import { ApiError, parseErrorResponse } from './error';
+import type { ClientRequestOptions } from './types';
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082/api';
+let isRefreshing = false;
+let refreshPromise: Promise<boolean> | null = null;
 
-interface RequestOptions extends RequestInit {
-    params?: Record<string, string | number | boolean>;
+async function refreshToken(): Promise<boolean> {
+    try {
+        const response = await fetch('/api/auth/refresh', {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        return response.ok;
+    } catch {
+        return false;
+    }
 }
 
-async function handleResponse<T>(response: Response): Promise<T> {
-    const contentType = response.headers.get('content-type');
-    const isJson = contentType?.includes('application/json');
-    const data = isJson ? await response.json() : await response.text();
+async function handleTokenRefresh(): Promise<boolean> {
+    if (isRefreshing && refreshPromise) {
+        return refreshPromise;
+    }
+
+    isRefreshing = true;
+    refreshPromise = refreshToken();
+
+    try {
+        const result = await refreshPromise;
+        return result;
+    } finally {
+        isRefreshing = false;
+        refreshPromise = null;
+    }
+}
+
+export async function clientFetch<T>(
+    url: string,
+    options: ClientRequestOptions = {},
+    isRetry = false
+): Promise<T> {
+    const {
+        method = 'GET',
+        body,
+        headers = {},
+        params,
+        signal,
+    } = options;
+
+    const fullUrl = new URL(url, typeof window !== 'undefined' ? window.location.origin : undefined);
+    if (params) {
+        Object.entries(params).forEach(([key, value]) => {
+            if (value !== undefined) {
+                fullUrl.searchParams.append(key, String(value));
+            }
+        });
+    }
+
+    const fetchOptions: RequestInit = {
+        method,
+        headers: {
+            'Content-Type': 'application/json',
+            ...headers,
+        },
+        credentials: 'include',
+        signal,
+    };
+
+    if (body) {
+        fetchOptions.body = JSON.stringify(body);
+    }
+
+    const response = await fetch(fullUrl.toString(), fetchOptions);
+
+    if (response.status === 401 && !isRetry && !url.includes('/api/auth/refresh') && !url.includes('/api/auth/login')) {
+        const refreshed = await handleTokenRefresh();
+        if (refreshed) {
+            return clientFetch<T>(url, options, true);
+        }
+    }
 
     if (!response.ok) {
-        throw new ApiError(
-            response.status,
-            data.message || response.statusText,
-            data
-        );
+        const error = await parseErrorResponse(response);
+        throw new ApiError(error);
     }
 
-    return data as T;
+    if (response.status === 204) {
+        return undefined as T;
+    }
+
+    return response.json();
 }
 
-const getConfig = (options: RequestOptions = {}): RequestInit => {
-    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
 
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        ...(options.headers as Record<string, string>),
-    };
+export const clientGet = <T>(url: string, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
+    clientFetch<T>(url, { ...options, method: 'GET' });
 
-    if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
-    }
+export const clientPost = <T>(url: string, body?: unknown, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
+    clientFetch<T>(url, { ...options, method: 'POST', body });
 
-    return {
-        ...options,
-        headers,
-    };
-};
+export const clientPut = <T>(url: string, body?: unknown, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
+    clientFetch<T>(url, { ...options, method: 'PUT', body });
+
+export const clientPatch = <T>(url: string, body?: unknown, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
+    clientFetch<T>(url, { ...options, method: 'PATCH', body });
+
+export const clientDelete = <T>(url: string, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
+    clientFetch<T>(url, { ...options, method: 'DELETE' });
+
 
 export const apiClient = {
-    async get<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-        const { params } = options;
-        const config = getConfig(options);
-        const url = new URL(`${BASE_URL}${endpoint}`);
-
-        if (params) {
-            Object.entries(params).forEach(([key, value]) => {
-                if (value !== undefined) {
-                    url.searchParams.append(key, String(value));
-                }
-            });
-        }
-
-        const response = await fetch(url.toString(), {
-            ...config,
-            method: 'GET',
-        });
-
-        return handleResponse<T>(response);
-    },
-
-    async post<T>(endpoint: string, body: unknown, options: RequestOptions = {}): Promise<T> {
-        const config = getConfig(options);
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...config,
-            method: 'POST',
-            body: JSON.stringify(body),
-        });
-
-        return handleResponse<T>(response);
-    },
-
-    async put<T>(endpoint: string, body: unknown, options: RequestOptions = {}): Promise<T> {
-        const config = getConfig(options);
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...config,
-            method: 'PUT',
-            body: JSON.stringify(body),
-        });
-
-        return handleResponse<T>(response);
-    },
-
-    async delete<T>(endpoint: string, options: RequestOptions = {}): Promise<T> {
-        const config = getConfig(options);
-        const response = await fetch(`${BASE_URL}${endpoint}`, {
-            ...config,
-            method: 'DELETE',
-        });
-
-        return handleResponse<T>(response);
-    },
+    get: clientGet,
+    post: clientPost,
+    put: clientPut,
+    patch: clientPatch,
+    delete: clientDelete,
+    fetch: clientFetch,
 };

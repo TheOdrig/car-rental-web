@@ -1,4 +1,4 @@
-import type { RentalStatus } from '@/types/rental';
+import type { RentalStatus } from '@/entities/rental';
 
 export interface RentalFilter {
     status?: RentalStatus;

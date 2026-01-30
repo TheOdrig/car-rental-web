@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import { Car, CalendarX, Clock, CheckCircle, XCircle } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
+import { cn } from '@/shared/lib';
+import { Button } from '@/shared/ui/button';
 import { RentalCard, RentalCardSkeleton } from './rental-card';
-import type { Rental, RentalTab } from '@/types';
+import type { Rental, RentalTab } from '@/entities/rental';
 
 interface RentalListProps {
     rentals: Rental[];

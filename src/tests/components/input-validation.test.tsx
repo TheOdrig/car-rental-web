@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { Input } from '@/components/ui/input';
+import { Input } from '@/shared/ui/input';
 
 describe('Input Component - Validation States', () => {
     describe('Idle State', () => {

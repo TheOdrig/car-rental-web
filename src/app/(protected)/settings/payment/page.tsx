@@ -2,15 +2,15 @@
 
 import { useState } from 'react';
 import { Plus, CreditCard, Shield } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
 import {
     Dialog,
     DialogContent,
     DialogDescription,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/shared/ui/dialog';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -20,13 +20,13 @@ import {
     AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
-import { PaymentCard } from '@/components/settings/payment-card';
-import { AddCardForm } from '@/components/settings/add-card-form';
-import { EmptyState } from '@/components/shared/empty-state';
-import { showToast } from '@/lib/utils/toast';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
-import type { PaymentMethod } from '@/types/payment';
+} from '@/shared/ui/alert-dialog';
+import { PaymentCard } from '@/features/user-settings';
+import { AddCardForm } from '@/features/user-settings';
+import { EmptyState } from '@/shared/ui/empty-state';
+import { showToast } from '@/shared/lib';
+import { ComingSoonBanner } from '@/shared/ui/coming-soon-banner';
+import type { PaymentMethod } from '@/features/book-car';
 
 const MOCK_CARDS: PaymentMethod[] = [
     {
@@ -195,4 +195,6 @@ export default function PaymentMethodsPage() {
         </div>
     );
 }
+
+
 

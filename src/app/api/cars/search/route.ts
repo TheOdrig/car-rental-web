@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { AvailabilitySearchRequest, AvailabilitySearchResponse } from '@/types';
+import { serverPost } from '@/shared/api/server';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import type { AvailabilitySearchRequest, AvailabilitySearchResponse } from '@/entities/car';
 
 
 export async function POST(request: NextRequest) {
@@ -49,8 +49,8 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('[API] POST /api/cars/search error:', error);
 
-        if (isApiException(error)) {
-            console.error('[API] ApiException details:', {
+        if (isApiError(error)) {
+            console.error('[API] ApiError details:', {
                 status: error.status,
                 message: error.message,
                 errors: error.errors,
@@ -76,4 +76,3 @@ export async function POST(request: NextRequest) {
         );
     }
 }
-

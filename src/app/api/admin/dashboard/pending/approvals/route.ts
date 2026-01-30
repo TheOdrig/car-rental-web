@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { PendingItem, PageResponse } from '@/types';
+import { routeGet } from '@/shared/api/route-handler';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import type { PendingItem } from '@/features/admin';
+import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/admin/dashboard/pending/approvals error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -35,5 +36,4 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-
 

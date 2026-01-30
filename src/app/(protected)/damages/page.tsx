@@ -3,11 +3,11 @@
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertTriangle } from 'lucide-react';
-import { useMyDamages } from '@/lib/hooks';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Pagination } from '@/components/ui/pagination';
-import { ErrorBoundary } from '@/components/shared';
-import { DamageList } from '@/components/damages';
+import { useMyDamages } from '@/features/manage-damages';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { Pagination } from '@/shared/ui/pagination';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { DamageList } from '@/features/manage-damages';
 
 export default function MyDamagesPage() {
     const searchParams = useSearchParams();
@@ -74,4 +74,6 @@ export default function MyDamagesPage() {
         </ErrorBoundary>
     );
 }
+
+
 

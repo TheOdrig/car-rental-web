@@ -1,59 +1,45 @@
-import type { BookingRequest, Booking, AvailabilityFilters, AvailableCar } from '@/features/book-car/model/types';
+import type { CreateBookingRequest, BookingConfirmation } from '@/features/book-car/model/types';
 
-export const createMockBookingRequest = (overrides = {}): BookingRequest => ({
+export const createMockBookingRequest = (overrides = {}): CreateBookingRequest => ({
     carId: 1,
     startDate: '2025-02-01T00:00:00Z',
     endDate: '2025-02-05T00:00:00Z',
-    notes: 'Test booking',
+    pickupLocation: 'Downtown Office',
+    dropoffLocation: 'Airport',
+    addons: [],
+    firstName: 'John',
+    lastName: 'Doe',
+    email: 'john@example.com',
+    phone: '1234567890',
     ...overrides,
 });
 
-export const createMockBooking = (overrides = {}): Booking => ({
-    id: 1,
-    carSummary: {
+export const createMockBooking = (overrides = {}): BookingConfirmation => ({
+    referenceNumber: 'BOOK-001',
+    status: 'confirmed',
+    car: {
         id: 1,
-        brand: 'Toyota',
-        model: 'Corolla',
-        licensePlate: '34ABC123',
-        productionYear: 2023,
-        formattedPrice: '$50/day',
-        currencyType: 'USD',
-        carStatusType: 'Available',
-        thumbnailUrl: '/cars/toyota-corolla.jpg',
+        name: 'Toyota Corolla',
+        image: '/cars/toyota-corolla.jpg',
+        category: 'Sedan',
     },
-    startDate: '2025-02-01T00:00:00Z',
-    endDate: '2025-02-05T00:00:00Z',
-    days: 4,
-    dailyPrice: 50,
-    totalPrice: 200,
-    currency: 'USD',
-    status: 'Requested',
-    notes: 'Test booking',
-    createTime: '2025-01-28T00:00:00Z',
-    updateTime: '2025-01-28T00:00:00Z',
+    dates: {
+        start: '2025-02-01T00:00:00Z',
+        end: '2025-02-05T00:00:00Z',
+        days: 4,
+    },
+    locations: {
+        pickup: 'Downtown Office',
+        dropoff: 'Airport',
+    },
+    payment: {
+        total: 200,
+        currency: 'USD',
+        method: 'Credit Card',
+        last4: '1234',
+    },
+    addons: [],
+    createdAt: '2025-01-28T00:00:00Z',
     ...overrides,
 });
 
-export const createMockAvailabilityFilters = (overrides = {}): AvailabilityFilters => ({
-    startDate: '2025-02-01T00:00:00Z',
-    endDate: '2025-02-05T00:00:00Z',
-    brand: 'Toyota',
-    transmission: 'AUTOMATIC',
-    ...overrides,
-});
-
-export const createMockAvailableCar = (overrides = {}): AvailableCar => ({
-    id: 1,
-    licensePlate: '34ABC123',
-    brand: 'Toyota',
-    model: 'Corolla',
-    year: 2023,
-    transmission: 'AUTOMATIC',
-    fuelType: 'GASOLINE',
-    seats: 5,
-    dailyPrice: 50,
-    currency: 'USD',
-    imageUrl: '/cars/toyota-corolla.jpg',
-    isAvailable: true,
-    ...overrides,
-});

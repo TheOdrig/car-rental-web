@@ -1,24 +1,6 @@
 import { describe, it, expect} from 'vitest';
-import {
-    detectCardType,
-    formatCardNumber,
-    formatExpiryDate,
-    formatCVC,
-    parseExpiryDate,
-    validateCardNumber,
-    validateExpiryDate,
-    validateCVC,
-    calculatePriceBreakdown,
-    calculateRentalDays,
-    getPaymentErrorMessage,
-    maskCardNumber,
-    getCardTypeIcon,
-    formatPhoneNumber,
-    generateBookingReference,
-    validatePhoneNumber,
-    DEFAULT_ADDONS,
-} from '@/lib/utils/checkout-utils';
-import type { Addon } from '@/types';
+import { detectCardType, formatCardNumber, formatExpiryDate, formatCVC, parseExpiryDate, validateCardNumber, validateExpiryDate, validateCVC, calculatePriceBreakdown, calculateRentalDays, getPaymentErrorMessage, maskCardNumber, getCardTypeIcon, formatPhoneNumber, generateBookingReference, validatePhoneNumber, DEFAULT_ADDONS } from '@/features/book-car';
+import type { Addon } from '@/features/book-car';
 
 describe('checkout-utils', () => {
     describe('detectCardType', () => {
@@ -360,4 +342,3 @@ describe('checkout-utils', () => {
         });
     });
 });
-

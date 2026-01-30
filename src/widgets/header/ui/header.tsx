@@ -5,8 +5,8 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Menu, User } from 'lucide-react';
-import { useAuth } from '@/lib/hooks/use-auth';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/features/auth';
+import { Button } from '@/shared/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -14,7 +14,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/shared/ui/dropdown-menu';
 import { ThemeToggle } from './theme-toggle';
 
 const CurrencySelector = dynamic(
@@ -137,4 +137,5 @@ export function Header() {
         </header>
     );
 }
+
 

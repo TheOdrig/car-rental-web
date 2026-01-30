@@ -4,14 +4,14 @@ import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { format, addDays, isBefore, startOfDay } from 'date-fns';
 import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { Label } from '@/components/ui/label';
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { useCreateRental } from '@/lib/hooks';
-import { cn } from '@/lib/utils';
+import { Button } from '@/shared/ui/button';
+import { Calendar } from '@/shared/ui/calendar';
+import { Label } from '@/shared/ui/label';
+import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
+import { useCreateRental } from '@/entities/rental';
+import { cn } from '@/shared/lib';
 import { toast } from 'sonner';
-import type { Car as CarType } from '@/types';
+import type { Car as CarType } from '@/entities/car';
 
 function formatPrice(price: number, currency: string): string {
     return new Intl.NumberFormat('tr-TR', {

@@ -1,9 +1,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProtectionExtras } from '@/components/checkout/protection-extras';
-import { DEFAULT_ADDONS } from '@/lib/utils/checkout-utils';
-import type { Addon } from '@/types';
+import { ProtectionExtras } from '@/features/book-car';
+import { DEFAULT_ADDONS } from '@/features/book-car';
+import type { Addon } from '@/features/book-car';
 
 const mockAddons: Addon[] = [
     {

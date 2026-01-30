@@ -33,7 +33,7 @@ void mockLocalStorage.removeItem;
 describe('Auth Store', () => {
     const mockUser = createMockUser();
     const mockAuthResponse = createMockAuthResponse();
-    const mockToken = mockAuthResponse.token;
+    const mockToken = mockAuthResponse.accessToken;
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -44,8 +44,8 @@ describe('Auth Store', () => {
         it('should successfully login and store token', async () => {
             const mockSetUser = vi.fn();
             const loginData = createMockLoginRequest();
-            (authApi.login as any).mockResolvedValue(mockAuthResponse);
-            (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
+            vi.mocked(authApi.login).mockResolvedValue(mockAuthResponse);
+            vi.mocked(useUserStore.getState).mockReturnValue({ setUser: mockSetUser } as unknown as ReturnType<typeof useUserStore.getState>);
 
             const result = await authActions.login(loginData);
 
@@ -57,9 +57,9 @@ describe('Auth Store', () => {
 
         it('should handle login failure', async () => {
             const mockSetUser = vi.fn();
-            (authApi.login as any).mockRejectedValue(new Error('Login failed'));
-            (authApi.handleAuthError as any).mockReturnValue('Invalid credentials');
-            (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
+            vi.mocked(authApi.login).mockRejectedValue(new Error('Login failed'));
+            vi.mocked(authApi.handleAuthError).mockReturnValue('Invalid credentials');
+            vi.mocked(useUserStore.getState).mockReturnValue({ setUser: mockSetUser } as unknown as ReturnType<typeof useUserStore.getState>);
 
             const result = await authActions.login(createMockLoginRequest({ password: 'wrong' }));
 
@@ -73,8 +73,8 @@ describe('Auth Store', () => {
     describe('register', () => {
         it('should successfully register and store token', async () => {
             const mockSetUser = vi.fn();
-            (authApi.register as any).mockResolvedValue(mockAuthResponse);
-            (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
+            vi.mocked(authApi.register).mockResolvedValue(mockAuthResponse);
+            vi.mocked(useUserStore.getState).mockReturnValue({ setUser: mockSetUser } as unknown as ReturnType<typeof useUserStore.getState>);
 
             const result = await authActions.register(createMockRegisterRequest());
 
@@ -85,9 +85,9 @@ describe('Auth Store', () => {
 
         it('should handle register failure', async () => {
             const mockSetUser = vi.fn();
-            (authApi.register as any).mockRejectedValue(new Error('Registration failed'));
-            (authApi.handleAuthError as any).mockReturnValue('Email already exists');
-            (useUserStore.getState as any).mockReturnValue({ setUser: mockSetUser });
+            vi.mocked(authApi.register).mockRejectedValue(new Error('Registration failed'));
+            vi.mocked(authApi.handleAuthError).mockReturnValue('Email already exists');
+            vi.mocked(useUserStore.getState).mockReturnValue({ setUser: mockSetUser } as unknown as ReturnType<typeof useUserStore.getState>);
 
             const result = await authActions.register(createMockRegisterRequest({ email: 'existing@example.com' }));
 
@@ -102,8 +102,8 @@ describe('Auth Store', () => {
             const mockLogout = vi.fn();
             mockLocalStorage.setItem('accessToken', mockToken);
 
-            (authApi.logout as any).mockResolvedValue(undefined);
-            (useUserStore.getState as any).mockReturnValue({ logout: mockLogout });
+            vi.mocked(authApi.logout).mockResolvedValue(undefined);
+            vi.mocked(useUserStore.getState).mockReturnValue({ logout: mockLogout } as unknown as ReturnType<typeof useUserStore.getState>);
 
             await authActions.logout();
 
@@ -115,8 +115,8 @@ describe('Auth Store', () => {
             const mockLogout = vi.fn();
             mockLocalStorage.setItem('accessToken', mockToken);
 
-            (authApi.logout as any).mockRejectedValue(new Error('Logout failed'));
-            (useUserStore.getState as any).mockReturnValue({ logout: mockLogout });
+            vi.mocked(authApi.logout).mockRejectedValue(new Error('Logout failed'));
+            vi.mocked(useUserStore.getState).mockReturnValue({ logout: mockLogout } as unknown as ReturnType<typeof useUserStore.getState>);
 
             await authActions.logout();
 

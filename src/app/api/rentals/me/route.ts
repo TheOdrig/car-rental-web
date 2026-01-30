@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { Rental, PageResponse } from '@/types';
+import { serverGet } from '@/shared/api/server';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import type { Rental } from '@/entities/rental';
+import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/rentals/me error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -35,4 +36,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

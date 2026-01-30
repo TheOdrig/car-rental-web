@@ -12,15 +12,16 @@ import {
     useCarSearchResults,
     usePrefetchCar,
     useInvalidateCars,
-} from '@/lib/hooks/use-cars';
-import type { Car, PageResponse, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchResponse } from '@/types';
+} from '@/entities/car';
+import type { PageResponse } from '@/shared/types';
+import type { Car, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchResponse } from '@/entities/car';
 
-vi.mock('@/lib/api/client', () => ({
+vi.mock('@/shared/api', () => ({
     clientGet: vi.fn(),
     clientPost: vi.fn(),
 }));
 
-import { clientGet, clientPost } from '@/lib/api/client';
+import { clientGet, clientPost } from '@/shared/api';
 
 const mockClientGet = vi.mocked(clientGet);
 const mockClientPost = vi.mocked(clientPost);

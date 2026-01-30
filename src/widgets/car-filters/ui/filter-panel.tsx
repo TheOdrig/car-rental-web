@@ -1,18 +1,18 @@
 'use client';
 
 import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
+import { cn } from '@/shared/lib';
+import { Button } from '@/shared/ui/button';
+import { Skeleton } from '@/shared/ui/skeleton';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { useFilterStore } from '@/lib/stores/filter-store';
-import { useFilterOptions } from '@/lib/hooks/use-filter-options';
+} from '@/shared/ui/select';
+import { useFilterStore } from '@/widgets/car-filters';
+import { useFilterOptions } from '@/widgets/car-filters';
 
 interface CarFiltersProps {
     className?: string;

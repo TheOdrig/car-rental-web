@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useCallback, useMemo } from 'react';
-import { Slider } from '@/components/ui/slider';
-import { cn } from '@/lib/utils';
+import { Slider } from '@/shared/ui/slider';
+import { cn } from '@/shared/lib';
 
 interface PriceRangeSliderProps {
     min?: number;

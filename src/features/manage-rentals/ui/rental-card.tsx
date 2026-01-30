@@ -2,7 +2,7 @@
 
 import { memo, type ReactNode } from 'react';
 import Link from 'next/link';
-import { DynamicImage } from '@/components/ui/dynamic-image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import {
     Calendar,
     Car,
@@ -13,14 +13,14 @@ import {
     Fuel,
     Zap,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { safeFormatDate } from '@/lib/utils/format';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Skeleton } from '@/components/ui/skeleton';
-import type { Rental, RentalStatus, ActionButton } from '@/types';
-import { getActionButtons, getStatusBadgeVariant } from '@/lib/utils/rental-utils';
+import { cn } from '@/shared/lib';
+import { safeFormatDate } from '@/shared/lib';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Badge } from '@/shared/ui/badge';
+import { Button } from '@/shared/ui/button';
+import { Skeleton } from '@/shared/ui/skeleton';
+import type { Rental, RentalStatus, ActionButton } from '@/entities/rental';
+import { getActionButtons, getStatusBadgeVariant } from '@/entities/rental';
 
 interface RentalCardProps {
     rental: Rental;
@@ -136,21 +136,21 @@ export const RentalCard = memo(function RentalCard({
                     <div className="flex flex-col md:flex-row">
                         <div className="relative h-48 w-full md:h-auto md:w-80 shrink-0">
                             <DynamicImage
-                                src={carSummary.thumbnailUrl || '/images/car-placeholder.svg'}
-                                alt={`${carSummary.brand} ${carSummary.model}`}
+                                src={carSummary?.thumbnailUrl || '/images/car-placeholder.svg'}
+                                alt={`${carSummary?.brand} ${carSummary?.model}`}
                                 fill
                                 className={cn(
                                     'object-cover transition-all duration-300',
                                     isCompleted && 'grayscale group-hover:grayscale-0'
                                 )}
                             />
-                            {carSummary.color && (
+                            {carSummary?.color && (
                                 <Badge
                                     variant="secondary"
                                     className="absolute left-3 top-3 gap-1 bg-background/80 backdrop-blur-sm"
                                 >
-                                    {getFuelIcon(carSummary.color)}
-                                    <span className="text-xs">{carSummary.color}</span>
+                                    {getFuelIcon(carSummary?.color)}
+                                    <span className="text-xs">{carSummary?.color}</span>
                                 </Badge>
                             )}
                         </div>
@@ -160,7 +160,7 @@ export const RentalCard = memo(function RentalCard({
                                 <div>
                                     <p className="text-xs text-muted-foreground">{referenceId}</p>
                                     <h3 className="text-lg font-semibold">
-                                        {carSummary.brand} {carSummary.model}
+                                        {carSummary?.brand} {carSummary?.model}
                                     </h3>
                                 </div>
                                 <Badge
@@ -207,7 +207,7 @@ export const RentalCard = memo(function RentalCard({
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <div className="flex items-center gap-2">
                                     <span className="text-xl font-bold text-slate-900 dark:text-white">
-                                        {formatPrice(totalPrice, currency)}
+                                        {formatPrice(totalPrice, currency || 'USD')}
                                     </span>
                                     <Badge variant="outline" className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
                                         Paid
@@ -253,7 +253,7 @@ export const RentalCard = memo(function RentalCard({
                         <div className="mb-2 flex items-center gap-2">
                             <Car className="h-4 w-4 shrink-0 text-muted-foreground" />
                             <h3 className="truncate text-lg font-semibold leading-tight">
-                                {carSummary.brand} {carSummary.model}
+                                {carSummary?.brand} {carSummary?.model}
                             </h3>
                         </div>
 
@@ -272,7 +272,7 @@ export const RentalCard = memo(function RentalCard({
                                 </span>
                             </div>
                             <span className="font-semibold text-slate-900 dark:text-white">
-                                {formatPrice(totalPrice, currency)}
+                                {formatPrice(totalPrice, currency || 'USD')}
                             </span>
                         </div>
                     </div>

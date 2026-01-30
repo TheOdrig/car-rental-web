@@ -1,7 +1,7 @@
 'use client';
 
 import { XCircle, RefreshCw, CreditCard, Headphones, ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 

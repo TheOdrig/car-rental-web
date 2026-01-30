@@ -8,10 +8,8 @@ export const authActions = {
             const response = await loginApi(credentials);
 
             if (typeof window !== 'undefined') {
-                localStorage.setItem('accessToken', response.token);
+                localStorage.setItem('accessToken', response.accessToken);
             }
-
-            useUserStore.getState().setUser(response.user);
 
             return { success: true };
         } catch (error) {
@@ -24,10 +22,8 @@ export const authActions = {
             const response = await registerApi(data);
 
             if (typeof window !== 'undefined') {
-                localStorage.setItem('accessToken', response.token);
+                localStorage.setItem('accessToken', response.accessToken);
             }
-
-            useUserStore.getState().setUser(response.user);
 
             return { success: true };
         } catch (error) {

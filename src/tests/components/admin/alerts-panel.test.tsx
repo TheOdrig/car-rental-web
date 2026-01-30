@@ -1,12 +1,12 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AlertsPanel } from '@/components/admin/alerts-panel';
+import { AlertsPanel } from '@/features/admin';
 import { renderWithProviders } from '../../test-utils';
-import { AdminAlert } from '@/types/admin';
+import { AdminAlert } from '@/features/admin';
 
-vi.mock('@/lib/utils/format', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@/lib/utils/format')>();
+vi.mock('@/shared/lib', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/shared/lib')>();
     return {
         ...original,
         safeFormatDistanceToNow: vi.fn(() => '2 minutes ago'),
@@ -104,4 +104,5 @@ describe('AlertsPanel', () => {
         expect(times).toHaveLength(3);
     });
 });
+
 

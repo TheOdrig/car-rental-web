@@ -19,14 +19,18 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/login',
 }));
 
-vi.mock('@/lib/hooks', () => ({
-    useLogin: vi.fn(() => ({
-        mutateAsync: vi.fn(),
-        isPending: false,
-    })),
-}));
+vi.mock('@/features/auth', async () => {
+    const actual = await vi.importActual('@/features/auth');
+    return {
+        ...actual,
+        useLogin: vi.fn(() => ({
+            mutateAsync: vi.fn(),
+            isPending: false,
+        })),
+    };
+});
 
-import { useLogin } from '@/lib/hooks';
+import { useLogin } from '@/features/auth';
 
 describe('LoginForm - Validation State Integration', () => {
     const user = userEvent.setup();
@@ -165,4 +169,3 @@ describe('LoginForm - Validation State Integration', () => {
         });
     });
 });
-

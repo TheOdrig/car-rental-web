@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet, serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { Rental } from '@/types';
+import { serverGet, serverPost } from '@/shared/api/server';
+import { endpoints } from '@/shared/api';
+import { isApiError } from '@/shared/api';
+import type { Rental } from '@/entities/rental';
 
 export async function GET(
     _request: NextRequest,
@@ -28,7 +28,7 @@ export async function GET(
     } catch (error) {
         console.error(`[API] GET /api/rentals/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }
@@ -65,7 +65,7 @@ export async function DELETE(
     } catch (error) {
         console.error(`[API] DELETE /api/rentals/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }

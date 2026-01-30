@@ -6,7 +6,7 @@ interface CarState {
     selectedCar: Car | null;
     setCars: (cars: Car[]) => void;
     selectCar: (car: Car | null) => void;
-    updateCarStatus: (carId: number, status: Car['status']) => void;
+    updateCarStatus: (carId: number, status: Car['carStatusType']) => void;
 }
 
 export const useCarStore = create<CarState>((set) => ({
@@ -17,11 +17,11 @@ export const useCarStore = create<CarState>((set) => ({
     updateCarStatus: (carId, status) =>
         set((state) => ({
             cars: state.cars.map((car) =>
-                car.id === carId ? { ...car, status } : car
+                car.id === carId ? { ...car, carStatusType: status } : car
             ),
             selectedCar:
                 state.selectedCar?.id === carId
-                    ? { ...state.selectedCar, status }
+                    ? { ...state.selectedCar, carStatusType: status }
                     : state.selectedCar,
         })),
 }));

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { CarListView, CarListItem, CarListViewSkeleton } from '@/components/cars/car-list-view';
-import type { Car } from '@/types';
+import { CarListView, CarListItem, CarListViewSkeleton } from '@/entities/car';
+import type { Car } from '@/entities/car';
 
 const mockCar: Car = {
     id: 1,

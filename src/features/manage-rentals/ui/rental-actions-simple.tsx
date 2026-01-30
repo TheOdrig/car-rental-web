@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Button } from '@/shared/ui';
-import type { Rental } from '@/types/rental';
+import type { Rental } from '@/entities/rental';
 import { performRentalAction, cancelRental } from '@/features/manage-rentals';
 import { rentalActions } from '@/features/manage-rentals';
 import { publishRentalApproved, publishRentalRejected, publishRentalCancelled } from '@/features/manage-rentals';
@@ -35,8 +35,8 @@ export function RentalActions({ rental, onSuccess, onError }: RentalActionsProps
             }
 
             onSuccess?.();
-        } catch (err: any) {
-            const errorMessage = err.message || `Failed to ${action} rental`;
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : `Failed to ${action} rental`;
             onError?.(errorMessage);
         } finally {
             setIsLoading(false);
@@ -50,8 +50,8 @@ export function RentalActions({ rental, onSuccess, onError }: RentalActionsProps
             rentalActions.updateRental(updatedRental);
             publishRentalCancelled(updatedRental.id);
             onSuccess?.();
-        } catch (err: any) {
-            const errorMessage = err.message || 'Failed to cancel rental';
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to cancel rental';
             onError?.(errorMessage);
         } finally {
             setIsLoading(false);

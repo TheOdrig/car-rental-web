@@ -4,8 +4,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Car, Home, MapPin, Info, User, LogIn, UserPlus, LayoutDashboard, ClipboardList } from 'lucide-react';
-import { useAuth } from '@/lib/hooks/use-auth';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '@/features/auth';
+import { Button } from '@/shared/ui/button';
 import {
     Sheet,
     SheetContent,
@@ -13,8 +13,8 @@ import {
     SheetTitle,
     SheetTrigger,
     SheetClose,
-} from '@/components/ui/sheet';
-import { cn } from '@/lib/utils';
+} from '@/shared/ui/sheet';
+import { cn } from '@/shared/lib';
 import React from "react";
 
 interface MobileNavProps {
@@ -193,4 +193,5 @@ export function MobileNav({ trigger }: MobileNavProps) {
         </Sheet>
     );
 }
+
 
