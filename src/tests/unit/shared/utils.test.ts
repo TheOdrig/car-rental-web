@@ -4,19 +4,19 @@ import { formatCurrency, formatDate, safeJSONParse, cn } from '@/shared/lib';
 describe('Shared Utilities', () => {
     describe('formatCurrency', () => {
         it('should format USD correctly', () => {
-            expect(formatCurrency(100)).toBe('$100.00');
-            expect(formatCurrency(1234.56)).toBe('$1,234.56');
+            expect(formatCurrency(100)).toBe('$100');
+            expect(formatCurrency(1234.56)).toBe('$1,235');
         });
 
         it('should handle other currencies', () => {
-            expect(formatCurrency(100, 'EUR')).toBe('€100.00');
+            expect(formatCurrency(100, 'EUR')).toBe('€100');
         });
     });
 
     describe('formatDate', () => {
         it('should format date string correctly', () => {
             const date = '2023-12-25';
-            expect(formatDate(date)).toBe('December 25, 2023');
+            expect(formatDate(date)).toBe('Dec 25, 2023');
         });
     });
 

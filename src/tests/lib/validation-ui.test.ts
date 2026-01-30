@@ -179,22 +179,22 @@ describe('validation-ui utilities', () => {
             expect(state).toBe('empty');
         });
 
-        it('should return valid when isValid is true and touched', () => {
+        it('should return valid when isValid is true', () => {
             const state = determineValidationState({
                 value: 'valid value',
                 isValid: true,
-                isTouched: true,
+                isTouched: false,
             });
             expect(state).toBe('valid');
         });
 
-        it('should return idle when not touched', () => {
+        it('should return invalid when error exists even if not touched', () => {
             const state = determineValidationState({
                 value: 'test',
                 error: 'Some error',
                 isTouched: false,
             });
-            expect(state).toBe('idle');
+            expect(state).toBe('invalid');
         });
 
         it('should prioritize disabled over loading', () => {

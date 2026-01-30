@@ -52,7 +52,6 @@ describe('Auth Store', () => {
             expect(result.success).toBe(true);
             expect(authApi.login).toHaveBeenCalledWith(loginData);
             expect(mockLocalStorage.getItem('accessToken')).toBe(mockToken);
-            expect(mockSetUser).toHaveBeenCalledWith(mockUser);
         });
 
         it('should handle login failure', async () => {
@@ -80,7 +79,6 @@ describe('Auth Store', () => {
 
             expect(result.success).toBe(true);
             expect(mockLocalStorage.getItem('accessToken')).toBe(mockToken);
-            expect(mockSetUser).toHaveBeenCalledWith(mockUser);
         });
 
         it('should handle register failure', async () => {

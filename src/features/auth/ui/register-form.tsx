@@ -7,9 +7,10 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
-import { useRegister } from '@/features/auth';
+import { useRegister } from '../lib/use-auth';
 import { cn } from '@/shared/lib';
-import { FormError, PasswordStrengthIndicator } from '@/features/auth';
+import { FormError } from './form-error';
+import { PasswordStrengthIndicator } from './password-strength-indicator';
 import { validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
 
 interface RegisterFormProps {

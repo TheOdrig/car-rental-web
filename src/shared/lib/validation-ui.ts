@@ -117,13 +117,11 @@ export function determineValidationState(options: {
     if (isLoading) return 'loading';
 
     if (error) return 'invalid';
+
     if (isValid) return 'valid';
 
     if (isFocused) return 'focused';
-
-    if (isTouched) {
-        if (isRequired && !value) return 'empty';
-    }
+    if (isTouched && isRequired && !value) return 'empty';
 
     return 'idle';
 }

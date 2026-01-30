@@ -139,19 +139,3 @@ if (!Element.prototype.scrollIntoView) {
     Element.prototype.scrollIntoView = vi.fn();
 }
 
-vi.mock('@/entities/currency', async (importOriginal) => {
-    const original = await importOriginal<typeof import('@/entities/currency')>();
-    return {
-        ...original,
-        CurrencyProvider: ({ children }: { children: React.ReactNode }) => React.createElement(React.Fragment, null, children),
-        useCurrency: () => ({
-            currency: 'USD',
-            setCurrency: vi.fn(),
-            rates: { USD: 1, TRY: 30, EUR: 0.9, GBP: 0.8 },
-            isLoading: false,
-            convert: (amount: number) => amount,
-            format: (amount: number) => `$${amount.toFixed(2)}`,
-            refreshRates: vi.fn(),
-        }),
-    };
-});

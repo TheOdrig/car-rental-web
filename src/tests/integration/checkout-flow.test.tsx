@@ -29,21 +29,36 @@ vi.mock('@/shared/ui/dynamic-image', () => ({
 vi.mock('@/entities/car', () => ({
     useCar: vi.fn(() => ({
         data: {
-            car: {
-                id: 1,
-                brand: 'BMW',
-                model: '3 Series',
-                price: 100,
-                currencyType: 'USD',
-                imageUrl: '/car.jpg',
-                productionYear: 2023,
-                transmissionType: 'Automatic',
-                fuelType: 'Petrol',
-            },
+            id: 1,
+            brand: 'BMW',
+            model: '3 Series',
+            price: 100,
+            currencyType: 'USD',
+            imageUrl: '/car.jpg',
+            productionYear: 2023,
+            transmissionType: 'Automatic',
+            fuelType: 'Petrol',
+            seats: 5,
         },
         isLoading: false,
         error: null,
     })),
+    usePricingPreview: vi.fn(() => ({
+        data: {
+            basePrice: 100,
+            baseTotalPrice: 300,
+            finalPrice: 300,
+            effectiveDailyPrice: 100,
+            totalSavings: 0,
+            combinedMultiplier: 1,
+            rentalDays: 3,
+            appliedModifiers: [],
+        },
+        isLoading: false,
+    })),
+    pricingKeys: {
+        preview: (carId: number, start: string, end: string) => ['pricing', 'preview', carId, start, end],
+    },
 }));
 
 vi.mock('@/features/auth', async () => {

@@ -12,7 +12,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import Link from 'next/link';
-import { useAuth } from '@/features/auth';
 import { useCarCalendar } from '@/entities/car';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/entities/car';
@@ -22,6 +21,8 @@ export interface CarDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     calendar?: CarAvailabilityCalendar;
     actionSlot?: ReactNode;
     showRentalForm?: boolean;
+    isAuthenticated?: boolean;
+    isAuthLoading?: boolean;
 }
 
 export interface CarDetailSkeletonProps {
@@ -33,9 +34,8 @@ const subscribe = () => () => { };
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
-export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, className }: CarDetailProps) {
+export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, isAuthenticated, isAuthLoading, className }: CarDetailProps) {
     const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-    const { isAuthenticated, isLoading: authLoading } = useAuth();
     const { format: formatPrice } = useCurrency();
     const sourceCurrency = mapCurrency(car.currencyType);
 
@@ -49,7 +49,7 @@ export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, cl
     ].filter(spec => spec.value);
 
     const isAvailable = car.carStatusType === 'Available';
-    const showAuthLoading = !mounted || authLoading;
+    const showAuthLoading = !mounted || isAuthLoading;
 
     return (
         <div className={cn('grid gap-6 lg:grid-cols-2', className)}>

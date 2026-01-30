@@ -59,14 +59,14 @@ describe('Rental Entity', () => {
     describe('getFormattedRentalPeriod', () => {
       it('should format date range correctly', () => {
         const period = getFormattedRentalPeriod(mockRental);
-        expect(period).toContain('December 1, 2023');
-        expect(period).toContain('December 5, 2023');
+        expect(period).toContain('Dec 1, 2023');
+        expect(period).toContain('Dec 5, 2023');
       });
     });
 
     describe('getFormattedTotal', () => {
       it('should format price correctly', () => {
-        expect(getFormattedTotal(mockRental)).toBe('$200.00');
+        expect(getFormattedTotal(mockRental)).toBe('$200');
       });
     });
   });

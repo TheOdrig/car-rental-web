@@ -7,9 +7,9 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
-import { useLogin } from '@/features/auth';
+import { useLogin } from '../lib/use-auth';
 import { cn } from '@/shared/lib';
-import { FormError } from '@/features/auth';
+import { FormError } from './form-error';
 import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
 import type { ValidationState } from '@/shared/types';
@@ -131,8 +131,8 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 htmlFor="username"
                 error={errors.username}
                 required
-                validationState={usernameValidationState}
                 isDisabled={loginMutation.isPending}
+                validationState={usernameValidationState}
             >
                 <Input
                     id="username"
@@ -141,9 +141,10 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                     placeholder="name@example.com"
                     value={formData.username}
                     onChange={handleChange}
-                    onFocus={handleFocus}
-                    onBlur={handleBlur}
+                    onBlur={() => setFocused(prev => ({ ...prev, username: false }))}
+                    onFocus={() => setFocused(prev => ({ ...prev, username: true }))}
                     disabled={loginMutation.isPending}
+                    error={errors.username}
                     validationState={usernameValidationState}
                     className="h-12 pr-10"
                 />
@@ -154,8 +155,8 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 htmlFor="password"
                 error={errors.password}
                 required
-                validationState={passwordValidationState}
                 isDisabled={loginMutation.isPending}
+                validationState={passwordValidationState}
             >
                 <div className="relative">
                     <Input
@@ -165,9 +166,10 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                         placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
-                        onFocus={handleFocus}
-                        onBlur={handleBlur}
+                        onBlur={() => setFocused(prev => ({ ...prev, password: false }))}
+                        onFocus={() => setFocused(prev => ({ ...prev, password: true }))}
                         disabled={loginMutation.isPending}
+                        error={errors.password}
                         validationState={passwordValidationState}
                         className="h-12 pr-20"
                     />
