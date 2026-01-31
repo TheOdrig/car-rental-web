@@ -120,4 +120,3 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
         </div>
     );
 }
-

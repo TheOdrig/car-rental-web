@@ -13,15 +13,16 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
-import { FleetStatsCards } from '@/features/admin';
-import { FleetTable } from '@/features/admin';
+import { FleetStatsCards, FleetTable } from '@/features/manage-fleet';
 import {
     useFleetStatus,
     useInvalidateAdmin,
-    useAdminCars,
-    useDeleteCar,
-    useUpdateCarStatus,
 } from '@/features/admin';
+import {
+    useFleetList,
+    useDeleteCar,
+    useChangeCarStatus,
+} from '@/features/manage-fleet';
 import { toast } from 'sonner';
 import type { Car, CarStatus } from '@/entities/car';
 
@@ -33,7 +34,7 @@ export default function FleetManagementPage() {
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
-    const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useAdminCars({
+    const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useFleetList({
         status: statusFilter !== 'all' ? statusFilter : undefined,
         brand: brandFilter !== 'all' ? brandFilter : undefined,
         search: searchQuery || undefined,
@@ -44,7 +45,7 @@ export default function FleetManagementPage() {
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
     const deleteCarMutation = useDeleteCar();
-    const updateStatusMutation = useUpdateCarStatus();
+    const updateStatusMutation = useChangeCarStatus();
 
     const carsContent = carsData?.content;
     const filteredCars = useMemo(() => {
@@ -86,7 +87,7 @@ export default function FleetManagementPage() {
     };
 
     const handleUpdateStatus = (carId: number, status: CarStatus) => {
-        updateStatusMutation.mutate({ carId, status });
+        updateStatusMutation.mutate({ id: carId, status });
     };
 
     const lastUpdated = fleetStatus?.generatedAt
@@ -215,4 +216,3 @@ export default function FleetManagementPage() {
         </div>
     );
 }
-

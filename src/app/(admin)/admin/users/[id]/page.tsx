@@ -9,6 +9,9 @@ import { Breadcrumb } from '@/shared/ui';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    ComingSoonPlaceholder,
+} from '@/features/admin';
+import {
     CustomerDetailInfoCard,
     CustomerVerificationCard,
     CustomerStatisticsCard,
@@ -17,9 +20,8 @@ import {
     CustomerNotesCard,
     BanCustomerDialog,
     UnbanCustomerDialog,
-    ComingSoonPlaceholder,
-} from '@/features/admin';
-import { useCustomerDetail } from '@/features/admin';
+    useCustomerDetail,
+} from '@/features/manage-users';
 
 interface PageProps {
     params: Promise<{ id: string }>;

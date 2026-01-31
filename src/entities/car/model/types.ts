@@ -175,3 +175,79 @@ export interface CarFilters {
 
 export type ViewMode = 'grid' | 'list';
 export type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc' | 'rating-desc';
+
+
+export interface FleetStatus {
+    totalCars: number;
+    availableCars: number;
+    rentedCars: number;
+    reservedCars: number;
+    maintenanceCars: number;
+    inspectionCars: number;
+    damagedCars: number;
+    soldCars?: number;
+    occupancyRate: number;
+    generatedAt: string;
+}
+
+export interface VehicleStatistics {
+    totalRentals: number;
+    totalRevenue: number;
+    totalDaysRented: number;
+    occupancyRate: number;
+    averageRentalDuration: number;
+    lastRentalDate?: string;
+    totalDamageReports: number;
+    totalDamageCost: number;
+    averageRating?: number;
+}
+
+export interface VehicleImages {
+    primary: string;
+    additional: string[];
+}
+
+export interface VehicleCurrentStatus {
+    status: string;
+    statusColor: string;
+    isAvailable: boolean;
+    description?: string;
+    lastChangedAt: string;
+    lastChangedBy?: string;
+    nextAvailableDate?: string;
+    activeRentalId?: number;
+}
+
+export interface VehicleActiveRental {
+    id: number;
+    customerId: number;
+    customerName: string;
+    startDate: string;
+    endDate: string;
+    daysRemaining: number;
+}
+
+export interface VehicleDetailResponse {
+    id: number;
+    brand: string;
+    model: string;
+    licensePlate: string;
+    year: number;
+    color: string;
+    fuelType: string;
+    transmissionType: string;
+    bodyType: string;
+    seats: number;
+    vin?: string;
+    images: VehicleImages;
+    pricing: {
+        dailyRate: number;
+        weeklyRate: number;
+        depositAmount: number;
+        currency: string;
+    };
+    statistics?: VehicleStatistics;
+    currentStatus?: VehicleCurrentStatus;
+    activeRental?: VehicleActiveRental;
+    status?: string;
+}

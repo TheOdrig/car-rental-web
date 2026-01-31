@@ -166,4 +166,3 @@ export function BookingSuccess({
         </div>
     );
 }
-

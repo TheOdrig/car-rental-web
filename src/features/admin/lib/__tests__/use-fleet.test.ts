@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
 import { createMockCar, createMockCars, resetCarCounters } from '@/entities/car/lib/testing/factories';
-import { useFleetList, useFleetCar, useDeleteCar, useChangeCarStatus, useInvalidateFleet, fleetKeys } from '../use-fleet';
+import { useFleetList, useFleetCar, useDeleteCar, useChangeCarStatus, useInvalidateFleet, fleetKeys } from '@/features/manage-fleet/lib/use-fleet';
 import { clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type { PageResponse } from '@/shared/types';

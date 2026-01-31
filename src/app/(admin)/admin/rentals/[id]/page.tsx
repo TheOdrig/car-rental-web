@@ -18,22 +18,24 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    PenaltyWaiveDialog,
+    PenaltyHistorySection,
+    VehicleDamageHistory,
+    type TimelineEventType,
+} from '@/features/admin';
+import {
     RentalInfoCard,
     CustomerInfoCard,
     VehicleInfoCard,
     PaymentInfoCard,
     TimelineCard,
     RentalActionButtons,
-    PenaltyWaiveDialog,
-    PenaltyHistorySection,
-    VehicleDamageHistory,
     useRentalDetail,
     useApproveRental,
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
-    type TimelineEventType,
-} from '@/features/admin';
+} from '@/features/process-rentals';
 
 interface PageProps {
     params: Promise<{ id: string }>;

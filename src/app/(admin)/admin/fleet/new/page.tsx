@@ -11,9 +11,9 @@ import {
     SpecificationsSection,
     PricingSection,
     ImagesSection,
-} from '@/features/admin';
-import { useCreateCar } from '@/features/admin';
-import { useCarForm } from '@/features/admin';
+    useCreateCar,
+    useCarForm,
+} from '@/features/manage-fleet';
 import { toast } from 'sonner';
 
 interface ImageFile {
@@ -177,4 +177,3 @@ export default function AddCarPage() {
         </div>
     );
 }
-

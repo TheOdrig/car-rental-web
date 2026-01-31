@@ -18,6 +18,18 @@ export {
     type RentalTabCounts,
     type RentalStats,
     type ActionButton,
+
+    type AdminRentalStatus,
+    type RentalHistoryItem,
+    type RentalVehicleInfo,
+    type RentalCustomerInfo,
+    type RentalPricing,
+    type RentalPaymentInfo,
+    type TimelineEvent,
+    type TimelineEventType,
+    type RentalDetailResponse,
+    type PendingItem,
+    type ProcessReturnData,
 } from './model/types';
 export { useRentalStore } from './model/store';
 export * from './lib/utils';

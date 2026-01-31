@@ -11,12 +11,12 @@ import {
     BasicInfoSection,
     SpecificationsSection,
     PricingSection,
-    CarFormData,
     useVehicleDetail,
     useUpdateCar,
-    type VehicleDetailResponse,
     useCarForm,
-} from '@/features/admin';
+    type CarFormData,
+} from '@/features/manage-fleet';
+import type { VehicleDetailResponse } from '@/entities/car';
 import { toast } from 'sonner';
 
 export default function EditCarPage() {

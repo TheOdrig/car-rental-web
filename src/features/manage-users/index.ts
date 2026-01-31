@@ -1,23 +1,73 @@
-// User Management Feature
-// Transitional re-exports from admin feature (will be migrated incrementally)
 
-export {
-    useCustomerDetail,
-    useCustomerRentalHistory,
-    useBanCustomer,
-    useUnbanCustomer,
-    useAddAdminNote,
-} from '@/features/admin/lib/use-admin-customers';
+
+
+
 
 export {
     useUserList,
     useUserStats,
     useUser,
-} from '@/features/admin/lib/use-users';
+    useCustomerDetail,
+    useCustomerRentalHistory,
+    useBanUser,
+    useUnbanUser,
+    useAddAdminNote,
+    useInvalidateUsers,
+} from './api/users-api';
 
-export { UserTable, UserTableSkeleton } from '@/features/admin/ui/user-table';
-export { UserStatsCards, UserStatsCardsSkeleton } from '@/features/admin/ui/user-stats';
-export { BanUserDialog, UnbanUserDialog } from '@/features/admin/ui/user-actions-dialog';
-export * from '@/features/admin/ui/customer-detail';
 
-export type { CustomerDetailResponse, CustomerStatistics, CustomerVerification, CustomerAccountStatus, AdminNote } from '@/features/admin';
+export { UserStatsCards, UserStatsCardsSkeleton } from './ui/user-stats';
+export { UserTable, UserTableSkeleton } from './ui/user-table';
+export { BanUserDialog, UnbanUserDialog } from './ui/user-actions-dialog';
+
+
+export {
+    CustomerDetailInfoCard,
+    CustomerVerificationCard,
+    CustomerStatisticsCard,
+    CustomerStatusCard,
+    CustomerRentalHistoryTable,
+    CustomerNotesCard,
+    BanCustomerDialog,
+    UnbanCustomerDialog,
+} from './ui/customer-detail';
+
+
+export type {
+    User,
+    UserRole,
+    UserStatus,
+    UserStats,
+    CustomerDetailResponse,
+    CustomerStatistics,
+    CustomerVerification,
+    CustomerAccountStatus,
+    AdminNote,
+    RentalHistoryItem,
+    PaginatedResponse,
+    AdminRentalStatus,
+    BanUserRequest,
+    UnbanUserRequest,
+    AddNoteRequest,
+} from './model/types';
+
+
+export {
+    USERS_EVENTS,
+    publishUserBanned,
+    publishUserUnbanned,
+    publishUserNoteAdded,
+    publishUserUpdated,
+    subscribeToUserBanned,
+    subscribeToUserUnbanned,
+    subscribeToUserNoteAdded,
+    subscribeToUserUpdated,
+} from './model/users-events';
+
+export type {
+    UsersEventType,
+    UserBannedPayload,
+    UserUnbannedPayload,
+    UserNoteAddedPayload,
+    UserUpdatedPayload,
+} from './model/users-events';

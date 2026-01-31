@@ -370,4 +370,3 @@ export function RentalCardSkeleton({ variant = 'default', className }: RentalCar
         </Card>
     );
 }
-

@@ -321,4 +321,3 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </form>
     );
 }
-

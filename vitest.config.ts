@@ -8,7 +8,13 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         setupFiles: ['./src/app/setup-tests.ts'],
-        include: ['src/**/*.test.{ts,tsx}'],
+        include: [
+            'src/__tests__/**/*.test.{ts,tsx}',
+            'src/features/**/__tests__/**/*.test.{ts,tsx}',
+            'src/entities/**/__tests__/**/*.test.{ts,tsx}',
+            'src/shared/**/__tests__/**/*.test.{ts,tsx}',
+            'src/widgets/**/__tests__/**/*.test.{ts,tsx}',
+        ],
         testTimeout: 15000,
         exclude: ['node_modules', 'dist', '.next'],
         coverage: {

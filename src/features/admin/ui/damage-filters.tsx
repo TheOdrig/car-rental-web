@@ -155,4 +155,3 @@ export function DamageFilters() {
         </div>
     );
 }
-

@@ -1,31 +1,58 @@
-// Fleet Management Feature
-// Transitional re-exports from admin feature (will be migrated incrementally)
 
 export {
     useFleetList,
     useFleetCar,
-    useDeleteCar,
-    useChangeCarStatus,
-    useInvalidateFleet,
-    fleetKeys,
-} from '@/features/admin/lib/use-fleet';
-
-export {
-    useAdminCars,
     useCreateCar,
     useUpdateCar,
-    useDeleteCar as useDeleteVehicle,
-    useUpdateCarStatus,
+    useDeleteCar,
+    useChangeCarStatus,
     useVehicleDetail,
     useVehicleRentalHistory,
-} from '@/features/admin/lib/use-admin-vehicles';
+    useInvalidateFleet,
+} from './api/fleet-api';
 
-export { useCarForm } from '@/features/admin/lib/use-car-form';
+export type {
+    CreateCarRequest,
+    UpdateCarRequest,
+    CarResponse,
+    RentalHistoryItem,
+    PaginatedResponse,
+} from './api/fleet-api';
 
-export { FleetTable, FleetTableSkeleton } from '@/features/admin/ui/fleet-table';
-export { FleetStatsCards, FleetStatsCardsSkeleton } from '@/features/admin/ui/fleet-stats';
-export { FleetStatusCard, FleetStatusCompact, FleetStatusSkeleton } from '@/features/admin/ui/fleet-status';
-export * from '@/features/admin/ui/car-form';
-export * from '@/features/admin/ui/vehicle-detail';
+export { fleetKeys } from './api/fleet-keys';
+export type { FleetFilters } from './api/fleet-keys';
 
-export type { CreateCarRequest, UpdateCarRequest, CarResponse, AdminCarsFilters } from '@/features/admin';
+
+export type {
+    FleetStatistics,
+    CarFormData,
+} from './model/types';
+
+export { defaultCarFormData } from './model/types';
+
+
+export {
+    FLEET_EVENTS,
+    publishCarAdded,
+    publishCarUpdated,
+    publishCarDeleted,
+    publishCarStatusChanged,
+    subscribeToCarAdded,
+    subscribeToCarUpdated,
+    subscribeToCarDeleted,
+    subscribeToCarStatusChanged,
+} from './model/fleet-events';
+
+export type {
+    FleetEventType,
+    CarAddedPayload,
+    CarUpdatedPayload,
+    CarDeletedPayload,
+    CarStatusChangedPayload,
+} from './model/fleet-events';
+
+
+export { useCarForm } from './lib/use-car-form';
+
+
+export * from './ui';

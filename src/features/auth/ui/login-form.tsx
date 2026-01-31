@@ -205,4 +205,3 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
         </form>
     );
 }
-

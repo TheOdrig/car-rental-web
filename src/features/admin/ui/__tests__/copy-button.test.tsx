@@ -1,7 +1,7 @@
 'use client';
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { CopyButton } from '@/features/admin';
+import { CopyButton } from '@/shared/ui/copy-button';
 import { renderWithProviders } from '@/app/testing/test-utils';
 describe('CopyButton', () => {
     it('should render copy button with correct aria-label', () => {

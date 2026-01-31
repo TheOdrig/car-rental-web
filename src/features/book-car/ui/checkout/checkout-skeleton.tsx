@@ -1,3 +1,5 @@
+'use client';
+
 import { Skeleton } from '@/shared/ui/skeleton';
 
 export function CheckoutSkeleton() {

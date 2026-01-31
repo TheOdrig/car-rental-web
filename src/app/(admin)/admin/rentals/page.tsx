@@ -12,20 +12,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/shared/ui/select';
-import { PendingRentalsTable } from '@/features/admin';
 import { Breadcrumb } from '@/widgets/layout';
+import { PendingRentalsTable } from '@/features/process-rentals';
 import {
     usePendingApprovals,
     usePendingPickups,
     usePendingReturns,
     useOverdueRentals,
+    useInvalidateAdmin,
+} from '@/features/admin';
+import {
     useApproveRental,
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
-    useInvalidateAdmin,
-} from '@/features/admin';
-import type { ProcessReturnData } from '@/features/admin';
+} from '@/features/process-rentals';
+import type { ProcessReturnData } from '@/features/process-rentals';
 import { showToast } from '@/shared/lib';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
@@ -251,4 +253,3 @@ export default function AdminRentalsPage() {
         </div>
     );
 }
-

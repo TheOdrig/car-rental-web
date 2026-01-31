@@ -9,17 +9,19 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    ComingSoonPlaceholder,
+    VehicleDamageHistory,
+} from '@/features/admin';
+import {
     VehicleDetailInfoCard,
     VehicleImagesCard,
     VehicleStatisticsCard,
     VehicleStatusCard,
     VehicleActiveRentalCard,
     VehicleRentalHistoryTable,
-    VehicleDamageHistory,
-    ComingSoonPlaceholder,
     useVehicleDetail,
-    useUpdateCarStatus,
-} from '@/features/admin';
+    useChangeCarStatus,
+} from '@/features/manage-fleet';
 import {
     Select,
     SelectContent,
@@ -48,7 +50,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
     const vehicleId = parseInt(id, 10);
 
     const { data: vehicle, isLoading, isError, refetch } = useVehicleDetail(vehicleId);
-    const updateStatus = useUpdateCarStatus();
+    const updateStatus = useChangeCarStatus();
 
     if (isNaN(vehicleId)) {
         router.push('/admin/fleet');
@@ -96,7 +98,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
     const handleStatusChange = (newStatus: CarStatus) => {
         updateStatus.mutate(
-            { carId: vehicleId, status: newStatus },
+            { id: vehicleId, status: newStatus },
             {
                 onSuccess: () => {
                     void refetch();

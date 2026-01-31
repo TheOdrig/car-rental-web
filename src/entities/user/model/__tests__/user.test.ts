@@ -20,7 +20,7 @@ const mockAdmin: User = {
 const mockUserNoName: User = {
     id: 3,
     email: 'noname@example.com',
-    username: 'noname',
+    username: '',
     roles: [UserRole.USER],
 };
 describe('User Entity', () => {

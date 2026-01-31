@@ -20,15 +20,18 @@ import {
     usePendingApprovals,
     usePendingPickups,
     usePendingReturns,
+    useInvalidateAdmin,
+    useRevenueData,
+} from '@/features/admin';
+import {
     useApproveRental,
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
-    useInvalidateAdmin,
-    useRevenueData,
-} from '@/features/admin';
+} from '@/features/process-rentals';
 import { processRevenueData } from '@/features/admin';
-import type { RevenuePeriod, ProcessReturnData } from '@/features/admin';
+import type { RevenuePeriod } from '@/features/admin';
+import type { ProcessReturnData } from '@/features/process-rentals';
 import { toast } from 'sonner';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
@@ -302,4 +305,3 @@ export default function AdminDashboardPage() {
         </ErrorBoundary>
     );
 }
-

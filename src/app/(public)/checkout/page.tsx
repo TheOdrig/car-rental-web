@@ -92,4 +92,3 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
         </main>
     );
 }
-

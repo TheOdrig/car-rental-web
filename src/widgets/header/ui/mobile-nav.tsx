@@ -193,4 +193,3 @@ export function MobileNav({ trigger }: MobileNavProps) {
         </Sheet>
     );
 }
-

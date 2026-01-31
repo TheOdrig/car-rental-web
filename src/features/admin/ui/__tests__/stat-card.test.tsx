@@ -2,7 +2,7 @@
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { Car } from 'lucide-react';
-import { StatCard } from '@/features/admin';
+import { StatCard } from '@/shared/ui/stat-card';
 import { renderWithProviders } from '@/app/testing/test-utils';
 describe('StatCard', () => {
     it('should render label and value', () => {

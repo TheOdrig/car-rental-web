@@ -5,3 +5,5 @@ export * from './dialog';
 export * from './validation-icon';
 export * from './error-boundary';
 export * from './breadcrumb';
+export * from './copy-button';
+export * from './stat-card';

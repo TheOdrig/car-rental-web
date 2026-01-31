@@ -14,6 +14,13 @@ export {
     type CarFilters,
     type ViewMode,
     type SortOption,
+
+    type FleetStatus,
+    type VehicleStatistics,
+    type VehicleImages,
+    type VehicleCurrentStatus,
+    type VehicleActiveRental,
+    type VehicleDetailResponse,
 } from './model/types';
 export { useCarStore } from './model/store';
 export { CAR_ENDPOINTS } from './api/endpoints';

@@ -150,3 +150,171 @@ export interface ActionButton {
     variant: 'default' | 'outline' | 'ghost' | 'destructive';
     icon?: string;
 }
+
+
+export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'REJECTED' | 'OVERDUE';
+
+export interface RentalHistoryItem {
+    id: number;
+    customerId?: number;
+    customerName: string;
+    carId?: number;
+    vehicleName: string;
+    startDate: string;
+    endDate: string;
+    duration: number;
+    totalAmount: number;
+    status: AdminRentalStatus;
+}
+
+export interface RentalVehicleInfo {
+    id: number;
+    brand: string;
+    model: string;
+    licensePlate: string;
+    year: number;
+    thumbnailUrl?: string;
+    imageUrl?: string;
+    fuelType?: string;
+    transmissionType?: string;
+    status: string;
+}
+
+export interface RentalCustomerInfo {
+    id: number;
+    name: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    avatarUrl?: string;
+    isEmailVerified: boolean;
+    isPhoneVerified: boolean;
+    isVerified: boolean;
+    stats: {
+        totalRentals: number;
+        totalSpent: number;
+        damageCount: number;
+    };
+}
+
+export interface RentalPricing {
+    dailyRate: number;
+    totalDays: number;
+    subtotal: number;
+    discounts: number;
+    finalTotal: number;
+    currency: string;
+    exchangeRate?: number;
+}
+
+export interface RentalPaymentInfo {
+    id: number;
+    method: string;
+    status: string;
+    transactionId: string;
+    paymentIntentId?: string;
+    last4: string;
+    paidAt: string;
+}
+
+export type TimelineEventType = 'created' | 'approved' | 'rejected' | 'cancelled' | 'picked_up' | 'returned' | 'note_added';
+
+export interface TimelineEvent {
+    id: number;
+    type: TimelineEventType;
+    title: string;
+    description: string;
+    timestamp: string;
+    adminName?: string;
+    notes?: string;
+}
+
+export interface RentalDetailResponse {
+    id: number;
+    status: AdminRentalStatus;
+    startDate: string;
+    endDate: string;
+    duration: number;
+    pricing: {
+        dailyRate: number;
+        totalDays: number;
+        subtotal: number;
+        discounts: number;
+        finalTotal: number;
+        currency: 'USD' | 'EUR' | 'TRY';
+    };
+    customer: {
+        id: number;
+        firstName: string;
+        lastName: string;
+        email: string;
+        phone: string;
+        emailVerified: boolean;
+        phoneVerified: boolean;
+        stats: {
+            totalRentals: number;
+            totalSpent: number;
+            damageCount: number;
+        };
+    };
+    vehicle: {
+        id: number;
+        brand: string;
+        model: string;
+        licensePlate: string;
+        imageUrl?: string;
+        status: string;
+        fuelType: string;
+        transmissionType: string;
+        bodyType?: string;
+    };
+    payment: {
+        totalAmount: number;
+        status: string;
+        method: string;
+    };
+    timeline: {
+        type: string;
+        timestamp: string;
+        title?: string;
+        description?: string;
+    }[];
+    damages: import('@/entities/damage').DamageReport[];
+    notes: {
+        approval?: string;
+        pickup?: string;
+        return?: string;
+        cancellation?: string;
+    };
+    penaltyAmount?: number;
+    lateReturnStatus?: LateReturnStatus;
+}
+
+export interface PendingItem {
+    rentalId: number;
+    customerId?: number;
+    customerName: string;
+    customerEmail: string;
+    customerImage?: string;
+    isCustomerVerified?: boolean;
+    carId: number;
+    carBrand: string;
+    carModel: string;
+    carImage?: string;
+    licensePlate: string;
+    fuelType?: string;
+    transmission?: string;
+    startDate: string;
+    endDate: string;
+    duration?: number;
+    totalAmount: number;
+    status: string;
+    lateHours?: number;
+    createdAt: string;
+}
+
+export interface ProcessReturnData {
+    hasDamage?: boolean;
+    notes?: string;
+}

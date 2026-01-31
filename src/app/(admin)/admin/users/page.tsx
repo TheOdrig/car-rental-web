@@ -12,9 +12,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
-import { UserStatsCards } from '@/features/admin';
-import { UserTable } from '@/features/admin';
-import { useUserStats, useInvalidateUsers } from '@/features/admin';
+import { UserStatsCards, UserTable, useUserStats, useInvalidateUsers } from '@/features/manage-users';
 import { toast } from 'sonner';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
@@ -131,4 +129,3 @@ export default function UserManagementPage() {
         </div >
     );
 }
-

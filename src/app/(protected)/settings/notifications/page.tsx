@@ -166,4 +166,3 @@ export default function NotificationsSettingsPage() {
         </div>
     );
 }
-

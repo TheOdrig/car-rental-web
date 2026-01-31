@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { VehicleInfoCard } from '@/features/admin';
 import { renderWithProviders } from '@/app/testing/test-utils';
-import type { RentalVehicleInfo } from '@/features/admin';
+import type { RentalVehicleInfo } from '@/entities/rental';
 describe('VehicleInfoCard', () => {
     const mockVehicle: RentalVehicleInfo = {
         id: 101,

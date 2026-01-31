@@ -3,7 +3,7 @@ import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
 import { RentalInfoCard } from '@/features/admin';
 import { renderWithProviders } from '@/app/testing/test-utils';
-import type { AdminRentalStatus, RentalPricing } from '@/features/admin';
+import type { AdminRentalStatus, RentalPricing } from '@/entities/rental';
 describe('RentalInfoCard', () => {
     const defaultProps = {
         rentalId: 12345,

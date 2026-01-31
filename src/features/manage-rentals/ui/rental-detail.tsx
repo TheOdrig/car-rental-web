@@ -601,4 +601,3 @@ export function RentalDetailSkeleton({ className }: RentalDetailSkeletonProps) {
         </div>
     );
 }
-

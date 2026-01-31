@@ -1,3 +1,5 @@
+'use client';
+
 import { cn } from "@/shared/lib"
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {

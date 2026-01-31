@@ -140,4 +140,3 @@ function FeaturedCarouselEmpty() {
 }
 
 export { FeaturedCarouselSkeleton };
-
