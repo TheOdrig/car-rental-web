@@ -31,7 +31,6 @@ import { processRevenueData } from '@/features/admin';
 import type { RevenuePeriod, ProcessReturnData } from '@/features/admin';
 import { toast } from 'sonner';
 
-
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 type MetricsCardType = 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pickups' | 'returns' | 'overdue';
 
@@ -303,7 +302,4 @@ export default function AdminDashboardPage() {
         </ErrorBoundary>
     );
 }
-
-
-
 

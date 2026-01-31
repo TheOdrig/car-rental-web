@@ -29,8 +29,6 @@ import { useCars, useCarSearchResults, getSortParams } from '@/entities/car';
 import { useFilterStore, type SortOption } from '@/widgets/car-filters';
 import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/entities/car';
 
-
-
 function getCarPrice(car: Car | AvailableCar): number {
     if ('dailyRate' in car) {
         return car.dailyRate;
@@ -275,6 +273,4 @@ export function CarsListingContent() {
         </div>
     );
 }
-
-
 

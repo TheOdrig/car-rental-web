@@ -128,7 +128,6 @@ export function PromotionalBanners({
                     ))}
                 </div>
 
-
             </div>
         </section>
     );

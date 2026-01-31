@@ -38,15 +38,11 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.next();
     }
 
-
-
     const hasAccessToken = !!token;
     const hasRefreshToken = !!request.cookies.get('refresh_token')?.value;
 
     let payload: TokenPayload | null = null;
     const isAuthenticated = hasAccessToken || hasRefreshToken;
-
-
 
     if (token && isAdminRoute(pathname)) {
         const result = await verifyToken(token);
@@ -65,8 +61,6 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         if (!isAuthenticated) {
             return redirectToLogin(request, pathname);
         }
-
-
 
         if (!isAdmin && !hasRefreshToken) {
             return NextResponse.redirect(new URL('/forbidden', request.url));

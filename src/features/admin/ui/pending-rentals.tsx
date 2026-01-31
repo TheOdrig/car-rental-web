@@ -33,7 +33,6 @@ import {
 } from './index';
 import { safeFormatDate } from '@/shared/lib';
 
-
 interface PendingRentalsTableProps {
     items: PendingItem[];
     type: 'approvals' | 'pickups' | 'returns' | 'overdue';
@@ -51,8 +50,6 @@ interface PendingRentalsSkeletonProps {
     rows?: number;
     className?: string;
 }
-
-
 
 function formatCurrency(amount: number): string {
     return new Intl.NumberFormat('en-US', {
@@ -104,7 +101,6 @@ function getStatusDisplay(status: string) {
     };
 }
 
-
 export const PendingRentalsTable = memo(function PendingRentalsTable({
     items,
     type,
@@ -141,7 +137,6 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         onReject?.(rentalId, reason);
         setDialogState({ ...dialogState, open: false });
     };
-
 
     const handlePickupConfirm = (rentalId: number, notes?: string) => {
         onPickup?.(rentalId, notes);
@@ -415,7 +410,6 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
         </>
     );
 });
-
 
 export function PendingRentalsSkeleton({ rows = 3, className }: PendingRentalsSkeletonProps) {
     return (

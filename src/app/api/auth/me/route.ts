@@ -7,7 +7,6 @@ export async function GET() {
     try {
         let token = await getAccessToken();
 
-
         if (!token) {
             const refreshToken = await getRefreshToken();
 
@@ -17,7 +16,6 @@ export async function GET() {
                     { status: 401 }
                 );
             }
-
 
             try {
                 const response = await fetch(endpoints.auth.refresh, {

@@ -21,7 +21,6 @@ class EventBus {
         };
     }
 
-
     emit<T = unknown>(eventType: string, payload: T): void {
         const handlers = this.handlers.get(eventType);
 
@@ -43,7 +42,6 @@ class EventBus {
         });
     }
 
-
     clear(): void {
         this.handlers.clear();
     }
@@ -53,8 +51,6 @@ class EventBus {
     }
 }
 
-
 export const eventBus = new EventBus();
-
 
 export { EventBus };

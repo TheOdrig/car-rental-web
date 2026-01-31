@@ -32,7 +32,6 @@ export default function FleetManagementPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
-
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
     const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useAdminCars({
         status: statusFilter !== 'all' ? statusFilter : undefined,
@@ -44,10 +43,8 @@ export default function FleetManagementPage() {
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
-
     const deleteCarMutation = useDeleteCar();
     const updateStatusMutation = useUpdateCarStatus();
-
 
     const carsContent = carsData?.content;
     const filteredCars = useMemo(() => {
@@ -218,6 +215,4 @@ export default function FleetManagementPage() {
         </div>
     );
 }
-
-
 

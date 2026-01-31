@@ -1,28 +1,23 @@
 'use client';
 
-import React, { type ReactNode, useState, useMemo, useSyncExternalStore } from 'react';
+import React, { type ReactNode, useState, useMemo } from 'react';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import {
     Fuel, Users, Settings2, Calendar, Gauge, Palette,
-    MapPin, LogIn, ChevronLeft, ChevronRight, Loader2
+    MapPin, ChevronLeft, ChevronRight, Loader2
 } from 'lucide-react';
 import { format, addMonths, subMonths, startOfMonth, parse } from 'date-fns';
 import { cn } from '@/shared/lib';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import Link from 'next/link';
-import { useCarCalendar } from '@/entities/car';
+import { type Car, type CarAvailabilityCalendar, type DayAvailability, useCarCalendar } from '@/entities/car';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
-import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/entities/car';
 
 export interface CarDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     car: Car;
     calendar?: CarAvailabilityCalendar;
     actionSlot?: ReactNode;
-    showRentalForm?: boolean;
-    isAuthenticated?: boolean;
-    isAuthLoading?: boolean;
 }
 
 export interface CarDetailSkeletonProps {
@@ -30,12 +25,8 @@ export interface CarDetailSkeletonProps {
 }
 
 
-const subscribe = () => () => { };
-const getSnapshot = () => true;
-const getServerSnapshot = () => false;
+export function CarDetail({ car, calendar, actionSlot, className }: CarDetailProps) {
 
-export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, isAuthenticated, isAuthLoading, className }: CarDetailProps) {
-    const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
     const { format: formatPrice } = useCurrency();
     const sourceCurrency = mapCurrency(car.currencyType);
 
@@ -49,7 +40,6 @@ export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, is
     ].filter(spec => spec.value);
 
     const isAvailable = car.carStatusType === 'Available';
-    const showAuthLoading = !mounted || isAuthLoading;
 
     return (
         <div className={cn('grid gap-6 lg:grid-cols-2', className)}>
@@ -123,40 +113,7 @@ export function CarDetail({ car, calendar, actionSlot, showRentalForm = true, is
                     </Card>
                 )}
 
-                {actionSlot ? (
-                    actionSlot
-                ) : (
-                    showRentalForm && (
-                        <Card>
-                            <CardHeader className="pb-3">
-                                <CardTitle className="text-lg">Book This Car</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                {showAuthLoading ? (
-                                    <div className="space-y-4">
-                                        <Skeleton className="h-12 w-full" />
-                                        <Skeleton className="h-12 w-full" />
-                                        <Skeleton className="h-12 w-full" />
-                                    </div>
-                                ) : isAuthenticated ? (
-                                    <p className="text-center py-4 text-muted-foreground">Rental form would be here</p>
-                                ) : (
-                                    <div className="text-center py-4">
-                                        <p className="text-muted-foreground mb-4">
-                                            Please log in to book this car
-                                        </p>
-                                        <Button asChild>
-                                            <Link href={`/login?callbackUrl=/cars/${car.id}`}>
-                                                <LogIn className="h-4 w-4 mr-2" />
-                                                Log In to Book
-                                            </Link>
-                                        </Button>
-                                    </div>
-                                )}
-                            </CardContent>
-                        </Card>
-                    )
-                )}
+                {actionSlot}
 
                 {!isAvailable && (
                     <Card className="border-amber-200 bg-amber-50/50">

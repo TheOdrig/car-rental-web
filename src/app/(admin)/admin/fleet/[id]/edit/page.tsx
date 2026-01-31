@@ -1,8 +1,264 @@
+'use client';
+
+import React from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import {
+    BasicInfoSection,
+    SpecificationsSection,
+    PricingSection,
+    CarFormData,
+    useVehicleDetail,
+    useUpdateCar,
+    type VehicleDetailResponse,
+    useCarForm,
+} from '@/features/admin';
+import { toast } from 'sonner';
+
 export default function EditCarPage() {
+    const router = useRouter();
+    const params = useParams();
+
+    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const carId = rawId ? Number(rawId) : null;
+
+
+    const { data: car, isLoading: isLoadingCar } = useVehicleDetail(carId || 0);
+
+
+    const updateCarMutation = useUpdateCar();
+
+    if (!carId || isLoadingCar) {
+        return <EditCarPageSkeleton />;
+    }
+
+    if (!car) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
+                <h2 className="text-xl font-semibold mb-2">Car not found</h2>
+                <p className="text-muted-foreground mb-4">
+                    The car you&apos;re looking for doesn&apos;t exist or has been removed.
+                </p>
+                <Button onClick={() => router.push('/admin/fleet')}>
+                    Back to Fleet
+                </Button>
+            </div>
+        );
+    }
+
+    const initialFormData: CarFormData = {
+        brand: car.brand || '',
+        model: car.model || '',
+        year: car.year || new Date().getFullYear(),
+        licensePlate: car.licensePlate || '',
+        vin: car.vin || '',
+        fuelType: car.fuelType?.toLowerCase() || '',
+        transmissionType: car.transmissionType?.toLowerCase() || '',
+        bodyType: car.bodyType?.toLowerCase() || '',
+        seats: car.seats || 5,
+        color: car.color?.toLowerCase() || '',
+        dailyRate: car.pricing?.dailyRate || 0,
+        weeklyRate: car.pricing?.weeklyRate || 0,
+        depositAmount: car.pricing?.depositAmount || 0,
+        imageUrl: car.images?.primary || '',
+    };
+
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold">Edit Car</h1>
-            <p className="text-muted-foreground mt-2">Coming soon...</p>
+        <EditCarForm
+            key={car.id}
+            car={car}
+            carId={carId}
+            initialFormData={initialFormData}
+            updateCar={updateCarMutation}
+        />
+    );
+}
+
+interface EditCarFormProps {
+    car: VehicleDetailResponse;
+    carId: number;
+    initialFormData: CarFormData;
+    updateCar: ReturnType<typeof useUpdateCar>;
+}
+
+function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProps) {
+    const router = useRouter();
+
+    const {
+        formData,
+        errors,
+        updateField,
+        validateForm,
+    } = useCarForm(initialFormData);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!validateForm()) {
+            toast.error('Please fix the errors before submitting');
+            return;
+        }
+
+        updateCar.mutate({ id: carId, ...formData }, {
+            onSuccess: () => {
+                router.push('/admin/fleet');
+            },
+        });
+    };
+
+    return (
+        <div className="space-y-6 p-6">
+            <Breadcrumb
+                items={[
+                    { label: 'Dashboard', href: '/admin/dashboard' },
+                    { label: 'Fleet Management', href: '/admin/fleet' },
+                    { label: `Edit ${car.brand} ${car.model}` },
+                ]}
+            />
+
+            <div className="flex items-center justify-between">
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight">Edit Car</h1>
+                    <p className="text-muted-foreground">
+                        Update details for {car.brand} {car.model}
+                    </p>
+                </div>
+                <Button
+                    variant="outline"
+                    onClick={() => router.back()}
+                    className="gap-2"
+                >
+                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                    Back
+                </Button>
+            </div>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid gap-6 lg:grid-cols-2">
+                    <div className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Basic Information</CardTitle>
+                                <CardDescription>
+                                    Update the vehicle identification details
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <BasicInfoSection
+                                    data={formData}
+                                    errors={errors}
+                                    onUpdate={updateField}
+                                />
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Specifications</CardTitle>
+                                <CardDescription>
+                                    Update vehicle specifications
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <SpecificationsSection
+                                    data={formData}
+                                    errors={errors}
+                                    onUpdate={updateField}
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+
+                    <div className="space-y-6">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Pricing</CardTitle>
+                                <CardDescription>
+                                    Update rental rates and deposit
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <PricingSection
+                                    data={formData}
+                                    errors={errors}
+                                    onUpdate={updateField}
+                                />
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+
+                <div className="flex justify-end gap-4">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => router.back()}
+                        disabled={updateCar.isPending}
+                    >
+                        Cancel
+                    </Button>
+                    <Button type="submit" disabled={updateCar.isPending} className="gap-2">
+                        {updateCar.isPending ? (
+                            <>
+                                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                Saving...
+                            </>
+                        ) : (
+                            <>
+                                <Save className="h-4 w-4" aria-hidden="true" />
+                                Save Changes
+                            </>
+                        )}
+                    </Button>
+                </div>
+            </form>
+        </div>
+    );
+}
+
+function EditCarPageSkeleton() {
+    return (
+        <div className="space-y-6 p-6">
+            <Skeleton className="h-5 w-64" />
+            <div className="flex items-center justify-between">
+                <div className="space-y-2">
+                    <Skeleton className="h-9 w-48" />
+                    <Skeleton className="h-4 w-64" />
+                </div>
+                <Skeleton className="h-9 w-24" />
+            </div>
+            <div className="grid gap-6 lg:grid-cols-2">
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-40" />
+                            <Skeleton className="h-4 w-56" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+                <div className="space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <Skeleton className="h-6 w-32" />
+                            <Skeleton className="h-4 w-48" />
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <Skeleton className="h-10 w-full" />
+                            <Skeleton className="h-10 w-full" />
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
         </div>
     );
 }

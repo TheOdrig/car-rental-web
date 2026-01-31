@@ -14,7 +14,6 @@ const eslintConfig = defineConfig([
       "boundaries/include": ["src/**/*"],
       "boundaries/elements": [
         { type: "app", pattern: "src/app/**/*" },
-        { type: "pages", pattern: "src/pages/**/*" },
         { type: "widgets", pattern: "src/widgets/**/*" },
         { type: "features", pattern: "src/features/**/*" },
         { type: "entities", pattern: "src/entities/**/*" },
@@ -30,10 +29,6 @@ const eslintConfig = defineConfig([
           rules: [
             {
               from: "app",
-              allow: ["pages", "widgets", "features", "entities", "shared"],
-            },
-            {
-              from: "pages",
               allow: ["widgets", "features", "entities", "shared"],
             },
             {
@@ -46,15 +41,22 @@ const eslintConfig = defineConfig([
             },
             {
               from: "entities",
-              allow: ["shared"],
+              allow: ["entities", "shared"],
             },
             {
               from: "shared",
-              allow: [],
+              allow: ["shared"],
             },
           ],
         },
       ],
+    },
+  },
+  {
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/__tests__/**"],
+    rules: {
+      "@next/next/no-img-element": "off",
+      "boundaries/element-types": "off",
     },
   },
   // Override default ignores of eslint-config-next.

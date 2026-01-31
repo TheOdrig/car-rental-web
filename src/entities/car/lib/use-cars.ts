@@ -6,7 +6,6 @@ import { sortOptionToParam } from './utils';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 
-
 export const carKeys = {
     all: ['cars'] as const,
     lists: () => [...carKeys.all, 'list'] as const,
@@ -20,7 +19,6 @@ export const carKeys = {
     similar: (id: number) => [...carKeys.detail(id), 'similar'] as const,
 };
 
-
 interface CarDetailResponse {
     car: Car;
     calendar?: CarAvailabilityCalendar;
@@ -32,8 +30,6 @@ interface UseCarOptions {
     includeSimilar?: boolean;
     calendarMonth?: string;
 }
-
-
 
 async function fetchCars(
     filters?: CarFilters,
@@ -84,7 +80,6 @@ async function searchCars(params: AvailabilitySearchRequest): Promise<Availabili
     return clientPost<AvailabilitySearchResponse>('/api/cars/search', params);
 }
 
-
 export function useCars(filters?: CarFilters, page: number = 0, sortBy: SortOption = 'recommended') {
     return useQuery({
         queryKey: [...carKeys.list(filters), page, sortBy],
@@ -133,7 +128,6 @@ export function useCarCalendar(id: number | null | undefined, month?: string) {
     });
 }
 
-
 export function useSimilarCars(id: number | null | undefined) {
     return useQuery({
         queryKey: carKeys.similar(id!),
@@ -147,7 +141,6 @@ export function useSimilarCars(id: number | null | undefined) {
     });
 }
 
-
 export function useCarSearch() {
     const queryClient = useQueryClient();
 
@@ -159,7 +152,6 @@ export function useCarSearch() {
     });
 }
 
-
 export function useCarSearchResults(params: AvailabilitySearchRequest | null) {
     return useQuery({
         queryKey: carKeys.searchResult(params!),
@@ -168,7 +160,6 @@ export function useCarSearchResults(params: AvailabilitySearchRequest | null) {
         staleTime: 2 * 60 * 1000,
     });
 }
-
 
 export function usePrefetchCar() {
     const queryClient = useQueryClient();
@@ -181,7 +172,6 @@ export function usePrefetchCar() {
         });
     };
 }
-
 
 export function useInvalidateCars() {
     const queryClient = useQueryClient();

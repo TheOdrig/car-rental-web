@@ -220,11 +220,12 @@ export interface CustomerDetailResponse {
     avatarUrl: string | null;
     roles: Role[];
     createdAt: string;
+    registrationDate: string;
     lastLoginDate?: string;
     statistics: CustomerStatistics;
     verification: CustomerVerification;
-    status: CustomerAccountStatus;
-    notes: AdminNote[];
+    accountStatus: CustomerAccountStatus;
+    adminNotes: AdminNote[];
 }
 
 export interface VehicleStatistics {
@@ -376,6 +377,8 @@ export interface PaginatedResponse<T> {
     last: boolean;
     empty: boolean;
 }
+import type { LateReturnStatus } from '@/entities/rental';
+
 export interface RentalDetailResponse {
     id: number;
     status: AdminRentalStatus;
@@ -413,6 +416,7 @@ export interface RentalDetailResponse {
         status: string;
         fuelType: string;
         transmissionType: string;
+        bodyType?: string;
     };
     payment: {
         totalAmount: number;
@@ -432,4 +436,6 @@ export interface RentalDetailResponse {
         return?: string;
         cancellation?: string;
     };
+    penaltyAmount?: number;
+    lateReturnStatus?: LateReturnStatus;
 }

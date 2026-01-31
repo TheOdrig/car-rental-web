@@ -35,8 +35,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
     const [errors, setErrors] = useState<Record<string, string>>({});
     const [formError, setFormError] = useState<string | null>(null);
 
-
-
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
 
@@ -76,7 +74,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
         e.preventDefault();
         setFormError(null);
 
-
         if (!validateForm()) return;
 
         try {
@@ -103,7 +100,6 @@ export function RegisterForm({ className }: RegisterFormProps) {
             setFormError(null);
         }
     };
-
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
@@ -325,5 +321,4 @@ export function RegisterForm({ className }: RegisterFormProps) {
         </form>
     );
 }
-
 

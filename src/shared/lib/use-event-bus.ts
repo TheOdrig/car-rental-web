@@ -1,19 +1,25 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { eventBus } from './event-bus';
 import type { EventType, EventPayload } from '@/shared/types/events';
 
 export function useEventBus<T extends EventType>(
     eventType: T,
-    handler: (payload: EventPayload<T>) => void,
-    deps: unknown[] = []
+    handler: (payload: EventPayload<T>) => void
 ) {
+    const handlerRef = useRef(handler);
+
     useEffect(() => {
-        const unsubscribe = eventBus.subscribe(eventType, handler);
+        handlerRef.current = handler;
+    }, [handler]);
+
+    useEffect(() => {
+        const unsubscribe = eventBus.subscribe<EventPayload<T>>(eventType, (payload) => {
+            handlerRef.current(payload);
+        });
         return unsubscribe;
-    },
-        [eventType, handler, ...deps]);
+    }, [eventType]);
 }
 
 export function useEventEmitter() {

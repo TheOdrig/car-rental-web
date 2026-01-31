@@ -41,8 +41,6 @@ interface BanUserRequest {
     reason: string;
 }
 
-
-
 export interface UserStats {
     totalUsers: number;
     activeUsers: number;
@@ -81,8 +79,6 @@ async function fetchUserList(filters?: UserFilters): Promise<PageResponse<User>>
     return clientGet<PageResponse<User>>(url);
 }
 
-
-
 async function banUser(params: BanUserRequest): Promise<User> {
     return clientPost<User>(`/api/admin/users/${params.userId}/ban`, { reason: params.reason });
 }
@@ -111,7 +107,6 @@ export function useUserStats() {
     });
 }
 
-
 export function useUser(id: number | null | undefined) {
     return useQuery({
         queryKey: userKeys.detail(id!),
@@ -120,8 +115,6 @@ export function useUser(id: number | null | undefined) {
         staleTime: 5 * 60 * 1000,
     });
 }
-
-
 
 export function useBanUser() {
     const queryClient = useQueryClient();

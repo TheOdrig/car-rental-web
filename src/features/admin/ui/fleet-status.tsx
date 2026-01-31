@@ -7,7 +7,6 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { Car, CheckCircle, Settings, AlertTriangle, PieChart, Clock } from 'lucide-react';
 import type { FleetStatus as FleetStatusType } from '@/features/admin';
 
-
 interface FleetStatusProps {
     data: FleetStatusType;
     className?: string;
@@ -23,7 +22,6 @@ interface StatusItemProps {
     total: number;
     bgColor: string;
 }
-
 
 function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps & { gradient?: string }) {
     const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
@@ -46,7 +44,6 @@ function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps 
         </div>
     );
 }
-
 
 export const FleetStatusCard = memo(function FleetStatusCard({
     data,
@@ -134,7 +131,6 @@ export const FleetStatusCard = memo(function FleetStatusCard({
     );
 });
 
-
 interface FleetStatusCompactProps {
     data: FleetStatusType;
     className?: string;
@@ -173,7 +169,6 @@ export const FleetStatusCompact = memo(function FleetStatusCompact({
         </div>
     );
 });
-
 
 export function FleetStatusSkeleton({ className }: FleetStatusSkeletonProps) {
     return (

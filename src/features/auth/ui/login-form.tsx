@@ -108,16 +108,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
         }
     };
 
-    const handleFocus = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name } = e.target;
-        setFocused(prev => ({ ...prev, [name]: true }));
-    };
 
-    const handleBlur = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name } = e.target;
-        setTouched(prev => ({ ...prev, [name]: true }));
-        setFocused(prev => ({ ...prev, [name]: false }));
-    };
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>

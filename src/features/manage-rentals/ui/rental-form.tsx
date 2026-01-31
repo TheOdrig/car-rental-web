@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { format, addDays, isBefore, startOfDay } from 'date-fns';
+import { format, addDays, isBefore, startOfDay, isSameDay } from 'date-fns';
 import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Calendar } from '@/shared/ui/calendar';
@@ -51,8 +51,12 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
 
         if (!endDate) {
             newErrors.endDate = 'End date is required';
-        } else if (startDate && isBefore(endDate, startDate)) {
-            newErrors.endDate = 'End date must be after start date';
+        } else if (startDate) {
+            if (isBefore(endDate, startDate)) {
+                newErrors.endDate = 'End date must be after start date';
+            } else if (isSameDay(endDate, startDate)) {
+                newErrors.endDate = 'End date must be after start date (minimum 1 day)';
+            }
         }
 
         setErrors(newErrors);
@@ -198,7 +202,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                 }}
                                 disabled={(date) => {
                                     if (isBefore(date, today)) return true;
-                                    return !!(startDate && isBefore(date, startDate));
+                                    return !!(startDate && (isBefore(date, startDate) || isSameDay(date, startDate)));
                                 }}
                             />
                         </PopoverContent>
@@ -302,4 +306,3 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
         </form>
     );
 }
-

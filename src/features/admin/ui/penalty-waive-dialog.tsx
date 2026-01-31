@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import {
@@ -54,7 +54,7 @@ export function PenaltyWaiveDialog({
     const {
         register,
         handleSubmit,
-        watch,
+        control,
         setValue,
         reset,
         formState: { errors },
@@ -67,7 +67,7 @@ export function PenaltyWaiveDialog({
         },
     });
 
-    const waiverAmount = watch('waiverAmount');
+    const waiverAmount = useWatch({ control, name: 'waiverAmount' });
     const remainingPenalty = isFullWaiver
         ? 0
         : originalPenalty - (waiverAmount || 0);
@@ -79,12 +79,13 @@ export function PenaltyWaiveDialog({
         }
     }, [isFullWaiver, setValue]);
 
-    useEffect(() => {
-        if (!open) {
+    const handleOpenChange = (newOpen: boolean) => {
+        onOpenChange(newOpen);
+        if (!newOpen) {
             reset();
             setIsFullWaiver(false);
         }
-    }, [open, reset]);
+    };
 
     const onSubmit = (data: WaiverFormData) => {
         waivePenalty.mutate(
@@ -98,14 +99,14 @@ export function PenaltyWaiveDialog({
             },
             {
                 onSuccess: () => {
-                    onOpenChange(false);
+                    handleOpenChange(false);
                 },
             }
         );
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogContent className="sm:max-w-[425px] bg-white dark:bg-slate-900">
                 <DialogHeader>
                     <DialogTitle className="text-slate-900 dark:text-slate-100">

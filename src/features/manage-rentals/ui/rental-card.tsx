@@ -62,7 +62,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-
 function getFuelIcon(fuelType?: string): ReactNode {
     if (!fuelType) return null;
     const isElectric = fuelType.toLowerCase().includes('electric');

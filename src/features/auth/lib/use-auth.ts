@@ -15,7 +15,6 @@ import type {
     AuthContextValue,
 } from '../model/types';
 
-
 export const authKeys = {
     all: ['auth'] as const,
     me: () => [...authKeys.all, 'me'] as const,
@@ -98,7 +97,6 @@ export function useAuth(): AuthContextValue {
         },
     });
 
-
     const login = useCallback(
         async (credentials: LoginRequest) => {
             await loginMutation.mutateAsync(credentials);
@@ -125,7 +123,6 @@ export function useAuth(): AuthContextValue {
         refresh,
     };
 }
-
 
 export function useCurrentUser() {
     const {
@@ -157,7 +154,6 @@ export function useCurrentUser() {
     };
 }
 
-
 export function useLogin() {
     const queryClient = useQueryClient();
 
@@ -168,7 +164,6 @@ export function useLogin() {
         },
     });
 }
-
 
 export function useLogout() {
     const queryClient = useQueryClient();
@@ -183,7 +178,6 @@ export function useLogout() {
         },
     });
 }
-
 
 export function useRefreshToken() {
     const queryClient = useQueryClient();

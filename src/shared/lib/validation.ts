@@ -11,14 +11,12 @@ export function validateEmail(email: string): boolean {
   return EMAIL_REGEX.test(email.trim());
 }
 
-
 export function validatePassword(password: string): boolean {
   if (!password) {
     return false;
   }
   return password.length >= MIN_PASSWORD_LENGTH;
 }
-
 
 export function validatePasswordMatch(password: string, confirmPassword: string): boolean {
   return password === confirmPassword;

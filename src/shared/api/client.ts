@@ -93,7 +93,6 @@ export async function clientFetch<T>(
     return response.json();
 }
 
-
 export const clientGet = <T>(url: string, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
     clientFetch<T>(url, { ...options, method: 'GET' });
 
@@ -108,7 +107,6 @@ export const clientPatch = <T>(url: string, body?: unknown, options?: Omit<Clien
 
 export const clientDelete = <T>(url: string, options?: Omit<ClientRequestOptions, 'method' | 'body'>) =>
     clientFetch<T>(url, { ...options, method: 'DELETE' });
-
 
 export const apiClient = {
     get: clientGet,

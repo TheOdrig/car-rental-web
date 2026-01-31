@@ -5,7 +5,6 @@ import { isApiError } from '@/shared/api';
 import { carIdSchema, validateParams } from '@/shared/lib/validations';
 import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/entities/car';
 
-
 export async function GET(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
@@ -43,7 +42,6 @@ export async function GET(
             if (month) {
                 calendarUrl.searchParams.append('month', month);
             }
-
 
             try {
                 response.calendar = await serverGet<CarAvailabilityCalendar>(

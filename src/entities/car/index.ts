@@ -20,7 +20,7 @@ export { isAvailable, getCarTitle, getFormattedPrice, getSortParams, sortOptionT
 export { CarCard, CarCardSkeleton } from './ui/car-card';
 export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';
 export { CarListView, CarListItem, CarListViewSkeleton } from './ui/car-list-view';
-export { CarDetail, type CarDetailProps, type CarDetailSkeletonProps } from './ui/car-detail';
+export { CarDetail, CarDetailSkeleton, type CarDetailProps, type CarDetailSkeletonProps } from './ui/car-detail';
 export { SimilarCarsSection } from './ui/similar-cars-section';
 export {
     useCars,

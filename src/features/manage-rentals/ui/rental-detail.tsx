@@ -59,7 +59,6 @@ function formatPrice(price: number, currency: string): string {
     }).format(price);
 }
 
-
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
         case 'Confirmed':

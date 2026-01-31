@@ -42,8 +42,6 @@ export type {
     AvatarUploadResponse
 };
 
-
-
 export interface LinkAccountResponse {
     message: string;
     provider: string;
@@ -84,7 +82,6 @@ export interface AuthContextValue {
     refresh: () => Promise<void>;
 }
 
-
 export interface FieldValidationState {
     value: string;
     error?: string;
@@ -110,7 +107,6 @@ export interface FormMessage {
     message: string;
     type: 'error' | 'success' | 'warning' | 'info';
 }
-
 
 export interface ForgotPasswordRequest {
     email: string;

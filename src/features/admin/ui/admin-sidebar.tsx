@@ -17,7 +17,6 @@ import {
     Clock,
 } from 'lucide-react';
 
-
 interface AdminSidebarProps {
     username: string;
 }
@@ -60,7 +59,6 @@ const navItems: NavItem[] = [
         icon: <Clock className="h-5 w-5" />,
     },
 ];
-
 
 export function AdminSidebar({ username }: AdminSidebarProps) {
     const pathname = usePathname();

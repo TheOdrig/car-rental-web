@@ -5,7 +5,6 @@ import { isApiError } from '@/shared/api';
 import type { Car } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 
-
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);

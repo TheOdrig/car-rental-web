@@ -19,7 +19,6 @@ import {
 import { Car, RotateCcw, CheckCircle, AlertTriangle, User } from 'lucide-react';
 import type { PendingItem } from '@/features/admin';
 
-
 interface QuickActionsCardProps {
     className?: string;
     onPickup?: (rentalId: number, notes?: string) => void;
@@ -47,7 +46,6 @@ interface QuickActionButtonProps {
     onClick: () => void;
     disabled?: boolean;
 }
-
 
 function ActionDialog({
     open,
@@ -156,7 +154,6 @@ function ActionDialog({
     );
 }
 
-
 function QuickActionButton({
     label,
     icon,
@@ -206,7 +203,6 @@ function QuickActionButton({
         </Button>
     );
 }
-
 
 export const QuickActionsCard = memo(function QuickActionsCard({
     className,
@@ -311,7 +307,6 @@ export const QuickActionsCard = memo(function QuickActionsCard({
     );
 });
 
-
 interface QuickActionItemProps {
     item: PendingItem;
     type: 'pickup' | 'return';
@@ -399,7 +394,6 @@ export const QuickActionItem = memo(function QuickActionItem({
         </div>
     );
 });
-
 
 interface QuickActionsSkeletonProps {
     className?: string;

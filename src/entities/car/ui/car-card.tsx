@@ -11,7 +11,6 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 import { type Car, type AvailableCar } from '@/entities/car';
 
-
 interface CarCardProps {
     car: Car | AvailableCar;
     variant?: 'default' | 'compact' | 'search-result';
@@ -24,9 +23,6 @@ interface CarCardSkeletonProps {
     variant?: 'default' | 'compact' | 'search-result';
     className?: string;
 }
-
-
-
 
 function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
     switch (status) {
@@ -46,7 +42,6 @@ function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destr
 function isAvailableCar(car: Car | AvailableCar): car is AvailableCar {
     return 'dailyRate' in car;
 }
-
 
 export const CarCard = memo(function CarCard({
     car,
@@ -168,7 +163,6 @@ export const CarCard = memo(function CarCard({
 
     return cardContent;
 });
-
 
 export function CarCardSkeleton({ variant = 'default', className }: CarCardSkeletonProps) {
     return (

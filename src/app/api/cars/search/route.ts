@@ -4,7 +4,6 @@ import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
 import type { AvailabilitySearchRequest, AvailabilitySearchResponse } from '@/entities/car';
 
-
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json() as AvailabilitySearchRequest;

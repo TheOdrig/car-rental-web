@@ -5,7 +5,6 @@ import * as RechartsPrimitive from "recharts"
 
 import { cn } from "@/shared/lib"
 
-
 const THEMES = { light: "", dark: ".dark" } as const
 
 export type ChartConfig = {
@@ -307,7 +306,6 @@ function ChartLegendContent({
     </div>
   )
 }
-
 
 function getPayloadConfigFromPayload(
   config: ChartConfig,

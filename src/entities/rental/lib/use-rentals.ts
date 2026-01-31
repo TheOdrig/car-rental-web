@@ -23,7 +23,6 @@ export const rentalKeys = {
     detail: (id: number) => [...rentalKeys.details(), id] as const,
 };
 
-
 async function fetchRentals(filters?: RentalFilters): Promise<PageResponse<Rental>> {
     const params = new URLSearchParams();
 
@@ -69,7 +68,6 @@ async function createRental(data: RentalRequest): Promise<Rental> {
 async function cancelRental(id: number): Promise<Rental> {
     return clientDelete<Rental>(`/api/rentals/${id}`);
 }
-
 
 export function useRentals(filters?: RentalFilters) {
     return useQuery({

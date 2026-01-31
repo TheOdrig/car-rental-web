@@ -33,12 +33,18 @@ const CurrencyContext = createContext<CurrencyContextValue | undefined>(undefine
 
 interface CurrencyProviderProps {
     children: ReactNode;
+    initialRates?: Record<CurrencyCode, number> | null;
+    initialIsLoading?: boolean;
 }
 
-export function CurrencyProvider({ children }: CurrencyProviderProps) {
+export function CurrencyProvider({
+    children,
+    initialRates = null,
+    initialIsLoading = true
+}: CurrencyProviderProps) {
     const [currency, setCurrencyState] = useState<CurrencyCode>(DEFAULT_CURRENCY);
-    const [rates, setRates] = useState<Record<CurrencyCode, number> | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [rates, setRates] = useState<Record<CurrencyCode, number> | null>(initialRates);
+    const [isLoading, setIsLoading] = useState(initialIsLoading);
 
     const fetchRates = useCallback(async (force = false) => {
         if (!force && typeof window !== 'undefined') {

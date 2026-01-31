@@ -317,7 +317,6 @@ export const FleetTable = memo(function FleetTable({
                 </CardContent>
             </Card>
 
-
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
                 <AlertDialogContent>
                     <AlertDialogHeader>
@@ -342,7 +341,6 @@ export const FleetTable = memo(function FleetTable({
                     </AlertDialogFooter>
                 </AlertDialogContent>
             </AlertDialog>
-
 
             <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
                 <AlertDialogContent>
