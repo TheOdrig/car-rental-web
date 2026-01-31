@@ -1,6 +1,6 @@
 import type { CurrencyType } from '@/shared/types';
 
-export type { CardType, PaymentMethod, AddCardRequest, PaymentMethodsResponse } from '@/shared/types';
+export type { CardType, PaymentMethod, AddCardRequest, PaymentMethodsResponse } from '@/entities/payment';
 
 export interface CheckoutFormData {
     firstName: string;

@@ -16,6 +16,7 @@ export {
     type SortOption,
 } from './model/types';
 export { useCarStore } from './model/store';
+export { CAR_ENDPOINTS } from './api/endpoints';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams, sortOptionToParam } from './lib/utils';
 export { CarCard, CarCardSkeleton } from './ui/car-card';
 export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';

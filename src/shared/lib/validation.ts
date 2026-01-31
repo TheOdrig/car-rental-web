@@ -1,4 +1,4 @@
-import type { PasswordStrength } from '@/shared/types';
+import type { PasswordStrength } from '@/shared/types/validation';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

@@ -3,7 +3,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { showToast, toastMessages } from '@/shared/lib';
 import { profileKeys } from './use-profile';
-import type { AvatarUploadResponse } from '@/shared/types';
+import type { AvatarUploadResponse } from '@/entities/user';
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024;

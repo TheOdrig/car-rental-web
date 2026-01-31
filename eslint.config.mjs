@@ -50,6 +50,17 @@ const eslintConfig = defineConfig([
           ],
         },
       ],
+      "no-restricted-imports": [
+        "error",
+        {
+          patterns: [
+            {
+              group: ["**/testing/*", "**/testing"],
+              message: "Do not import from 'testing' folders in production code. Test utilities should only be used in test files.",
+            },
+          ],
+        },
+      ],
     },
   },
   {
@@ -57,11 +68,16 @@ const eslintConfig = defineConfig([
     rules: {
       "@next/next/no-img-element": "off",
       "boundaries/element-types": "off",
+      "no-restricted-imports": "off",
     },
   },
-  // Override default ignores of eslint-config-next.
+  {
+    files: ["**/testing/**"],
+    rules: {
+      "no-restricted-imports": "off",
+    },
+  },
   globalIgnores([
-    // Default ignores of eslint-config-next:
     ".next/**",
     "out/**",
     "build/**",

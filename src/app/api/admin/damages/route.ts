@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet, routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const data = await routeGet(endpoints.damages.admin.search + '?' + searchParams.toString(), {
+        const data = await routeGet(DAMAGE_ENDPOINTS.admin.search + '?' + searchParams.toString(), {
             cache: 'no-store',
         });
         return NextResponse.json(data);
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
         const body = await request.json();
         const data = await routePost(
-            `${endpoints.damages.admin.create}?rentalId=${rentalId}`,
+            `${DAMAGE_ENDPOINTS.admin.list}?rentalId=${rentalId}`,
             body,
             { cache: 'no-store' }
         );

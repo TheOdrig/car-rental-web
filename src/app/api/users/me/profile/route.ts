@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import { serverGet, serverPut } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { UserProfile, ProfileUpdateData } from '@/features/auth';
+import { USER_ENDPOINTS, type UserProfile, type ProfileUpdateData } from '@/entities/user';
 
 export async function GET() {
     try {
-        const data = await serverGet<UserProfile>(endpoints.users.profile, {
+        const data = await serverGet<UserProfile>(USER_ENDPOINTS.profile, {
             cache: 'no-store',
         });
         return NextResponse.json(data);
@@ -31,7 +30,7 @@ export async function PUT(request: Request) {
     try {
         const body: ProfileUpdateData = await request.json();
 
-        const data = await serverPut<UserProfile>(endpoints.users.profile, body);
+        const data = await serverPut<UserProfile>(USER_ENDPOINTS.profile, body);
 
         return NextResponse.json(data);
     } catch (error) {

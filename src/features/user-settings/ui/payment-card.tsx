@@ -10,7 +10,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
-import type { PaymentMethod, CardType } from '@/shared/types';
+import type { PaymentMethod, CardType } from '@/entities/payment';
 
 interface PaymentCardProps {
     method: PaymentMethod;

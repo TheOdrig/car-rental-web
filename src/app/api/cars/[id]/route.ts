@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serverGet } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
 import { carIdSchema, validateParams } from '@/shared/lib/validations';
-import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/entities/car';
+import { CAR_ENDPOINTS, type Car, type CarAvailabilityCalendar, type SimilarCar } from '@/entities/car';
 
 export async function GET(
     request: NextRequest,
@@ -25,7 +24,7 @@ export async function GET(
         const { searchParams } = new URL(request.url);
         const include = searchParams.get('include')?.split(',') ?? [];
 
-        const car = await serverGet<Car>(endpoints.cars.byId(carId), {
+        const car = await serverGet<Car>(CAR_ENDPOINTS.byId(carId), {
             cache: 'no-store',
             tags: ['cars', `car-${carId}`],
         });
@@ -38,7 +37,7 @@ export async function GET(
 
         if (include.includes('calendar')) {
             const month = searchParams.get('month');
-            const calendarUrl = new URL(endpoints.cars.availability.calendar(carId));
+            const calendarUrl = new URL(CAR_ENDPOINTS.availability.calendar(carId));
             if (month) {
                 calendarUrl.searchParams.append('month', month);
             }
@@ -54,7 +53,7 @@ export async function GET(
         }
 
         if (include.includes('similar')) {
-            const similarUrl = new URL(endpoints.cars.availability.similar(carId));
+            const similarUrl = new URL(CAR_ENDPOINTS.availability.similar(carId));
 
             const startDate = searchParams.get('startDate');
             const endDate = searchParams.get('endDate');

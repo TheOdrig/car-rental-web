@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { QuickActionResult } from '@/features/admin';
+import { ADMIN_ENDPOINTS, type QuickActionResult } from '@/features/admin';
 
 export async function POST(
     _request: NextRequest,
@@ -26,7 +25,7 @@ export async function POST(
     }
 
     try {
-        const targetUrl = endpoints.admin.quickActions.reject(rentalId);
+        const targetUrl = ADMIN_ENDPOINTS.quickActions.reject(rentalId);
         console.log('[API] Reject rental - calling backend URL:', targetUrl);
 
         const result = await routePost<QuickActionResult>(

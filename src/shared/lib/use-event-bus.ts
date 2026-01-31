@@ -2,11 +2,11 @@
 
 import { useEffect, useRef } from 'react';
 import { eventBus } from './event-bus';
-import type { EventType, EventPayload } from '@/shared/types/events';
 
-export function useEventBus<T extends EventType>(
-    eventType: T,
-    handler: (payload: EventPayload<T>) => void
+
+export function useEventBus<T = unknown>(
+    eventType: string,
+    handler: (payload: T) => void
 ) {
     const handlerRef = useRef(handler);
 
@@ -15,7 +15,7 @@ export function useEventBus<T extends EventType>(
     }, [handler]);
 
     useEffect(() => {
-        const unsubscribe = eventBus.subscribe<EventPayload<T>>(eventType, (payload) => {
+        const unsubscribe = eventBus.subscribe<T>(eventType, (payload) => {
             handlerRef.current(payload);
         });
         return unsubscribe;
@@ -24,7 +24,7 @@ export function useEventBus<T extends EventType>(
 
 export function useEventEmitter() {
     return {
-        emit: <T extends EventType>(eventType: T, payload: EventPayload<T>) => {
+        emit: <T = unknown>(eventType: string, payload: T) => {
             eventBus.emit(eventType, payload);
         },
     };

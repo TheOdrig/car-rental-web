@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet, routePut, routeDelete } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { CAR_ENDPOINTS } from '@/entities/car';
 
 export async function GET(
     _request: NextRequest,
@@ -18,7 +18,7 @@ export async function GET(
             );
         }
 
-        const data = await routeGet(endpoints.admin.cars.byId(carId), {
+        const data = await routeGet(CAR_ENDPOINTS.admin.byId(carId), {
             cache: 'no-store',
         });
 
@@ -82,7 +82,7 @@ export async function POST(
             backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
         }
 
-        const data = await routePut(endpoints.admin.cars.update(carId), backendRequest, {
+        const data = await routePut(CAR_ENDPOINTS.admin.update(carId), backendRequest, {
             cache: 'no-store',
         });
 
@@ -119,7 +119,7 @@ export async function DELETE(
             );
         }
 
-        await routeDelete(endpoints.admin.cars.delete(carId), {
+        await routeDelete(CAR_ENDPOINTS.admin.delete(carId), {
             cache: 'no-store',
         });
 

@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
-import type { User, Role } from '@/shared/types';
+import type { User, Role } from '../model/types';
 
 interface MeResponse {
     id: number;

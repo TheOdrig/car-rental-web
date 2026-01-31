@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export async function POST(
     request: NextRequest,
@@ -24,7 +24,7 @@ export async function POST(
         } catch {
         }
 
-        await routePost(endpoints.admin.users.unban(userId), body);
+        await routePost(ADMIN_ENDPOINTS.users.unban(userId), body);
 
         return NextResponse.json({ success: true });
     } catch (error) {

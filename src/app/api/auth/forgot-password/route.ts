@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import { serverPost } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { ForgotPasswordRequest, MessageResponse } from '@/features/auth';
+import { AUTH_ENDPOINTS, type ForgotPasswordRequest, type MessageResponse } from '@/features/auth';
 
 export async function POST(request: Request) {
     try {
         const body: ForgotPasswordRequest = await request.json();
 
-        const data = await serverPost<MessageResponse>(endpoints.auth.forgotPassword, body);
+        const data = await serverPost<MessageResponse>(AUTH_ENDPOINTS.forgotPassword, body);
 
         return NextResponse.json(data);
     } catch (error) {

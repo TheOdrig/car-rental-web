@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
 import { serverPost } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { PasswordChangeData, MessageResponse } from '@/features/auth';
+import { USER_ENDPOINTS, type PasswordChangeData } from '@/entities/user';
+import type { MessageResponse } from '@/shared/types';
 
 export async function POST(request: Request) {
     try {
         const body: PasswordChangeData = await request.json();
 
-        const data = await serverPost<MessageResponse>(endpoints.users.password, body);
+        const data = await serverPost<MessageResponse>(USER_ENDPOINTS.password, body);
 
         return NextResponse.json(data);
     } catch (error) {

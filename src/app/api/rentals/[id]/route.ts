@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serverGet, serverPost } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { Rental } from '@/entities/rental';
+import { RENTAL_ENDPOINTS, type Rental } from '@/entities/rental';
 
 export async function GET(
     _request: NextRequest,
@@ -19,7 +18,7 @@ export async function GET(
     }
 
     try {
-        const rental = await serverGet<Rental>(endpoints.rentals.byId(rentalId), {
+        const rental = await serverGet<Rental>(RENTAL_ENDPOINTS.byId(rentalId), {
             cache: 'no-store',
             tags: ['rentals', `rental-${rentalId}`],
         });
@@ -57,7 +56,7 @@ export async function DELETE(
     }
 
     try {
-        const rental = await serverPost<Rental>(endpoints.rentals.cancel(rentalId), undefined, {
+        const rental = await serverPost<Rental>(RENTAL_ENDPOINTS.cancel(rentalId), undefined, {
             cache: 'no-store',
         });
 

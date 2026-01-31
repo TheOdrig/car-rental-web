@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export async function GET(request: NextRequest) {
     try {
@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
         const queryString = searchParams.toString();
 
         const url = queryString
-            ? `${endpoints.admin.users.list}?${queryString}`
-            : endpoints.admin.users.list;
+            ? `${ADMIN_ENDPOINTS.users.list}?${queryString}`
+            : ADMIN_ENDPOINTS.users.list;
 
         const data = await routeGet(url, {
             cache: 'no-store',

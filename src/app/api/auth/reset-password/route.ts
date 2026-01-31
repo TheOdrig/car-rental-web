@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server';
 import { serverPost } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { ResetPasswordRequest, MessageResponse } from '@/features/auth';
+import { AUTH_ENDPOINTS, type ResetPasswordRequest, type MessageResponse } from '@/features/auth';
 
 export async function POST(request: Request) {
     try {
         const body: ResetPasswordRequest = await request.json();
 
-        const data = await serverPost<MessageResponse>(endpoints.auth.resetPassword, body);
+        const data = await serverPost<MessageResponse>(AUTH_ENDPOINTS.resetPassword, body);
 
         return NextResponse.json(data);
     } catch (error) {

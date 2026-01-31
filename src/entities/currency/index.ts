@@ -1,4 +1,5 @@
 export type { CurrencyCode, Currency, ExchangeRatesResponse, ConversionRequest, ConversionResponse } from './model/types';
+export { CURRENCY_ENDPOINTS } from './api/endpoints';
 
 export {
     CURRENCIES,

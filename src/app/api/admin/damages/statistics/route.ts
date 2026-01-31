@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const queryString = searchParams.toString();
         const url = queryString
-            ? `${endpoints.damages.admin.statistics}?${queryString}`
-            : endpoints.damages.admin.statistics;
+            ? `${DAMAGE_ENDPOINTS.admin.statistics}?${queryString}`
+            : DAMAGE_ENDPOINTS.admin.statistics;
 
         const data = await routeGet(url, {
             cache: 'no-store',

@@ -1,9 +1,9 @@
-import { eventBus, AUTH_EVENTS, RENTAL_EVENTS } from '@/shared/events';
+import { eventBus } from '@/shared/events';
+import { RENTAL_EVENTS } from '@/entities/rental';
 import { rentalActions } from './rental-store';
 import type { Rental } from '@/entities/rental';
 
-export { RENTAL_EVENTS } from '@/shared/events';
-export type { RentalEventType } from '@/shared/events';
+export type { RentalEventType } from '@/entities/rental';
 
 export function publishRentalApproved(rental: Rental): void {
     eventBus.publish(RENTAL_EVENTS.APPROVED, rental);
@@ -29,6 +29,6 @@ export function publishRentalUpdated(rental: Rental): void {
     eventBus.publish(RENTAL_EVENTS.UPDATED, rental);
 }
 
-eventBus.subscribe(AUTH_EVENTS.LOGOUT, () => {
+eventBus.subscribe('auth:logout', () => {
     rentalActions.clearRentals();
 });

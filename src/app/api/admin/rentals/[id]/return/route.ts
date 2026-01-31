@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { QuickActionResult } from '@/features/admin';
+import { ADMIN_ENDPOINTS, type QuickActionResult } from '@/features/admin';
 
 export async function POST(
     _request: NextRequest,
@@ -27,7 +26,7 @@ export async function POST(
 
     try {
         const result = await routePost<QuickActionResult>(
-            endpoints.admin.quickActions.return(rentalId),
+            ADMIN_ENDPOINTS.quickActions.return(rentalId),
             body,
             { cache: 'no-store' }
         );

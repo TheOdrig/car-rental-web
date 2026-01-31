@@ -1,13 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { endpoints } from '@/shared/api';
-import { setAuthTokens } from '@/features/auth';
+import { AUTH_ENDPOINTS, setAuthTokens } from '@/features/auth';
 import { RegisterRequest, AuthResponse } from '@/features/auth';
 
 export async function POST(request: NextRequest) {
     try {
         const body: RegisterRequest = await request.json();
 
-        const response = await fetch(endpoints.auth.register, {
+        const response = await fetch(AUTH_ENDPOINTS.register, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body),

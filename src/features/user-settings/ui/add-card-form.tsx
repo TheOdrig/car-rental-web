@@ -10,7 +10,7 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { cn } from '@/shared/lib';
-import type { CardType } from '@/shared/types';
+import type { CardType } from '@/entities/payment';
 
 const addCardSchema = z.object({
     cardNumber: z.string().min(16, 'Card number must be 16 digits').max(19),

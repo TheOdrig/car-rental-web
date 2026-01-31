@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 import type { LateReturnStatistics } from '@/entities/rental';
 
 export async function GET(request: NextRequest) {
@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
 
     const queryString = searchParams.toString();
     const url = queryString
-        ? `${endpoints.admin.lateReturnStatistics}?${queryString}`
-        : endpoints.admin.lateReturnStatistics;
+        ? `${ADMIN_ENDPOINTS.lateReturnStatistics}?${queryString}`
+        : ADMIN_ENDPOINTS.lateReturnStatistics;
 
     try {
         const result = await routeGet<LateReturnStatistics>(url, {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 import type { PenaltyWaiverResponse } from '@/entities/rental';
 
 export async function POST(
@@ -30,7 +30,7 @@ export async function POST(
 
     try {
         const result = await routePost<PenaltyWaiverResponse>(
-            endpoints.admin.penaltyWaive(rentalId),
+            ADMIN_ENDPOINTS.penaltyWaive(rentalId),
             body,
             { cache: 'no-store' }
         );

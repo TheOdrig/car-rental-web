@@ -1,5 +1,28 @@
-import { CurrencyType, type CarSummary, type CarStatus } from '@/shared/types';
-export type { CarSummary, CarStatus };
+import { CurrencyType } from '@/shared/types/common';
+
+export type CarStatus =
+    | 'Available'
+    | 'Rented'
+    | 'Sold'
+    | 'Maintenance'
+    | 'Reserved'
+    | 'Damaged'
+    | 'Inspection';
+
+export interface CarSummary {
+    id: number;
+    licensePlate: string;
+    brand: string;
+    model: string;
+    productionYear: number;
+    formattedPrice: string;
+    currencyType: CurrencyType;
+    carStatusType: CarStatus;
+    color?: string;
+    kilometer?: number;
+    thumbnailUrl?: string;
+    isFeatured?: boolean;
+}
 
 export enum FuelType {
     GASOLINE = 'GASOLINE',

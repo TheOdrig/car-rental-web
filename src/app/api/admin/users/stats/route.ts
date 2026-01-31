@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export interface UserStatsResponse {
     totalUsers: number;
@@ -11,7 +11,7 @@ export interface UserStatsResponse {
 
 export async function GET() {
     try {
-        const data = await routeGet<UserStatsResponse>(endpoints.admin.users.stats, {
+        const data = await routeGet<UserStatsResponse>(ADMIN_ENDPOINTS.users.stats, {
             cache: 'no-store',
             tags: ['admin', 'users', 'stats'],
         });

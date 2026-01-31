@@ -42,6 +42,10 @@ class EventBus {
         });
     }
 
+    publish<T = unknown>(eventType: string, payload: T): void {
+        this.emit(eventType, payload);
+    }
+
     clear(): void {
         this.handlers.clear();
     }

@@ -22,12 +22,12 @@ import {
     UserSummary,
     AuthResponse,
     RefreshTokenRequest,
-    PasswordStrength,
     UserProfile,
     ProfileUpdateData,
     PasswordChangeData,
     AvatarUploadResponse
-} from '@/shared/types';
+} from '@/entities/user';
+import type { PasswordStrength } from '@/shared/types/validation';
 
 export type {
     Role,

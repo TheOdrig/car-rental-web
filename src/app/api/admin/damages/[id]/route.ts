@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function GET(
     request: NextRequest,
@@ -18,7 +18,7 @@ export async function GET(
             );
         }
 
-        const data = await routeGet(endpoints.damages.admin.byId(damageId), {
+        const data = await routeGet(DAMAGE_ENDPOINTS.admin.byId(damageId), {
             cache: 'no-store',
         });
         return NextResponse.json(data);

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePatch } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { CAR_ENDPOINTS } from '@/entities/car';
 
 export async function POST(
     request: NextRequest,
@@ -22,7 +22,7 @@ export async function POST(
 
         const carStatusType = body.status.charAt(0).toUpperCase() + body.status.slice(1).toLowerCase();
 
-        const data = await routePatch(endpoints.admin.cars.updateStatus(carId), {
+        const data = await routePatch(CAR_ENDPOINTS.admin.updateStatus(carId), {
             carStatusType: carStatusType,
             reason: body.reason || 'Status updated from admin panel',
             notes: body.notes

@@ -21,6 +21,8 @@ export {
 } from './model/types';
 export { useRentalStore } from './model/store';
 export * from './lib/utils';
+export { RENTAL_EVENTS, type RentalEventType } from './model/events';
+export { RENTAL_ENDPOINTS } from './api/endpoints';
 export {
     useRentals,
     useMyRentals,

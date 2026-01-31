@@ -11,12 +11,14 @@ import { cn } from '@/shared/lib';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { type Car, type CarAvailabilityCalendar, type DayAvailability, useCarCalendar } from '@/entities/car';
+import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/entities/car';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 
 export interface CarDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     car: Car;
-    calendar?: CarAvailabilityCalendar;
+    calendar?: CarAvailabilityCalendar | null;
+    isCalendarLoading?: boolean;
+    onMonthChange?: (month: string) => void;
     actionSlot?: ReactNode;
 }
 
@@ -25,7 +27,7 @@ export interface CarDetailSkeletonProps {
 }
 
 
-export function CarDetail({ car, calendar, actionSlot, className }: CarDetailProps) {
+export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, actionSlot, className }: CarDetailProps) {
 
     const { format: formatPrice } = useCurrency();
     const sourceCurrency = mapCurrency(car.currencyType);
@@ -60,7 +62,11 @@ export function CarDetail({ car, calendar, actionSlot, className }: CarDetailPro
                             <CardTitle className="text-lg">Availability</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <AvailabilityCalendar initialCalendar={calendar} carId={car.id} />
+                            <AvailabilityCalendar
+                                calendar={calendar}
+                                isLoading={isCalendarLoading}
+                                onMonthChange={onMonthChange}
+                            />
                         </CardContent>
                     </Card>
                 )}
@@ -129,27 +135,32 @@ export function CarDetail({ car, calendar, actionSlot, className }: CarDetailPro
     );
 }
 
-function AvailabilityCalendar({ initialCalendar, carId }: { initialCalendar: CarAvailabilityCalendar; carId: number }) {
+interface AvailabilityCalendarProps {
+    calendar: CarAvailabilityCalendar | null;
+    isLoading?: boolean;
+    onMonthChange?: (month: string) => void;
+}
+
+function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: AvailabilityCalendarProps) {
     const [currentDate, setCurrentDate] = useState(() => {
-        return parse(initialCalendar.month, 'yyyy-MM', new Date());
+        if (calendar?.month) {
+            return parse(calendar.month, 'yyyy-MM', new Date());
+        }
+        return new Date();
     });
 
-    const formattedMonth = useMemo(() => format(currentDate, 'yyyy-MM'), [currentDate]);
 
-    const { data: calendarData, isLoading } = useCarCalendar(carId, formattedMonth);
+    const nextMonth = () => {
+        const newDate = addMonths(currentDate, 1);
+        setCurrentDate(newDate);
+        onMonthChange?.(format(newDate, 'yyyy-MM'));
+    };
 
-    const calendar = useMemo<CarAvailabilityCalendar | null>(() => {
-        if (calendarData) return calendarData;
-
-        if (initialCalendar.month === formattedMonth) {
-            return initialCalendar;
-        }
-
-        return null;
-    }, [calendarData, initialCalendar, formattedMonth]);
-
-    const nextMonth = () => setCurrentDate(prev => addMonths(prev, 1));
-    const previousMonth = () => setCurrentDate(prev => subMonths(prev, 1));
+    const previousMonth = () => {
+        const newDate = subMonths(currentDate, 1);
+        setCurrentDate(newDate);
+        onMonthChange?.(format(newDate, 'yyyy-MM'));
+    };
 
     const isPast = useMemo(() => {
         const today = new Date();

@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPut } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
-import type { UserProfile, ProfileUpdateData } from '@/shared/types';
+import type { UserProfile, ProfileUpdateData } from '@/entities/user';
 
 export const profileKeys = {
     all: ['profile'] as const,

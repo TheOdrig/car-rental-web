@@ -31,3 +31,7 @@ export interface ApiResponse<T> {
     data?: T;
     error?: ApiError;
 }
+
+export interface MessageResponse {
+    message: string;
+}

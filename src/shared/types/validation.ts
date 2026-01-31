@@ -35,3 +35,5 @@ export interface ValidationDisplayProps {
     showIcon?: boolean;
     className?: string;
 }
+
+export type PasswordStrength = 'weak' | 'fair' | 'good' | 'strong';

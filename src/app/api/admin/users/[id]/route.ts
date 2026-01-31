@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export async function GET(
     request: NextRequest,
@@ -18,7 +18,7 @@ export async function GET(
             );
         }
 
-        const user = await routeGet(endpoints.admin.users.byId(userId), {
+        const user = await routeGet(ADMIN_ENDPOINTS.users.byId(userId), {
             cache: 'no-store',
             tags: ['admin', 'users', 'detail'],
         });

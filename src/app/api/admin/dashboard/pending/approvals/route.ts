@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { PendingItem } from '@/features/admin';
+import { ADMIN_ENDPOINTS, type PendingItem } from '@/features/admin';
 import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.admin.dashboard.pending.approvals);
+        const backendUrl = new URL(ADMIN_ENDPOINTS.dashboard.pending.approvals);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });

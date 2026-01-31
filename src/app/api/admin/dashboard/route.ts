@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { DailySummary } from '@/features/admin';
+import { ADMIN_ENDPOINTS, type DailySummary } from '@/features/admin';
 
 export async function GET() {
     try {
-        const data = await routeGet<DailySummary>(endpoints.admin.dashboard.summary, {
+        const data = await routeGet<DailySummary>(ADMIN_ENDPOINTS.dashboard.summary, {
             cache: 'no-store',
             tags: ['admin', 'dashboard', 'summary'],
         });

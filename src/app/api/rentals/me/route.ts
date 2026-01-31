@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { serverGet } from '@/shared/api/server';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
-import type { Rental } from '@/entities/rental';
+import { RENTAL_ENDPOINTS, type Rental } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.rentals.me);
+        const backendUrl = new URL(RENTAL_ENDPOINTS.me);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });

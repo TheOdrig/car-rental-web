@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routeGet } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 import type { PenaltyWaiverResponse } from '@/entities/rental';
 
 export async function GET(
@@ -20,7 +20,7 @@ export async function GET(
 
     try {
         const result = await routeGet<PenaltyWaiverResponse[]>(
-            endpoints.admin.penaltyHistory(rentalId),
+            ADMIN_ENDPOINTS.penaltyHistory(rentalId),
             { cache: 'no-store' }
         );
 

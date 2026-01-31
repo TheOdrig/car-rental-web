@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { endpoints } from '@/shared/api';
 import { routeDelete } from '@/shared/api/route-handler';
 import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function POST(
     request: NextRequest,
@@ -30,7 +30,7 @@ export async function POST(
             );
         }
 
-        const response = await fetch(endpoints.damages.admin.photos(damageId), {
+        const response = await fetch(DAMAGE_ENDPOINTS.admin.photos(damageId), {
             method: 'POST',
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
@@ -80,7 +80,7 @@ export async function DELETE(
             );
         }
 
-        await routeDelete(endpoints.damages.admin.deletePhoto(damageId, parseInt(photoId, 10)));
+        await routeDelete(DAMAGE_ENDPOINTS.admin.deletePhoto(damageId, parseInt(photoId, 10)));
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('[API] DELETE /api/admin/damages/[id]/photos error:', error);

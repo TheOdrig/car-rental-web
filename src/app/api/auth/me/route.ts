@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAccessToken, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
-import { endpoints } from '@/shared/api';
+import { AUTH_ENDPOINTS, getAccessToken, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
 import type { AuthResponse } from '@/features/auth';
 
 export async function GET() {
@@ -18,7 +17,7 @@ export async function GET() {
             }
 
             try {
-                const response = await fetch(endpoints.auth.refresh, {
+                const response = await fetch(AUTH_ENDPOINTS.refresh, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ refreshToken }),

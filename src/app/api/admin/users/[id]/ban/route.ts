@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 interface BanRequest {
     reason: string;
@@ -24,7 +24,7 @@ export async function POST(
 
         const body: BanRequest = await request.json();
 
-        await routePost(endpoints.admin.users.ban(userId), body);
+        await routePost(ADMIN_ENDPOINTS.users.ban(userId), body);
 
         return NextResponse.json({ success: true });
     } catch (error) {

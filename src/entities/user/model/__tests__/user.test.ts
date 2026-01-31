@@ -4,19 +4,23 @@ import { act } from 'react';
 const mockUser: User = {
     id: 1,
     email: 'test@example.com',
-    name: 'Test User',
+    username: 'testuser',
+    firstName: 'Test',
+    lastName: 'User',
     roles: [UserRole.USER],
 };
 const mockAdmin: User = {
     id: 2,
     email: 'admin@example.com',
-    name: 'Admin User',
+    username: 'admin',
+    firstName: 'Admin',
+    lastName: 'User',
     roles: [UserRole.USER, UserRole.ADMIN],
 };
 const mockUserNoName: User = {
     id: 3,
     email: 'noname@example.com',
-    name: '',
+    username: 'noname',
     roles: [UserRole.USER],
 };
 describe('User Entity', () => {
@@ -74,16 +78,16 @@ describe('User Entity', () => {
             const { setUser, updateUser } = useUserStore.getState();
             act(() => {
                 setUser(mockUser);
-                updateUser({ name: 'Updated Name' });
+                updateUser({ firstName: 'Updated' });
             });
             const state = useUserStore.getState();
-            expect(state.user?.name).toBe('Updated Name');
+            expect(state.user?.firstName).toBe('Updated');
             expect(state.user?.email).toBe(mockUser.email);
         });
         it('should not update user if user is null', () => {
             const { updateUser } = useUserStore.getState();
             act(() => {
-                updateUser({ name: 'Updated Name' });
+                updateUser({ firstName: 'Updated' });
             })
             const state = useUserStore.getState();
             expect(state.user).toBeNull();

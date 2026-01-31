@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { routePost } from '@/shared/api/route-handler';
-import { endpoints } from '@/shared/api';
 import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function POST(
     request: NextRequest,
@@ -20,7 +20,7 @@ export async function POST(
 
         const body = await request.json();
         const data = await routePost(
-            endpoints.damages.admin.resolve(damageId),
+            DAMAGE_ENDPOINTS.admin.resolve(damageId),
             body,
             { cache: 'no-store' }
         );

@@ -1,7 +1,14 @@
 import { cookies } from 'next/headers';
 import { ApiError, parseErrorResponse } from './error';
-import { endpoints } from './endpoints';
-import type { AuthResponse } from '@/shared/types';
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082';
+const REFRESH_URL = `${API_BASE_URL}/api/auth/refresh`;
+
+interface RefreshResponse {
+    accessToken: string;
+    refreshToken: string;
+    expiresIn?: number;
+}
 
 interface FetchOptions {
     method?: string;
@@ -20,7 +27,7 @@ async function tryRefreshToken(): Promise<string | null> {
             return null;
         }
 
-        const response = await fetch(endpoints.auth.refresh, {
+        const response = await fetch(REFRESH_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refreshToken }),
@@ -30,7 +37,7 @@ async function tryRefreshToken(): Promise<string | null> {
             return null;
         }
 
-        const data: AuthResponse = await response.json();
+        const data: RefreshResponse = await response.json();
 
         const cookieOptions = {
             httpOnly: true,

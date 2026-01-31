@@ -13,6 +13,8 @@ export type {
     DamageListResponse,
 } from './model/types';
 
+export { DAMAGE_ENDPOINTS } from './api/endpoints';
+
 export {
     getDamageStatusColor,
     getDamageSeverityColor,

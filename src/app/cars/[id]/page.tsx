@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { SimilarCarsSection, CarDetail } from '@/entities/car';
+import { SimilarCarsSection } from '@/entities/car';
 import { getCar, getCarCalendar } from '@/entities/car/api/cached-fetchers';
 import { CarBookingCard } from '@/widgets/car-booking-card';
+import { ClientCarDetail } from './client-car-detail';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -34,9 +35,9 @@ export default async function CarDetailPage({ params }: PageProps) {
 
     return (
         <main className="container mx-auto px-4 py-8">
-            <CarDetail
+            <ClientCarDetail
                 car={car}
-                calendar={calendar}
+                initialCalendar={calendar}
                 actionSlot={<CarBookingCard car={car} />}
             />
             <SimilarCarsSection carId={carId} className="mt-12 pt-12 border-t" />

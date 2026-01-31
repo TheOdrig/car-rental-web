@@ -1,4 +1,6 @@
-import { CurrencyType, UserSummary, CarSummary } from '@/shared/types';
+import { CurrencyType } from '@/shared/types';
+import { UserSummary } from '@/entities/user';
+import { CarSummary } from '@/entities/car';
 
 export enum RentalStatus {
     REQUESTED = 'Requested',

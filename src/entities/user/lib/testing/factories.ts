@@ -1,4 +1,4 @@
-import type { User, UserSummary, Role } from '@/shared/types/user';
+import type { User, UserSummary, Role } from '../../model/types';
 
 let userIdCounter = 1;
 

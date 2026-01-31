@@ -43,6 +43,8 @@ export type {
     Role,
 } from './model/types';
 
+export { ADMIN_ENDPOINTS } from './api/endpoints';
+
 export * from './ui';
 
 export { adminKeys } from './lib/admin-keys';
