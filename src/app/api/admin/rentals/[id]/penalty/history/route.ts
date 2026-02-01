@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { PenaltyWaiverResponse } from '@/types';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
+import type { PenaltyWaiverResponse } from '@/entities/rental';
 
 export async function GET(
     _request: NextRequest,
@@ -20,7 +20,7 @@ export async function GET(
 
     try {
         const result = await routeGet<PenaltyWaiverResponse[]>(
-            endpoints.admin.penaltyHistory(rentalId),
+            ADMIN_ENDPOINTS.penaltyHistory(rentalId),
             { cache: 'no-store' }
         );
 
@@ -28,7 +28,7 @@ export async function GET(
     } catch (error) {
         console.error(`[API] GET /api/admin/rentals/${id}/penalty/history error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

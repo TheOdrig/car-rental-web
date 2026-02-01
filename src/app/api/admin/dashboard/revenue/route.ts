@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { RevenueAnalytics } from '@/types';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS, type RevenueAnalytics } from '@/features/admin';
 
 export async function GET() {
     try {
-        const data = await routeGet<RevenueAnalytics>(endpoints.admin.dashboard.revenue, {
+        const data = await routeGet<RevenueAnalytics>(ADMIN_ENDPOINTS.dashboard.revenue, {
             cache: 'no-store',
             tags: ['admin', 'dashboard', 'revenue'],
         });
@@ -15,7 +14,7 @@ export async function GET() {
     } catch (error) {
         console.error('[API] GET /api/admin/dashboard/revenue error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -28,4 +27,3 @@ export async function GET() {
         );
     }
 }
-

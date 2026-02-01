@@ -1,13 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getAccessToken, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/lib/auth';
-import { endpoints } from '@/lib/api';
-import type { AuthResponse } from '@/types';
+import { AUTH_ENDPOINTS, getAccessToken, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
+import type { AuthResponse } from '@/features/auth';
 
 export async function GET() {
     try {
         let token = await getAccessToken();
 
-        
         if (!token) {
             const refreshToken = await getRefreshToken();
 
@@ -18,9 +16,8 @@ export async function GET() {
                 );
             }
 
-            
             try {
-                const response = await fetch(endpoints.auth.refresh, {
+                const response = await fetch(AUTH_ENDPOINTS.refresh, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ refreshToken }),
@@ -46,6 +43,13 @@ export async function GET() {
             }
         }
 
+        if (!token) {
+            return NextResponse.json(
+                { message: 'Authentication failed' },
+                { status: 401 }
+            );
+        }
+
         const payload = JSON.parse(atob(token.split('.')[1]));
 
         return NextResponse.json({
@@ -62,4 +66,3 @@ export async function GET() {
         );
     }
 }
-

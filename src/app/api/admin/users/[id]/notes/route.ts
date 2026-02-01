@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet, routePost } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
+import { routeGet, routePost } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 interface AdminNote {
     id: number;
@@ -31,7 +31,7 @@ export async function GET(
             );
         }
 
-        const notes = await routeGet<AdminNote[]>(endpoints.admin.users.notes(userId), {
+        const notes = await routeGet<AdminNote[]>(ADMIN_ENDPOINTS.users.notes(userId), {
             cache: 'no-store',
             tags: ['admin', 'users', 'notes'],
         });
@@ -40,7 +40,7 @@ export async function GET(
     } catch (error) {
         console.error('[API] GET /api/admin/users/[id]/notes error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -78,13 +78,13 @@ export async function POST(
             );
         }
 
-        const note = await routePost<AdminNote>(endpoints.admin.users.notes(userId), body);
+        const note = await routePost<AdminNote>(ADMIN_ENDPOINTS.users.notes(userId), body);
 
         return NextResponse.json(note, { status: 201 });
     } catch (error) {
         console.error('[API] POST /api/admin/users/[id]/notes error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

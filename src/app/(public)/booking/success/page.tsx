@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { BookingSuccess } from '@/components/booking/booking-success';
+import { BookingSuccess } from '@/features/book-car';
 
 export const metadata: Metadata = {
     title: 'Booking Confirmed | Car Rental',
@@ -41,4 +41,3 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
         </main>
     );
 }
-

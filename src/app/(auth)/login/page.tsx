@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { LoginForm } from '@/components/auth/login-form';
-import { OAuthButtons, OAuthDivider } from '@/components/auth/oauth-buttons';
+import { LoginForm } from '@/features/auth';
+import { OAuthButtons, OAuthDivider } from '@/features/auth';
 
 export const metadata: Metadata = {
     title: 'Login | CarRental',
@@ -43,4 +43,3 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
         </div>
     );
 }
-

@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { ResetPasswordRequest, MessageResponse } from '@/types';
+import { serverPost } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { AUTH_ENDPOINTS, type ResetPasswordRequest, type MessageResponse } from '@/features/auth';
 
 export async function POST(request: Request) {
     try {
         const body: ResetPasswordRequest = await request.json();
 
-        const data = await serverPost<MessageResponse>(endpoints.auth.resetPassword, body);
+        const data = await serverPost<MessageResponse>(AUTH_ENDPOINTS.resetPassword, body);
 
         return NextResponse.json(data);
     } catch (error) {
         console.error('[API] POST /api/auth/reset-password error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             const message = error.message.toLowerCase();
 
             if (message.includes('expired')) {
@@ -43,4 +42,3 @@ export async function POST(request: Request) {
         );
     }
 }
-

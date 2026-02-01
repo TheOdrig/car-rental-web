@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
         const queryString = searchParams.toString();
         const url = queryString
-            ? `${endpoints.damages.me}?${queryString}`
-            : endpoints.damages.me;
+            ? `${DAMAGE_ENDPOINTS.me}?${queryString}`
+            : DAMAGE_ENDPOINTS.me;
 
         const data = await routeGet(url, {
             cache: 'no-store',
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
         return NextResponse.json(data);
     } catch (error) {
         console.error('[API] GET /api/damages/me error:', error);
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -29,4 +29,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

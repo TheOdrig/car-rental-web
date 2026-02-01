@@ -1,13 +1,13 @@
 'use client';
 
-import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from '@/lib/hooks';
-import { ProfilePicture, PersonalDetailsForm } from '@/components/settings';
-import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
+import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from '@/features/user-settings';
+import { ProfilePicture, PersonalDetailsForm } from '@/features/user-settings';
+import { Card, CardContent } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Button } from '@/components/ui/button';
-import type { ProfileFormData } from '@/lib/validations/settings';
+import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
+import { Button } from '@/shared/ui/button';
+import type { ProfileFormData } from '@/features/user-settings';
 
 export default function ProfileSettingsPage() {
     const { data: profile, isLoading, error, refetch } = useProfile();
@@ -121,4 +121,3 @@ function ProfileSettingsSkeleton() {
         </div>
     );
 }
-

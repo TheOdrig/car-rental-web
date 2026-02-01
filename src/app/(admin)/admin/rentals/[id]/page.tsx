@@ -4,8 +4,8 @@ import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, DollarSign } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import {
     Dialog,
     DialogContent,
@@ -13,30 +13,29 @@ import {
     DialogFooter,
     DialogHeader,
     DialogTitle,
-} from '@/components/ui/dialog';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
+} from '@/shared/ui/dialog';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    PenaltyWaiveDialog,
+    PenaltyHistorySection,
+    VehicleDamageHistory,
+    type TimelineEventType,
+} from '@/features/admin';
+import {
     RentalInfoCard,
     CustomerInfoCard,
     VehicleInfoCard,
     PaymentInfoCard,
     TimelineCard,
     RentalActionButtons,
-    PenaltyWaiveDialog,
-    PenaltyHistorySection,
-    VehicleDamageHistory,
-} from '@/components/admin';
-import {
     useRentalDetail,
     useApproveRental,
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
-} from '@/lib/hooks/use-admin';
-import { showToast } from '@/lib/utils/toast';
-import type { LateReturnStatus, RentalDetailResponse } from '@/types';
+} from '@/features/process-rentals';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -70,7 +69,7 @@ export default function RentalDetailPage({ params }: PageProps) {
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -85,7 +84,7 @@ export default function RentalDetailPage({ params }: PageProps) {
 
     if (isError || !rental) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -104,12 +103,10 @@ export default function RentalDetailPage({ params }: PageProps) {
         );
     }
 
-    const rentalWithPenalty = rental as RentalDetailResponse & {
-        penaltyAmount?: number;
-        lateReturnStatus?: LateReturnStatus;
-    };
 
-    const hasPenalty = (rentalWithPenalty.penaltyAmount ?? 0) > 0;
+    const rentalWithPenalty = rental;
+
+    const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
     const referenceNumber = `CR-${String(rentalId).padStart(6, '0')}`;
 
     const handleApprove = () => {
@@ -152,8 +149,41 @@ export default function RentalDetailPage({ params }: PageProps) {
         });
     };
 
+
+    const customerInfo = {
+        ...rental.customer,
+        name: `${rental.customer.firstName} ${rental.customer.lastName}`,
+        isEmailVerified: rental.customer.emailVerified,
+        isPhoneVerified: rental.customer.phoneVerified,
+        isVerified: rental.customer.emailVerified,
+    };
+
+    const vehicleInfo = {
+        ...rental.vehicle,
+        year: new Date().getFullYear(),
+        name: `${rental.vehicle.brand} ${rental.vehicle.model}`,
+
+        type: rental.vehicle.bodyType || 'Sedan',
+    };
+
+    const paymentInfo = {
+        ...rental.payment,
+        id: rentalId,
+        transactionId: `TX-${rentalId}`,
+        last4: '4242',
+        paidAt: rental.startDate,
+    };
+
+    const timelineEvents = rental.timeline.map((event, index) => ({
+        ...event,
+        id: index,
+        type: event.type as TimelineEventType,
+        title: event.title || 'Status Update',
+        description: event.description || '',
+    }));
+
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -213,18 +243,18 @@ export default function RentalDetailPage({ params }: PageProps) {
                     pricing={rental.pricing}
                     notes={rental.notes.approval}
                 />
-                <CustomerInfoCard customer={rental.customer} />
-                <VehicleInfoCard vehicle={rental.vehicle} />
+                <CustomerInfoCard customer={customerInfo} />
+                <VehicleInfoCard vehicle={vehicleInfo} />
             </div>
 
             <div className="grid gap-6 md:grid-cols-2">
                 <PaymentInfoCard
                     pricing={rental.pricing}
-                    payment={rental.payment}
+                    payment={paymentInfo}
                     penaltyAmount={rentalWithPenalty.penaltyAmount}
                     lateReturnStatus={rentalWithPenalty.lateReturnStatus}
                 />
-                <TimelineCard events={rental.timeline} />
+                <TimelineCard events={timelineEvents} />
             </div>
 
             {rental.damages.length > 0 && (

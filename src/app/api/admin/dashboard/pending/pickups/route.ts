@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { PendingItem, PageResponse } from '@/types';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS, type PendingItem } from '@/features/admin';
+import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.admin.dashboard.pending.pickups);
+        const backendUrl = new URL(ADMIN_ENDPOINTS.dashboard.pending.pickups);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/admin/dashboard/pending/pickups error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -35,4 +35,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

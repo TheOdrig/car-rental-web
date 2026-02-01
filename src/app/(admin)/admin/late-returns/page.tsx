@@ -4,24 +4,24 @@ import { Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { LateReturnsTable, LateReturnFilters } from '@/components/admin';
-import { useLateReturns } from '@/lib/hooks/use-late-returns';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/widgets/layout';
+import { LateReturnsTable, LateReturnFilters } from '@/features/admin';
+import { useLateReturns } from '@/features/admin';
 import { toast } from 'sonner';
-import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/types';
+import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/entities/rental';
 
 function LateReturnsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const page = parseInt(searchParams.get('page') || '0', 10);
+    const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: LateReturnFiltersType = {
-        status: searchParams.get('status') as LateReturnStatus || undefined,
-        startDate: searchParams.get('startDate') || undefined,
-        endDate: searchParams.get('endDate') || undefined,
-        sortBy: searchParams.get('sortBy') as LateReturnFiltersType['sortBy'] || 'endDate',
-        sortDirection: searchParams.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
+        status: searchParams?.get('status') as LateReturnStatus || undefined,
+        startDate: searchParams?.get('startDate') || undefined,
+        endDate: searchParams?.get('endDate') || undefined,
+        sortBy: searchParams?.get('sortBy') as LateReturnFiltersType['sortBy'] || 'endDate',
+        sortDirection: searchParams?.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
     };
 
     const { data, isLoading, isFetching, refetch } = useLateReturns(filters, page, 20);
@@ -36,9 +36,9 @@ function LateReturnsContent() {
     };
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('page', String(newPage));
-        router.push(`/admin/late-returns?${params.toString()}`);
+        const params = new URLSearchParams(searchParams?.toString());
+        params?.set('page', String(newPage));
+        router.push(`/admin/late-returns?${params?.toString()}`);
     }, [router, searchParams]);
 
     return (
@@ -95,4 +95,3 @@ export default function LateReturnsPage() {
         </Suspense>
     );
 }
-

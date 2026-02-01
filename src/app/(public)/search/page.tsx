@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { CarSearch } from '@/components/cars';
+import { CarSearch } from '@/widgets/car-search';
 import { SearchContent } from './search-content';
 
 export const metadata: Metadata = {
@@ -18,4 +18,3 @@ export default function SearchPage() {
         </main>
     );
 }
-

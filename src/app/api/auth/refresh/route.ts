@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api';
-import { getRefreshToken, setAuthTokens, clearAuthTokens } from '@/lib/auth';
-import { AuthResponse } from '@/types';
+import { AUTH_ENDPOINTS, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
+import { AuthResponse } from '@/features/auth';
 
 export async function POST() {
     try {
@@ -14,7 +13,7 @@ export async function POST() {
             );
         }
 
-        const response = await fetch(endpoints.auth.refresh, {
+        const response = await fetch(AUTH_ENDPOINTS.refresh, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refreshToken }),
@@ -45,4 +44,3 @@ export async function POST() {
         );
     }
 }
-

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/ui/button';
 
 interface ErrorProps {
     error: Error & { digest?: string };
@@ -33,4 +33,3 @@ export default function StatisticsError({ error, reset }: ErrorProps) {
         </div>
     );
 }
-

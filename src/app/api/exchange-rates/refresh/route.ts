@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { endpoints } from '@/lib/api/endpoints';
+import { CURRENCY_ENDPOINTS } from '@/entities/currency';
 import { cookies } from 'next/headers';
 
 export async function POST() {
@@ -8,7 +8,7 @@ export async function POST() {
         const cookieStore = await cookies();
         const token = cookieStore.get('access_token')?.value;
 
-        const response = await fetch(endpoints.currency.refresh, {
+        const response = await fetch(CURRENCY_ENDPOINTS.refresh, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -40,5 +40,3 @@ export async function POST() {
         );
     }
 }
-
-

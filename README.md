@@ -5,7 +5,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-Passing-brightgreen)](/)
+[![Tests](https://img.shields.io/badge/Tests-68%20passing-brightgreen)](/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
 > **🚀 Live Demo:** [arabakiralama.site](https://arabakiralama.site)
@@ -90,10 +90,58 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 
 ## 🏗️ Architecture
 
-This frontend uses **Next.js App Router** with API Proxy pattern for secure backend communication.
+This frontend uses **Feature-Sliced Design (FSD)** with **Next.js App Router** and API Proxy pattern for secure backend communication.
 
 <details>
-<summary>� <b>View Application Structure</b></summary>
+<summary>📊 <b>View FSD Layer Diagram</b></summary>
+
+```mermaid
+graph TD
+    subgraph "App + Pages Layer"
+        app[Next.js App Router<br/>Routes, Layouts, Providers]
+    end
+    
+    subgraph "Widget Layer"
+        widgets[Composite UI Blocks<br/>8 widgets]
+    end
+    
+    subgraph "Feature Layer"
+        features[Business Logic<br/>9 isolated features]
+    end
+    
+    subgraph "Entity Layer"
+        entities[Domain Models<br/>6 entities]
+    end
+    
+    subgraph "Shared Layer"
+        shared[Infrastructure<br/>API, UI, Utils]
+    end
+    
+    app --> widgets
+    app --> features
+    app --> entities
+    app --> shared
+    
+    widgets --> features
+    widgets --> entities
+    widgets --> shared
+    
+    features --> entities
+    features --> shared
+    
+    entities --> shared
+    
+    style app fill:#e3f2fd
+    style widgets fill:#f3e5f5
+    style features fill:#e8f5e9
+    style entities fill:#fff3e0
+    style shared fill:#fce4ec
+```
+
+</details>
+
+<details>
+<summary>🔄 <b>View Application Flow</b></summary>
 
 ```mermaid
 graph TD
@@ -149,23 +197,7 @@ Client → Next.js API Route → Backend API
 - ✅ Centralized error handling
 - ✅ Request/response transformation
 
-### Architecture Roadmap
-
-**v1.0.0 (Current) - Monolithic Structure**
-- ✅ Next.js App Router with route groups
-- ✅ API Proxy pattern
-- ✅ Zustand + TanStack Query
-- ❌ No architectural boundaries
-- ❌ No automated verification
-- ❌ Tight coupling between features
-
-**v2.0.0 (Planned) - Feature-Sliced Design**
-- 🔄 6-layer architecture (app, pages, widgets, features, entities, shared)
-- 🔄 Automated boundary enforcement (ESLint + Vitest)
-- 🔄 Event-driven feature communication
-- 🔄 80%+ test coverage
-- 🔄 Backend-level discipline
-
+## 🛠️ Tech Stack
 
 | Category | Technology |
 |----------|------------|
@@ -253,45 +285,84 @@ npm test
 # Watch mode
 npm run test:watch
 
+# Architecture tests only
+npm run test:architecture
+
 # Coverage report
 npm run test:coverage
 ```
 
-**Test Strategy:**
-- Unit tests for components and hooks
-- Integration tests for critical flows
+**Test Coverage:**
+- 68 tests passing (47 unit + 21 architecture)
+- 80%+ coverage for auth, book-car, manage-rentals
+- FSD boundary verification (0 violations)
+- Property-based tests with fast-check
 
-**Current Status:** Tests passing, coverage below target (v1.0.0 baseline)
-
-## 📂 Project Structure
+## 📂 Project Structure (FSD Architecture)
 
 ```
 src/
-├── app/                 # Next.js App Router
-│   ├── (public)/        # Public pages
-│   ├── (auth)/          # Auth pages
-│   ├── (protected)/     # User dashboard
-│   ├── (admin)/         # Admin dashboard
-│   └── api/             # API Proxy Routes
-├── components/          # React Components
-│   ├── ui/              # shadcn/ui primitives
-│   ├── cars/            # Car components
-│   ├── rentals/         # Rental components
-│   ├── admin/           # Admin components
-│   └── shared/          # Shared components
-├── lib/                 # Business Logic
-│   ├── api/             # API client (server/client)
-│   ├── hooks/           # Custom hooks
-│   ├── stores/          # Zustand stores
-│   ├── utils/           # Utilities
-│   └── validations/     # Zod schemas
-├── types/               # TypeScript types
-└── tests/               # Test files
+├── app/                 # App + Pages Layer (Next.js App Router)
+│   ├── (public)/        # Public route group
+│   ├── (auth)/          # Auth route group
+│   ├── (protected)/     # Protected route group
+│   ├── (admin)/         # Admin route group
+│   ├── api/             # API Proxy Routes
+│   ├── layout.tsx       # Root layout
+│   └── providers.tsx    # Global providers
+├── widgets/             # Widget Layer (Composite UI blocks)
+│   ├── header/          # Navigation header
+│   ├── car-filters/     # Car filtering widget
+│   ├── car-search/      # Search widget
+│   ├── car-booking-card/# Booking card widget
+│   ├── damage-report/   # Damage reporting widget
+│   ├── home/            # Home page widgets
+│   ├── layout/          # Layout widgets
+│   └── rental-dashboard/# Rental dashboard widget
+├── features/            # Feature Layer (Business logic & user actions)
+│   ├── auth/            # Authentication feature
+│   ├── book-car/        # Car booking feature
+│   ├── manage-rentals/  # Rental management feature
+│   ├── manage-fleet/    # Fleet management feature
+│   ├── manage-users/    # User management feature
+│   ├── process-rentals/ # Rental processing feature
+│   ├── manage-damages/  # Damage management feature
+│   ├── user-settings/   # User settings feature
+│   └── admin/           # Admin feature
+├── entities/            # Entity Layer (Domain models)
+│   ├── car/             # Car entity (types, store, utils, UI)
+│   ├── user/            # User entity (types, store, utils)
+│   ├── rental/          # Rental entity (types, store, utils)
+│   ├── currency/        # Currency entity (types, store, utils, UI)
+│   ├── damage/          # Damage entity (types, store, utils, UI)
+│   └── payment/         # Payment entity (types)
+├── shared/              # Shared Layer (Infrastructure)
+│   ├── api/             # API client
+│   ├── config/          # Configuration
+│   ├── events/          # Event bus
+│   ├── lib/             # Utilities
+│   ├── types/           # Shared types
+│   └── ui/              # UI primitives (shadcn/ui)
+└── __tests__/           # Architecture tests
+    └── architecture/    # FSD boundary tests
 ```
+
+**Layer Dependencies (Enforced by ESLint):**
+- `app` → `widgets`, `features`, `entities`, `shared`
+- `widgets` → `features`, `entities`, `shared`
+- `features` → `entities`, `shared` (no cross-feature imports)
+- `entities` → `entities` (via `@x`), `shared`
+- `shared` → `shared` only
 
 ## 🔧 Configuration
 
-See `.env.example` for required environment variables:
+See [docs/operations/ENVIRONMENT_VARIABLES.md](docs/operations/ENVIRONMENT_VARIABLES.md) for detailed configuration options including:
+- Backend API URLs (browser vs server-side)
+- JWT secret configuration
+- OAuth2 providers (Google, GitHub)
+- Cache configuration
+
+**Quick Reference:**
 
 ```env
 # Backend API URL (Browser Access)
@@ -304,16 +375,19 @@ API_URL=http://localhost:8082
 JWT_SECRET=your-jwt-secret-key-here
 ```
 
-**Environment Variables:**
-- `NEXT_PUBLIC_API_URL` - Backend API URL (accessible from browser)
-- `API_URL` - Internal API URL (server-side only, for Docker/production)
-- `JWT_SECRET` - JWT signing key (must match backend configuration)
+## 📊 Technical Highlights
 
-
+- **Feature-Sliced Design** with 5 layers, 9 features, 6 entities, 8 widgets
+- **68% Backend Parity** with Spring Modulith (enforced boundaries, event-driven)
+- **21 Architecture Properties** verified with Vitest + ESLint boundaries
+- **68 Automated Tests** (47 unit + 21 architecture) with 80%+ coverage
+- **Type Safety** with 0 `any` types, 0 `@ts-ignore`
+- **9 ADRs** documenting architectural decisions
+- **API Proxy Pattern** for secure backend communication (HTTP-Only cookies)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read the contributing guidelines before submitting a pull request.
+Contributions are welcome! Please read the [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
 
 Quick steps:
 1. Fork the repository
@@ -328,7 +402,17 @@ See [CHANGELOG.md](CHANGELOG.md) for version history and notable changes.
 
 ## 📝 Documentation
 
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history and release notes
+### Getting Started
+- **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** - Complete development guide
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
+
+### Architecture & Design
+- **[docs/architecture/](docs/architecture/)** - FSD guide, diagrams, ADRs
+- **[docs/features/](docs/features/)** - Feature catalog
+- **[docs/testing/](docs/testing/)** - Test strategy
+
+📖 See [docs/](docs/) for complete documentation.
 
 ## 📄 License
 

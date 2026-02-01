@@ -1,35 +1,38 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { cn } from '@/lib/utils';
+import { cn } from '@/shared/lib';
+import Link from 'next/link';
 import { RefreshCw, Plus, Clock, DollarSign } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { ErrorBoundary } from '@/components/shared';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
+import { Button } from '@/shared/ui/button';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { Breadcrumb } from '@/widgets/layout';
 import {
     DashboardMetricsGrid,
     PendingRentalsTable,
     QuickActionsCard,
     FleetStatusCard,
     RevenueChart,
-} from '@/components/admin';
+} from '@/features/admin';
 import {
     useDashboardSummary,
     useFleetStatus,
     usePendingApprovals,
     usePendingPickups,
     usePendingReturns,
+    useInvalidateAdmin,
+    useRevenueData,
+} from '@/features/admin';
+import {
     useApproveRental,
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
-    useInvalidateAdmin,
-    useRevenueData,
-} from '@/lib/hooks/use-admin';
-import { processRevenueData } from '@/lib/utils/admin-utils';
-import type { RevenuePeriod, ProcessReturnData } from '@/types/admin';
+} from '@/features/process-rentals';
+import { processRevenueData } from '@/features/admin';
+import type { RevenuePeriod } from '@/features/admin';
+import type { ProcessReturnData } from '@/features/process-rentals';
 import { toast } from 'sonner';
-
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 type MetricsCardType = 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pickups' | 'returns' | 'overdue';
@@ -222,10 +225,10 @@ export default function AdminDashboardPage() {
                             aria-label="Add new car to fleet"
                             asChild
                         >
-                            <a href="/admin/fleet/new">
+                            <Link href="/admin/fleet/new">
                                 <Plus className="h-4 w-4" aria-hidden="true" />
                                 Add New Car
-                            </a>
+                            </Link>
                         </Button>
                         <Button
                             variant="ghost"
@@ -302,4 +305,3 @@ export default function AdminDashboardPage() {
         </ErrorBoundary>
     );
 }
-

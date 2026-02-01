@@ -3,27 +3,28 @@
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { FleetStatsCards } from '@/components/admin/fleet-stats';
-import { FleetTable } from '@/components/admin/fleet-table';
+} from '@/shared/ui/select';
+import { Breadcrumb } from '@/widgets/layout';
+import { FleetStatsCards, FleetTable } from '@/features/manage-fleet';
 import {
     useFleetStatus,
     useInvalidateAdmin,
-    useAdminCars,
+} from '@/features/admin';
+import {
+    useFleetList,
     useDeleteCar,
-    useUpdateCarStatus,
-} from '@/lib/hooks/use-admin';
+    useChangeCarStatus,
+} from '@/features/manage-fleet';
 import { toast } from 'sonner';
-import type { CarStatus } from '@/types';
+import type { Car, CarStatus } from '@/entities/car';
 
 type StatusFilter = 'all' | CarStatus;
 
@@ -32,9 +33,8 @@ export default function FleetManagementPage() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
-
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
-    const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useAdminCars({
+    const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useFleetList({
         status: statusFilter !== 'all' ? statusFilter : undefined,
         brand: brandFilter !== 'all' ? brandFilter : undefined,
         search: searchQuery || undefined,
@@ -44,16 +44,14 @@ export default function FleetManagementPage() {
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
-
     const deleteCarMutation = useDeleteCar();
-    const updateStatusMutation = useUpdateCarStatus();
-
+    const updateStatusMutation = useChangeCarStatus();
 
     const carsContent = carsData?.content;
     const filteredCars = useMemo(() => {
         if (!carsContent) return [];
 
-        return carsContent.filter((car) => {
+        return carsContent.filter((car: Car) => {
             const matchesSearch =
                 searchQuery === '' ||
                 `${car.brand} ${car.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -89,7 +87,7 @@ export default function FleetManagementPage() {
     };
 
     const handleUpdateStatus = (carId: number, status: CarStatus) => {
-        updateStatusMutation.mutate({ carId, status });
+        updateStatusMutation.mutate({ id: carId, status });
     };
 
     const lastUpdated = fleetStatus?.generatedAt
@@ -218,4 +216,3 @@ export default function FleetManagementPage() {
         </div>
     );
 }
-

@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet, serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { Rental, RentalRequest, PageResponse } from '@/types';
+import { serverGet, serverPost } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { RENTAL_ENDPOINTS, type Rental, type RentalRequest } from '@/entities/rental';
+import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.rentals.list);
+        const backendUrl = new URL(RENTAL_ENDPOINTS.list);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/rentals error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
     try {
         const body: RentalRequest = await request.json();
 
-        const rental = await serverPost<Rental>(endpoints.rentals.request, body, {
+        const rental = await serverPost<Rental>(RENTAL_ENDPOINTS.request, body, {
             cache: 'no-store',
         });
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('[API] POST /api/rentals error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -61,4 +61,3 @@ export async function POST(request: NextRequest) {
         );
     }
 }
-

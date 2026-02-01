@@ -1,8 +1,8 @@
 'use client';
 
 import { Car, Users, Shield, Award } from 'lucide-react';
-import { ComingSoonBanner } from '@/components/ui/coming-soon-banner';
-import { Card, CardContent } from '@/components/ui/card';
+import { ComingSoonBanner } from '@/shared/ui/coming-soon-banner';
+import { Card, CardContent } from '@/shared/ui/card';
 
 const VALUES = [
     {
@@ -80,4 +80,3 @@ export default function AboutPage() {
         </div>
     );
 }
-

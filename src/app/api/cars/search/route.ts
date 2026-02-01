@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { AvailabilitySearchRequest, AvailabilitySearchResponse } from '@/types';
-
+import { serverPost } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { CAR_ENDPOINTS, type AvailabilitySearchRequest, type AvailabilitySearchResponse } from '@/entities/car';
 
 export async function POST(request: NextRequest) {
     try {
@@ -36,10 +34,10 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        console.log('[API] Calling backend:', endpoints.cars.availability.search);
+        console.log('[API] Calling backend:', CAR_ENDPOINTS.availability.search);
 
         const data = await serverPost<AvailabilitySearchResponse>(
-            endpoints.cars.availability.search,
+            CAR_ENDPOINTS.availability.search,
             body
         );
 
@@ -49,8 +47,8 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('[API] POST /api/cars/search error:', error);
 
-        if (isApiException(error)) {
-            console.error('[API] ApiException details:', {
+        if (isApiError(error)) {
+            console.error('[API] ApiError details:', {
                 status: error.status,
                 message: error.message,
                 errors: error.errors,
@@ -76,4 +74,3 @@ export async function POST(request: NextRequest) {
         );
     }
 }
-

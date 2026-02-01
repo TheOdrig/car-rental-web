@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 export default function StatisticsLoading() {
     return (
@@ -43,4 +43,3 @@ export default function StatisticsLoading() {
         </div>
     );
 }
-

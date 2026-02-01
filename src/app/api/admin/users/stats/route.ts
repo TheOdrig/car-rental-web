@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export interface UserStatsResponse {
     totalUsers: number;
@@ -11,7 +11,7 @@ export interface UserStatsResponse {
 
 export async function GET() {
     try {
-        const data = await routeGet<UserStatsResponse>(endpoints.admin.users.stats, {
+        const data = await routeGet<UserStatsResponse>(ADMIN_ENDPOINTS.users.stats, {
             cache: 'no-store',
             tags: ['admin', 'users', 'stats'],
         });
@@ -20,7 +20,7 @@ export async function GET() {
     } catch (error) {
         console.error('[API] GET /api/admin/users/stats error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -33,4 +33,3 @@ export async function GET() {
         );
     }
 }
-

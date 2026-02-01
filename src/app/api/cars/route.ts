@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { Car, PageResponse } from '@/types';
-
+import { serverGet } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { CAR_ENDPOINTS, type Car } from '@/entities/car';
+import type { PageResponse } from '@/shared/types';
 
 export async function GET(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
 
-        const backendUrl = new URL(endpoints.cars.search);
+        const backendUrl = new URL(CAR_ENDPOINTS.search);
         searchParams.forEach((value, key) => {
             backendUrl.searchParams.append(key, value);
         });
@@ -23,7 +22,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/cars error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -36,4 +35,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

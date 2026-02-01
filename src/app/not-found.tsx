@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { FileQuestion } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '@/shared/ui/button';
 
 export default function NotFound() {
     return (
@@ -25,4 +25,3 @@ export default function NotFound() {
         </div>
     );
 }
-

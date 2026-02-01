@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifyToken, type TokenPayload } from '@/lib/auth/jwt-verifier';
+import { verifyToken, type TokenPayload } from '@/features/auth';
 
 const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback', '/forgot-password', '/reset-password'];
 const AUTH_ROUTES = ['/login', '/register', '/callback', '/forgot-password', '/reset-password'];
@@ -38,15 +38,11 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return NextResponse.next();
     }
 
-
-
     const hasAccessToken = !!token;
     const hasRefreshToken = !!request.cookies.get('refresh_token')?.value;
 
     let payload: TokenPayload | null = null;
     const isAuthenticated = hasAccessToken || hasRefreshToken;
-
-
 
     if (token && isAdminRoute(pathname)) {
         const result = await verifyToken(token);
@@ -65,8 +61,6 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         if (!isAuthenticated) {
             return redirectToLogin(request, pathname);
         }
-
-
 
         if (!isAdmin && !hasRefreshToken) {
             return NextResponse.redirect(new URL('/forbidden', request.url));
@@ -89,5 +83,3 @@ export const config = {
         '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
     ],
 };
-
-

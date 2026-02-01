@@ -3,12 +3,12 @@
 import { Suspense, useState } from 'react';
 import { RefreshCw, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { LateReturnStats } from '@/components/admin';
-import { useLateReturnStatistics } from '@/lib/hooks/use-late-returns';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
+import { Label } from '@/shared/ui/label';
+import { Breadcrumb } from '@/widgets/layout';
+import { LateReturnStats } from '@/features/admin';
+import { useLateReturnStatistics } from '@/features/admin';
 import { toast } from 'sonner';
 
 function StatisticsContent() {
@@ -104,4 +104,3 @@ export default function LateReturnStatisticsPage() {
         </Suspense>
     );
 }
-

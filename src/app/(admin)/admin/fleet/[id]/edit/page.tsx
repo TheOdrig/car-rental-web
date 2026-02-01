@@ -3,19 +3,21 @@
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { BasicInfoSection } from '@/components/admin/car-form/basic-info';
-import { SpecificationsSection } from '@/components/admin/car-form/specifications';
-import { PricingSection } from '@/components/admin/car-form/pricing';
-import { useUpdateCar } from '@/lib/hooks/use-admin';
-import { useCar } from '@/lib/hooks/use-cars';
-import { useCarForm } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import {
+    BasicInfoSection,
+    SpecificationsSection,
+    PricingSection,
+    useVehicleDetail,
+    useUpdateCar,
+    useCarForm,
+    type CarFormData,
+} from '@/features/manage-fleet';
+import type { VehicleDetailResponse } from '@/entities/car';
 import { toast } from 'sonner';
-import type { CarFormData } from '@/components/admin/car-form/types';
-import type { Car } from '@/types';
 
 export default function EditCarPage() {
     const router = useRouter();
@@ -24,8 +26,11 @@ export default function EditCarPage() {
     const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
     const carId = rawId ? Number(rawId) : null;
 
-    const { data: carData, isLoading: isLoadingCar } = useCar(carId);
-    const car = ((carData as { car?: Car })?.car ?? carData) as Car | undefined;
+
+    const { data: car, isLoading: isLoadingCar } = useVehicleDetail(carId || 0);
+
+
+    const updateCarMutation = useUpdateCar();
 
     if (!carId || isLoadingCar) {
         return <EditCarPageSkeleton />;
@@ -48,18 +53,18 @@ export default function EditCarPage() {
     const initialFormData: CarFormData = {
         brand: car.brand || '',
         model: car.model || '',
-        year: car.productionYear || new Date().getFullYear(),
+        year: car.year || new Date().getFullYear(),
         licensePlate: car.licensePlate || '',
-        vin: car.vinNumber || '',
+        vin: car.vin || '',
         fuelType: car.fuelType?.toLowerCase() || '',
         transmissionType: car.transmissionType?.toLowerCase() || '',
         bodyType: car.bodyType?.toLowerCase() || '',
         seats: car.seats || 5,
         color: car.color?.toLowerCase() || '',
-        dailyRate: car.price || 0,
-        weeklyRate: 0,
-        depositAmount: car.damagePrice || 0,
-        imageUrl: car.imageUrl || '',
+        dailyRate: car.pricing?.dailyRate || 0,
+        weeklyRate: car.pricing?.weeklyRate || 0,
+        depositAmount: car.pricing?.depositAmount || 0,
+        imageUrl: car.images?.primary || '',
     };
 
     return (
@@ -68,19 +73,20 @@ export default function EditCarPage() {
             car={car}
             carId={carId}
             initialFormData={initialFormData}
+            updateCar={updateCarMutation}
         />
     );
 }
 
 interface EditCarFormProps {
-    car: Car;
+    car: VehicleDetailResponse;
     carId: number;
     initialFormData: CarFormData;
+    updateCar: ReturnType<typeof useUpdateCar>;
 }
 
-function EditCarForm({ car, carId, initialFormData }: EditCarFormProps) {
+function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProps) {
     const router = useRouter();
-    const updateCar = useUpdateCar();
 
     const {
         formData,
@@ -105,7 +111,7 @@ function EditCarForm({ car, carId, initialFormData }: EditCarFormProps) {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -199,6 +205,7 @@ function EditCarForm({ car, carId, initialFormData }: EditCarFormProps) {
                         {updateCar.isPending ? (
                             <>
                                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                                 Saving...
                             </>
                         ) : (
@@ -216,7 +223,7 @@ function EditCarForm({ car, carId, initialFormData }: EditCarFormProps) {
 
 function EditCarPageSkeleton() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Skeleton className="h-5 w-64" />
             <div className="flex items-center justify-between">
                 <div className="space-y-2">

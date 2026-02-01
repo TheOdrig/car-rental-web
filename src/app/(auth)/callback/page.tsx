@@ -4,7 +4,7 @@ import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Loader2, AlertCircle, CheckCircle } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
-import { authKeys } from '@/lib/hooks';
+import { authKeys } from '@/features/auth';
 
 type CallbackStatus = 'loading' | 'success' | 'error';
 
@@ -18,8 +18,8 @@ function OAuthCallbackContent() {
 
     useEffect(() => {
         const handleCallback = async () => {
-            const error = searchParams.get('error');
-            const success = searchParams.get('success');
+            const error = searchParams?.get('error');
+            const success = searchParams?.get('success');
 
             if (error) {
                 setStatus('error');
@@ -102,4 +102,3 @@ export default function OAuthCallbackPage() {
         </div>
     );
 }
-

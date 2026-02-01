@@ -4,25 +4,25 @@ import { Suspense, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { DamageTable, DamageFilters } from '@/components/admin';
-import { Pagination } from '@/components/ui/pagination';
-import { useDamages } from '@/lib/hooks';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/widgets/layout';
+import { DamageTable, DamageFilters } from '@/features/admin';
+import { Pagination } from '@/shared/ui/pagination';
+import { useDamages } from '@/features/manage-damages';
 import { toast } from 'sonner';
-import type { DamageSearchFilters } from '@/types';
+import type { DamageSearchFilters } from '@/entities/damage';
 
 function DamagesContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const page = parseInt(searchParams.get('page') || '0', 10);
+    const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: DamageSearchFilters = {
-        severity: searchParams.get('severity') as DamageSearchFilters['severity'] || undefined,
-        category: searchParams.get('category') as DamageSearchFilters['category'] || undefined,
-        status: searchParams.get('status') as DamageSearchFilters['status'] || undefined,
-        startDate: searchParams.get('startDate') || undefined,
-        endDate: searchParams.get('endDate') || undefined,
+        severity: searchParams?.get('severity') as DamageSearchFilters['severity'] || undefined,
+        category: searchParams?.get('category') as DamageSearchFilters['category'] || undefined,
+        status: searchParams?.get('status') as DamageSearchFilters['status'] || undefined,
+        startDate: searchParams?.get('startDate') || undefined,
+        endDate: searchParams?.get('endDate') || undefined,
     };
 
     const { data, isLoading, isFetching, refetch } = useDamages(filters, page, 20);
@@ -37,7 +37,7 @@ function DamagesContent() {
     };
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
+        const params = new URLSearchParams(searchParams?.toString());
         params.set('page', String(newPage));
         router.push(`/admin/damages?${params.toString()}`);
     }, [router, searchParams]);
@@ -101,4 +101,3 @@ export default function DamagesPage() {
         </Suspense>
     );
 }
-

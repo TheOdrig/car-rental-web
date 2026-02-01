@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
+import { ForgotPasswordForm } from '@/features/auth';
 
 export const metadata: Metadata = {
     title: 'Forgot Password | CarRental',
@@ -32,4 +32,3 @@ export default function ForgotPasswordPage() {
         </div>
     );
 }
-

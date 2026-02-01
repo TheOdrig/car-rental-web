@@ -8,25 +8,25 @@ import {
     AlertTriangle,
     Filter
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '@/shared/ui/button';
+import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue
-} from '@/components/ui/select';
-import { AlertsPanel } from '@/components/admin';
+} from '@/shared/ui/select';
+import { AlertsPanel } from '@/features/admin';
 import {
     useAlerts,
     useDismissAlert,
     useMarkAllAlertsRead,
     useInvalidateAdmin
-} from '@/lib/hooks/use-admin';
-import { AlertVariant } from '@/types/admin';
+} from '@/features/admin';
+import { AlertVariant } from '@/features/admin';
 import { toast } from 'sonner';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 export default function AdminAlertsPage() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -175,4 +175,3 @@ export default function AdminAlertsPage() {
         </div>
     );
 }
-

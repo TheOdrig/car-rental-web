@@ -1,4 +1,4 @@
-import { Skeleton } from '@/components/ui/skeleton';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 export default function RentalsLoading() {
     return (
@@ -48,4 +48,3 @@ export default function RentalsLoading() {
         </div>
     );
 }
-

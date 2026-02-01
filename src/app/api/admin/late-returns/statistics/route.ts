@@ -1,16 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { LateReturnStatistics } from '@/types';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
+import type { LateReturnStatistics } from '@/entities/rental';
 
 export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     const queryString = searchParams.toString();
     const url = queryString
-        ? `${endpoints.admin.lateReturnStatistics}?${queryString}`
-        : endpoints.admin.lateReturnStatistics;
+        ? `${ADMIN_ENDPOINTS.lateReturnStatistics}?${queryString}`
+        : ADMIN_ENDPOINTS.lateReturnStatistics;
 
     try {
         const result = await routeGet<LateReturnStatistics>(url, {
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/admin/late-returns/statistics error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -34,4 +34,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

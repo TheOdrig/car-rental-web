@@ -1,10 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import { carIdSchema, validateParams } from '@/lib/validations/api-params';
-import type { Car, CarAvailabilityCalendar, SimilarCar } from '@/types';
-
+import { serverGet } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { carIdSchema, validateParams } from '@/shared/lib/validations';
+import { CAR_ENDPOINTS, type Car, type CarAvailabilityCalendar, type SimilarCar } from '@/entities/car';
 
 export async function GET(
     request: NextRequest,
@@ -26,7 +24,7 @@ export async function GET(
         const { searchParams } = new URL(request.url);
         const include = searchParams.get('include')?.split(',') ?? [];
 
-        const car = await serverGet<Car>(endpoints.cars.byId(carId), {
+        const car = await serverGet<Car>(CAR_ENDPOINTS.byId(carId), {
             cache: 'no-store',
             tags: ['cars', `car-${carId}`],
         });
@@ -39,11 +37,10 @@ export async function GET(
 
         if (include.includes('calendar')) {
             const month = searchParams.get('month');
-            const calendarUrl = new URL(endpoints.cars.availability.calendar(carId));
+            const calendarUrl = new URL(CAR_ENDPOINTS.availability.calendar(carId));
             if (month) {
                 calendarUrl.searchParams.append('month', month);
             }
-
 
             try {
                 response.calendar = await serverGet<CarAvailabilityCalendar>(
@@ -56,7 +53,7 @@ export async function GET(
         }
 
         if (include.includes('similar')) {
-            const similarUrl = new URL(endpoints.cars.availability.similar(carId));
+            const similarUrl = new URL(CAR_ENDPOINTS.availability.similar(carId));
 
             const startDate = searchParams.get('startDate');
             const endDate = searchParams.get('endDate');
@@ -87,7 +84,7 @@ export async function GET(
     } catch (error) {
         console.error(`[API] GET /api/cars/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }

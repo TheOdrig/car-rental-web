@@ -1,20 +1,20 @@
 import { NextResponse } from 'next/server';
-import { serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { PasswordChangeData, MessageResponse } from '@/types';
+import { serverPost } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { USER_ENDPOINTS, type PasswordChangeData } from '@/entities/user';
+import type { MessageResponse } from '@/shared/types';
 
 export async function POST(request: Request) {
     try {
         const body: PasswordChangeData = await request.json();
 
-        const data = await serverPost<MessageResponse>(endpoints.users.password, body);
+        const data = await serverPost<MessageResponse>(USER_ENDPOINTS.password, body);
 
         return NextResponse.json(data);
     } catch (error) {
         console.error('[API] POST /api/users/me/password error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             const message = error.message.toLowerCase();
 
             if (message.includes('current password') ||
@@ -38,4 +38,3 @@ export async function POST(request: Request) {
         );
     }
 }
-

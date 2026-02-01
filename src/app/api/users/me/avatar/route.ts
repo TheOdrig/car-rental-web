@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAccessToken } from '@/lib/auth/cookies';
-import { endpoints } from '@/lib/api/endpoints';
-import type { AvatarUploadResponse } from '@/types';
+import { getAccessToken } from '@/features/auth';
+import { USER_ENDPOINTS, type AvatarUploadResponse } from '@/entities/user';
 
 export async function POST(request: NextRequest) {
     try {
@@ -13,7 +12,7 @@ export async function POST(request: NextRequest) {
 
         const formData = await request.formData();
 
-        const response = await fetch(endpoints.users.avatar, {
+        const response = await fetch(USER_ENDPOINTS.avatar, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -43,7 +42,7 @@ export async function DELETE() {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const response = await fetch(endpoints.users.avatar, {
+        const response = await fetch(USER_ENDPOINTS.avatar, {
             method: 'DELETE',
             headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -66,4 +65,3 @@ export async function DELETE() {
 }
 
 export const dynamic = 'force-dynamic';
-

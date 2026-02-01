@@ -3,19 +3,21 @@
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit2, Camera, CheckCircle, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
-import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import { Skeleton } from '@/shared/ui/skeleton';
 import {
     DamageStatusBadge,
     DamageSeverityBadge,
+    useDamageDetail,
+    getDamageCategoryLabel,
+} from '@/entities/damage';
+import {
     DamagePhotoUpload,
     DamageAssessDialog,
     DamageResolveDialog,
-} from '@/components/admin';
-import { useDamageDetail } from '@/lib/hooks';
-import { getDamageCategoryLabel } from '@/types';
+} from '@/features/admin';
 
 interface DamageDetailPageProps {
     params: Promise<{ id: string }>;
@@ -51,7 +53,7 @@ export default function DamageDetailPage({ params }: DamageDetailPageProps) {
     const canResolve = damage.status === 'DISPUTED';
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },
@@ -217,7 +219,7 @@ export default function DamageDetailPage({ params }: DamageDetailPageProps) {
 
 function DamageDetailSkeleton() {
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Skeleton className="h-6 w-64" />
             <div className="flex items-center justify-between">
                 <Skeleton className="h-10 w-64" />

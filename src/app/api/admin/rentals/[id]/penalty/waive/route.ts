@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routePost } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { PenaltyWaiverResponse } from '@/types';
+import { routePost } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
+import type { PenaltyWaiverResponse } from '@/entities/rental';
 
 export async function POST(
     request: NextRequest,
@@ -30,7 +30,7 @@ export async function POST(
 
     try {
         const result = await routePost<PenaltyWaiverResponse>(
-            endpoints.admin.penaltyWaive(rentalId),
+            ADMIN_ENDPOINTS.penaltyWaive(rentalId),
             body,
             { cache: 'no-store' }
         );
@@ -39,7 +39,7 @@ export async function POST(
     } catch (error) {
         console.error(`[API] POST /api/admin/rentals/${id}/penalty/waive error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }

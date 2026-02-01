@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ResetPasswordForm } from '@/components/auth/reset-password-form';
+import { ResetPasswordForm } from '@/features/auth';
 
 export const metadata: Metadata = {
     title: 'Reset Password | CarRental',
@@ -68,4 +68,3 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
         </div>
     );
 }
-

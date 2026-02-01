@@ -1,32 +1,35 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Edit, AlertTriangle, Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
+import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    ComingSoonPlaceholder,
+    VehicleDamageHistory,
+} from '@/features/admin';
+import {
     VehicleDetailInfoCard,
     VehicleImagesCard,
     VehicleStatisticsCard,
     VehicleStatusCard,
     VehicleActiveRentalCard,
     VehicleRentalHistoryTable,
-    VehicleDamageHistory,
-    ComingSoonPlaceholder,
-} from '@/components/admin';
+    useVehicleDetail,
+    useChangeCarStatus,
+} from '@/features/manage-fleet';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from '@/components/ui/select';
-import { useVehicleDetail, useUpdateCarStatus } from '@/lib/hooks/use-admin';
-import type { CarStatus } from '@/types';
+} from '@/shared/ui/select';
+import type { CarStatus } from '@/entities/car';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -47,7 +50,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
     const vehicleId = parseInt(id, 10);
 
     const { data: vehicle, isLoading, isError, refetch } = useVehicleDetail(vehicleId);
-    const updateStatus = useUpdateCarStatus();
+    const updateStatus = useChangeCarStatus();
 
     if (isNaN(vehicleId)) {
         router.push('/admin/fleet');
@@ -56,7 +59,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -71,7 +74,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
     if (isError || !vehicle) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -95,7 +98,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
 
     const handleStatusChange = (newStatus: CarStatus) => {
         updateStatus.mutate(
-            { carId: vehicleId, status: newStatus },
+            { id: vehicleId, status: newStatus },
             {
                 onSuccess: () => {
                     void refetch();
@@ -105,7 +108,7 @@ export default function VehicleDetailPage({ params }: PageProps) {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },

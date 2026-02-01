@@ -1,17 +1,15 @@
 'use client';
 
 import { use, useState } from 'react';
-import { DynamicImage } from '@/components/ui/dynamic-image';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, AlertTriangle, FileWarning } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
-import { ErrorBoundary } from '@/components/shared';
-import { DamageStatusBadge, DamageSeverityBadge } from '@/components/admin';
-import { DamageDisputeForm } from '@/components/damages';
-import { useDamageDetail } from '@/lib/hooks';
-import { getDamageCategoryLabel } from '@/types';
+import { Button } from '@/shared/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
+import { DamageStatusBadge, DamageSeverityBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
+import { DamageDisputeForm } from '@/features/manage-damages';
 
 interface DamageDetailPageProps {
     params: Promise<{ id: string }>;

@@ -1,56 +1,18 @@
 'use client';
 
 import { use } from 'react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { notFound } from 'next/navigation';
-import { ChevronRight, Home } from 'lucide-react';
-import { useRental } from '@/lib/hooks';
-import { RentalDetail, RentalDetailSkeleton } from '@/components/rentals';
-import { Skeleton } from '@/components/ui/skeleton';
+
+import { useRouter, notFound } from 'next/navigation';
+import { useRental } from '@/entities/rental';
+import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
+import { Breadcrumb } from '@/shared/ui';
+import { Skeleton } from '@/shared/ui/skeleton';
 
 interface RentalDetailPageProps {
     params: Promise<{ id: string }>;
 }
 
-function Breadcrumb({ rentalId }: { rentalId: number }) {
-    return (
-        <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-muted-foreground">
-                <li>
-                    <Link
-                        href="/"
-                        className="flex items-center gap-1 hover:text-foreground transition-colors"
-                    >
-                        <Home className="h-4 w-4" />
-                        <span className="sr-only">Home</span>
-                    </Link>
-                </li>
-                <li>
-                    <ChevronRight className="h-4 w-4" />
-                </li>
-                <li>
-                    <Link
-                        href="/rentals"
-                        className="hover:text-foreground transition-colors"
-                    >
-                        Rentals
-                    </Link>
-                </li>
-                <li>
-                    <ChevronRight className="h-4 w-4" />
-                </li>
-                <li>
-                    <span className="text-foreground font-medium">
-                        Order #{rentalId}
-                    </span>
-                </li>
-            </ol>
-        </nav>
-    );
-}
-
-function BreadcrumbSkeleton() {
+function BreadcrumbLoader() {
     return (
         <div className="mb-6 flex items-center gap-2">
             <Skeleton className="h-4 w-4" />
@@ -67,11 +29,11 @@ export default function RentalDetailPage({ params }: RentalDetailPageProps) {
     const { id } = use(params);
     const rentalId = parseInt(id, 10);
 
+    const { data: rental, isLoading, error } = useRental(rentalId);
+
     if (isNaN(rentalId)) {
         notFound();
     }
-
-    const { data: rental, isLoading, error } = useRental(rentalId);
 
     const handleCancelSuccess = () => {
         router.push('/rentals');
@@ -80,7 +42,7 @@ export default function RentalDetailPage({ params }: RentalDetailPageProps) {
     if (isLoading) {
         return (
             <div className="container py-8">
-                <BreadcrumbSkeleton />
+                <BreadcrumbLoader />
                 <RentalDetailSkeleton />
             </div>
         );
@@ -92,7 +54,13 @@ export default function RentalDetailPage({ params }: RentalDetailPageProps) {
 
     return (
         <div className="container py-8">
-            <Breadcrumb rentalId={rental.id} />
+            <Breadcrumb
+                items={[
+                    { label: 'Rentals', href: '/rentals' },
+                    { label: `Order #${rental.id}` },
+                ]}
+                className="mb-6"
+            />
             <RentalDetail rental={rental} onCancelSuccess={handleCancelSuccess} />
         </div>
     );

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api';
-import { setAuthTokens } from '@/lib/auth';
-import { AuthResponse } from '@/types';
+import { AUTH_ENDPOINTS } from '@/features/auth';
+import { setAuthTokens } from '@/features/auth';
+import { AuthResponse } from '@/features/auth';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;
@@ -20,7 +20,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             );
         }
 
-        const callbackUrl = `${endpoints.auth.oauth.callback(provider)}?code=${code}&state=${state}`;
+        const callbackUrl = `${AUTH_ENDPOINTS.oauth.callback(provider)}?code=${code}&state=${state}`;
 
         const response = await fetch(callbackUrl, {
             method: 'GET',

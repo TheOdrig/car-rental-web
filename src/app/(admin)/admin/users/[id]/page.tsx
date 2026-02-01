@@ -4,11 +4,14 @@ import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Breadcrumb } from '@/components/layout/breadcrumb';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/shared/ui';
 import {
     DetailPageSkeleton,
     DetailPageError,
+    ComingSoonPlaceholder,
+} from '@/features/admin';
+import {
     CustomerDetailInfoCard,
     CustomerVerificationCard,
     CustomerStatisticsCard,
@@ -17,9 +20,8 @@ import {
     CustomerNotesCard,
     BanCustomerDialog,
     UnbanCustomerDialog,
-    ComingSoonPlaceholder,
-} from '@/components/admin';
-import { useCustomerDetail } from '@/lib/hooks/use-admin';
+    useCustomerDetail,
+} from '@/features/manage-users';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -42,7 +44,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
 
     if (isLoading) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -57,7 +59,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
 
     if (isError || !customer) {
         return (
-            <div className="space-y-6">
+            <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
@@ -91,7 +93,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
     };
 
     return (
-        <div className="space-y-6">
+        <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
                     { label: 'Dashboard', href: '/admin/dashboard' },

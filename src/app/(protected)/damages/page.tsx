@@ -3,23 +3,23 @@
 import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { AlertTriangle } from 'lucide-react';
-import { useMyDamages } from '@/lib/hooks';
-import { Skeleton } from '@/components/ui/skeleton';
-import { Pagination } from '@/components/ui/pagination';
-import { ErrorBoundary } from '@/components/shared';
-import { DamageList } from '@/components/damages';
+import { useMyDamages } from '@/features/manage-damages';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { Pagination } from '@/shared/ui/pagination';
+import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { DamageList } from '@/features/manage-damages';
 
 export default function MyDamagesPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
-    const page = parseInt(searchParams.get('page') || '0', 10);
+    const page = parseInt(searchParams?.get('page') || '0', 10);
 
     const { data, isLoading, error } = useMyDamages(page, 10);
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('page', String(newPage));
-        router.push(`/damages?${params.toString()}`);
+        const params = new URLSearchParams(searchParams?.toString());
+        params?.set('page', String(newPage));
+        router.push(`/damages?${params?.toString()}`);
     }, [router, searchParams]);
 
     if (error) {
@@ -74,4 +74,3 @@ export default function MyDamagesPage() {
         </ErrorBoundary>
     );
 }
-

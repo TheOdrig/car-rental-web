@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from 'next-themes';
 import { type ReactNode } from 'react';
-import { AuthProvider } from '@/lib/auth';
-import { CurrencyProvider } from '@/lib/providers/currency-provider';
+import { AuthProvider } from '@/features/auth';
+import { CurrencyProvider } from '@/entities/currency';
 
 function makeQueryClient() {
     return new QueryClient({
@@ -58,4 +58,3 @@ export function Providers({ children }: ProvidersProps) {
         </QueryClientProvider>
     );
 }
-

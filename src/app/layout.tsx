@@ -2,9 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
-import { Toaster } from "@/components/ui/sonner";
-import { Header } from "@/components/layout/header";
-import { Footer } from "@/components/layout/footer";
+import { Toaster } from "@/shared/ui/sonner";
+import { Header } from '@/widgets/header';
+import { Footer } from "@/widgets/layout";
 import React from "react";
 
 const geistSans = Geist({
@@ -94,4 +94,3 @@ export default function RootLayout({
     </html>
   );
 }
-

@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { endpoints } from '@/lib/api/endpoints';
+import { CURRENCY_ENDPOINTS } from '@/entities/currency';
 
 export const dynamic = 'force-dynamic';
 
 export async function GET() {
     try {
-        const response = await fetch(endpoints.currency.rates, {
+        const response = await fetch(CURRENCY_ENDPOINTS.exchangeRates, {
             cache: 'no-store',
         });
 
@@ -27,4 +27,3 @@ export async function GET() {
         );
     }
 }
-

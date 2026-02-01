@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { serverGet, serverPost } from '@/lib/api/server';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
-import type { Rental } from '@/types';
+import { serverGet, serverPost } from '@/shared/api/server';
+import { isApiError } from '@/shared/api';
+import { RENTAL_ENDPOINTS, type Rental } from '@/entities/rental';
 
 export async function GET(
     _request: NextRequest,
@@ -19,7 +18,7 @@ export async function GET(
     }
 
     try {
-        const rental = await serverGet<Rental>(endpoints.rentals.byId(rentalId), {
+        const rental = await serverGet<Rental>(RENTAL_ENDPOINTS.byId(rentalId), {
             cache: 'no-store',
             tags: ['rentals', `rental-${rentalId}`],
         });
@@ -28,7 +27,7 @@ export async function GET(
     } catch (error) {
         console.error(`[API] GET /api/rentals/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }
@@ -57,7 +56,7 @@ export async function DELETE(
     }
 
     try {
-        const rental = await serverPost<Rental>(endpoints.rentals.cancel(rentalId), undefined, {
+        const rental = await serverPost<Rental>(RENTAL_ENDPOINTS.cancel(rentalId), undefined, {
             cache: 'no-store',
         });
 
@@ -65,7 +64,7 @@ export async function DELETE(
     } catch (error) {
         console.error(`[API] DELETE /api/rentals/${id} error:`, error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message },
                 { status: error.status }

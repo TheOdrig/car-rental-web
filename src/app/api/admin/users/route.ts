@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { routeGet } from '@/lib/api/route-handler';
-import { endpoints } from '@/lib/api/endpoints';
-import { isApiException } from '@/lib/api/errors';
+import { routeGet } from '@/shared/api/route-handler';
+import { isApiError } from '@/shared/api';
+import { ADMIN_ENDPOINTS } from '@/features/admin';
 
 export async function GET(request: NextRequest) {
     try {
@@ -9,8 +9,8 @@ export async function GET(request: NextRequest) {
         const queryString = searchParams.toString();
 
         const url = queryString
-            ? `${endpoints.admin.users.list}?${queryString}`
-            : endpoints.admin.users.list;
+            ? `${ADMIN_ENDPOINTS.users.list}?${queryString}`
+            : ADMIN_ENDPOINTS.users.list;
 
         const data = await routeGet(url, {
             cache: 'no-store',
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
     } catch (error) {
         console.error('[API] GET /api/admin/users error:', error);
 
-        if (isApiException(error)) {
+        if (isApiError(error)) {
             return NextResponse.json(
                 { error: error.message, errors: error.errors },
                 { status: error.status }
@@ -34,4 +34,3 @@ export async function GET(request: NextRequest) {
         );
     }
 }
-

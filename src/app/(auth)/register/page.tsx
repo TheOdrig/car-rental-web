@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
-import { RegisterForm } from '@/components/auth/register-form';
-import { OAuthButtons, OAuthDivider } from '@/components/auth/oauth-buttons';
+import { RegisterForm } from '@/features/auth';
+import { OAuthButtons, OAuthDivider } from '@/features/auth';
 
 export const metadata: Metadata = {
     title: 'Register | CarRental',
@@ -27,4 +27,3 @@ export default function RegisterPage() {
         </div>
     );
 }
-
