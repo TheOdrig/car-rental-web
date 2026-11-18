@@ -29,7 +29,3 @@ export function getSortParams(sortBy: SortOption): [string, string] {
     }
 }
 
-export function sortOptionToParam(sortBy: SortOption): string {
-    const [field, direction] = getSortParams(sortBy);
-    return `${field},${direction}`;
-}

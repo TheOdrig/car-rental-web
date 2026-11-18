@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
-import { sortOptionToParam } from './utils';
+import { getSortParams } from './utils';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 
@@ -50,7 +50,9 @@ async function fetchCars(
 
     params.append('page', String(page));
     params.append('size', '12');
-    params.append('sort', sortOptionToParam(sortBy));
+    const [sortField, sortDirection] = getSortParams(sortBy);
+    params.append('sortBy', sortField);
+    params.append('sortDirection', sortDirection);
 
     const queryString = params.toString();
     const url = `/api/cars?${queryString}`;

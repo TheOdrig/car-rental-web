@@ -93,7 +93,7 @@ describe('use-cars hooks', () => {
             });
             expect(result.current.data).toEqual(mockResponse);
             expect(result.current.data?.content).toHaveLength(3);
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12&sort=createTime%2Cdesc');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12&sortBy=createTime&sortDirection=desc');
         });
         it('should fetch cars with filters', async () => {
             const mockCars = createMockCars(2, { brand: 'Toyota' });
@@ -106,7 +106,7 @@ describe('use-cars hooks', () => {
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?brand=Toyota&minPrice=40&page=0&size=12&sort=createTime%2Cdesc');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?brand=Toyota&minPrice=40&page=0&size=12&sortBy=createTime&sortDirection=desc');
         });
         it('should handle empty filters', async () => {
             const mockResponse = createMockPageResponse<Car>([]);
@@ -117,7 +117,26 @@ describe('use-cars hooks', () => {
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
-            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12&sort=createTime%2Cdesc');
+            expect(mockClientGet).toHaveBeenCalledWith('/api/cars?page=0&size=12&sortBy=createTime&sortDirection=desc');
+        });
+        it.each([
+            ['price-asc', 'price', 'asc'],
+            ['price-desc', 'price', 'desc'],
+            ['rating-desc', 'rating', 'desc'],
+            ['name-asc', 'brand', 'asc'],
+        ] as const)('should send %s as sortBy and sortDirection', async (option, field, direction) => {
+            mockClientGet.mockResolvedValueOnce(createMockPageResponse<Car>([]));
+            const { result } = renderHook(() => useCars({}, 2, option), {
+                wrapper: createQueryWrapper(),
+            });
+            await waitFor(() => {
+                expect(result.current.isSuccess).toBe(true);
+            });
+            const url = new URL(mockClientGet.mock.calls[mockClientGet.mock.calls.length - 1][0] as string, 'http://localhost');
+            expect(url.searchParams.get('sortBy')).toBe(field);
+            expect(url.searchParams.get('sortDirection')).toBe(direction);
+            expect(url.searchParams.get('page')).toBe('2');
+            expect(url.searchParams.has('sort')).toBe(false);
         });
         it('should handle fetch error', async () => {
             mockClientGet.mockRejectedValueOnce(new Error('Network error'));
