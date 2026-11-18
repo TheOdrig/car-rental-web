@@ -108,7 +108,6 @@ const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
         { label: 'Pay Now', action: 'pay', variant: 'default' },
     ],
     [RentalStatus.COMPLETED]: [
-        { label: 'Receipt', action: 'receipt', variant: 'ghost', icon: 'receipt' },
         { label: 'Book Again', action: 'book-again', variant: 'default' },
     ],
     [RentalStatus.REQUESTED]: [

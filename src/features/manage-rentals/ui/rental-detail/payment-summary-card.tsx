@@ -1,9 +1,7 @@
 'use client';
 
-import { CreditCard, Download } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
+import { CreditCard } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { showToast } from '@/shared/lib';
 import { formatPrice } from './format';
 
 interface PaymentSummaryCardProps {
@@ -15,10 +13,6 @@ interface PaymentSummaryCardProps {
 }
 
 export function PaymentSummaryCard({ dailyPrice, days, totalPrice, totalSavings, currency }: PaymentSummaryCardProps) {
-    const handleDownloadInvoice = () => {
-        showToast.info('Invoice download coming soon');
-    };
-
     return (
         <Card>
             <CardHeader>
@@ -60,15 +54,6 @@ export function PaymentSummaryCard({ dailyPrice, days, totalPrice, totalSavings,
                         <span className="text-slate-900 dark:text-white">{formatPrice(totalPrice, currency)}</span>
                     </div>
                 </div>
-
-                <Button
-                    className="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
-                    variant="outline"
-                    onClick={handleDownloadInvoice}
-                >
-                    <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-                    Download Invoice
-                </Button>
             </CardContent>
         </Card>
     );

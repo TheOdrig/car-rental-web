@@ -9,7 +9,6 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     DetailPageSkeleton,
     DetailPageError,
-    ComingSoonPlaceholder,
     VehicleDamageHistory,
 } from '@/features/admin';
 import {
@@ -187,11 +186,6 @@ export default function VehicleDetailPage({ params }: PageProps) {
             <VehicleRentalHistoryTable vehicleId={vehicleId} />
 
             <VehicleDamageHistory carId={vehicleId} maxItems={5} />
-
-            <ComingSoonPlaceholder
-                title="Maintenance History"
-                description="Maintenance tracking will be available in a future update. Track service records, repairs, and scheduled maintenance."
-            />
         </div>
     );
 }

@@ -6,8 +6,6 @@ import { usePathname } from 'next/navigation';
 import {
     User,
     Shield,
-    FileText,
-    Bell,
     CreditCard,
     ChevronRight,
     Home,
@@ -19,11 +17,9 @@ interface SettingsLayoutProps {
 }
 
 const SETTINGS_TABS = [
-    { label: 'Personal Info', href: '/settings/profile', icon: User, comingSoon: false },
-    { label: 'Security', href: '/settings/security', icon: Shield, comingSoon: false },
-    { label: 'Documents', href: '/settings/documents', icon: FileText, comingSoon: true },
-    { label: 'Notifications', href: '/settings/notifications', icon: Bell, comingSoon: true },
-    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard, comingSoon: false },
+    { label: 'Personal Info', href: '/settings/profile', icon: User },
+    { label: 'Security', href: '/settings/security', icon: Shield },
+    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard },
 ];
 
 function Breadcrumb({ currentTab }: { currentTab?: string }) {
@@ -87,11 +83,6 @@ function SettingsSidebar() {
                     >
                         <Icon className="h-5 w-5" />
                         <span className="flex-1">{tab.label}</span>
-                        {tab.comingSoon && (
-                            <span className="text-[10px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1.5 py-0.5 rounded">
-                                Soon
-                            </span>
-                        )}
                     </Link>
                 );
             })}

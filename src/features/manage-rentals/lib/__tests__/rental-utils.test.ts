@@ -167,10 +167,8 @@ describe('Rental Utils', () => {
         });
         it('should return correct buttons for "Returned" status', () => {
             const buttons = getActionButtons(RentalStatus.COMPLETED);
-            expect(buttons).toHaveLength(2);
-            expect(buttons[0].label).toBe('Receipt');
-            expect(buttons[0].icon).toBe('receipt');
-            expect(buttons[1].label).toBe('Book Again');
+            expect(buttons).toHaveLength(1);
+            expect(buttons[0].label).toBe('Book Again');
         });
         it('should return correct buttons for "Requested" status', () => {
             const buttons = getActionButtons(RentalStatus.REQUESTED);

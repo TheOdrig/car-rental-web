@@ -34,7 +34,6 @@ export { LateReturnStats } from './late-return-stats';
 export { PenaltyWaiveDialog } from './penalty-waive-dialog';
 export { PenaltyHistorySection } from './penalty-history-section';
 
-export { ComingSoonPlaceholder } from './coming-soon-placeholder';
 export { DetailPageSkeleton, CardSkeleton, TableSkeleton } from './detail-page-skeleton';
 export { DetailPageError } from './detail-page-error';
 

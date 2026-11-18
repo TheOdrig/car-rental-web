@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Edit, Headphones, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { cn, safeFormatDateTime, showToast } from '@/shared/lib';
+import { cn, safeFormatDateTime } from '@/shared/lib';
 import { useCancelRental } from '@/entities/rental';
 import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
 import type { Rental } from '@/entities/rental';
@@ -27,16 +27,12 @@ interface RentalDetailProps {
     onCancelSuccess?: () => void;
 }
 
-const SECONDARY_BUTTON_CLASS =
-    'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-white';
-
 export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetailProps) {
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const cancelMutation = useCancelRental();
 
     const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status } = rental;
     const canCancel = status === 'Requested';
-    const canModify = status === 'Requested' || status === 'Confirmed';
 
     const handleCancel = async () => {
         try {
@@ -60,24 +56,6 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 </div>
 
                 <div className="flex flex-wrap gap-2">
-                    <Button
-                        variant="outline"
-                        onClick={() => showToast.info('Support chat coming soon')}
-                        className={SECONDARY_BUTTON_CLASS}
-                    >
-                        <Headphones className="mr-2 h-4 w-4" aria-hidden="true" />
-                        Support
-                    </Button>
-                    {canModify && (
-                        <Button
-                            variant="outline"
-                            onClick={() => showToast.info('Modify dates feature coming soon')}
-                            className={SECONDARY_BUTTON_CLASS}
-                        >
-                            <Edit className="mr-2 h-4 w-4" aria-hidden="true" />
-                            Modify Dates
-                        </Button>
-                    )}
                     {canCancel && (
                         <Button
                             variant="outline"

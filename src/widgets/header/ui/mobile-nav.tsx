@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Car, Home, MapPin, Info, User, LogIn, UserPlus, LayoutDashboard, ClipboardList } from 'lucide-react';
+import { Car, Home, User, LogIn, UserPlus, LayoutDashboard, ClipboardList } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 import { Button } from '@/shared/ui/button';
 import {
@@ -24,8 +24,6 @@ interface MobileNavProps {
 const publicLinks = [
     { href: '/', label: 'Home', icon: Home },
     { href: '/cars', label: 'Browse Cars', icon: Car },
-    { href: '/locations', label: 'Locations', icon: MapPin },
-    { href: '/about', label: 'About', icon: Info },
 ];
 
 const userLinks = [

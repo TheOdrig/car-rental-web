@@ -2,10 +2,9 @@
 
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { CalendarDays, Car, Download, Wallet } from 'lucide-react';
+import { CalendarDays, Car, Wallet } from 'lucide-react';
 import { logger } from '@/shared/lib';
 import { useMyRentals, useCancelRental } from '@/entities/rental';
-import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import {
@@ -17,7 +16,6 @@ import {
 } from '@/features/manage-rentals';
 import type { RentalTab, Rental } from '@/entities/rental';
 import { getRentalsByTab, calculateTabCounts, calculateRentalStats } from '@/entities/rental';
-import { showToast } from '@/shared/lib';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -60,9 +58,6 @@ export default function MyRentalsPage() {
             case 'pay':
                 router.push(`/rentals/${rental.id}/pay`);
                 break;
-            case 'receipt':
-                showToast.info(`Downloading receipt for rental #${rental.id}`);
-                break;
             case 'book-again':
                 if (rental.carSummary?.id) {
                     router.push(`/cars/${rental.carSummary.id}`);
@@ -85,10 +80,6 @@ export default function MyRentalsPage() {
         }
     }, [rentalToCancel, cancelMutation]);
 
-    const handleExport = useCallback(() => {
-        showToast.info('Exporting rental history...');
-    }, []);
-
     if (error) {
         return (
             <div className="container py-8">
@@ -110,14 +101,6 @@ export default function MyRentalsPage() {
                             View and manage your rental history
                         </p>
                     </div>
-                    <Button
-                        variant="outline"
-                        className="hidden gap-2 md:flex bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
-                        onClick={handleExport}
-                    >
-                        <Download className="h-4 w-4" />
-                        Export History
-                    </Button>
                 </div>
 
                 <div className="mb-8">

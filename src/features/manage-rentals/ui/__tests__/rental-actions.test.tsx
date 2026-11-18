@@ -55,14 +55,14 @@ describe('RentalActions', () => {
             );
             expect(screen.getByRole('button', { name: /view details/i })).toBeInTheDocument();
         });
-        it('should render Receipt and Book Again for Returned status', () => {
+        it('should render only Book Again for Returned status', () => {
             render(
                 <RentalActions
                     rental={createMockRental(RentalStatus.COMPLETED)}
                     onAction={mockOnAction}
                 />
             );
-            expect(screen.getByRole('button', { name: /receipt/i })).toBeInTheDocument();
+            expect(screen.queryByRole('button', { name: /receipt/i })).not.toBeInTheDocument();
             expect(screen.getByRole('button', { name: /book again/i })).toBeInTheDocument();
         });
         it('should render View Details and Cancel for Requested status', () => {
@@ -107,8 +107,6 @@ describe('RentalActions', () => {
             const user = userEvent.setup();
             const rental = createMockRental(RentalStatus.COMPLETED);
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
-            await user.click(screen.getByRole('button', { name: /receipt/i }));
-            expect(mockOnAction).toHaveBeenCalledWith('receipt', rental);
             await user.click(screen.getByRole('button', { name: /book again/i }));
             expect(mockOnAction).toHaveBeenCalledWith('book-again', rental);
         });

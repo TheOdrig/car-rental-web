@@ -4,7 +4,7 @@ const ADMIN_PAGE_ROUTES = ['/admin'];
 const ADMIN_API_ROUTES = ['/api/admin'];
 const GUEST_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
 const AUTH_FLOW_ROUTES = ['/callback', '/reset-password'];
-const PUBLIC_ROUTES = ['/about', '/locations', '/search', '/cars', '/forbidden', '/api'];
+const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api'];
 
 function matches(pathname: string, route: string): boolean {
     return pathname === route || pathname.startsWith(`${route}/`);

@@ -7,7 +7,6 @@ describe('classifyRoute', () => {
         ['/cars', 'public'],
         ['/cars/12', 'public'],
         ['/search', 'public'],
-        ['/about', 'public'],
         ['/forbidden', 'public'],
         ['/api/cars', 'public'],
         ['/api/auth/login', 'public'],

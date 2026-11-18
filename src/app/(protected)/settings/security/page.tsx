@@ -3,13 +3,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, Eye, EyeOff, Shield, Smartphone } from 'lucide-react';
+import { Loader2, Eye, EyeOff, Shield } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Switch } from '@/shared/ui/switch';
-import { showToast } from '@/shared/lib';
 import { useChangePassword } from '@/features/auth';
 import {
     passwordChangeSchema,
@@ -21,7 +19,6 @@ export default function SecuritySettingsPage() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
     const changePassword = useChangePassword();
 
@@ -44,15 +41,6 @@ export default function SecuritySettingsPage() {
             reset();
         } catch {
         }
-    };
-
-    const handleTwoFactorToggle = (enabled: boolean) => {
-        setTwoFactorEnabled(enabled);
-        showToast.info(
-            enabled
-                ? 'Two-factor authentication feature coming soon'
-                : 'Two-factor authentication disabled'
-        );
     };
 
     return (
@@ -172,36 +160,6 @@ export default function SecuritySettingsPage() {
                             Update Password
                         </Button>
                     </form>
-                </CardContent>
-            </Card>
-
-            <Card>
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <Smartphone className="h-5 w-5" />
-                        Two-Factor Authentication
-                    </CardTitle>
-                    <CardDescription>
-                        Add an extra layer of security to your account
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center justify-between">
-                        <div>
-                            <p className="font-medium">Enable 2FA</p>
-                            <p className="text-sm text-muted-foreground">
-                                Use an authenticator app for additional security
-                            </p>
-                            <p className="mt-1 text-xs text-amber-600 dark:text-amber-400">
-                                This feature is coming soon
-                            </p>
-                        </div>
-                        <Switch
-                            checked={twoFactorEnabled}
-                            onCheckedChange={handleTwoFactorToggle}
-                            disabled
-                        />
-                    </div>
                 </CardContent>
             </Card>
         </div>

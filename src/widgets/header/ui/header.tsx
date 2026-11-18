@@ -69,12 +69,6 @@ export function Header() {
                     <Link href="/cars" className="transition-colors hover:text-primary">
                         Browse Cars
                     </Link>
-                    <Link href="/locations" className="text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100">
-                        Locations
-                    </Link>
-                    <Link href="/about" className="text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100">
-                        About
-                    </Link>
                 </nav>
 
                 <div className="flex items-center gap-2">

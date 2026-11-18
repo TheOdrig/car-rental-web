@@ -9,7 +9,7 @@ import { Breadcrumb } from '@/shared/ui';
 import {
     DetailPageSkeleton,
     DetailPageError,
-    ComingSoonPlaceholder,
+    CustomerDamageHistory,
 } from '@/features/admin';
 import {
     CustomerDetailInfoCard,
@@ -179,16 +179,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
             <CustomerRentalHistoryTable customerId={customerId} />
 
 
-            <ComingSoonPlaceholder
-                title="Customer Damage History"
-                description="A dedicated damage history view for customers will be available in a future update. Click 'View Damages' above to see all damage reports for this customer."
-            />
-
-
-            <ComingSoonPlaceholder
-                title="Payment History"
-                description="Payment history will be available in a future update. Track payment methods, transaction history, and refunds."
-            />
+            <CustomerDamageHistory userId={customerId} maxItems={5} />
 
 
             <CustomerNotesCard

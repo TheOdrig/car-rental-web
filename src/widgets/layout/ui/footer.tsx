@@ -2,19 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const footerLinks = {
-    explore: [
-        { label: 'Browse Cars', href: '/cars' },
-        { label: 'Locations', href: '/locations' },
-        { label: 'About Us', href: '/about' },
-    ],
-    support: [
-        { label: 'Contact Us', href: '/contact', comingSoon: true },
-        { label: 'FAQs', href: '/faq', comingSoon: true },
-    ],
-    legal: [
-        { label: 'Terms of Service', href: '/terms', comingSoon: true },
-        { label: 'Privacy Policy', href: '/privacy', comingSoon: true },
-    ],
+    explore: [{ label: 'Browse Cars', href: '/cars' }],
 };
 
 export function Footer() {
@@ -23,8 +11,8 @@ export function Footer() {
     return (
         <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             <div className="container py-12 md:py-16">
-                <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
-                    <div className="col-span-2 md:col-span-1">
+                <div className="grid grid-cols-2 gap-8">
+                    <div>
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                             <Image
                                 src="/images/logo.svg"
@@ -56,37 +44,6 @@ export function Footer() {
                         </ul>
                     </div>
 
-                    <div>
-                        <h3 className="font-semibold mb-4">Support</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.support.map((link) => (
-                                <li key={link.href} className="flex items-center gap-2">
-                                    <span className="text-sm text-slate-400 dark:text-slate-500 cursor-not-allowed">
-                                        {link.label}
-                                    </span>
-                                    <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1 py-0.5 rounded">
-                                        Soon
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div>
-                        <h3 className="font-semibold mb-4">Legal</h3>
-                        <ul className="space-y-3">
-                            {footerLinks.legal.map((link) => (
-                                <li key={link.href} className="flex items-center gap-2">
-                                    <span className="text-sm text-slate-400 dark:text-slate-500 cursor-not-allowed">
-                                        {link.label}
-                                    </span>
-                                    <span className="text-[9px] font-semibold uppercase tracking-wider bg-amber-500/20 text-amber-600 dark:text-amber-400 px-1 py-0.5 rounded">
-                                        Soon
-                                    </span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
                 </div>
 
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800 pt-8 md:flex-row">
