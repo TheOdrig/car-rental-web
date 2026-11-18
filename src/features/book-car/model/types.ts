@@ -7,11 +7,6 @@ export interface CheckoutFormData {
     lastName: string;
     email: string;
     phone: string;
-    cardNumber: string;
-    expiryDate: string;
-    cvc: string;
-    cardholderName: string;
-    addons: string[];
 }
 
 export interface Addon {
@@ -34,20 +29,11 @@ export interface PriceBreakdown {
     rentalDays: number;
     dailyRate: number;
     originalDailyRate?: number;
-    rentalCost: number;
-    taxesAndFees: number;
-    addonsCost: number;
-    addonsDetail: AddonCostDetail[];
     total: number;
     originalTotal?: number;
     totalSavings?: number;
     appliedDiscounts?: DiscountDetail[];
     currency: CurrencyType;
-}
-
-export interface AddonCostDetail {
-    name: string;
-    cost: number;
 }
 
 export interface BookingConfirmation {
@@ -88,27 +74,12 @@ export interface BookingPaymentInfo {
     last4: string;
 }
 
-export interface PaymentError {
-    code: PaymentErrorCode;
-    message: string;
-    details?: string;
-}
-
-export type PaymentErrorCode =
-    | 'card_declined'
-    | 'insufficient_funds'
-    | 'expired_card'
-    | 'invalid_cvc'
-    | 'processing_error'
-    | 'timeout';
-
 export interface CreateBookingRequest {
     carId: number;
     startDate: string;
     endDate: string;
     pickupLocation: string;
     dropoffLocation: string;
-    addons: string[];
     firstName: string;
     lastName: string;
     email: string;

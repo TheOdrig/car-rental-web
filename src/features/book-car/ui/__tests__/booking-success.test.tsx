@@ -11,9 +11,9 @@ describe('BookingSuccess', () => {
     const defaultProps = {
         referenceNumber: 'ABC12345',
     };
-    it('should display booking confirmed heading', () => {
+    it('should display booking requested heading', () => {
         render(<BookingSuccess {...defaultProps} />);
-        expect(screen.getByText('Booking Confirmed!')).toBeInTheDocument();
+        expect(screen.getByText('Booking Requested!')).toBeInTheDocument();
     });
     it('should display booking reference number', () => {
         render(<BookingSuccess {...defaultProps} />);
@@ -43,14 +43,14 @@ describe('BookingSuccess', () => {
         render(<BookingSuccess {...defaultProps} pickupLocation="Airport Terminal" />);
         expect(screen.getByText('Airport Terminal')).toBeInTheDocument();
     });
-    it('should display total paid when provided', () => {
-        render(<BookingSuccess {...defaultProps} totalPaid={299.99} />);
-        expect(screen.getByText('$299.99 USD')).toBeInTheDocument();
+    it('should not claim any payment was made', () => {
+        render(<BookingSuccess {...defaultProps} />);
+        expect(screen.queryByText(/total paid/i)).not.toBeInTheDocument();
     });
     it('should display what\'s next section', () => {
         render(<BookingSuccess {...defaultProps} />);
         expect(screen.getByText("What's Next?")).toBeInTheDocument();
-        expect(screen.getByText(/confirmation email/i)).toBeInTheDocument();
+        expect(screen.getByText(/Once it is confirmed, pay for it/i)).toBeInTheDocument();
     });
     it('should have View Booking Details button', () => {
         render(<BookingSuccess {...defaultProps} />);

@@ -104,25 +104,10 @@ export function BookingSummary({
                                 {priceBreakdown.rentalDays === 1 ? 'day' : 'days'})
                             </span>
                             <span className="font-medium tabular-nums">
-                                {formatPrice(priceBreakdown.rentalCost, sourceCurrency)}
+                                {formatPrice(priceBreakdown.originalTotal ?? priceBreakdown.total, sourceCurrency)}
                             </span>
                         </div>
 
-                        <div className="flex justify-between text-muted-foreground">
-                            <span>Taxes & Fees</span>
-                            <span className="font-medium tabular-nums">
-                                {formatPrice(priceBreakdown.taxesAndFees, sourceCurrency)}
-                            </span>
-                        </div>
-
-                        {priceBreakdown.addonsDetail.map((addon, index) => (
-                            <div key={index} className="flex justify-between text-primary">
-                                <span>{addon.name}</span>
-                                <span className="font-medium tabular-nums">
-                                    +{formatPrice(addon.cost, sourceCurrency)}
-                                </span>
-                            </div>
-                        ))}
                     </div>
 
                     <div className="h-px bg-border my-4" />
@@ -179,7 +164,7 @@ export function BookingSummary({
                                 )}
                             </span>
                             <p className="text-xs text-slate-500 dark:text-slate-400">
-                                {priceBreakdown.currency}, includes all taxes
+                                {priceBreakdown.currency}, price from the rental pricing service
                             </p>
                         </div>
                     </div>
@@ -216,7 +201,7 @@ export function BookingSummary({
                             </span>
                         ) : (
                             <span className="flex items-center gap-2">
-                                Confirm & Pay
+                                Request Booking
                                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                         )}
@@ -224,7 +209,7 @@ export function BookingSummary({
 
                     <div className="mt-4 flex justify-center items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
                         <Lock className="h-4 w-4" />
-                        SSL Secure Transaction
+                        No payment now: pay after confirmation (Stripe test mode demo)
                     </div>
                 </div>
             </div>

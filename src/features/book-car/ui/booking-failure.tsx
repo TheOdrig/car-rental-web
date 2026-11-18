@@ -1,32 +1,20 @@
 'use client';
 
-import { XCircle, RefreshCw, CreditCard, Headphones, ArrowLeft } from 'lucide-react';
+import { XCircle, RefreshCw, Headphones, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 interface BookingFailureProps {
     errorMessage?: string;
-    errorCode?: string;
 }
 
-const ERROR_MESSAGES: Record<string, string> = {
-    card_declined: 'Your card was declined. Please check your card details or try a different card.',
-    insufficient_funds: 'The transaction was declined due to insufficient funds.',
-    expired_card: 'This card has expired. Please use a different card.',
-    invalid_cvc: 'The security code (CVC) is invalid. Please check and try again.',
-    processing_error: 'There was an error processing your payment. Please try again.',
-    timeout: 'The payment request timed out. Please try again.',
-    default: 'We were unable to process your payment. Please try again or use a different payment method.',
-};
+const DEFAULT_MESSAGE = 'We were unable to submit your booking request. Please try again.';
 
-export function BookingFailure({
-    errorMessage,
-    errorCode,
-}: BookingFailureProps) {
+export function BookingFailure({ errorMessage }: BookingFailureProps) {
     const router = useRouter();
 
-    const displayMessage = errorMessage || ERROR_MESSAGES[errorCode || 'default'] || ERROR_MESSAGES.default;
+    const displayMessage = errorMessage || DEFAULT_MESSAGE;
 
     const handleTryAgain = () => {
         router.back();
@@ -40,7 +28,7 @@ export function BookingFailure({
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6">
                             <XCircle className="h-12 w-12" />
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Payment Failed</h1>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking Failed</h1>
                         <p className="text-red-100 text-lg">We couldn&apos;t complete your booking.</p>
                     </div>
 
@@ -59,16 +47,6 @@ export function BookingFailure({
                             >
                                 <RefreshCw className="h-5 w-5 mr-2" />
                                 Try Again
-                            </Button>
-
-                            <Button
-                                variant="outline"
-                                onClick={handleTryAgain}
-                                className="w-full"
-                                size="lg"
-                            >
-                                <CreditCard className="h-5 w-5 mr-2" />
-                                Use Different Card
                             </Button>
 
                             <Button

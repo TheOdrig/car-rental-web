@@ -1,18 +1,17 @@
 'use client';
 
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { clientPost } from '@/shared/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useCar } from '@/entities/car';
+import { parseLocalDate } from '@/entities/rental';
 import { usePricingPreview } from '@/entities/car';
 import { useCurrentUser } from '@/entities/user';
 import { checkoutFormSchema, type CheckoutFormSchema } from '@/features/book-car';
-import { calculatePriceBreakdown, calculateRentalDays, DEFAULT_ADDONS, getBookingErrorMessage } from '@/features/book-car';
+import { calculateRentalDays, getBookingErrorMessage } from '@/features/book-car';
 import { PersonalDetails } from './personal-details';
-import { PaymentForm } from './payment-form';
-import { ProtectionExtras } from './protection-extras';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
 import type { DiscountDetail, PriceBreakdown } from '@/features/book-car';
@@ -42,7 +41,6 @@ export function CheckoutForm({
         endDate
     );
 
-    const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     const form = useForm<CheckoutFormSchema>({
@@ -52,20 +50,9 @@ export function CheckoutForm({
             lastName: user?.lastName || '',
             email: user?.email || '',
             phone: '',
-            cardNumber: '',
-            expiryDate: '',
-            cvc: '',
-            cardholderName: '',
-            addons: [],
         },
         mode: 'onChange',
     });
-
-    const handleAddonChange = useCallback((addonId: string, selected: boolean) => {
-        setSelectedAddons((prev) =>
-            selected ? [...prev, addonId] : prev.filter((id) => id !== addonId)
-        );
-    }, []);
 
     const onSubmit = async (data: CheckoutFormSchema) => {
         setIsSubmitting(true);
@@ -77,7 +64,6 @@ export function CheckoutForm({
                 endDate,
                 pickupLocation,
                 dropoffLocation: dropoffLocation || pickupLocation,
-                addons: selectedAddons,
                 firstName: data.firstName,
                 lastName: data.lastName,
                 email: data.email,
@@ -86,7 +72,7 @@ export function CheckoutForm({
             router.push(`/booking/success?ref=${booking.id}`);
         } catch (error) {
             const message = getBookingErrorMessage(error);
-            router.push(`/booking/failure?error=${encodeURIComponent(message || 'Payment failed')}`);
+            router.push(`/booking/failure?error=${encodeURIComponent(message || 'Booking failed')}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -95,12 +81,9 @@ export function CheckoutForm({
     const car = ((carData as unknown as { car?: Car })?.car || carData) as Car | undefined;
 
     const rentalDays = useMemo(() => {
-        return calculateRentalDays(new Date(startDate), new Date(endDate));
-    }, [startDate, endDate]);
-
-    const selectedAddonObjects = useMemo(() => {
-        return DEFAULT_ADDONS.filter((addon) => selectedAddons.includes(addon.id));
-    }, [selectedAddons]);
+        if (pricingData?.rentalDays) return pricingData.rentalDays;
+        return calculateRentalDays(parseLocalDate(startDate) ?? new Date(startDate), parseLocalDate(endDate) ?? new Date(endDate));
+    }, [pricingData?.rentalDays, startDate, endDate]);
 
     const appliedDiscounts: DiscountDetail[] = useMemo(() => {
         if (!pricingData?.appliedModifiers) return [];
@@ -115,28 +98,20 @@ export function CheckoutForm({
     const priceBreakdown: PriceBreakdown | null = useMemo(() => {
         if (!car) return null;
 
-        const effectiveDailyRate = pricingData?.effectiveDailyPrice ?? car.price;
-        const baseDailyRate = pricingData?.basePrice ?? car.price;
-
-        const base = calculatePriceBreakdown(
-            effectiveDailyRate,
-            rentalDays,
-            selectedAddonObjects,
-            car.currencyType
-        );
-
-        const originalTotal = pricingData
-            ? baseDailyRate * rentalDays + base.addonsCost + (baseDailyRate * rentalDays + base.addonsCost) * 0.12
-            : undefined;
+        const dailyRate = pricingData?.effectiveDailyPrice ?? car.price;
+        const total = pricingData?.finalPrice ?? dailyRate * rentalDays;
 
         return {
-            ...base,
-            originalDailyRate: pricingData ? baseDailyRate : undefined,
-            originalTotal: originalTotal ? Math.round(originalTotal * 100) / 100 : undefined,
+            rentalDays,
+            dailyRate,
+            total,
+            currency: car.currencyType,
+            originalDailyRate: pricingData?.basePrice,
+            originalTotal: pricingData?.baseTotalPrice,
             totalSavings: pricingData?.totalSavings,
             appliedDiscounts: appliedDiscounts.length > 0 ? appliedDiscounts : undefined,
         };
-    }, [car, pricingData, rentalDays, selectedAddonObjects, appliedDiscounts]);
+    }, [car, pricingData, rentalDays, appliedDiscounts]);
 
     if (carLoading) {
         return <CheckoutSkeleton />;
@@ -163,17 +138,6 @@ export function CheckoutForm({
                         isLoggedIn={!!user}
                     />
 
-                    <PaymentForm
-                        control={form.control}
-                        errors={form.formState.errors}
-                    />
-
-                    <ProtectionExtras
-                        addons={DEFAULT_ADDONS}
-                        selectedAddons={selectedAddons}
-                        onAddonChange={handleAddonChange}
-                        rentalDays={rentalDays}
-                    />
                 </div>
 
                 <div className="lg:col-span-5 xl:col-span-4">

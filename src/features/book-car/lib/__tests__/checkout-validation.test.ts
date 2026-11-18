@@ -1,11 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
     personalDetailsSchema,
-    paymentFormSchema,
-    addonsSchema,
     checkoutFormSchema,
-    createCVCSchema,
-    validateCheckoutForm,
     CheckoutValidationMessages,
 } from '@/features/book-car';
 import { createMockCheckoutFormData } from '@/features/book-car/testing/factories';
@@ -83,92 +79,6 @@ describe('checkout validation schemas', () => {
             expect(result.success).toBe(true);
         });
     });
-    describe('paymentFormSchema', () => {
-        it('should validate correct payment details', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/29',
-                cvc: '123',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(true);
-        });
-        it('should reject invalid card number', () => {
-            const data = {
-                cardNumber: '1234 5678 9012 3456',
-                expiryDate: '12/25',
-                cvc: '123',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-        it('should reject expired card', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '01/20',
-                cvc: '123',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-        it('should reject wrong expiry format', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12-25',
-                cvc: '123',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-        it('should reject too short CVC', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/29',
-                cvc: '12',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-        it('should reject CVC with letters', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/29',
-                cvc: '12A',
-                cardholderName: 'JOHN DOE',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-        it('should reject empty cardholder name', () => {
-            const data = {
-                cardNumber: '4111 1111 1111 1111',
-                expiryDate: '12/29',
-                cvc: '123',
-                cardholderName: '',
-            };
-            const result = paymentFormSchema.safeParse(data);
-            expect(result.success).toBe(false);
-        });
-    });
-    describe('addonsSchema', () => {
-        it('should validate empty addons array', () => {
-            const result = addonsSchema.safeParse({ addons: [] });
-            expect(result.success).toBe(true);
-        });
-        it('should validate addons with string IDs', () => {
-            const result = addonsSchema.safeParse({ addons: ['cdw', 'gps'] });
-            expect(result.success).toBe(true);
-        });
-        it('should reject missing addons field', () => {
-            const result = addonsSchema.safeParse({});
-            expect(result.success).toBe(false);
-        });
-    });
     describe('checkoutFormSchema', () => {
         it('should validate complete checkout form', () => {
             const data = createMockCheckoutFormData();
@@ -184,56 +94,20 @@ describe('checkout validation schemas', () => {
             expect(result.success).toBe(false);
         });
     });
-    describe('createCVCSchema', () => {
-        it('should create schema for 3-digit CVC', () => {
-            const schema = createCVCSchema('visa');
-            expect(schema.safeParse('123').success).toBe(true);
-            expect(schema.safeParse('1234').success).toBe(false);
-        });
-        it('should create schema for 4-digit CVC for Amex', () => {
-            const schema = createCVCSchema('amex');
-            expect(schema.safeParse('1234').success).toBe(true);
-            expect(schema.safeParse('123').success).toBe(false);
-        });
-    });
-    describe('validateCheckoutForm', () => {
-        it('should validate form with dynamic CVC check for Visa', () => {
-            const data = createMockCheckoutFormData({ cvc: '123' });
-            const result = validateCheckoutForm(data, '4111111111111111');
-            expect(result.success).toBe(true);
-        });
-        it('should validate form with dynamic CVC check for Amex', () => {
-            const data = createMockCheckoutFormData({
-                cardNumber: '341111111111111',
-                cvc: '1234',
-            });
-            const result = validateCheckoutForm(data, '341111111111111');
-            expect(result.success).toBe(true);
-        });
-        it('should reject wrong CVC length for Amex', () => {
-            const data = createMockCheckoutFormData({
-                cardNumber: '341111111111111',
-                cvc: '123',
-            });
-            const result = validateCheckoutForm(data, '341111111111111');
-            expect(result.success).toBe(false);
-        });
-    });
     describe('CheckoutValidationMessages', () => {
         it('should have all required message keys', () => {
             expect(CheckoutValidationMessages.firstName).toBeDefined();
             expect(CheckoutValidationMessages.lastName).toBeDefined();
             expect(CheckoutValidationMessages.email).toBeDefined();
             expect(CheckoutValidationMessages.phone).toBeDefined();
-            expect(CheckoutValidationMessages.cardNumber).toBeDefined();
-            expect(CheckoutValidationMessages.expiryDate).toBeDefined();
-            expect(CheckoutValidationMessages.cvc).toBeDefined();
-            expect(CheckoutValidationMessages.cardholderName).toBeDefined();
+        });
+        it('should not collect card details', () => {
+            expect(Object.keys(CheckoutValidationMessages)).toEqual(['firstName', 'lastName', 'email', 'phone']);
+            expect(Object.keys(checkoutFormSchema.shape)).toEqual(['firstName', 'lastName', 'email', 'phone']);
         });
         it('should have required and invalid messages for each field', () => {
             expect(CheckoutValidationMessages.firstName.required).toBeDefined();
             expect(CheckoutValidationMessages.email.invalid).toBeDefined();
-            expect(CheckoutValidationMessages.cardNumber.invalid).toBeDefined();
         });
     });
 });

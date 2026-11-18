@@ -86,7 +86,6 @@ function renderWithProviders(component: React.ReactElement) {
     );
 }
 describe('Checkout Flow Integration', () => {
-    const user = userEvent.setup();
     beforeEach(() => {
         mockPush.mockClear();
         mockBack.mockClear();
@@ -102,52 +101,39 @@ describe('Checkout Flow Integration', () => {
         it('should render all checkout sections', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
             expect(screen.getByText('Personal Details')).toBeInTheDocument();
-            expect(screen.getByText('Payment Method')).toBeInTheDocument();
-            expect(screen.getByText('Protection & Extras')).toBeInTheDocument();
         });
         it('should render booking summary with car info', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
             expect(screen.getByText('BMW 3 Series')).toBeInTheDocument();
         });
-        it('should render Confirm & Pay button', () => {
+        it('should render Request Booking button', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            expect(screen.getByRole('button', { name: /confirm & pay/i })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /request booking/i })).toBeInTheDocument();
         });
     });
-    describe('Form Input Formatting', () => {
-        it('should format card number with spaces', async () => {
+    describe('Price from the API', () => {
+        it('should show the rental days and total from the pricing preview', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            const cardInput = screen.getByLabelText(/card number/i);
-            await user.type(cardInput, '4111111111111111');
-            expect(cardInput).toHaveValue('4111 1111 1111 1111');
+            expect(screen.getByText(/Car Rental/)).toHaveTextContent(/3 days/);
+            expect(screen.getAllByText(/300/).length).toBeGreaterThan(0);
         });
-        it('should format expiry date as MM/YY', async () => {
+        it('should not add taxes and fees on the client', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            const expiryInput = screen.getByLabelText(/expiry/i);
-            await user.type(expiryInput, '1225');
-            expect(expiryInput).toHaveValue('12/25');
-        });
-        it('should limit CVC to 3 digits', async () => {
-            renderWithProviders(<CheckoutForm {...defaultProps} />);
-            const cvcInput = screen.getByLabelText(/cvc/i);
-            await user.type(cvcInput, '12345');
-            expect(cvcInput).toHaveValue('123');
+            expect(screen.queryByText(/taxes/i)).not.toBeInTheDocument();
+            expect(screen.queryByText(/336/)).not.toBeInTheDocument();
         });
     });
-    describe('Addon Selection', () => {
-        it('should display addon options', () => {
+    describe('No fake payment', () => {
+        it('should not render any card fields or extras', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            expect(screen.getByText('Collision Damage Waiver')).toBeInTheDocument();
-            expect(screen.getByText('GPS Navigation System')).toBeInTheDocument();
+            expect(screen.queryByLabelText(/card number/i)).not.toBeInTheDocument();
+            expect(screen.queryByLabelText(/cvc/i)).not.toBeInTheDocument();
+            expect(screen.queryByText('Payment Method')).not.toBeInTheDocument();
+            expect(screen.queryByText('Protection & Extras')).not.toBeInTheDocument();
         });
-        it.skip('should toggle addon selection', async () => {
+        it('should explain that payment happens after confirmation', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            const cdwCheckbox = screen.getByRole('checkbox', { name: /collision damage waiver/i });
-            expect(cdwCheckbox).not.toBeChecked();
-            await user.click(cdwCheckbox);
-            expect(cdwCheckbox).toBeChecked();
-            await user.click(cdwCheckbox);
-            expect(cdwCheckbox).not.toBeChecked();
+            expect(screen.getByText(/pay after confirmation/i)).toBeInTheDocument();
         });
     });
 });
@@ -159,13 +145,13 @@ describe('Success/Failure Pages', () => {
     it('should display success confirmation', async () => {
         const { BookingSuccess } = await import('@/features/book-car');
         render(<BookingSuccess referenceNumber="ABC12345" />);
-        expect(screen.getByText('Booking Confirmed!')).toBeInTheDocument();
+        expect(screen.getByText('Booking Requested!')).toBeInTheDocument();
         expect(screen.getByText('ABC12345')).toBeInTheDocument();
     });
     it('should display failure message', async () => {
         const { BookingFailure } = await import('@/features/book-car');
         render(<BookingFailure errorMessage="Your card was declined" />);
-        expect(screen.getByText('Payment Failed')).toBeInTheDocument();
+        expect(screen.getByText('Booking Failed')).toBeInTheDocument();
         expect(screen.getByText('Your card was declined')).toBeInTheDocument();
     });
     it('should navigate back on Try Again click', async () => {

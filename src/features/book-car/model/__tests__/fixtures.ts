@@ -6,7 +6,6 @@ export const createMockBookingRequest = (overrides = {}): CreateBookingRequest =
     endDate: '2025-02-05T00:00:00Z',
     pickupLocation: 'Downtown Office',
     dropoffLocation: 'Airport',
-    addons: [],
     firstName: 'John',
     lastName: 'Doe',
     email: 'john@example.com',

@@ -13,35 +13,27 @@ describe('BookingFailure', () => {
     beforeEach(() => {
         mockBack.mockClear();
     });
-    it('should display payment failed heading', () => {
+    it('should display booking failed heading', () => {
         render(<BookingFailure />);
-        expect(screen.getByText('Payment Failed')).toBeInTheDocument();
+        expect(screen.getByText('Booking Failed')).toBeInTheDocument();
     });
     it('should display custom error message when provided', () => {
         render(<BookingFailure errorMessage="Your card was declined" />);
         expect(screen.getByText('Your card was declined')).toBeInTheDocument();
     });
-    it('should display error message based on error code', () => {
-        render(<BookingFailure errorCode="insufficient_funds" />);
-        expect(
-            screen.getByText(/declined due to insufficient funds/i)
-        ).toBeInTheDocument();
-    });
     it('should display default error message when no error provided', () => {
         render(<BookingFailure />);
         expect(
-            screen.getByText(/unable to process your payment/i)
+            screen.getByText(/unable to submit your booking request/i)
         ).toBeInTheDocument();
     });
     it('should have Try Again button', () => {
         render(<BookingFailure />);
         expect(screen.getByRole('button', { name: /try again/i })).toBeInTheDocument();
     });
-    it('should have Use Different Card button', () => {
+    it('should not offer a different card', () => {
         render(<BookingFailure />);
-        expect(
-            screen.getByRole('button', { name: /use different card/i })
-        ).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /different card/i })).not.toBeInTheDocument();
     });
     it('should have Browse Other Cars link', () => {
         render(<BookingFailure />);

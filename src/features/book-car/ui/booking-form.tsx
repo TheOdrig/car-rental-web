@@ -58,7 +58,6 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
                 endDate,
                 pickupLocation: 'Default Location',
                 dropoffLocation: 'Default Location',
-                addons: [],
                 firstName: '',
                 lastName: '',
                 email: '',

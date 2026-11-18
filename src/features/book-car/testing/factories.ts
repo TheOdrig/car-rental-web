@@ -23,11 +23,7 @@ export function createMockPriceBreakdown(overrides?: Partial<PriceBreakdown>): P
     return {
         rentalDays: 3,
         dailyRate: 100,
-        rentalCost: 300,
-        taxesAndFees: 36,
-        addonsCost: 45,
-        addonsDetail: [{ name: 'CDW', cost: 45 }],
-        total: 381,
+        total: 300,
         currency: 'USD',
         ...overrides,
     };
@@ -39,11 +35,6 @@ export function createMockCheckoutFormData(overrides?: Partial<CheckoutFormData>
         lastName: 'Doe',
         email: 'john.doe@example.com',
         phone: '+1 555 123 4567',
-        cardNumber: '4111 1111 1111 1111',
-        expiryDate: '12/29',
-        cvc: '123',
-        cardholderName: 'JOHN DOE',
-        addons: [],
         ...overrides,
     };
 }

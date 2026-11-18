@@ -7,15 +7,12 @@ export type {
     Addon,
     DiscountDetail,
     PriceBreakdown,
-    AddonCostDetail,
     BookingConfirmation,
     BookingStatus,
     BookingCarInfo,
     BookingDates,
     BookingLocations,
     BookingPaymentInfo,
-    PaymentError,
-    PaymentErrorCode,
     CreateBookingRequest,
     CheckoutSearchParams,
 } from './model/types';
@@ -33,8 +30,6 @@ export {
     CheckoutForm,
     CheckoutSkeleton,
     PersonalDetails,
-    PaymentForm,
-    ProtectionExtras,
     BookingSummary
 } from './ui/checkout';
 

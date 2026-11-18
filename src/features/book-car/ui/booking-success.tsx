@@ -19,8 +19,6 @@ interface BookingSuccessProps {
     startDate?: Date;
     endDate?: Date;
     pickupLocation?: string;
-    totalPaid?: number;
-    currency?: string;
 }
 
 export function BookingSuccess({
@@ -29,8 +27,6 @@ export function BookingSuccess({
     startDate,
     endDate,
     pickupLocation = 'Main Office',
-    totalPaid,
-    currency = 'USD',
 }: BookingSuccessProps) {
     const formattedRef = formatBookingReference(referenceNumber);
     const handlePrint = () => {
@@ -45,8 +41,8 @@ export function BookingSuccess({
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 animate-[bounce_1s_ease-in-out]">
                             <CheckCircle className="h-12 w-12" />
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking Confirmed!</h1>
-                        <p className="text-green-100 text-lg">Your car rental has been successfully booked.</p>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking Requested!</h1>
+                        <p className="text-green-100 text-lg">Your rental request has been submitted and is waiting for confirmation.</p>
                     </div>
 
                     <div className="px-8 py-8 space-y-8">
@@ -94,19 +90,6 @@ export function BookingSuccess({
                                 </div>
                             </div>
 
-                            {totalPaid && (
-                                <div className="flex items-start gap-3">
-                                    <div className="p-2 bg-green-100 dark:bg-green-950 rounded-lg">
-                                        <CheckCircle className="h-5 w-5 text-green-600 dark:text-green-400" />
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-slate-600 dark:text-slate-400">Total Paid</p>
-                                        <p className="font-bold text-xl text-green-600 dark:text-green-400">
-                                            ${totalPaid.toFixed(2)} {currency}
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
                         </div>
 
                         <div className="bg-blue-50 dark:bg-blue-950/50 rounded-xl p-6">
@@ -118,13 +101,13 @@ export function BookingSuccess({
                                 <li className="flex items-start gap-3">
                                     <Mail className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                                     <span className="text-slate-600 dark:text-slate-400">
-                                        A confirmation email has been sent to your registered email address with all booking details.
+                                        An administrator reviews your request. Once it is confirmed, pay for it from your rental page. Payments run in Stripe test mode: this is a demo.
                                     </span>
                                 </li>
                                 <li className="flex items-start gap-3">
                                     <MapPin className="h-5 w-5 text-blue-600 dark:text-blue-400 shrink-0 mt-0.5" />
                                     <span className="text-muted-foreground">
-                                        Arrive at the pickup location with your booking reference and a valid driver&apos;s license.
+                                        Your card is held when you pay and charged at pickup. Bring your booking reference and a valid driver&apos;s license.
                                     </span>
                                 </li>
                                 <li className="flex items-start gap-3">

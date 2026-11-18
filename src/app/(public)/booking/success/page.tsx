@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { BookingSuccess } from '@/features/book-car';
 
 export const metadata: Metadata = {
-    title: 'Booking Confirmed | Car Rental',
-    description: 'Your car rental booking has been successfully confirmed.',
+    title: 'Booking Requested | Car Rental',
+    description: 'Your car rental request has been submitted and awaits confirmation.',
 };
 
 interface SuccessPageProps {
@@ -13,7 +13,6 @@ interface SuccessPageProps {
         start?: string;
         end?: string;
         location?: string;
-        total?: string;
     }>;
 }
 
@@ -25,7 +24,6 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
         start,
         end,
         location,
-        total,
     } = params;
 
     return (
@@ -36,7 +34,6 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
                 startDate={start ? new Date(start) : undefined}
                 endDate={end ? new Date(end) : undefined}
                 pickupLocation={location}
-                totalPaid={total ? parseFloat(total) : undefined}
             />
         </main>
     );
