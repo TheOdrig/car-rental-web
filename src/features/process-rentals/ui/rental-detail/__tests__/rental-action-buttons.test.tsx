@@ -36,3 +36,18 @@ describe('RentalActionButtons pickup payment hint', () => {
         expect(onCancel).toHaveBeenCalled();
     });
 });
+
+describe('RentalActionButtons pickup before start date', () => {
+    it('disables pickup and explains the start date rule', () => {
+        render(
+            <RentalActionButtons
+                status="CONFIRMED"
+                onPickup={vi.fn()}
+                pickupBlockedReason="Pickup can only be recorded from the rental start date."
+            />
+        );
+
+        expect(screen.getByRole('button', { name: /process pickup/i })).toBeDisabled();
+        expect(screen.getByTestId('pickup-payment-hint')).toHaveTextContent(/start date/);
+    });
+});

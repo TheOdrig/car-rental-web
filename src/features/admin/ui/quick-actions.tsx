@@ -11,6 +11,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Car, RotateCcw, CheckCircle, AlertTriangle, User } from 'lucide-react';
+import { isBeforeRentalStart } from '@/entities/rental';
 import type { PendingItem } from '@/features/admin';
 
 interface QuickActionsCardProps {
@@ -217,8 +218,10 @@ export const QuickActionsCard = memo(function QuickActionsCard({
         item: null,
     });
 
+    const startablePickups = pickupItems.filter((item) => !isBeforeRentalStart(item.startDate));
+
     const handleOpenDialog = (type: 'pickup' | 'return') => {
-        const items = type === 'pickup' ? pickupItems : returnItems;
+        const items = type === 'pickup' ? startablePickups : returnItems;
         if (items.length > 0) {
             setDialog({ open: true, type, item: items[0] });
         }
@@ -265,7 +268,7 @@ export const QuickActionsCard = memo(function QuickActionsCard({
                                 icon={<Car className="h-5 w-5" />}
                                 count={pickupItems.length}
                                 onClick={() => handleOpenDialog('pickup')}
-                                disabled={actionInProgress !== null}
+                                disabled={actionInProgress !== null || startablePickups.length === 0}
                             />
                             <QuickActionButton
                                 label="Pending Returns"

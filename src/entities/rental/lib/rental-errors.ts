@@ -32,6 +32,16 @@ export const PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE =
 export const ADMIN_CAR_NOT_AVAILABLE_MESSAGE =
     'The car cannot be handed over: it is in maintenance or still out on another rental. Resolve the car status or the other rental first.';
 
+export const PICKUP_BEFORE_START_MESSAGE = 'Pickup can only be recorded from the rental start date.';
+
+export function isBeforeRentalStart(startDate: string | undefined, now: Date = new Date()): boolean {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(startDate ?? '');
+    if (!match) return false;
+    const start = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return today < start;
+}
+
 const RENTAL_DATE_FIELDS = ['startDate', 'endDate'] as const;
 
 export function getRentalValidationMessage(error: unknown): string | null {
@@ -112,6 +122,9 @@ export function getAdminActionErrorMessage(error: unknown): string {
     if (isApiError(error)) {
         if (error.code === CAR_NOT_AVAILABLE_CODE || error.code === CAR_DATES_UNAVAILABLE_CODE) {
             return ADMIN_CAR_NOT_AVAILABLE_MESSAGE;
+        }
+        if (error.status === 400 && error.code === RENTAL_VALIDATION_FAILED_CODE && error.message) {
+            return error.message;
         }
         if (error.code === PAYMENT_NOT_AUTHORIZED_CODE || error.code === PAYMENT_NOT_FOUND_CODE) {
             return PICKUP_PAYMENT_REQUIRED_MESSAGE;

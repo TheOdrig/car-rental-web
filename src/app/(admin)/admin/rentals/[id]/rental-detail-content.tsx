@@ -23,7 +23,7 @@ import {
     useProcessReturn,
 } from '@/features/process-rentals';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
-import { PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
+import { isBeforeRentalStart, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
 
 export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
@@ -143,9 +143,13 @@ export function RentalDetailContent({ id }: { id: string }) {
     };
 
     const pickupBlockedReason =
-        rental.status === 'CONFIRMED' && !paymentQuery.isLoading && !isPaymentSecured(paymentQuery.data?.status)
-            ? PICKUP_PAYMENT_REQUIRED_MESSAGE
-            : undefined;
+        rental.status !== 'CONFIRMED'
+            ? undefined
+            : isBeforeRentalStart(rental.startDate)
+              ? PICKUP_BEFORE_START_MESSAGE
+              : !paymentQuery.isLoading && !isPaymentSecured(paymentQuery.data?.status)
+                ? PICKUP_PAYMENT_REQUIRED_MESSAGE
+                : undefined;
 
     const timelineEvents = rental.timeline.map((event, index) => ({
         ...event,
