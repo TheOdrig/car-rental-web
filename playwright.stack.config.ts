@@ -33,6 +33,7 @@ export default defineConfig({
                       process.env.E2E_JWT_SECRET ??
                       'dev-only-jwt-secret-do-not-use-outside-local-development-0123456789',
                   NEXT_PUBLIC_APP_URL: baseURL,
+                  TRUSTED_PROXY_HOPS: process.env.E2E_TRUSTED_PROXY_HOPS ?? '1',
               },
           },
 });
