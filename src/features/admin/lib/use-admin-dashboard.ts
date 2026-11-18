@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, type Schemas } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, type PendingFilters, type Schemas } from '@/shared/api';
+import { carKeys } from '@/entities/car';
 import { showToast } from '@/shared/lib';
 import type {
     DailySummary,
@@ -12,7 +13,6 @@ import type {
 } from '@/features/admin';
 import type { PageResponse } from '@/shared/types';
 import type { AlertVariant } from '../model/types';
-import { adminKeys, type PendingFilters } from './admin-keys';
 
 async function fetchDashboardSummary(): Promise<DailySummary> {
     return clientGet<DailySummary>('/api/admin/dashboard');
@@ -234,7 +234,7 @@ export function useInvalidateAdmin() {
         summary: () => queryClient.refetchQueries({ queryKey: adminKeys.summary() }),
         fleet: () => queryClient.refetchQueries({ queryKey: adminKeys.fleet() }),
         pending: () => queryClient.refetchQueries({ queryKey: adminKeys.pending() }),
-        cars: () => queryClient.refetchQueries({ queryKey: ['cars'] }),
+        cars: () => queryClient.refetchQueries({ queryKey: carKeys.all }),
         adminCars: () => queryClient.refetchQueries({ queryKey: adminKeys.cars() }),
     };
 }

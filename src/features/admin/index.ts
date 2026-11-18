@@ -27,8 +27,7 @@ export type {
 
 export * from './ui';
 
-export { adminKeys } from './lib/admin-keys';
-export type { PendingFilters, AdminCarsFilters } from './lib/admin-keys';
+export { adminKeys, type PendingFilters, type AdminCarsFilters } from '@/shared/api';
 
 export {
     useDashboardSummary,

@@ -18,14 +18,21 @@ export type FleetEventType = typeof FLEET_EVENTS[keyof typeof FLEET_EVENTS];
 
 
 
+export interface FleetCarSnapshot {
+    id: number;
+    brand: string;
+    model: string;
+    licensePlate: string;
+}
+
 export interface CarAddedPayload {
-    car: Car;
+    car: FleetCarSnapshot;
     addedBy?: string;
 }
 
 export interface CarUpdatedPayload {
     carId: number;
-    car: Car;
+    car: FleetCarSnapshot;
     updatedBy?: string;
     changes?: Partial<Car>;
 }

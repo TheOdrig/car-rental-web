@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
-import type { Car, CarStatus, VehicleDetailResponse } from '@/entities/car';
+import { carKeys, type Car, type CarStatus, type VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
@@ -228,12 +228,10 @@ export function useCreateCar() {
         onSuccess: (result) => {
             showToast.success('Car added successfully', `${result.brand} ${result.model} has been added to your fleet.`);
             void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
 
 
-            publishCarAdded({
-                car: result as unknown as Car,
-            });
+            publishCarAdded({ car: result });
         },
         onError: (error: Error) => {
             showToast.error('Failed to add car', error.message);
@@ -249,12 +247,12 @@ export function useUpdateCar() {
         onSuccess: (result, variables) => {
             showToast.success('Car updated successfully', `${result.brand} ${result.model} has been updated.`);
             void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
 
 
             publishCarUpdated({
                 carId: variables.id,
-                car: result as unknown as Car,
+                car: result,
             });
         },
         onError: (error: Error) => {
@@ -271,7 +269,7 @@ export function useDeleteCar() {
         onSuccess: (_, carId) => {
             showToast.success('Car removed from fleet', 'The vehicle has been permanently deleted.');
             void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['cars'] });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
 
 
             publishCarDeleted({

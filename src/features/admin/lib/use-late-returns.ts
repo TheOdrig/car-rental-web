@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
-import type { LateReturnFilters, LateReturnStatistics, PaginatedLateReturns, PenaltyWaiverRequest, PenaltyWaiverResponse } from '@/entities/rental';
+import { rentalKeys, type LateReturnFilters, type LateReturnStatistics, type PaginatedLateReturns, type PenaltyWaiverRequest, type PenaltyWaiverResponse } from '@/entities/rental';
 
 export const lateReturnKeys = {
     all: ['late-returns'] as const,
@@ -114,7 +114,7 @@ export function useWaivePenalty() {
             void queryClient.invalidateQueries({
                 queryKey: lateReturnKeys.penaltyHistory(variables.rentalId),
             });
-            void queryClient.invalidateQueries({ queryKey: ['rentals', 'detail', variables.rentalId] });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(variables.rentalId) });
         },
         onError: (error: Error) => {
             showToast.error('Failed to waive penalty', error.message);

@@ -1,9 +1,10 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost } from '@/shared/api';
+import { adminKeys, clientGet, clientPost } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
-import { getAdminActionErrorMessage } from '@/entities/rental';
+import { carKeys } from '@/entities/car';
+import { getAdminActionErrorMessage, rentalKeys } from '@/entities/rental';
 import { processKeys } from './process-keys';
 import type {
     QuickActionResult,
@@ -56,8 +57,8 @@ export function useApproveRental() {
         onSuccess: (result, variables) => {
             showToast.success(toastMessages.rental.approveSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
-            void queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
 
 
             publishRentalApproved({
@@ -79,8 +80,8 @@ export function useProcessPickup() {
         onSuccess: (result, variables) => {
             showToast.success(toastMessages.rental.pickupSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
-            void queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
 
 
             publishPickupProcessed({
@@ -102,9 +103,9 @@ export function useProcessReturn() {
         onSuccess: (result, variables) => {
             showToast.success(toastMessages.rental.returnSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
-            void queryClient.invalidateQueries({ queryKey: ['cars'] });
-            void queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
 
 
             publishReturnProcessed({
@@ -126,8 +127,8 @@ export function useRejectRental() {
         onSuccess: (result, variables) => {
             showToast.success(toastMessages.rental.rejectSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
-            void queryClient.invalidateQueries({ queryKey: ['rentals'] });
-            void queryClient.invalidateQueries({ queryKey: ['admin', 'dashboard'] });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
 
 
             publishRentalRejected({
