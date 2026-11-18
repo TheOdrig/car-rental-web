@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { ApiError } from '@/shared/api/error';
 import { describePaymentError, PAYMENT_WINDOW_ERROR_CODES } from '../lib/payment-errors';
 import { isTestPublishableKey, resolvePublishableKey } from '../lib/stripe-client';
@@ -22,12 +22,7 @@ describe('describePaymentError', () => {
     });
 
     describe('payment window codes', () => {
-        afterEach(() => {
-            (PAYMENT_WINDOW_ERROR_CODES as string[]).length = 0;
-        });
-
         it('maps a registered code to the window-not-open state regardless of status', () => {
-            (PAYMENT_WINDOW_ERROR_CODES as string[]).push('PAYMENT_WINDOW_NOT_OPEN');
             const error = new ApiError({
                 status: 409,
                 message: 'too early',
@@ -35,7 +30,32 @@ describe('describePaymentError', () => {
                 code: 'PAYMENT_WINDOW_NOT_OPEN',
             });
 
+            expect(PAYMENT_WINDOW_ERROR_CODES).toContain('PAYMENT_WINDOW_NOT_OPEN');
             expect(describePaymentError(error).kind).toBe('window-not-open');
+        });
+
+        it('shows the date the payment opens on', () => {
+            const error = new ApiError({
+                status: 409,
+                message: 'too early',
+                timestamp: new Date().toISOString(),
+                code: 'PAYMENT_WINDOW_NOT_OPEN',
+                details: { paymentOpensOn: '2026-12-01' },
+            });
+
+            expect(describePaymentError(error).message).toBe('Payment opens on December 1, 2026.');
+        });
+
+        it('falls back to the generic message without a usable date', () => {
+            const error = new ApiError({
+                status: 409,
+                message: 'too early',
+                timestamp: new Date().toISOString(),
+                code: 'PAYMENT_WINDOW_NOT_OPEN',
+                details: { paymentOpensOn: 'soon' },
+            });
+
+            expect(describePaymentError(error).message).toContain('closer to the start date');
         });
 
         it('ignores unregistered codes', () => {

@@ -1,4 +1,5 @@
-import { isApiError } from '@/shared/api';
+import { format, parseISO } from 'date-fns';
+import { detailString, isApiError } from '@/shared/api';
 
 export type PaymentBlockKind = 'signin' | 'window-not-open' | 'forbidden' | 'not-confirmed' | 'settled' | 'not-found' | 'unavailable';
 
@@ -46,13 +47,27 @@ const BLOCKS: Record<PaymentBlockKind, PaymentBlock> = {
     },
 };
 
-export const PAYMENT_WINDOW_ERROR_CODES: readonly string[] = [];
+export const PAYMENT_WINDOW_ERROR_CODES: readonly string[] = ['PAYMENT_WINDOW_NOT_OPEN'];
+
+function paymentOpensOn(error: unknown): string | undefined {
+    const value = detailString(error, 'paymentOpensOn');
+    if (!value) return undefined;
+
+    const date = parseISO(value);
+    return Number.isNaN(date.getTime()) ? undefined : format(date, 'MMMM d, yyyy');
+}
+
+function windowNotOpen(error: unknown): PaymentBlock {
+    const opensOn = paymentOpensOn(error);
+
+    return opensOn ? { ...BLOCKS['window-not-open'], message: `Payment opens on ${opensOn}.` } : BLOCKS['window-not-open'];
+}
 
 export function describePaymentError(error: unknown): PaymentBlock {
     if (!isApiError(error)) return BLOCKS.unavailable;
 
     if (error.code && PAYMENT_WINDOW_ERROR_CODES.includes(error.code)) {
-        return BLOCKS['window-not-open'];
+        return windowNotOpen(error);
     }
 
     switch (error.status) {

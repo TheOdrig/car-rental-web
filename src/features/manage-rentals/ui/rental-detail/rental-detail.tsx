@@ -108,7 +108,7 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                             action={(paymentStatus) =>
                                 status === 'Confirmed' && isPayableStatus(paymentStatus) ? (
                                     <Button asChild className="w-full">
-                                        <Link href={`/rentals/${rental.id}/pay`}>Pay now</Link>
+                                        <Link href={`/rentals/${rental.id}/pay`}>{paymentStatus === 'CANCELLED' ? 'Pay again' : 'Pay now'}</Link>
                                     </Button>
                                 ) : null
                             }
