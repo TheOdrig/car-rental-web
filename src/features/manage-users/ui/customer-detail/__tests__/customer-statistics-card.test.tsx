@@ -8,7 +8,7 @@ const base: CustomerStatistics = {
     completedRentals: 3,
     cancelledRentals: 1,
     activeRentals: 1,
-    totalSpent: 4500,
+    spentByCurrency: [],
     averageRentalDuration: 3.5,
     totalDamageReports: 2,
     damageCostByCurrency: [],
@@ -17,11 +17,30 @@ const base: CustomerStatistics = {
 };
 
 describe('CustomerStatisticsCard', () => {
-    it('labels total spent as mixed currencies and shows no currency symbol', () => {
+    it('renders spending per currency without summing them', () => {
+        render(
+            <CustomerStatisticsCard
+                statistics={{
+                    ...base,
+                    spentByCurrency: [
+                        { currency: 'TRY', rentalCount: 2, totalSpent: 4500 },
+                        { currency: 'USD', rentalCount: 1, totalSpent: 120 },
+                    ],
+                }}
+            />
+        );
+
+        const block = screen.getByTestId('spent-by-currency');
+        expect(block.textContent).toContain('TRY (2 rentals)');
+        expect(block.textContent).toContain('USD (1 rental)');
+        expect(block.textContent).toContain('4.500,00');
+        expect(block.textContent).toContain('$120.00');
+    });
+
+    it('shows an empty state without spending', () => {
         render(<CustomerStatisticsCard statistics={base} />);
 
-        expect(screen.getByText('Total Spent (mixed currencies)')).toBeTruthy();
-        expect(screen.getByText('4,500.00')).toBeTruthy();
+        expect(screen.getByText('No completed rentals yet.')).toBeTruthy();
     });
 
     it('renders damage cost per currency', () => {

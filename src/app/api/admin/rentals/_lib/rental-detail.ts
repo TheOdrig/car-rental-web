@@ -42,6 +42,13 @@ function timeline(rental: Rental): RentalDetailResponse['timeline'] {
     return events;
 }
 
+function toSpentByCurrency(raw: unknown): { currency: string; totalSpent: number }[] {
+    if (!Array.isArray(raw)) return [];
+    return raw
+        .filter((entry): entry is { currency: string; totalSpent?: number } => typeof entry?.currency === 'string')
+        .map((entry) => ({ currency: entry.currency, totalSpent: Number(entry.totalSpent ?? 0) }));
+}
+
 export function buildRentalDetail({
     rental,
     customer,
@@ -78,7 +85,7 @@ export function buildRentalDetail({
             phoneVerified: customer?.verification?.phoneVerified ?? false,
             stats: {
                 totalRentals: customer?.statistics?.totalRentals ?? 0,
-                totalSpent: customer?.statistics?.totalSpent ?? 0,
+                spentByCurrency: toSpentByCurrency(customer?.statistics?.spentByCurrency),
                 damageCount: customer?.statistics?.totalDamageReports ?? 0,
             },
         },
@@ -88,7 +95,7 @@ export function buildRentalDetail({
             model: car?.model ?? summary?.model ?? '',
             licensePlate: car?.licensePlate ?? summary?.licensePlate ?? '',
             imageUrl: car?.imageUrl ?? car?.thumbnailUrl ?? summary?.thumbnailUrl,
-            status: car?.carStatusType ?? summary?.carStatusType ?? '',
+            status: car?.carStatusType ?? '',
             fuelType: car?.fuelType ?? '',
             transmissionType: car?.transmissionType ?? '',
             bodyType: car?.bodyType,

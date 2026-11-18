@@ -186,7 +186,14 @@ describe('admin BFF routes', () => {
                         email: 'a@x.com',
                         phone: '+905551234567',
                         verification: { emailVerified: true, phoneVerified: false },
-                        statistics: { totalRentals: 4, totalSpent: 800, totalDamageReports: 1 },
+                        statistics: {
+                            totalRentals: 4,
+                            spentByCurrency: [
+                                { currency: 'TRY', rentalCount: 3, totalSpent: 800 },
+                                { currency: 'USD', rentalCount: 1, totalSpent: 90 },
+                            ],
+                            totalDamageReports: 1,
+                        },
                     });
                 }
                 if (path === '/api/v1/cars/8') {
@@ -211,7 +218,18 @@ describe('admin BFF routes', () => {
                 status: 'CONFIRMED',
                 duration: 3,
                 pricing: { dailyRate: 100, subtotal: 300, discounts: 30, finalTotal: 270, currency: 'EUR' },
-                customer: { firstName: 'Ahmet', emailVerified: true, stats: { totalRentals: 4, damageCount: 1 } },
+                customer: {
+                    firstName: 'Ahmet',
+                    emailVerified: true,
+                    stats: {
+                        totalRentals: 4,
+                        damageCount: 1,
+                        spentByCurrency: [
+                            { currency: 'TRY', totalSpent: 800 },
+                            { currency: 'USD', totalSpent: 90 },
+                        ],
+                    },
+                },
                 vehicle: { id: 8, fuelType: 'DIESEL' },
                 payment: { status: 'AUTHORIZED', totalAmount: 270 },
                 penaltyAmount: 50,

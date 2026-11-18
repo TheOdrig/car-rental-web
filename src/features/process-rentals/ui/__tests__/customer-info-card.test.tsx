@@ -18,7 +18,10 @@ describe('CustomerInfoCard', () => {
         avatarUrl: '/avatars/john.jpg',
         stats: {
             totalRentals: 15,
-            totalSpent: 4500,
+            spentByCurrency: [
+                { currency: 'TRY', totalSpent: 4500 },
+                { currency: 'USD', totalSpent: 120 },
+            ],
             damageCount: 1,
         },
     };
@@ -44,6 +47,10 @@ describe('CustomerInfoCard', () => {
         renderWithProviders(<CustomerInfoCard customer={mockCustomer} />);
         expect(screen.getByText('15')).toBeInTheDocument();
         expect(screen.getByText('Rentals')).toBeInTheDocument();
+    });
+    it('should render spending per currency without summing', () => {
+        renderWithProviders(<CustomerInfoCard customer={mockCustomer} />);
+        expect(screen.getByText('₺4.500,00 + $120.00')).toBeInTheDocument();
     });
     it('should render link to customer detail page', () => {
         renderWithProviders(<CustomerInfoCard customer={mockCustomer} />);

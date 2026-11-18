@@ -1,4 +1,5 @@
 import type { Schemas, WithRequired } from '@/shared/api/contract';
+import type { CurrencyType } from '@/shared/types';
 
 export type Role = NonNullable<Schemas['UserDto']['roles']>[number];
 
@@ -41,7 +42,15 @@ export type AvatarUploadResponse = WithRequired<Schemas['AvatarUploadResponse'],
 export type PasswordChangeData = Schemas['PasswordChangeRequest'];
 
 
-export type CustomerStatistics = Required<Schemas['UserStatistics']>;
+export interface SpentByCurrency {
+    currency: CurrencyType;
+    rentalCount: number;
+    totalSpent: number;
+}
+
+export type CustomerStatistics = Omit<Required<Schemas['UserStatistics']>, 'spentByCurrency'> & {
+    spentByCurrency: SpentByCurrency[];
+};
 
 
 export type CustomerVerification = Omit<Required<Schemas['VerificationInfo']>, 'documentsVerified'> & {

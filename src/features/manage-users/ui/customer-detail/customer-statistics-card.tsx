@@ -3,7 +3,7 @@
 import { BarChart3, Car, CheckCircle, XCircle, DollarSign, Clock, AlertTriangle, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { StatCard } from '@/shared/ui/stat-card';
-import { formatCurrencyWithDecimals, formatMixedCurrencyAmount } from '@/shared/lib';
+import { formatCurrencyWithDecimals } from '@/shared/lib';
 import type { CustomerStatistics } from '@/entities/user';
 
 interface CustomerStatisticsCardProps {
@@ -46,12 +46,6 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         className="p-3"
                     />
                     <StatCard
-                        label="Total Spent (mixed currencies)"
-                        value={formatMixedCurrencyAmount(statistics.totalSpent)}
-                        icon={DollarSign}
-                        className="p-3"
-                    />
-                    <StatCard
                         label="Avg. Duration"
                         value={`${statistics.averageRentalDuration.toFixed(1)} days`}
                         icon={Clock}
@@ -75,6 +69,27 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         icon={Calendar}
                         className="p-3"
                     />
+                </div>
+                <div className="mt-4" data-testid="spent-by-currency">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                        <DollarSign className="h-4 w-4" />
+                        Total Spent by Currency
+                    </p>
+                    {statistics.spentByCurrency.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No completed rentals yet.</p>
+                    ) : (
+                        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                            {statistics.spentByCurrency.map((entry) => (
+                                <li key={entry.currency}>
+                                    <StatCard
+                                        label={`${entry.currency} (${entry.rentalCount} ${entry.rentalCount === 1 ? 'rental' : 'rentals'})`}
+                                        value={formatCurrencyWithDecimals(entry.totalSpent, entry.currency)}
+                                        className="p-3"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
                 <div className="mt-4" data-testid="damage-cost-by-currency">
                     <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">

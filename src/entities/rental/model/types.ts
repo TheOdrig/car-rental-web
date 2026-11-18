@@ -122,7 +122,7 @@ export interface RentalCustomerInfo {
     isVerified: boolean;
     stats: {
         totalRentals: number;
-        totalSpent: number;
+        spentByCurrency: { currency: string; totalSpent: number }[];
         damageCount: number;
     };
 }
@@ -183,7 +183,7 @@ export interface RentalDetailResponse {
         phoneVerified: boolean;
         stats: {
             totalRentals: number;
-            totalSpent: number;
+            spentByCurrency: { currency: string; totalSpent: number }[];
             damageCount: number;
         };
     };

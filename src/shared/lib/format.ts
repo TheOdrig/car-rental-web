@@ -91,9 +91,13 @@ export function formatTime(date: Date | string | null | undefined): string {
     if (!isValid(d)) return 'N/A';
     return format(d, 'h:mm a');
 }
-export function formatMixedCurrencyAmount(amount: number): string {
-    return new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-    }).format(amount);
+export interface CurrencyAmount {
+    currency?: string;
+    totalSpent?: number;
+}
+
+export function formatAmountsByCurrency(entries: readonly CurrencyAmount[] | undefined): string[] {
+    return (entries ?? [])
+        .filter((entry): entry is CurrencyAmount & { currency: string } => Boolean(entry.currency))
+        .map((entry) => formatCurrencyWithDecimals(entry.totalSpent ?? 0, entry.currency));
 }
