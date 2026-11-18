@@ -5,25 +5,25 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { CarCard, CarCardSkeleton } from '@/entities/car';
-import { useFeaturedCars } from '@/entities/car';
+import { useTopRatedCars } from '@/entities/car';
 import { cn } from '@/shared/lib';
 import type { Car } from '@/entities/car';
 
-interface FeaturedCarouselProps {
+interface TopRatedCarouselProps {
     title?: string;
     subtitle?: string;
     viewAllLink?: string;
     className?: string;
 }
 
-export function FeaturedCarousel({
-    title = 'Featured Vehicles',
-    subtitle = 'Our curated collection of premium rentals',
+export function TopRatedCarousel({
+    title = 'Top Rated Vehicles',
+    subtitle = 'Our highest-rated vehicles available now',
     viewAllLink = '/cars',
     className,
-}: FeaturedCarouselProps) {
+}: TopRatedCarouselProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const { data, isLoading, error } = useFeaturedCars();
+    const { data, isLoading, error } = useTopRatedCars();
 
     const cars = data?.content ?? [];
 
@@ -87,9 +87,9 @@ export function FeaturedCarousel({
                 </div>
 
                 {isLoading ? (
-                    <FeaturedCarouselSkeleton />
+                    <TopRatedCarouselSkeleton />
                 ) : cars.length === 0 ? (
-                    <FeaturedCarouselEmpty />
+                    <TopRatedCarouselEmpty />
                 ) : (
                     <div
                         ref={scrollRef}
@@ -114,7 +114,7 @@ export function FeaturedCarousel({
     );
 }
 
-function FeaturedCarouselSkeleton() {
+function TopRatedCarouselSkeleton() {
     return (
         <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -126,10 +126,10 @@ function FeaturedCarouselSkeleton() {
     );
 }
 
-function FeaturedCarouselEmpty() {
+function TopRatedCarouselEmpty() {
     return (
         <div className="text-center py-12 text-slate-600 dark:text-slate-400">
-            <p>No featured cars available at the moment.</p>
+            <p>No top-rated cars available at the moment.</p>
             <Link href="/cars">
                 <Button variant="link" className="mt-2">
                     Browse all cars
@@ -139,4 +139,4 @@ function FeaturedCarouselEmpty() {
     );
 }
 
-export { FeaturedCarouselSkeleton };
+export { TopRatedCarouselSkeleton };

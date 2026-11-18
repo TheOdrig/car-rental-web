@@ -6,11 +6,13 @@ import { sortOptionToParam } from './utils';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 
+const TOP_RATED_PAGE_SIZE = 8;
+
 export const carKeys = {
     all: ['cars'] as const,
     lists: () => [...carKeys.all, 'list'] as const,
     list: (filters?: CarFilters) => [...carKeys.lists(), filters] as const,
-    featured: () => [...carKeys.all, 'featured'] as const,
+    topRated: () => [...carKeys.all, 'top-rated'] as const,
     details: () => [...carKeys.all, 'detail'] as const,
     detail: (id: number) => [...carKeys.details(), id] as const,
     search: () => [...carKeys.all, 'search'] as const,
@@ -88,10 +90,10 @@ export function useCars(filters?: CarFilters, page: number = 0, sortBy: SortOpti
     });
 }
 
-export function useFeaturedCars() {
+export function useTopRatedCars() {
     return useQuery({
-        queryKey: carKeys.featured(),
-        queryFn: () => clientGet<PageResponse<Car>>('/api/cars/featured'),
+        queryKey: carKeys.topRated(),
+        queryFn: () => clientGet<PageResponse<Car>>(`/api/cars?carStatusType=AVAILABLE&sortBy=rating&sortDirection=desc&page=0&size=${TOP_RATED_PAGE_SIZE}`),
         staleTime: 5 * 60 * 1000,
     });
 }

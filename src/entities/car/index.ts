@@ -37,7 +37,7 @@ export {
     useCarSearch,
     useCar,
     useCarCalendar,
-    useFeaturedCars,
+    useTopRatedCars,
     usePrefetchCar,
     useInvalidateCars,
     carKeys

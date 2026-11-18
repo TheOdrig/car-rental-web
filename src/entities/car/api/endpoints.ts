@@ -1,7 +1,6 @@
 export const CAR_ENDPOINTS = {
     list: `/api/cars`,
     active: `/api/cars/active`,
-    featured: `/api/cars/featured`,
     byId: (id: number) => `/api/cars/${id}`,
     byLicensePlate: (plate: string) => `/api/cars/licensePlate/${plate}`,
     search: `/api/cars/search`,
