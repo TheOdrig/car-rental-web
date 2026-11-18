@@ -42,11 +42,9 @@ export type AvatarUploadResponse = WithRequired<Schemas['AvatarUploadResponse'],
 export type PasswordChangeData = Schemas['PasswordChangeRequest'];
 
 
-export interface SpentByCurrency {
+export type SpentByCurrency = WithRequired<Schemas['RentalSpendTotals'], 'rentalCount' | 'totalSpent'> & {
     currency: CurrencyType;
-    rentalCount: number;
-    totalSpent: number;
-}
+};
 
 export type CustomerStatistics = Omit<Required<Schemas['UserStatistics']>, 'spentByCurrency'> & {
     spentByCurrency: SpentByCurrency[];

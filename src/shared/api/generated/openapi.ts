@@ -2342,13 +2342,6 @@ export interface components {
             /** @enum {string} */
             toCurrency: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
         };
-        CurrencyTotals: {
-            /** Format: int64 */
-            assessedCount?: number;
-            /** @enum {string} */
-            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            totalCustomerLiability?: number;
-        };
         DailyRevenueDto: {
             /** Format: date */
             date?: string;
@@ -2399,6 +2392,13 @@ export interface components {
             repairCostEstimate?: number;
             /** @enum {string} */
             severity?: "MINOR" | "MODERATE" | "MAJOR" | "TOTAL_LOSS";
+        };
+        DamageCostTotals: {
+            /** Format: int64 */
+            assessedCount?: number;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            totalCustomerLiability?: number;
         };
         DamageCurrencyTotals: {
             /** Format: int64 */
@@ -2887,6 +2887,30 @@ export interface components {
             success?: boolean;
             updatedSummary?: components["schemas"]["DailySummaryDto"];
         };
+        /** @description Request for approving a rental */
+        QuickApproveRequest: {
+            /**
+             * @description Optional notes for approval
+             * @example Approved for premium customer
+             */
+            notes?: string;
+        };
+        /** @description Request for processing pickup */
+        QuickPickupRequest: {
+            /**
+             * @description Notes about car condition at pickup
+             * @example Front left tire slightly worn
+             */
+            notes?: string;
+        };
+        /** @description Request for processing return */
+        QuickReturnRequest: {
+            /**
+             * @description Notes about car condition at return
+             * @example Clean and full tank
+             */
+            notes?: string;
+        };
         RefreshTokenRequest: {
             refreshToken: string;
         };
@@ -2950,6 +2974,13 @@ export interface components {
             /** Format: date-time */
             updateTime?: string;
             userSummary?: components["schemas"]["UserSummaryResponse"];
+        };
+        RentalSpendTotals: {
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** Format: int64 */
+            rentalCount?: number;
+            totalSpent?: number;
         };
         ResetPasswordRequest: {
             newPassword: string;
@@ -3023,11 +3054,11 @@ export interface components {
             /** Format: int32 */
             customerSinceDays?: number;
             /** @description Customer damage liability grouped by assessment currency; amounts of different currencies are never summed together. */
-            damageCostByCurrency?: components["schemas"]["CurrencyTotals"][];
+            damageCostByCurrency?: components["schemas"]["DamageCostTotals"][];
             /** Format: int32 */
             lateReturns?: number;
             /** @description Amount spent on returned rentals, grouped by rental currency; amounts of different currencies are never summed together. */
-            spentByCurrency?: components["schemas"]["CurrencyTotals"][];
+            spentByCurrency?: components["schemas"]["RentalSpendTotals"][];
             /** Format: int32 */
             totalDamageReports?: number;
             /** Format: int32 */
@@ -4651,7 +4682,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["ApproveRequest"];
+                "application/json": components["schemas"]["QuickApproveRequest"];
             };
         };
         responses: {
@@ -4723,7 +4754,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["PickupRequest"];
+                "application/json": components["schemas"]["QuickPickupRequest"];
             };
         };
         responses: {
@@ -4867,7 +4898,7 @@ export interface operations {
         };
         requestBody?: {
             content: {
-                "application/json": components["schemas"]["ReturnRequest"];
+                "application/json": components["schemas"]["QuickReturnRequest"];
             };
         };
         responses: {
