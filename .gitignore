@@ -48,4 +48,6 @@ next-env.d.ts
 *Zone.Identifier
 
 playwright-report/
+playwright-report-stack/
 test-results/
+test-results-stack/
