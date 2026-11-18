@@ -1,0 +1,76 @@
+'use client';
+
+import type { ReactNode } from 'react';
+import { CreditCard } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Skeleton } from '@/shared/ui/skeleton';
+import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { isApiError } from '@/shared/api';
+import { useRentalPayment } from '../lib/use-rental-payment';
+import type { RentalPaymentStatus as PaymentStatusValue } from '../model/rental-payment';
+import { PaymentStatusBadge } from './payment-status-badge';
+
+interface RentalPaymentStatusProps {
+    rentalId: number;
+    action?: (status: PaymentStatusValue | undefined) => ReactNode;
+    emptyMessage?: string;
+    className?: string;
+}
+
+export function RentalPaymentStatus({
+    rentalId,
+    action,
+    emptyMessage = 'No payment has been started for this rental yet.',
+    className,
+}: RentalPaymentStatusProps) {
+    const { data, isLoading, error } = useRentalPayment(rentalId);
+    const missing = isApiError(error) && error.status === 404;
+    const refunded = data?.refundedAmount ?? 0;
+    const loadFailed = !isLoading && !!error && !missing;
+
+    return (
+        <Card className={className} data-testid="rental-payment-status">
+            <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                    <CreditCard className="h-5 w-5" aria-hidden="true" />
+                    Payment
+                </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-3">
+                {isLoading && <Skeleton className="h-10 w-full" />}
+
+                {loadFailed && (
+                    <p className="text-sm text-destructive" role="alert">
+                        Payment status could not be loaded.
+                    </p>
+                )}
+
+                {!isLoading && missing && <p className="text-sm text-muted-foreground">{emptyMessage}</p>}
+
+                {data && (
+                    <div className="space-y-2 text-sm">
+                        <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Status</span>
+                            <PaymentStatusBadge status={data.status} />
+                        </div>
+                        <div className="flex items-center justify-between">
+                            <span className="text-muted-foreground">Amount</span>
+                            <span className="font-medium">{formatCurrencyWithDecimals(data.amount, data.currency)}</span>
+                        </div>
+                        {refunded > 0 && (
+                            <div className="flex items-center justify-between">
+                                <span className="text-muted-foreground">Refunded</span>
+                                <span className="font-medium">{formatCurrencyWithDecimals(refunded, data.currency)}</span>
+                            </div>
+                        )}
+                        {data.status === 'FAILED' && data.failureReason && (
+                            <p className="text-destructive">{data.failureReason}</p>
+                        )}
+                    </div>
+                )}
+
+                {!isLoading && !loadFailed && action?.(data?.status)}
+            </CardContent>
+        </Card>
+    );
+}
