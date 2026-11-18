@@ -5,7 +5,6 @@ import type {
     VehicleStatistics,
     VehicleImages,
     VehicleCurrentStatus,
-    VehicleActiveRental,
     VehicleDetailResponse,
 } from '@/entities/car';
 import type {
@@ -37,7 +36,6 @@ export type {
     VehicleStatistics,
     VehicleImages,
     VehicleCurrentStatus,
-    VehicleActiveRental,
     VehicleDetailResponse,
     AdminRentalStatus,
     RentalHistoryItem,

@@ -172,8 +172,8 @@ export function FleetManagementContent() {
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>
                             <SelectItem value="Available">Available</SelectItem>
-                            <SelectItem value="Rented">Rented</SelectItem>
                             <SelectItem value="Maintenance">Maintenance</SelectItem>
+                            <SelectItem value="Inspection">Inspection</SelectItem>
                             <SelectItem value="Damaged">Damaged</SelectItem>
                         </SelectContent>
                     </Select>

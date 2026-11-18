@@ -13,18 +13,14 @@ interface VehicleStatusCardProps {
 
 const statusColors: Record<CarStatus, string> = {
     Available: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 border-emerald-300 dark:border-emerald-700',
-    Rented: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
     Maintenance: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700',
-    Reserved: 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-700',
     Damaged: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
     Inspection: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
 };
 
 const statusDescriptions: Record<CarStatus, string> = {
     Available: 'Vehicle is available for rental',
-    Rented: 'Vehicle is currently rented out',
     Maintenance: 'Vehicle is undergoing maintenance',
-    Reserved: 'Vehicle is reserved for an upcoming rental',
     Damaged: 'Vehicle has damage that needs repair',
     Inspection: 'Vehicle is undergoing inspection',
 };

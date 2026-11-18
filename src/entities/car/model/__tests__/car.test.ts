@@ -15,10 +15,10 @@ const mockCar: Car = {
     fuelType: FuelType.ELECTRIC,
     transmissionType: TransmissionType.AUTOMATIC,
 };
-const rentedCar: Car = {
+const maintenanceCar: Car = {
     ...mockCar,
     id: 2,
-    carStatusType: 'Rented',
+    carStatusType: 'Maintenance',
 };
 describe('Car Entity', () => {
     describe('Utils', () => {
@@ -26,8 +26,8 @@ describe('Car Entity', () => {
             it('should return true for available car', () => {
                 expect(isAvailable(mockCar)).toBe(true);
             });
-            it('should return false for rented car', () => {
-                expect(isAvailable(rentedCar)).toBe(false);
+            it('should return false for a car in maintenance', () => {
+                expect(isAvailable(maintenanceCar)).toBe(false);
             });
         });
         describe('getCarTitle', () => {

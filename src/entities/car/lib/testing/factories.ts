@@ -30,11 +30,7 @@ export function createMockCarSummary(overrides?: Partial<CarSummary>): CarSummar
         licensePlate: `34ABC${id.toString().padStart(3, '0')}`,
         brand: 'Toyota',
         model: 'Corolla',
-        productionYear: 2023,
-        formattedPrice: '$50.00/day',
-        currencyType: 'USD' as CurrencyType,
-        carStatusType: 'Available' as CarStatus,
-        color: 'Silver',
+        thumbnailUrl: `/cars/toyota-corolla-${id}.jpg`,
         ...overrides,
     };
 }

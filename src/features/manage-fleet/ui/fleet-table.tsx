@@ -49,16 +49,6 @@ const statusConfig: Record<CarStatus, { label: string; dotColor: string; textCol
         dotColor: 'bg-emerald-500',
         textColor: 'text-emerald-700 dark:text-emerald-400',
     },
-    Rented: {
-        label: 'Rented',
-        dotColor: 'bg-violet-500',
-        textColor: 'text-violet-700 dark:text-violet-400',
-    },
-    Reserved: {
-        label: 'Reserved',
-        dotColor: 'bg-blue-500',
-        textColor: 'text-blue-700 dark:text-blue-400',
-    },
     Maintenance: {
         label: 'Maintenance',
         dotColor: 'bg-orange-500',
@@ -78,8 +68,6 @@ const statusConfig: Record<CarStatus, { label: string; dotColor: string; textCol
 
 const statusOptions: { value: CarStatus; label: string }[] = [
     { value: 'Available', label: 'Available' },
-    { value: 'Rented', label: 'Rented' },
-    { value: 'Reserved', label: 'Reserved' },
     { value: 'Maintenance', label: 'Maintenance' },
     { value: 'Damaged', label: 'Damaged' },
     { value: 'Inspection', label: 'Inspection' },

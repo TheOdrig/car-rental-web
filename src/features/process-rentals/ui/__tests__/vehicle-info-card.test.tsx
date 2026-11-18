@@ -12,7 +12,7 @@ describe('VehicleInfoCard', () => {
         licensePlate: 'ABC-1234',
         year: 2023,
         imageUrl: '/cars/tesla-model-3.jpg',
-        status: 'Rented',
+        status: 'Maintenance',
         fuelType: 'Electric',
         transmissionType: 'Automatic',
     };
@@ -26,7 +26,7 @@ describe('VehicleInfoCard', () => {
     });
     it('should render vehicle status badge', () => {
         renderWithProviders(<VehicleInfoCard vehicle={mockVehicle} />);
-        expect(screen.getByText('Rented')).toBeInTheDocument();
+        expect(screen.getByText('Maintenance')).toBeInTheDocument();
     });
     it('should render fuel type', () => {
         renderWithProviders(<VehicleInfoCard vehicle={mockVehicle} />);
@@ -47,7 +47,7 @@ describe('VehicleInfoCard', () => {
         expect(image).toBeInTheDocument();
     });
     it('should handle different vehicle statuses', () => {
-        const statuses = ['Available', 'Rented', 'Maintenance', 'Reserved', 'Damaged', 'Inspection'];
+        const statuses = ['Available', 'Maintenance', 'Damaged', 'Inspection'];
         statuses.forEach(status => {
             const vehicleWithStatus = { ...mockVehicle, status: status as RentalVehicleInfo['status'] };
             const { unmount } = renderWithProviders(<VehicleInfoCard vehicle={vehicleWithStatus} />);

@@ -28,7 +28,6 @@ function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destr
     switch (status) {
         case 'Available':
             return 'default';
-        case 'Reserved':
         case 'Maintenance':
             return 'secondary';
         case 'Damaged':

@@ -11,10 +11,6 @@ const createMockRental = (status: RentalStatus): Rental => ({
         licensePlate: 'ABC-123',
         brand: 'Toyota',
         model: 'Camry',
-        productionYear: 2023,
-        formattedPrice: '$50/day',
-        currencyType: 'USD',
-        carStatusType: 'Available',
     },
     userSummary: {
         id: 1,

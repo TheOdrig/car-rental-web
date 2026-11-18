@@ -16,9 +16,7 @@ interface VehicleInfoCardProps {
 
 const statusColors: Record<CarStatus, string> = {
     Available: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    Rented: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30',
     Maintenance: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
-    Reserved: 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30',
     Damaged: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
     Inspection: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
 };

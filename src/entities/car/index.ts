@@ -22,7 +22,6 @@ export {
     type VehicleStatistics,
     type VehicleImages,
     type VehicleCurrentStatus,
-    type VehicleActiveRental,
     type VehicleDetailResponse,
 } from './model/types';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';

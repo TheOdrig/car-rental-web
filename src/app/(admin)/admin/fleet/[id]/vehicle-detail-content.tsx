@@ -10,7 +10,6 @@ import {
     VehicleImagesCard,
     VehicleStatisticsCard,
     VehicleStatusCard,
-    VehicleActiveRentalCard,
     VehicleRentalHistoryTable,
     useVehicleDetail,
     useChangeCarStatus,
@@ -27,7 +26,6 @@ import type { CarStatus } from '@/entities/car';
 const statusOptions: { value: CarStatus; label: string }[] = [
     { value: 'Available', label: 'Available' },
     { value: 'Maintenance', label: 'Maintenance' },
-    { value: 'Reserved', label: 'Reserved' },
     { value: 'Damaged', label: 'Damaged' },
     { value: 'Inspection', label: 'Inspection' },
 ];
@@ -75,7 +73,6 @@ export function VehicleDetailContent({ id }: { id: string }) {
     }
 
     const vehicleName = `${vehicle.brand} ${vehicle.model}`;
-    const hasActiveRental = vehicle.status === 'Rented' && vehicle.activeRental;
 
     const handleStatusChange = (newStatus: CarStatus) => {
         updateStatus.mutate(
@@ -154,9 +151,6 @@ export function VehicleDetailContent({ id }: { id: string }) {
 
             <div className="grid gap-6 md:grid-cols-2">
                 {vehicle.currentStatus && <VehicleStatusCard currentStatus={vehicle.currentStatus} />}
-                {hasActiveRental && vehicle.activeRental && (
-                    <VehicleActiveRentalCard activeRental={vehicle.activeRental} />
-                )}
             </div>
 
             {vehicle.statistics && (

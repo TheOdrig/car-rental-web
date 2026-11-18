@@ -30,10 +30,6 @@ export const createMockRental = (overrides = {}): Rental => ({
         brand: 'Toyota',
         model: 'Corolla',
         licensePlate: '34ABC123',
-        productionYear: 2023,
-        formattedPrice: '$50/day',
-        currencyType: 'USD',
-        carStatusType: 'Available',
     },
     userSummary: {
         id: 1,

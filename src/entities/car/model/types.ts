@@ -4,10 +4,7 @@ type CarSchemas = Pick<Schemas, 'CarResponse' | 'CarSummaryResponse' | 'Availabl
 
 export type CarStatus = NonNullable<CarSchemas['CarResponse']['carStatusType']>;
 
-export type CarSummary = WithRequired<
-    CarSchemas['CarSummaryResponse'],
-    'id' | 'licensePlate' | 'brand' | 'model' | 'productionYear' | 'formattedPrice' | 'currencyType' | 'carStatusType'
->;
+export type CarSummary = WithRequired<CarSchemas['CarSummaryResponse'], 'id' | 'licensePlate' | 'brand' | 'model'>;
 
 export enum FuelType {
     GASOLINE = 'GASOLINE',
@@ -93,15 +90,6 @@ export interface VehicleCurrentStatus {
     activeRentalId?: number;
 }
 
-export interface VehicleActiveRental {
-    id: number;
-    customerId: number;
-    customerName: string;
-    startDate: string;
-    endDate: string;
-    daysRemaining: number;
-}
-
 export interface VehicleDetailResponse {
     id: number;
     brand: string;
@@ -123,7 +111,6 @@ export interface VehicleDetailResponse {
     };
     statistics?: VehicleStatistics;
     currentStatus?: VehicleCurrentStatus;
-    activeRental?: VehicleActiveRental;
     status?: string;
 }
 

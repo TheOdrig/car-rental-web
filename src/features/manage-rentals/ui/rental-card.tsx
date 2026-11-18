@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, type ReactNode } from 'react';
+import { memo } from 'react';
 import Link from 'next/link';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import {
@@ -10,8 +10,6 @@ import {
     ArrowRight,
     MapPin,
     ExternalLink,
-    Fuel,
-    Zap,
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { safeFormatDate } from '@/shared/lib';
@@ -60,16 +58,6 @@ function formatPrice(price: number, currency: string): string {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
     }).format(price);
-}
-
-function getFuelIcon(fuelType?: string): ReactNode {
-    if (!fuelType) return null;
-    const isElectric = fuelType.toLowerCase().includes('electric');
-    return isElectric ? (
-        <Zap className="h-3 w-3" />
-    ) : (
-        <Fuel className="h-3 w-3" />
-    );
 }
 
 function ActionButtons({
@@ -143,15 +131,6 @@ export const RentalCard = memo(function RentalCard({
                                     isCompleted && 'grayscale group-hover:grayscale-0'
                                 )}
                             />
-                            {carSummary?.color && (
-                                <Badge
-                                    variant="secondary"
-                                    className="absolute left-3 top-3 gap-1 bg-background/80 backdrop-blur-sm"
-                                >
-                                    {getFuelIcon(carSummary?.color)}
-                                    <span className="text-xs">{carSummary?.color}</span>
-                                </Badge>
-                            )}
                         </div>
 
                         <div className="flex flex-1 flex-col p-4">
