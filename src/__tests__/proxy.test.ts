@@ -167,6 +167,48 @@ describe('proxy', () => {
             expect(response.status).toBe(403);
         });
 
+        it('refreshes an expired session and lets a verified admin through', async () => {
+            const adminToken = await createToken({ roles: ['ADMIN'] });
+            fetchMock.mockResolvedValueOnce(
+                new Response(JSON.stringify({ accessToken: adminToken, refreshToken: 'r2', expiresIn: 900 }), {
+                    status: 200,
+                })
+            );
+
+            const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'admin-r1' }));
+
+            expect(response.status).toBe(200);
+            expect(response.headers.get('x-middleware-request-cookie')).toContain(`access_token=${adminToken}`);
+        });
+
+        it('answers 403 when the refreshed session is not an admin', async () => {
+            const userToken = await createToken({ roles: ['USER'] });
+            fetchMock.mockResolvedValueOnce(
+                new Response(JSON.stringify({ accessToken: userToken, refreshToken: 'r2', expiresIn: 900 }), {
+                    status: 200,
+                })
+            );
+
+            const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'user-r1' }));
+
+            expect(response.status).toBe(403);
+        });
+
+        it('answers 401 when only a refresh token exists and it is rejected', async () => {
+            fetchMock.mockResolvedValueOnce(new Response('{}', { status: 401 }));
+
+            const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'dead' }));
+
+            expect(response.status).toBe(401);
+        });
+
+        it('answers 401 for a forged access token', async () => {
+            const forged = await createToken({ secret: 'another-secret-with-at-least-32-chars!!', roles: ['ADMIN'] });
+            const response = await proxy(requestFor('/api/admin/users', { access_token: forged }));
+
+            expect(response.status).toBe(401);
+        });
+
         it('lets an admin through', async () => {
             const token = await createToken({ roles: ['ADMIN'] });
             const response = await proxy(requestFor('/api/admin/users', { access_token: token }));

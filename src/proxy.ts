@@ -67,22 +67,18 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
         return session ? NextResponse.redirect(new URL('/', request.url)) : NextResponse.next();
     }
 
-    if (access === 'admin-api') {
-        if (!session && !refreshToken) {
-            return jsonError(401, 'Not authenticated');
-        }
-
-        if (session && !isAdminSession(session)) {
-            return jsonError(403, 'Forbidden');
-        }
-
-        return NextResponse.next();
-    }
-
     let renewed: AuthResponse | null = null;
     if (!session && refreshToken) {
         renewed = await refreshAuthTokens(refreshToken);
         session = renewed ? await verifyAccessToken(renewed.accessToken) : null;
+    }
+
+    if (access === 'admin-api') {
+        if (!session) {
+            return jsonError(401, 'Not authenticated');
+        }
+
+        return isAdminSession(session) ? passThrough(request, renewed) : jsonError(403, 'Forbidden');
     }
 
     if (!session) {
