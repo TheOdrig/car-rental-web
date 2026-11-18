@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
+import { clientPost, isApiError } from '@/shared/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useCar } from '@/entities/car';
@@ -70,33 +71,22 @@ export function CheckoutForm({
         setIsSubmitting(true);
 
         try {
-            const response = await fetch('/api/rentals', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    carId: Number(carId),
-                    startDate,
-                    endDate,
-                    pickupLocation,
-                    dropoffLocation: dropoffLocation || pickupLocation,
-                    addons: selectedAddons,
-                    firstName: data.firstName,
-                    lastName: data.lastName,
-                    email: data.email,
-                    phone: data.phone,
-                }),
+            const booking = await clientPost<{ id: number }>('/api/rentals', {
+                carId: Number(carId),
+                startDate,
+                endDate,
+                pickupLocation,
+                dropoffLocation: dropoffLocation || pickupLocation,
+                addons: selectedAddons,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                email: data.email,
+                phone: data.phone,
             });
-
-            if (!response.ok) {
-                const error = await response.json();
-                router.push(`/booking/failure?error=${encodeURIComponent(error.message || 'Payment failed')}`);
-                return;
-            }
-
-            const booking = await response.json();
             router.push(`/booking/success?ref=${booking.id}`);
-        } catch {
-            router.push('/booking/failure?error=An unexpected error occurred');
+        } catch (error) {
+            const message = isApiError(error) ? error.message : 'An unexpected error occurred';
+            router.push(`/booking/failure?error=${encodeURIComponent(message || 'Payment failed')}`);
         } finally {
             setIsSubmitting(false);
         }

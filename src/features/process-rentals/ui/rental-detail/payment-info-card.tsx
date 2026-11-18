@@ -6,7 +6,7 @@ import { Badge } from '@/shared/ui/badge';
 import { formatCurrency } from '@/shared/lib';
 import type { RentalPaymentInfo, RentalPricing } from '@/entities/rental';
 import type { LateReturnStatus } from '@/entities/rental';
-import { LateReturnStatusBadge } from '@/entities/rental/ui';
+import { LateReturnStatusBadge } from '@/entities/rental';
 import { CopyButton } from '@/shared/ui/copy-button';
 
 interface PaymentInfoCardProps {

@@ -45,3 +45,4 @@ export {
     useInvalidateRentals,
     rentalKeys,
 } from './lib/use-rentals';
+export { LateReturnStatusBadge } from './ui/late-return-status-badge';

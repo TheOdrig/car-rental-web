@@ -11,9 +11,8 @@ import {
 } from '@/shared/ui/table';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { LateReturnStatusBadge } from '@/entities/rental/ui';
 import { ChevronLeft, ChevronRight, Clock, AlertTriangle } from 'lucide-react';
-import { formatLateTime, type LateReturnReport } from '@/entities/rental';
+import { LateReturnStatusBadge, formatLateTime, type LateReturnReport } from '@/entities/rental';
 import { formatCurrency } from '@/shared/lib';
 
 interface LateReturnsTableProps {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { clientDelete, clientPost } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { profileKeys } from './use-profile';
 import type { AvatarUploadResponse } from '@/entities/user';
@@ -35,32 +36,11 @@ async function uploadAvatarApi(file: File): Promise<AvatarUploadResponse> {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    const response = await fetch('/api/users/me/avatar', {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-    });
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Failed to upload avatar' }));
-        throw new Error(error.message || 'Failed to upload avatar');
-    }
-
-    return response.json();
+    return clientPost<AvatarUploadResponse>('/api/users/me/avatar', formData);
 }
 
 async function deleteAvatarApi(): Promise<AvatarUploadResponse> {
-    const response = await fetch('/api/users/me/avatar', {
-        method: 'DELETE',
-        credentials: 'include',
-    });
-
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({ message: 'Failed to delete avatar' }));
-        throw new Error(error.message || 'Failed to delete avatar');
-    }
-
-    return response.json();
+    return clientDelete<AvatarUploadResponse>('/api/users/me/avatar');
 }
 
 export function useUploadAvatar() {

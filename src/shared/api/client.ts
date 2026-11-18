@@ -58,10 +58,12 @@ export async function clientFetch<T>(
         });
     }
 
+    const isForm = typeof FormData !== 'undefined' && body instanceof FormData;
+
     const fetchOptions: RequestInit = {
         method,
         headers: {
-            'Content-Type': 'application/json',
+            ...(isForm ? {} : { 'Content-Type': 'application/json' }),
             ...headers,
         },
         credentials: 'include',
@@ -69,7 +71,7 @@ export async function clientFetch<T>(
     };
 
     if (body) {
-        fetchOptions.body = JSON.stringify(body);
+        fetchOptions.body = isForm ? (body as FormData) : JSON.stringify(body);
     }
 
     const response = await fetch(fullUrl.toString(), fetchOptions);

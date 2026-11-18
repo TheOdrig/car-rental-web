@@ -9,6 +9,7 @@ import {
     useMemo,
     type ReactNode,
 } from 'react';
+import { clientGet } from '@/shared/api';
 import {
     type CurrencyCode,
     type ExchangeRatesResponse,
@@ -65,16 +66,11 @@ export function CurrencyProvider({
         }
 
         try {
-            const response = await fetch('/api/exchange-rates', {
-                cache: 'no-store',
-            });
-            if (response.ok) {
-                const data: ExchangeRatesResponse = await response.json();
-                setRates(data.rates);
-                if (typeof window !== 'undefined') {
-                    localStorage.setItem('exchange_rates_cache', JSON.stringify(data));
-                    localStorage.setItem('exchange_rates_cache_time', Date.now().toString());
-                }
+            const data = await clientGet<ExchangeRatesResponse>('/api/exchange-rates');
+            setRates(data.rates);
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('exchange_rates_cache', JSON.stringify(data));
+                localStorage.setItem('exchange_rates_cache_time', Date.now().toString());
             }
         } catch (error) {
             console.error('Failed to fetch exchange rates:', error);

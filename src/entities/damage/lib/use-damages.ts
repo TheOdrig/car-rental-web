@@ -122,18 +122,7 @@ async function resolveDamage(
 }
 
 async function uploadPhotos(damageId: number, formData: FormData): Promise<DamageReport> {
-    const response = await fetch(`/api/admin/damages/${damageId}/photos`, {
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to upload photos');
-    }
-
-    return response.json();
+    return clientPost<DamageReport>(`/api/admin/damages/${damageId}/photos`, formData);
 }
 
 async function deletePhoto(damageId: number, photoId: number): Promise<void> {

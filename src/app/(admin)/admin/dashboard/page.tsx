@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { clientPost } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import Link from 'next/link';
 import { RefreshCw, Plus, Clock, DollarSign } from 'lucide-react';
@@ -64,16 +65,9 @@ export default function AdminDashboardPage() {
     const handleRefreshRates = async () => {
         setRefreshingRates(true);
         try {
-            const response = await fetch('/api/exchange-rates/refresh', {
-                method: 'POST',
-                credentials: 'include',
-            });
-            if (response.ok) {
-                toast.success('Exchange rates refreshed');
-                window.location.reload();
-            } else {
-                toast.error('Failed to refresh exchange rates');
-            }
+            await clientPost('/api/exchange-rates/refresh');
+            toast.success('Exchange rates refreshed');
+            window.location.reload();
         } catch {
             toast.error('Failed to refresh exchange rates');
         } finally {
