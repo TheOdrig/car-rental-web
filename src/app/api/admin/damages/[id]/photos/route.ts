@@ -11,7 +11,7 @@ export const POST = route<{ id: string }>(
         });
         return created(data);
     },
-    { errorMessage: 'Failed to upload photos' }
+    { errorMessage: 'Failed to upload photos', contentTypes: ['multipart/form-data'] }
 );
 
 export const DELETE = route<{ id: string }>(

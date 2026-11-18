@@ -26,6 +26,83 @@ describe('parseIdParam', () => {
     });
 });
 
+describe('route request guards', () => {
+    const ok = route(async () => ({ ok: true }), { errorMessage: 'failed' });
+    const json = { 'content-type': 'application/json' };
+
+    it('rejects state-changing requests without a JSON content type', async () => {
+        for (const method of ['POST', 'PUT', 'PATCH']) {
+            const response = await ok(request(undefined, { method, headers: { 'content-type': 'text/plain' }, body: 'x' }), context({}));
+            expect(response.status).toBe(415);
+        }
+
+        const missing = await ok(request(undefined, { method: 'POST' }), context({}));
+        expect(missing.status).toBe(415);
+    });
+
+    it('accepts JSON with a charset parameter', async () => {
+        const response = await ok(
+            request(undefined, { method: 'POST', headers: { 'content-type': 'application/json; charset=utf-8' }, body: '{}' }),
+            context({})
+        );
+
+        expect(response.status).toBe(200);
+    });
+
+    it('lets GET and bodyless DELETE through without a content type', async () => {
+        expect((await ok(request(), context({}))).status).toBe(200);
+        expect((await ok(request(undefined, { method: 'DELETE' }), context({}))).status).toBe(200);
+    });
+
+    it('accepts multipart only on routes that declare it', async () => {
+        const upload = route(async () => ({ ok: true }), { errorMessage: 'failed', contentTypes: ['multipart/form-data'] });
+        const headers = { 'content-type': 'multipart/form-data; boundary=x' };
+
+        expect((await upload(request(undefined, { method: 'POST', headers, body: 'x' }), context({}))).status).toBe(200);
+        expect((await ok(request(undefined, { method: 'POST', headers, body: 'x' }), context({}))).status).toBe(415);
+        expect((await upload(request(undefined, { method: 'POST', headers: json, body: '{}' }), context({}))).status).toBe(415);
+    });
+
+    it('rejects a cross-origin Origin header on state-changing requests', async () => {
+        const response = await ok(
+            request(undefined, { method: 'POST', headers: { ...json, origin: 'https://evil.example' }, body: '{}' }),
+            context({})
+        );
+
+        expect(response.status).toBe(403);
+    });
+
+    it('accepts a same-origin Origin header and a request without one', async () => {
+        const same = await ok(
+            request(undefined, { method: 'POST', headers: { ...json, origin: 'http://localhost:3000' }, body: '{}' }),
+            context({})
+        );
+        const none = await ok(request(undefined, { method: 'POST', headers: json, body: '{}' }), context({}));
+
+        expect(same.status).toBe(200);
+        expect(none.status).toBe(200);
+    });
+
+    it('compares Origin with the forwarded host behind a proxy', async () => {
+        const response = await ok(
+            request(undefined, {
+                method: 'POST',
+                headers: { ...json, origin: 'https://app.example.com', 'x-forwarded-host': 'app.example.com' },
+                body: '{}',
+            }),
+            context({})
+        );
+
+        expect(response.status).toBe(200);
+    });
+
+    it('ignores Origin on safe methods', async () => {
+        const response = await ok(request(undefined, { headers: { origin: 'https://evil.example' } }), context({}));
+
+        expect(response.status).toBe(200);
+    });
+});
+
 describe('route', () => {
     it('serialises the handler result', async () => {
         const handler = route(async () => ({ ok: true }), { errorMessage: 'failed' });
@@ -108,6 +185,7 @@ describe('proxy', () => {
         const response = await handler(
             request('http://localhost:3000/api/things?page=2&page=3', {
                 method: 'POST',
+                headers: { 'content-type': 'application/json' },
                 body: JSON.stringify({ name: 'n' }),
             }),
             context({})
@@ -121,7 +199,7 @@ describe('proxy', () => {
 
     it('rejects an invalid json body with 400', async () => {
         const handler = proxy({ path: () => '/api/things', method: 'POST', errorMessage: 'failed' });
-        const response = await handler(request('http://localhost:3000/api/things', { method: 'POST', body: '{' }), context({}));
+        const response = await handler(request('http://localhost:3000/api/things', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' }), context({}));
 
         expect(response.status).toBe(400);
         expect(fetchMock).not.toHaveBeenCalled();

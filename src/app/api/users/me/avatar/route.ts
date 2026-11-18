@@ -8,7 +8,7 @@ export const POST = route(
         const formData = await request.formData();
         return upstream.post<AvatarUploadResponse>(USER_ENDPOINTS.avatar, formData, { cache: 'no-store' });
     },
-    { errorMessage: 'Failed to upload avatar' }
+    { errorMessage: 'Failed to upload avatar', contentTypes: ['multipart/form-data'] }
 );
 
 export const DELETE = route(
