@@ -33,6 +33,8 @@ export {
 } from './model/types';
 export { useRentalStore } from './model/store';
 export * from './lib/utils';
+export * from './lib/rental-rules';
+export * from './lib/rental-errors';
 export { RENTAL_EVENTS, type RentalEventType } from './model/events';
 export { RENTAL_ENDPOINTS } from './api/endpoints';
 export {

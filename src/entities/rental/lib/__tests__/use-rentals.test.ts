@@ -2,14 +2,18 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
 import { useRentals, useMyRentals, useRental, useCreateRental, useCancelRental, rentalKeys } from '../use-rentals';
-import { clientGet, clientPost, clientDelete } from '@/shared/api';
+import { ApiError, clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { createMockRental, createMockRentals } from '@/entities/rental/lib/testing/factories';
-vi.mock('@/shared/api', () => ({
-    clientGet: vi.fn(),
-    clientPost: vi.fn(),
-    clientDelete: vi.fn(),
-}));
+vi.mock('@/shared/api', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/shared/api')>();
+    return {
+        ...original,
+        clientGet: vi.fn(),
+        clientPost: vi.fn(),
+        clientDelete: vi.fn(),
+    };
+});
 vi.mock('@/shared/lib', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/lib')>();
     return {
@@ -90,6 +94,39 @@ describe('use-rentals hooks', () => {
             await result.current.mutateAsync(request);
             expect(mockClientPost).toHaveBeenCalledWith('/api/rentals', request);
             expect(mockToast.success).toHaveBeenCalled();
+        });
+        it('should explain the open request cap in the error toast', async () => {
+            mockClientPost.mockRejectedValueOnce(
+                new ApiError({
+                    status: 409,
+                    message: 'You already have 3 open rental requests.',
+                    timestamp: new Date().toISOString(),
+                    code: 'OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED',
+                })
+            );
+            const { result } = renderHook(() => useCreateRental(), {
+                wrapper: createQueryWrapper(),
+            });
+            result.current.mutate({ carId: 1, startDate: '2026-12-01', endDate: '2026-12-03' });
+            await waitFor(() => expect(mockToast.error).toHaveBeenCalled());
+            expect(mockToast.error.mock.calls[0][1]).toContain('3 open rental requests');
+        });
+        it('should show the retry hint when rate limited', async () => {
+            mockClientPost.mockRejectedValueOnce(
+                new ApiError({
+                    status: 429,
+                    message: 'Too many requests',
+                    timestamp: new Date().toISOString(),
+                    code: 'RATE_LIMIT_EXCEEDED',
+                    retryAfter: 30,
+                })
+            );
+            const { result } = renderHook(() => useCreateRental(), {
+                wrapper: createQueryWrapper(),
+            });
+            result.current.mutate({ carId: 1, startDate: '2026-12-01', endDate: '2026-12-03' });
+            await waitFor(() => expect(mockToast.error).toHaveBeenCalled());
+            expect(mockToast.error.mock.calls[0][1]).toContain('30 seconds');
         });
     });
     describe('useCancelRental', () => {
