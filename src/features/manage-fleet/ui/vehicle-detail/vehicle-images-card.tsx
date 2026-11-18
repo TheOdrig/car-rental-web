@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -59,7 +59,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
             <CardContent>
                 <div className="relative">
                     <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
-                        <Image
+                        <DynamicImage
                             src={allImages[currentIndex]}
                             alt={`${vehicleName} - Image ${currentIndex + 1}`}
                             fill
@@ -100,7 +100,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                                     : 'border-transparent hover:border-slate-300 dark:hover:border-slate-600'
                                     }`}
                             >
-                                <Image
+                                <DynamicImage
                                     src={img}
                                     alt={`Thumbnail ${idx + 1}`}
                                     fill

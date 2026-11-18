@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, useCallback, type ChangeEvent } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Camera, Trash2, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
@@ -74,7 +74,7 @@ export function ProfilePicture({
             <div className="group relative">
                 <div className="relative h-32 w-32 overflow-hidden rounded-full border-4 border-background shadow-lg">
                     {normalizeAvatarUrl(avatarUrl) ? (
-                        <Image
+                        <DynamicImage
                             src={normalizeAvatarUrl(avatarUrl)!}
                             alt="Profile picture"
                             fill

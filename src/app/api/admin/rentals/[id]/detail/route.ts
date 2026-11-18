@@ -1,4 +1,4 @@
-import type { Schemas } from '@/shared/api';
+import { isApiError, type Schemas } from '@/shared/api';
 import { logger } from '@/shared/lib/logger';
 import { API, parseIdParam, route, upstream } from '@/shared/server';
 import { buildRentalDetail } from '../../_lib/rental-detail';
@@ -11,6 +11,9 @@ async function optional<T>(label: string, request: Promise<T> | undefined): Prom
     try {
         return await request;
     } catch (error) {
+        if (isApiError(error) && error.status === 404) {
+            return undefined;
+        }
         logger.warn(`[BFF] Rental detail ${label} unavailable`, error);
         return undefined;
     }

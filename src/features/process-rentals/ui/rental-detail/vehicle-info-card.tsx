@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Car, ExternalLink, Fuel, Settings2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
@@ -44,7 +44,7 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                 <div className="flex gap-4">
                     {vehicle.imageUrl ? (
                         <div className="relative w-24 h-16 rounded-lg overflow-hidden flex-shrink-0">
-                            <Image
+                            <DynamicImage
                                 src={vehicle.imageUrl}
                                 alt={`${vehicle.brand} ${vehicle.model}`}
                                 fill

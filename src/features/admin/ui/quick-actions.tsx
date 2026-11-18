@@ -1,7 +1,7 @@
 'use client';
 
 import React, { memo, useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { cn } from '@/shared/lib';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -336,7 +336,7 @@ export const QuickActionItem = memo(function QuickActionItem({
                     </div>
                     {item.carImage && (
                         <div className="absolute -bottom-1 -right-1 h-6 w-9 rounded-md border-2 border-background overflow-hidden bg-muted shadow-sm">
-                            <Image
+                            <DynamicImage
                                 src={item.carImage}
                                 alt={item.carBrand}
                                 fill
