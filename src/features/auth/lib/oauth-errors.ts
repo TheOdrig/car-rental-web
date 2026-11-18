@@ -23,9 +23,11 @@ export function oauthErrorMessage(code: string | undefined): string | null {
         return null;
     }
 
-    return OAUTH_ERROR_MESSAGES[code.toLowerCase()] ?? GENERIC_OAUTH_ERROR;
+    const key = code.toLowerCase();
+
+    return Object.hasOwn(OAUTH_ERROR_MESSAGES, key) ? OAUTH_ERROR_MESSAGES[key] : GENERIC_OAUTH_ERROR;
 }
 
 export function isKnownOAuthErrorCode(code: string): boolean {
-    return code.toLowerCase() in OAUTH_ERROR_MESSAGES;
+    return Object.hasOwn(OAUTH_ERROR_MESSAGES, code.toLowerCase());
 }

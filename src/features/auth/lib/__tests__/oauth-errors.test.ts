@@ -26,6 +26,14 @@ describe('oauthErrorMessage', () => {
         expect(oauthErrorMessage('local_account_unverified')).toMatch(/password/i);
     });
 
+    it.each(['constructor', '__proto__', 'toString', 'hasOwnProperty', 'valueOf', 'CONSTRUCTOR'])(
+        'treats the inherited key %s as unknown',
+        (code) => {
+            expect(isKnownOAuthErrorCode(code)).toBe(false);
+            expect(oauthErrorMessage(code)).toBe('Social sign-in failed. Please try again or use your password.');
+        }
+    );
+
     it('falls back to a generic message for unknown codes without echoing them', () => {
         const message = oauthErrorMessage('<b>x</b>');
 
