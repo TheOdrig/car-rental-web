@@ -123,16 +123,15 @@ export function CurrencyProvider({
     }, [fetchRates]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const saved = localStorage.getItem(CURRENCY_STORAGE_KEY);
-            if (saved && CURRENCIES.some(c => c.code === saved)) {
-                setCurrencyState(saved as CurrencyCode);
-            }
+        const saved = localStorage.getItem(CURRENCY_STORAGE_KEY);
+        if (saved && CURRENCIES.some(c => c.code === saved)) {
+            queueMicrotask(() => setCurrencyState(saved as CurrencyCode));
         }
     }, []);
 
     useEffect(() => {
-        fetchRates();
+        const timer = setTimeout(() => void fetchRates(), 0);
+        return () => clearTimeout(timer);
     }, [fetchRates]);
 
     useEffect(() => {

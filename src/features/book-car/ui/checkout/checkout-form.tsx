@@ -93,7 +93,7 @@ export function CheckoutForm({
             percentage: mod.formattedPercentage,
             isDiscount: mod.isDiscount,
         }));
-    }, [pricingData?.appliedModifiers]);
+    }, [pricingData]);
 
     const priceBreakdown: PriceBreakdown | null = useMemo(() => {
         if (!car) return null;

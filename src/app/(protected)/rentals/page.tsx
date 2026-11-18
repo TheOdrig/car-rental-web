@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 import { CalendarDays, Car, Download, Wallet } from 'lucide-react';
 import { logger } from '@/shared/lib';
 import { useMyRentals, useCancelRental } from '@/entities/rental';
@@ -29,6 +30,7 @@ import {
 } from '@/shared/ui/alert-dialog';
 
 export default function MyRentalsPage() {
+    const router = useRouter();
     const { data, isLoading, error } = useMyRentals();
     const cancelMutation = useCancelRental();
     const [activeTab, setActiveTab] = useState<RentalTab>('all');
@@ -53,17 +55,17 @@ export default function MyRentalsPage() {
     const handleAction = useCallback((action: string, rental: Rental) => {
         switch (action) {
             case 'view':
-                window.location.href = `/rentals/${rental.id}`;
+                router.push(`/rentals/${rental.id}`);
                 break;
             case 'pay':
-                window.location.href = `/rentals/${rental.id}/pay`;
+                router.push(`/rentals/${rental.id}/pay`);
                 break;
             case 'receipt':
                 showToast.info(`Downloading receipt for rental #${rental.id}`);
                 break;
             case 'book-again':
                 if (rental.carSummary?.id) {
-                    window.location.href = `/cars/${rental.carSummary.id}`;
+                    router.push(`/cars/${rental.carSummary.id}`);
                 }
                 break;
             case 'cancel':
@@ -73,7 +75,7 @@ export default function MyRentalsPage() {
             default:
                 logger.warn(`Unknown action: ${action}`);
         }
-    }, []);
+    }, [router]);
 
     const handleConfirmCancel = useCallback(() => {
         if (rentalToCancel) {

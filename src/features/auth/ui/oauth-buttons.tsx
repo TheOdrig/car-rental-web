@@ -48,7 +48,7 @@ export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps
     const handleOAuthLogin = (provider: 'google' | 'github') => {
         try {
             setLoadingProvider(provider);
-            window.location.href = `/api/auth/oauth/${provider}`;
+            window.location.href = new URL(`/api/auth/oauth/${provider}`, window.location.origin).href;
         } catch {
             setLoadingProvider(null);
             onError?.(`Failed to connect to ${provider}. Please try again.`);
