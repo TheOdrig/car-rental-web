@@ -4,6 +4,7 @@ export { MetricsCard, MetricsCardSkeleton } from './metrics-card';
 export type { } from './metrics-card';
 
 export { DashboardMetricsGrid } from './metrics-card';
+export { DashboardHeader } from './dashboard-header';
 export { FleetStatusCard, FleetStatusCompact, FleetStatusSkeleton } from '@/features/manage-fleet/ui';
 export { FleetStatsCards, FleetStatsCardsSkeleton } from '@/features/manage-fleet/ui';
 export { FleetTable, FleetTableSkeleton } from '@/features/manage-fleet/ui';

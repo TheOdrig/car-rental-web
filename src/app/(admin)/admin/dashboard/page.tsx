@@ -1,47 +1,55 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo, useState } from 'react';
+import { toast } from 'sonner';
 import { clientPost } from '@/shared/api';
-import { cn } from '@/shared/lib';
-import Link from 'next/link';
-import { RefreshCw, Plus, Clock, DollarSign } from 'lucide-react';
-import { Button } from '@/shared/ui/button';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { Breadcrumb } from '@/widgets/layout';
 import {
+    DashboardHeader,
     DashboardMetricsGrid,
+    FleetStatusCard,
     PendingRentalsTable,
     QuickActionsCard,
-    FleetStatusCard,
     RevenueChart,
-} from '@/features/admin';
-import {
+    processRevenueData,
     useDashboardSummary,
     useFleetStatus,
+    useInvalidateAdmin,
     usePendingApprovals,
     usePendingPickups,
     usePendingReturns,
-    useInvalidateAdmin,
     useRevenueData,
 } from '@/features/admin';
-import {
-    useApproveRental,
-    useRejectRental,
-    useProcessPickup,
-    useProcessReturn,
-} from '@/features/process-rentals';
-import { processRevenueData } from '@/features/admin';
 import type { RevenuePeriod } from '@/features/admin';
-import type { ProcessReturnData } from '@/features/process-rentals';
-import { toast } from 'sonner';
+import { useRentalActions } from '@/features/process-rentals';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
-type MetricsCardType = 'revenue' | 'activeRentals' | 'approvals' | 'users' | 'pickups' | 'returns' | 'overdue';
+
+const EMPTY_FLEET_STATUS = {
+    totalCars: 0,
+    availableCars: 0,
+    rentedCars: 0,
+    reservedCars: 0,
+    maintenanceCars: 0,
+    inspectionCars: 0,
+    damagedCars: 0,
+    occupancyRate: 0,
+};
+
+function formatUpdatedTime(generatedAt: string | undefined): string | null {
+    if (!generatedAt) return null;
+
+    return new Date(generatedAt).toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    });
+}
 
 export default function AdminDashboardPage() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
     const [revenuePeriod, setRevenuePeriod] = useState<RevenuePeriod>('last6months');
-    const [actionInProgress, setActionInProgress] = useState<number | null>(null);
     const [refreshingRates, setRefreshingRates] = useState(false);
 
     const { data: summary, isLoading: summaryLoading } = useDashboardSummary();
@@ -51,10 +59,7 @@ export default function AdminDashboardPage() {
     const { data: pickups, isLoading: pickupsLoading } = usePendingPickups();
     const { data: returns, isLoading: returnsLoading } = usePendingReturns();
 
-    const approveMutation = useApproveRental();
-    const rejectMutation = useRejectRental();
-    const pickupMutation = useProcessPickup();
-    const returnMutation = useProcessReturn();
+    const actions = useRentalActions();
     const invalidate = useInvalidateAdmin();
 
     const handleRefresh = () => {
@@ -75,91 +80,17 @@ export default function AdminDashboardPage() {
         }
     };
 
-    const handleCardClick = (type: MetricsCardType) => {
-        switch (type) {
-            case 'revenue':
-            case 'activeRentals':
-            case 'users':
-                break;
-            case 'approvals':
-            case 'pickups':
-            case 'returns':
-            case 'overdue':
-                setActiveTab(type);
-                break;
+    const handleCardClick = (type: string) => {
+        if (type === 'approvals' || type === 'pickups' || type === 'returns' || type === 'overdue') {
+            setActiveTab(type);
         }
     };
 
-    const handleApprove = async (rentalId: number, notes?: string) => {
-        setActionInProgress(rentalId);
-        try {
-            await approveMutation.mutateAsync({ rentalId, notes });
-        } catch (error) {
-            console.error('Failed to approve rental:', error);
-        } finally {
-            setActionInProgress(null);
-        }
-    };
-
-    const handleReject = async (rentalId: number, reason: string) => {
-        setActionInProgress(rentalId);
-        try {
-            await rejectMutation.mutateAsync({ rentalId, reason });
-        } catch (error) {
-            console.error('Failed to reject rental:', error);
-        } finally {
-            setActionInProgress(null);
-        }
-    };
-
-    const handlePickup = async (rentalId: number, notes?: string) => {
-        setActionInProgress(rentalId);
-        try {
-            await pickupMutation.mutateAsync({ rentalId, notes });
-        } catch (error) {
-            console.error('Failed to process pickup:', error);
-        } finally {
-            setActionInProgress(null);
-        }
-    };
-
-    const handleReturn = async (rentalId: number, data?: string | ProcessReturnData) => {
-        setActionInProgress(rentalId);
-        try {
-            await returnMutation.mutateAsync({ rentalId, data });
-        } catch (error) {
-            console.error('Failed to process return:', error);
-        } finally {
-            setActionInProgress(null);
-        }
-    };
-
-    const getActiveItems = () => {
-        switch (activeTab) {
-            case 'approvals':
-                return approvals?.content ?? [];
-            case 'pickups':
-                return pickups?.content ?? [];
-            case 'returns':
-            case 'overdue':
-                return returns?.content ?? [];
-            default:
-                return [];
-        }
-    };
-
-    const isTableLoading = () => {
-        switch (activeTab) {
-            case 'approvals':
-                return approvalsLoading;
-            case 'pickups':
-                return pickupsLoading;
-            case 'returns':
-            case 'overdue':
-                return returnsLoading;
-            default:
-                return false;
-        }
+    const tabSources = {
+        approvals: { items: approvals?.content ?? [], loading: approvalsLoading },
+        pickups: { items: pickups?.content ?? [], loading: pickupsLoading },
+        returns: { items: returns?.content ?? [], loading: returnsLoading },
+        overdue: { items: returns?.content ?? [], loading: returnsLoading },
     };
 
     const chartData = useMemo(() => {
@@ -168,81 +99,34 @@ export default function AdminDashboardPage() {
     }, [revenueAnalytics, revenuePeriod]);
 
     const latestRevenue = useMemo(() => {
-        if (!revenueAnalytics?.monthlyRevenue || revenueAnalytics.monthlyRevenue.length === 0) return null;
-        return revenueAnalytics.monthlyRevenue[revenueAnalytics.monthlyRevenue.length - 1];
+        const monthly = revenueAnalytics?.monthlyRevenue;
+        return monthly && monthly.length > 0 ? monthly[monthly.length - 1] : null;
     }, [revenueAnalytics]);
-
-    const lastUpdated = summary?.generatedAt
-        ? new Date(summary.generatedAt).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        })
-        : null;
 
     return (
         <ErrorBoundary>
             <div className="space-y-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard' },
-                    ]}
+                <Breadcrumb items={[{ label: 'Dashboard' }]} />
+
+                <DashboardHeader
+                    lastUpdated={formatUpdatedTime(summary?.generatedAt)}
+                    isRefreshing={summaryLoading}
+                    isRefreshingRates={refreshingRates}
+                    onRefresh={handleRefresh}
+                    onRefreshRates={handleRefreshRates}
                 />
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                        <div className="flex items-center gap-2 text-muted-foreground">
-                            <p className="text-sm">Overview of your rental operations</p>
-                            {lastUpdated && (
-                                <span className="flex items-center gap-1.5 text-[11px] font-medium bg-slate-100 dark:bg-slate-800/50 text-slate-500 dark:text-slate-400 px-2 py-0.5 rounded-full border border-dashed border-slate-200 dark:border-slate-700">
-                                    <Clock className="h-3 w-3" />
-                                    Updated {lastUpdated}
-                                </span>
-                            )}
-                        </div>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={handleRefreshRates}
-                            disabled={refreshingRates}
-                            className="gap-2 shrink-0 cursor-pointer bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/40 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
-                            aria-label="Refresh exchange rates"
-                        >
-                            <DollarSign className={cn('h-4 w-4', refreshingRates && 'animate-pulse')} aria-hidden="true" />
-                            {refreshingRates ? 'Refreshing...' : 'Refresh Rates'}
-                        </Button>
-                        <Button
-                            size="sm"
-                            className="gap-2 shrink-0 cursor-pointer"
-                            aria-label="Add new car to fleet"
-                            asChild
-                        >
-                            <Link href="/admin/fleet/new">
-                                <Plus className="h-4 w-4" aria-hidden="true" />
-                                Add New Car
-                            </Link>
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={handleRefresh}
-                            className="shrink-0 cursor-pointer"
-                            aria-label={summaryLoading ? "Refreshing data" : "Refresh dashboard data"}
-                        >
-                            <RefreshCw className={cn('h-4 w-4', summaryLoading && 'animate-spin')} aria-hidden="true" />
-                        </Button>
-                    </div>
-                </div>
 
                 <DashboardMetricsGrid
                     totalRevenue={revenueAnalytics?.breakdown.totalRevenue}
-                    revenueTrend={latestRevenue ? {
-                        value: Math.abs(latestRevenue.growthPercentage),
-                        direction: latestRevenue.growthPercentage >= 0 ? 'up' : 'down',
-                        label: 'vs last month'
-                    } : undefined}
+                    revenueTrend={
+                        latestRevenue
+                            ? {
+                                  value: Math.abs(latestRevenue.growthPercentage),
+                                  direction: latestRevenue.growthPercentage >= 0 ? 'up' : 'down',
+                                  label: 'vs last month',
+                              }
+                            : undefined
+                    }
                     activeRentals={fleetStatus?.rentedCars}
                     pendingApprovals={summary?.pendingApprovals ?? 0}
                     isLoading={summaryLoading || revenueLoading}
@@ -260,14 +144,14 @@ export default function AdminDashboardPage() {
                         />
 
                         <PendingRentalsTable
-                            items={getActiveItems()}
+                            items={tabSources[activeTab].items}
                             type={activeTab}
-                            isLoading={isTableLoading()}
-                            onApprove={handleApprove}
-                            onReject={handleReject}
-                            onPickup={handlePickup}
-                            onReturn={handleReturn}
-                            actionInProgress={actionInProgress}
+                            isLoading={tabSources[activeTab].loading}
+                            onApprove={actions.approve}
+                            onReject={actions.reject}
+                            onPickup={actions.pickup}
+                            onReturn={actions.processReturn}
+                            actionInProgress={actions.actionInProgress}
                         />
                     </div>
                     <div className="space-y-6">
@@ -275,22 +159,14 @@ export default function AdminDashboardPage() {
                             pickupItems={pickups?.content ?? []}
                             returnItems={returns?.content ?? []}
                             isLoading={pickupsLoading || returnsLoading}
-                            onPickup={handlePickup}
-                            onReturn={handleReturn}
-                            actionInProgress={actionInProgress}
+                            onPickup={actions.pickup}
+                            onReturn={actions.processReturn}
+                            actionInProgress={actions.actionInProgress}
                         />
                         <FleetStatusCard
-                            data={fleetStatus ?? {
-                                totalCars: 0,
-                                availableCars: 0,
-                                rentedCars: 0,
-                                reservedCars: 0,
-                                maintenanceCars: 0,
-                                inspectionCars: 0,
-                                damagedCars: 0,
-                                occupancyRate: 0,
-                                generatedAt: new Date().toISOString(),
-                            }}
+                            data={
+                                fleetStatus ?? { ...EMPTY_FLEET_STATUS, generatedAt: new Date().toISOString() }
+                            }
                             className={fleetLoading ? 'opacity-50' : ''}
                         />
                     </div>

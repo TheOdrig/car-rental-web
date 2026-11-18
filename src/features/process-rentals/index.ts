@@ -17,6 +17,7 @@ export { RejectRentalDialog } from './ui/reject-rental-dialog';
 export { ProcessPickupDialog } from './ui/process-pickup-dialog';
 export { ProcessReturnDialog } from './ui/process-return-dialog';
 export { PendingRentalsTable, PendingRentalsSkeleton } from './ui/pending-rentals';
+export { useRentalActions } from './lib/use-rental-actions';
 
 
 export {

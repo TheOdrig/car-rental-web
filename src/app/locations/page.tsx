@@ -1,5 +1,3 @@
-'use client';
-
 import { MapPin, Navigation } from 'lucide-react';
 import { ComingSoonBanner } from '@/shared/ui/coming-soon-banner';
 import { Card, CardContent } from '@/shared/ui/card';
