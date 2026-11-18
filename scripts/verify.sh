@@ -3,6 +3,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 echo "==> lint (max-warnings 0)"; npm run lint
+echo "==> contract (generated types vs snapshot)"; npm run contract:check
 echo "==> typecheck"; npm run type-check
 echo "==> vitest (incl. architecture tests)"; npm test
 echo "==> docs lint (report-only)"

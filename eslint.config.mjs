@@ -85,6 +85,7 @@ const eslintConfig = defineConfig([
     ".agent/**",
     "car-rental-api/**",
     "coverage/**",
+    "src/shared/api/generated/**",
   ]),
 ]);
 

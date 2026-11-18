@@ -1,2 +1,5 @@
 *.sh text eol=lf
 .husky/* text eol=lf
+
+contract/*.json text eol=lf
+src/shared/api/generated/*.ts text eol=lf
