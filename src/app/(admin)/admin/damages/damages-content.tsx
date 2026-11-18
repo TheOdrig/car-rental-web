@@ -1,0 +1,103 @@
+'use client';
+
+import { Suspense, useCallback } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { RefreshCw, BarChart3 } from 'lucide-react';
+import Link from 'next/link';
+import { Button } from '@/shared/ui/button';
+import { Breadcrumb } from '@/widgets/layout';
+import { DamageTable, DamageFilters } from '@/features/admin';
+import { Pagination } from '@/shared/ui/pagination';
+import { useDamages } from '@/features/manage-damages';
+import { toast } from 'sonner';
+import type { DamageSearchFilters } from '@/entities/damage';
+
+function DamagesList() {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+
+    const page = parseInt(searchParams?.get('page') || '0', 10);
+    const filters: DamageSearchFilters = {
+        severity: searchParams?.get('severity') as DamageSearchFilters['severity'] || undefined,
+        category: searchParams?.get('category') as DamageSearchFilters['category'] || undefined,
+        status: searchParams?.get('status') as DamageSearchFilters['status'] || undefined,
+        startDate: searchParams?.get('startDate') || undefined,
+        endDate: searchParams?.get('endDate') || undefined,
+    };
+
+    const { data, isLoading, isFetching, refetch } = useDamages(filters, page, 20);
+
+    const handleRefresh = async () => {
+        try {
+            await refetch();
+            toast.success('Damages refreshed');
+        } catch {
+            toast.error('Failed to refresh');
+        }
+    };
+
+    const handlePageChange = useCallback((newPage: number) => {
+        const params = new URLSearchParams(searchParams?.toString());
+        params.set('page', String(newPage));
+        router.push(`/admin/damages?${params.toString()}`);
+    }, [router, searchParams]);
+
+    return (
+        <div className="space-y-6">
+            <Breadcrumb
+                items={[
+                    { label: 'Dashboard', href: '/admin/dashboard' },
+                    { label: 'Damage Reports' },
+                ]}
+            />
+
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm bg-white/30 dark:bg-slate-900/30 p-6 rounded-3xl border border-white/50 dark:border-white/5 shadow-sm">
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Damage Reports</h1>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                        Manage and track vehicle damage reports
+                    </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleRefresh}
+                        disabled={isFetching}
+                    >
+                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+                    </Button>
+                    <Button variant="outline" size="sm" asChild>
+                        <Link href="/admin/damages/statistics">
+                            <BarChart3 className="h-4 w-4" />
+                            View Statistics
+                        </Link>
+                    </Button>
+                </div>
+            </div>
+
+            <DamageFilters />
+
+            <DamageTable
+                damages={data?.content || []}
+                isLoading={isLoading}
+            />
+
+            {data && data.totalPages > 1 && (
+                <Pagination
+                    currentPage={data.page}
+                    totalPages={data.totalPages}
+                    onPageChange={handlePageChange}
+                />
+            )}
+        </div>
+    );
+}
+
+export function DamagesContent() {
+    return (
+        <Suspense fallback={<div className="animate-pulse">Loading...</div>}>
+            <DamagesList />
+        </Suspense>
+    );
+}

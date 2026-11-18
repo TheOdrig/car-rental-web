@@ -1,67 +1,20 @@
-'use client';
+import { notFound } from 'next/navigation';
+import { RentalDetailContent } from './rental-detail-content';
 
-import { use } from 'react';
-
-import { useRouter, notFound } from 'next/navigation';
-import { useRental } from '@/entities/rental';
-import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
-import { Breadcrumb } from '@/shared/ui';
-import { Skeleton } from '@/shared/ui/skeleton';
-
-interface RentalDetailPageProps {
+interface PageProps {
     params: Promise<{ id: string }>;
 }
 
-function BreadcrumbLoader() {
-    return (
-        <div className="mb-6 flex items-center gap-2">
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-16" />
-            <Skeleton className="h-4 w-4" />
-            <Skeleton className="h-4 w-24" />
-        </div>
-    );
+function isNumericId(value: string): boolean {
+    return /^[0-9]+$/.test(value) && Number.isSafeInteger(Number(value));
 }
 
-export default function RentalDetailPage({ params }: RentalDetailPageProps) {
-    const router = useRouter();
-    const { id } = use(params);
-    const rentalId = parseInt(id, 10);
+export default async function RentalDetailPage({ params }: PageProps) {
+    const { id } = await params;
 
-    const { data: rental, isLoading, error } = useRental(rentalId);
-
-    if (isNaN(rentalId)) {
+    if (!isNumericId(id)) {
         notFound();
     }
 
-    const handleCancelSuccess = () => {
-        router.push('/rentals');
-    };
-
-    if (isLoading) {
-        return (
-            <div className="container py-8">
-                <BreadcrumbLoader />
-                <RentalDetailSkeleton />
-            </div>
-        );
-    }
-
-    if (error || !rental) {
-        notFound();
-    }
-
-    return (
-        <div className="container py-8">
-            <Breadcrumb
-                items={[
-                    { label: 'Rentals', href: '/rentals' },
-                    { label: `Order #${rental.id}` },
-                ]}
-                className="mb-6"
-            />
-            <RentalDetail rental={rental} onCancelSuccess={handleCancelSuccess} />
-        </div>
-    );
+    return <RentalDetailContent id={id} />;
 }
