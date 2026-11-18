@@ -3,7 +3,7 @@ export interface PendingFilters {
     size?: number;
 }
 
-export interface AdminCarsFilters {
+export interface AdminFleetListFilters {
     page?: number;
     size?: number;
     status?: string;
@@ -24,7 +24,7 @@ export const adminKeys = {
     revenue: () => [...adminKeys.all, 'revenue'] as const,
     alerts: () => [...adminKeys.all, 'alerts'] as const,
     cars: () => [...adminKeys.all, 'cars'] as const,
-    carsList: (filters?: AdminCarsFilters) => [...adminKeys.cars(), 'list', filters] as const,
+    carsList: (filters?: AdminFleetListFilters) => [...adminKeys.cars(), 'list', filters] as const,
     rentals: () => [...adminKeys.all, 'rentals'] as const,
     rentalDetail: (id: number) => [...adminKeys.rentals(), id] as const,
     vehicleDetail: (id: number) => [...adminKeys.cars(), id] as const,

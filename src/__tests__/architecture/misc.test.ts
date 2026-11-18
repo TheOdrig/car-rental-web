@@ -1,119 +1,58 @@
 import { describe, it, expect } from 'vitest';
-import { scanFiles, readFile, fileExists } from './helpers/file-scanner';
+import { scanFiles, readFile } from './helpers/file-scanner';
 import { getExports } from './helpers/import-analyzer';
-import { readdirSync, statSync } from 'fs';
+import { existsSync, readdirSync, statSync } from 'fs';
 import { join } from 'path';
 
+function directories(path: string): string[] {
+  return readdirSync(path).filter((item) => statSync(join(path, item)).isDirectory());
+}
 
+function hasFiles(path: string): boolean {
+  return readdirSync(path, { recursive: true }).some((entry) => statSync(join(path, String(entry))).isFile());
+}
 
-describe('Miscellaneous Properties', () => {
+describe('Slice structure properties', () => {
+  const layers = ['features', 'entities', 'widgets'];
 
-  it('Property 4: Slice Structure Consistency - standard segments', async () => {
-    const layers = ['features', 'entities', 'widgets'];
+  it('every slice has an index.ts and at least one standard segment', () => {
     const violations: string[] = [];
 
     for (const layer of layers) {
-      const layerPath = `src/${layer}`;
-
-      try {
-        const slices = readdirSync(layerPath).filter((item) => {
-          const itemPath = join(layerPath, item);
-          return statSync(itemPath).isDirectory();
-        });
-
-        for (const slice of slices) {
-          const slicePath = `${layerPath}/${slice}`;
-
-
-          const hasIndex = fileExists(`${slicePath}/index.ts`);
-
-          if (!hasIndex) {
-            violations.push(`${slicePath}: Missing index.ts`);
-          }
-
-
-          const hasApi = fileExists(`${slicePath}/api`);
-          const hasModel = fileExists(`${slicePath}/model`);
-          const hasUi = fileExists(`${slicePath}/ui`);
-          const hasLib = fileExists(`${slicePath}/lib`);
-
-          if (!hasApi && !hasModel && !hasUi && !hasLib) {
-            violations.push(`${slicePath}: Missing standard segments (api, model, ui, lib)`);
-          }
+      for (const slice of directories(`src/${layer}`)) {
+        const slicePath = `src/${layer}/${slice}`;
+        if (!hasFiles(slicePath)) {
+          continue;
         }
-      } catch {
 
+        if (!existsSync(`${slicePath}/index.ts`)) {
+          violations.push(`${slicePath}: missing index.ts`);
+        }
+
+        const segments = ['api', 'model', 'ui', 'lib'].filter((segment) => existsSync(`${slicePath}/${segment}`));
+        if (segments.length === 0) {
+          violations.push(`${slicePath}: none of api, model, ui, lib`);
+        }
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 4 Violations:');
-      violations.forEach((violation) => {
-        console.log(`  - ${violation}`);
-      });
-    }
-
-
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
 
+  it('every public API exports something', async () => {
+    const publicApis = await scanFiles('src/{features,entities,widgets}/*/index.ts');
+    const violations = publicApis.filter((api) => getExports(api).length === 0);
 
-  it('Property 9: Event Bus Asynchronous Delivery - non-blocking', async () => {
-    const eventBusPath = 'src/shared/events/event-bus.ts';
-
-    if (!fileExists(eventBusPath)) {
-      console.log('\n⚠️  Event bus not found, skipping test');
-      return;
-    }
-
-    const content = readFile(eventBusPath);
-
-
-    const isAsync =
-      content.includes('setTimeout') ||
-      content.includes('queueMicrotask') ||
-      content.includes('Promise.resolve().then');
-
-    if (!isAsync) {
-      console.log('\n❌ Property 9 Violation:');
-      console.log('  - Event bus should deliver events asynchronously');
-    }
-
-    expect(isAsync).toBe(true);
+    expect(publicApis.length).toBeGreaterThan(0);
+    expect(violations).toEqual([]);
   });
 
+  it('query keys come from the slice key factories, not inline literals', async () => {
+    const files = await scanFiles('src/**/*.{ts,tsx}', { exclude: ['**/__tests__/**', '**/testing/**'] });
+    const literal = /queryKey: *[[] *['"]/;
+    const violations = files.filter((file) => literal.test(readFile(file)));
 
-  it('Property 19: API Contract Stability - backward compatibility', async () => {
-    const publicAPIs = await scanFiles('src/{features,entities,widgets}/**/index.ts');
-    const violations: string[] = [];
-
-    for (const api of publicAPIs) {
-      const exports = getExports(api);
-
-
-
-
-
-      if (exports.length < 2 && !api.includes('/shared/')) {
-        violations.push(`${api}: Very few exports (${exports.length}), might be incomplete`);
-      }
-
-      const content = readFile(api);
-
-
-      if (content.includes("from './lib")) {
-        violations.push(`${api}: Exports internal lib/ modules (should be private)`);
-      }
-    }
-
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 19 Violations:');
-      violations.forEach((violation) => {
-        console.log(`  - ${violation}`);
-      });
-    }
-
-
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
+
 });

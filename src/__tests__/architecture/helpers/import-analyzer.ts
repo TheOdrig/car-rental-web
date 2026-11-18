@@ -7,10 +7,15 @@ export function getImports(filePath: string): string[] {
   const imports: string[] = [];
 
 
-  const es6ImportRegex = /import\s+(?:[\w*{}\s,]+\s+from\s+)?['"]([^'"]+)['"]/g;
+  const moduleStatementRegex = /\b(?:import|export)\b[^;'"]*?\bfrom\s*['"]([^'"]+)['"]/g;
+  const sideEffectImportRegex = /\bimport\s*['"]([^'"]+)['"]/g;
   let match;
 
-  while ((match = es6ImportRegex.exec(content)) !== null) {
+  while ((match = moduleStatementRegex.exec(content)) !== null) {
+    imports.push(match[1]);
+  }
+
+  while ((match = sideEffectImportRegex.exec(content)) !== null) {
     imports.push(match[1]);
   }
 

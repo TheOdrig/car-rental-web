@@ -5,39 +5,12 @@ import {
   usesClientFeatures,
   isAsyncComponent,
   hasFetchCalls,
-  isInFeatureOrWidget,
 } from './helpers/file-scanner';
 import { getImports, resolveImport } from './helpers/import-analyzer';
 
 
 
 describe('Server/Client Component Properties', () => {
-
-  it('Property 10: Server Component Default - no use client unless needed', async () => {
-    const components = await scanFiles('src/**/*.tsx');
-    const violations: string[] = [];
-
-    for (const file of components) {
-      const hasUseClient = hasUseClientDirective(file);
-      const usesClient = usesClientFeatures(file);
-
-
-      if (hasUseClient && !usesClient) {
-        violations.push(file);
-      }
-    }
-
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 10 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Has 'use client' but doesn't use client features`);
-      });
-    }
-
-
-    expect(violations.length).toBeGreaterThanOrEqual(0);
-  });
-
 
   it('Property 11: Client Component Directive - use client for interactivity', async () => {
     const components = await scanFiles('src/**/*.tsx');
@@ -66,34 +39,6 @@ describe('Server/Client Component Properties', () => {
     }
 
     expect(violations).toHaveLength(0);
-  });
-
-
-  it('Property 12: Client Component Naming Convention - clear naming', async () => {
-    const clientComponents = await scanFiles('src/**/*.tsx', { hasUseClient: true });
-    const violations: string[] = [];
-
-    for (const file of clientComponents) {
-
-      if (isInFeatureOrWidget(file)) {
-        continue;
-      }
-
-
-      if (!file.includes('.client.tsx')) {
-        violations.push(file);
-      }
-    }
-
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 12 Violations (optional):');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Client component should use .client.tsx naming`);
-      });
-    }
-
-
-    expect(violations.length).toBeGreaterThanOrEqual(0);
   });
 
 

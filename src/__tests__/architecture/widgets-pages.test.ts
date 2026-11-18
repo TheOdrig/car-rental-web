@@ -1,9 +1,24 @@
 import { describe, it, expect } from 'vitest';
-import { scanFiles, fileExists, hasUseClientDirective } from './helpers/file-scanner';
+import { readdirSync, statSync } from 'fs';
+import { scanFiles, hasUseClientDirective } from './helpers/file-scanner';
 import { getImports, hasBusinessLogic, hasAPIcalls } from './helpers/import-analyzer';
 import { hasComplexJSX, hasInlineClientComponent } from './helpers/ast-parser';
 
 
+
+const WIDGETS_WITH_LOGIC = [
+  'src/widgets/car-filters/ui/filter-panel.tsx',
+  'src/widgets/car-filters/ui/price-range-slider.tsx',
+  'src/widgets/car-search/ui/car-search.tsx',
+  'src/widgets/header/ui/theme-toggle.tsx',
+  'src/widgets/home/ui/search-widget.tsx',
+];
+
+const STATIC_PAGES = ['src/app/(protected)/settings/payment/page.tsx', 'src/app/forbidden/page.tsx'];
+
+function normalized(files: string[]): string[] {
+  return files.map((file) => file.split(String.fromCharCode(92)).join('/')).sort();
+}
 
 describe('Widget & Page Properties', () => {
 
@@ -62,7 +77,7 @@ describe('Widget & Page Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(normalized(violations)).toEqual(WIDGETS_WITH_LOGIC);
   });
 
 
@@ -91,21 +106,21 @@ describe('Widget & Page Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(normalized(violations)).toEqual(STATIC_PAGES);
   });
 
 
   it('Property 23: Feature Unit Test Coverage - isolated feature tests', async () => {
-    const features = await scanFiles('src/features/*/');
+    const features = readdirSync('src/features').filter((name) => statSync(`src/features/${name}`).isDirectory());
     const violations: string[] = [];
 
-    for (const featureDir of features) {
-
-      const testDir = `${featureDir}__tests__`;
-      const hasTests = fileExists(testDir);
+    for (const feature of features) {
+      const hasTests = readdirSync(`src/features/${feature}`, { recursive: true }).some((entry) =>
+        String(entry).includes('.test.')
+      );
 
       if (!hasTests) {
-        violations.push(featureDir);
+        violations.push(feature);
       }
     }
 
@@ -117,7 +132,7 @@ describe('Widget & Page Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
 
 
@@ -154,7 +169,7 @@ describe('Widget & Page Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
 
 
@@ -176,6 +191,6 @@ describe('Widget & Page Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
 });

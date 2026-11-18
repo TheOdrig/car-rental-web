@@ -5,11 +5,24 @@ import {
   getSwitchStatements,
   handlesEnum,
   hasDomainSpecificTypes,
-  getComplexStates,
-  hasDiscriminator,
 } from './helpers/ast-parser';
 
 
+
+const CONTRACT_STATUS_LITERAL_FILES = [
+  'src/entities/payment/model/rental-payment.ts',
+  'src/entities/payment/ui/payment-status-badge.tsx',
+  'src/entities/rental/lib/admin-status.ts',
+  'src/features/manage-rentals/ui/rental-detail/rental-detail.tsx',
+  'src/features/manage-users/ui/customer-detail/customer-rental-history-table.tsx',
+  'src/features/manage-users/ui/customer-detail/customer-verification-card.tsx',
+  'src/features/manage-users/ui/user-table/user-display.ts',
+  'src/features/pay-rental/ui/pay-rental.tsx',
+];
+
+function normalized(files: string[]): string[] {
+  return files.map((file) => file.split(String.fromCharCode(92)).join('/')).sort();
+}
 
 describe('Type Safety Properties', () => {
 
@@ -45,7 +58,7 @@ describe('Type Safety Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(normalized(violations)).toEqual(CONTRACT_STATUS_LITERAL_FILES);
   });
 
 
@@ -109,28 +122,5 @@ describe('Type Safety Properties', () => {
   });
 
 
-  it('Property 18: Discriminated Union Usage - type discriminator for complex state', async () => {
-    const stateFiles = await scanFiles('src/{features,entities}/**/model/*.ts');
-    const violations: string[] = [];
 
-    for (const file of stateFiles) {
-      const complexStates = getComplexStates(file);
-
-      for (const stateName of complexStates) {
-        if (!hasDiscriminator(file, stateName)) {
-          violations.push(`${file} (${stateName})`);
-        }
-      }
-    }
-
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 18 Violations:');
-      violations.forEach((violation) => {
-        console.log(`  - ${violation}: Complex state should use discriminated union`);
-      });
-    }
-
-
-    expect(violations.length).toBeGreaterThanOrEqual(0);
-  });
 });
