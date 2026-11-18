@@ -1,410 +1,109 @@
-# 🚗 Car Rental Web
+# Car Rental Web
 
-A frontend for car rental management, built with **Next.js 16.1** and **TypeScript**.
+The customer and admin web client for the [Car Rental API](https://github.com/TheOdrig/car-rental). Customers browse the catalogue, check availability, request a rental and pay for it; admins confirm rentals, manage the fleet and users, and handle damages and late returns. It is a portfolio project, built to show how a Next.js client is structured, kept in step with an API contract and verified; it is not a deployed product. Stripe runs in test mode only.
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.1-black)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
-[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-843%20passed-brightgreen)](/)
-[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+![Home page](docs-public/screenshots/home.png)
 
-> **🚀 Live Demo:** [arabakiralama.site](https://arabakiralama.site)
+| Browse cars | Car detail with availability |
+| --- | --- |
+| ![Cars list](docs-public/screenshots/cars.png) | ![Car detail](docs-public/screenshots/car-detail.png) |
 
----
+Screenshots were taken against the API running from Docker Compose with its seed data.
 
-## 📸 Screenshots
+## Stack
 
-<details open>
-<summary><b>🏠 Landing Page</b></summary>
+| Area | Choice |
+| --- | --- |
+| Framework | Next.js 16.1.5 (App Router), React 19.2.3, TypeScript 5.9 ([`package.json`](package.json)) |
+| Data and state | TanStack Query 5.90, Zustand 5.0, react-hook-form with Zod 4.2 |
+| UI | Tailwind CSS 4, Radix UI primitives, shadcn-style components |
+| Auth | jose 6.1 (JWT verification on the server), httpOnly cookies |
+| Payments | Stripe Elements (`@stripe/react-stripe-js` 7.1, `@stripe/stripe-js` 10.3), test mode |
+| Contract | openapi-typescript 7.13 generating types from a committed OpenAPI snapshot |
+| Tests | Vitest 4, Testing Library, fast-check, Playwright 1.56 |
+| Architecture checks | ESLint 9 with eslint-plugin-boundaries 5.3 |
 
-![Landing Page](public/readme/01-landing-page.png)
-*Hero section with featured cars and search functionality*
+Node 20 is required ([`.nvmrc`](.nvmrc)).
 
-</details>
+## Architecture
 
-<details>
-<summary><b>🚗 Car Catalog</b></summary>
+### Layers
 
-![Car Catalog](public/readme/02-car-catalog.png)
-*Advanced filtering with brand, transmission, fuel type, and availability dates*
+The source is organised by Feature-Sliced Design: `app`, `widgets`, `features`, `entities`, `shared` under [`src`](src). Imports may only point downward, and slices are reached through their public `index.ts`. [`eslint.config.mjs`](eslint.config.mjs) enforces both with `boundaries/element-types` and `boundaries/no-private`, and the property tests in [`src/__tests__/architecture`](src/__tests__/architecture) check related rules such as server/client separation and type safety. `npm run lint` fails on any warning.
 
-</details>
+### Backend for frontend
 
-<details>
-<summary><b>📊 Admin Dashboard</b></summary>
-
-![Admin Dashboard](public/readme/03-admin-dashboard.png)
-*Real-time metrics, alerts, and quick actions for fleet management*
-
-</details>
-
-<details>
-<summary><b>🔍 Car Detail</b></summary>
-
-![Car Detail](public/readme/04-car-detail.png)
-*Interactive availability calendar and comprehensive vehicle specifications*
-
-</details>
-
-<details>
-<summary><b>👤 User Dashboard</b></summary>
-
-![User Dashboard](public/readme/05-user-dashboard.png)
-*Rental history and status tracking*
-
-</details>
-
-<details>
-<summary><b>🛡️ Admin Fleet Management</b></summary>
-
-![Admin Fleet](public/readme/06-admin-fleet.png)
-*Fleet status overview and vehicle management*
-
-</details>
-
-<details>
-<summary><b>🌙 Dark Mode Support</b></summary>
-
-![Dark Mode](public/readme/07-dark-mode.png)
-*Admin Fleet Management with dark theme - Seamless theme switching*
-
-</details>
-
----
-
-
-## ✨ Features
-
-| Feature | Description |
-|---------|-------------|
-| **Smart Search** | Filter cars by brand, transmission, fuel type, availability dates |
-| **Interactive Details** | Real-time availability calendar, comprehensive specs, dynamic pricing |
-| **Booking Flow** | Request → Confirm → Pickup → Return workflow with status tracking |
-| **User Dashboard** | Manage rentals, view history, update profile, payment methods |
-| **Admin Dashboard** | Fleet management, rental approvals, revenue analytics, quick actions |
-| **Authentication** | JWT + OAuth2 (Google, GitHub), HTTP-Only cookies, secure sessions |
-| **Payment Integration** | Payment history and refund views; Stripe checkout is planned (not yet wired to the API) |
-| **Damage Reporting** | Photo upload, assessment workflow, dispute resolution |
-| **Currency Conversion** | Real-time exchange rates, multi-currency support |
-| **Responsive Design** | Mobile-first, dark/light mode, accessibility compliant |
-
-## 🏗️ Architecture
-
-This frontend uses **Feature-Sliced Design (FSD)** with **Next.js App Router** and API Proxy pattern for secure backend communication.
-
-<details>
-<summary>📊 <b>View FSD Layer Diagram</b></summary>
+The browser never talks to the API. It calls Next route handlers under [`src/app/api`](src/app/api), which call the API from the server.
 
 ```mermaid
-graph TD
-    subgraph "App + Pages Layer"
-        app[Next.js App Router<br/>Routes, Layouts, Providers]
-    end
-    
-    subgraph "Widget Layer"
-        widgets[Composite UI Blocks<br/>8 widgets]
-    end
-    
-    subgraph "Feature Layer"
-        features[Business Logic<br/>9 isolated features]
-    end
-    
-    subgraph "Entity Layer"
-        entities[Domain Models<br/>6 entities]
-    end
-    
-    subgraph "Shared Layer"
-        shared[Infrastructure<br/>API, UI, Utils]
-    end
-    
-    app --> widgets
-    app --> features
-    app --> entities
-    app --> shared
-    
-    widgets --> features
-    widgets --> entities
-    widgets --> shared
-    
-    features --> entities
-    features --> shared
-    
-    entities --> shared
-    
-    style app fill:#e3f2fd
-    style widgets fill:#f3e5f5
-    style features fill:#e8f5e9
-    style entities fill:#fff3e0
-    style shared fill:#fce4ec
+graph LR
+    B[Browser] -->|cookies, same origin| P[proxy.ts]
+    P --> R[Route handlers /api/*]
+    R -->|Bearer token| A[Car Rental API]
+    P -.->|refresh when the access token expired| A
 ```
 
-</details>
+- **Cookies.** Access and refresh tokens live in httpOnly cookies, `secure` in production and `sameSite=lax` ([`auth-cookies.ts`](src/shared/server/auth-cookies.ts)). Client code never sees a token.
+- **Verification.** [`proxy.ts`](src/proxy.ts) verifies the access token with jose (HS256) before protected, admin and admin-API paths are served ([`session.ts`](src/shared/server/session.ts)). Which path needs what is declared in [`route-access.ts`](src/shared/config/route-access.ts) and covered by [`proxy.test.ts`](src/__tests__/proxy.test.ts).
+- **Refresh.** An expired access token is renewed with the refresh token. The API rotates refresh tokens, so concurrent requests would otherwise race on one token. [`refreshAuthSession`](src/shared/server/upstream.ts) shares one in-flight promise per token for a short window, and the browser-side [`clientFetch`](src/shared/api/client.ts) does the same for 401 retries.
+- **Guards.** Every state-changing handler built with [`route()`](src/shared/server/route.ts) rejects a cross-origin `Origin` header with 403 and an unexpected `Content-Type` with 415 before running ([`route.test.ts`](src/shared/server/__tests__/route.test.ts)).
+- **Upstream endpoint registry.** Handlers do not build URLs by hand; they resolve a typed entry from [`upstream-endpoints.ts`](src/shared/server/upstream-endpoints.ts), so a path or method change is a single edit.
+- **Configuration.** Server environment is parsed once with Zod ([`env.ts`](src/shared/server/env.ts)); a missing or short `JWT_SECRET` fails fast.
 
-<details>
-<summary>🔄 <b>View Application Flow</b></summary>
+## Engineering notes
 
-```mermaid
-graph TD
-    subgraph Client Browser
-        UI[React Components]
-    end
-    
-    subgraph Next.js Server
-        Pages[App Router Pages]
-        Proxy[API Proxy Routes]
-        Pages --> Proxy
-    end
-    
-    subgraph State Management
-        TQ[TanStack Query<br/>Server State]
-        ZS[Zustand<br/>Client State]
-    end
-    
-    subgraph Backend
-        API[Spring Boot API<br/>car-rental-api]
-    end
-    
-    UI --> Pages
-    UI --> TQ
-    UI --> ZS
-    Proxy -->|HTTP-Only Cookies| API
-    TQ -->|Cache & Revalidate| Proxy
-```
+- **Generated contract types.** [`contract/openapi.json`](contract/openapi.json) is a snapshot of the API's OpenAPI document. [`scripts/contract.mjs`](scripts/contract.mjs) generates [`src/shared/api/generated/openapi.ts`](src/shared/api/generated/openapi.ts) from it (`npm run contract:generate`), and `npm run contract:check`, part of `verify`, fails if the committed types differ from a fresh generation. `npm run contract:sync` copies the snapshot from a sibling `car-rental-api` checkout. Response types are derived from these schemas through [`contract.ts`](src/shared/api/contract.ts) rather than written by hand.
+- **Three contract tests.** [`upstream-contract.test.ts`](src/shared/server/__tests__/upstream-contract.test.ts) checks that every registered upstream endpoint exists in the snapshot. [`bff-client-contract.test.ts`](src/app/api/__tests__/bff-client-contract.test.ts) checks that the BFF routes the client code calls exist. [`error-codes-contract.test.ts`](src/app/api/__tests__/error-codes-contract.test.ts) checks that every error code the web matches on is in the API's error code enum.
+- **Errors.** The API reports failures as RFC 9457 problem details. [`error.ts`](src/shared/api/error.ts) turns them into an `ApiError` with status, code, field errors, trace id and `Retry-After` ([`error.test.ts`](src/shared/api/__tests__/error.test.ts)), and the BFF answers with `application/problem+json` of the same shape ([`route.ts`](src/shared/server/route.ts)). An unreachable API becomes a 503 and a timeout a 504.
+- **Stripe payment flow.** The API creates a PaymentIntent with manual capture; the pay page ([`pay-rental.tsx`](src/features/pay-rental/ui/pay-rental.tsx)) mounts the Payment Element and calls `confirmPayment` with `redirect: 'if_required'`, so a 3DS redirect returns to the page and resumes by polling instead of creating a second intent. Status is polled with exponential back-off and a cap ([`use-rental-payment.ts`](src/entities/payment/lib/use-rental-payment.ts)); on timeout the customer is told not to pay again. Only `pk_test_` publishable keys are accepted, on the server ([`env.ts`](src/shared/server/env.ts), [`env-stripe.test.ts`](src/shared/server/__tests__/env-stripe.test.ts)) and in the browser ([`stripe-client.ts`](src/features/pay-rental/lib/stripe-client.ts)). The states are covered by [`pay-rental.test.tsx`](src/features/pay-rental/__tests__/pay-rental.test.tsx) with Stripe mocked; no test here drives real Stripe.
+- **Auth and sessions.** Login, registration, logout and refresh go through [`src/app/api/auth`](src/app/api/auth); roles come from the verified JWT claims, and admin pages and `/api/admin` refuse a non-admin ([`session.test.ts`](src/shared/server/__tests__/session.test.ts), [`admin-routes.test.ts`](src/app/api/__tests__/admin-routes.test.ts)).
+- **Safe redirects and OAuth state.** [`safeRedirectPath`](src/shared/lib/safe-redirect.ts) accepts only same-origin paths for `callbackUrl` and rejects `//`, backslashes and control characters ([`safe-redirect.test.ts`](src/shared/lib/__tests__/safe-redirect.test.ts)). The OAuth flow stores a state value in a short-lived httpOnly cookie and compares it in constant time on the callback ([`oauth-state.ts`](src/app/api/auth/_lib/oauth-state.ts), [`oauth-flow.test.ts`](src/app/api/auth/_lib/__tests__/oauth-flow.test.ts)).
+- **Stack e2e suite.** [`e2e-stack`](e2e-stack) holds seven Playwright tests that run against the real API in Docker Compose: register and log in, a wrong password, catalogue browsing and sorting, car detail with its calendar, booking followed by admin confirmation and the pay page, and the admin routes. They are not part of `verify`, because they need the API running.
 
-</details>
+## Quick start
 
-### Route Groups
-
-| Route Group | Purpose | Authentication |
-|-------------|---------|----------------|
-| `(public)` | Landing, car browsing, search | Public |
-| `(auth)` | Login, register, OAuth2 callback | Public |
-| `(protected)` | User dashboard, my rentals, settings | Required (USER) |
-| `(admin)` | Fleet management, approvals, analytics | Required (ADMIN) |
-
-### API Proxy Pattern
-
-```
-Client → Next.js API Route → Backend API
-         ↓ (attaches cookie)
-         ↓ (handles CORS)
-         ↓ (error transformation)
-```
-
-**Benefits:**
-- ✅ HTTP-Only cookies (XSS protection)
-- ✅ No CORS issues
-- ✅ Centralized error handling
-- ✅ Request/response transformation
-
-## 🛠️ Tech Stack
-
-| Category | Technology |
-|----------|------------|
-| Framework | Next.js 16.1 (App Router) |
-| Language | TypeScript 5.x |
-| Styling | Tailwind CSS v4, shadcn/ui |
-| State Management | Zustand (client), TanStack Query (server) |
-| Forms | react-hook-form, Zod validation |
-| Testing | Vitest, React Testing Library, fast-check |
-| Auth | JWT, OAuth2 (Google, GitHub) |
-| Payment | Stripe Elements (Planned) |
-| Icons | lucide-react |
-| Date | date-fns |
-
-## 🚀 Quick Start
-
-### Prerequisites
-- Node.js 20 (see `.nvmrc`)
-- Running [Car Rental API](https://github.com/TheOdrig/car-rental) backend
-
-### Setup
+You need Node 20 and the API running locally. In a checkout of [car-rental](https://github.com/TheOdrig/car-rental):
 
 ```bash
-# Clone
-git clone https://github.com/TheOdrig/car-rental-web.git
-cd car-rental-web
+docker compose up --build
+```
 
-# Install dependencies
-npm install
+This starts PostgreSQL and the API on http://localhost:8082 with seed data and a stub payment gateway; no Stripe or OAuth credentials are needed. Then, in this repository:
 
-# Configure environment
-cp .env.example .env
-# Edit .env with your backend URL
-
-# Run development server
+```bash
+cp .env.example .env.local
+npm ci
 npm run dev
 ```
 
-### Access
-- **Frontend:** `http://localhost:3000`
-- **Backend API:** `http://localhost:8082` (must be running)
+Before starting, set `JWT_SECRET` in `.env.local` to the API's signing secret. The API's `dev` profile defaults to `dev-only-jwt-secret-do-not-use-outside-local-development-0123456789`, so use that for local work. The app is then at http://localhost:3000.
 
-## 📱 Pages Overview
+The seed data includes an admin account (`admin` / `Admin123!`, also used by the stack e2e suite). Without a `pk_test_` key in `STRIPE_PUBLISHABLE_KEY` or from the API, the pay page refuses to render the card form, by design.
 
-### Public Pages
-```
-/                    # Landing page with featured cars
-/cars                # Car catalog with filters
-/cars/[id]           # Car details with availability calendar
-/about               # About page
-/locations           # Rental locations
-```
+Stop the API and delete its data with `docker compose down -v`.
 
-### Authentication
-```
-/login               # Email/password login
-/register            # User registration
-/oauth2/callback     # OAuth2 redirect handler
-```
-
-### User Dashboard (Protected)
-```
-/dashboard           # My rentals overview
-/dashboard/rentals   # Rental history
-/dashboard/settings  # Profile settings
-```
-
-### Admin Dashboard (Admin Only)
-```
-/admin               # Admin overview with metrics
-/admin/fleet         # Fleet management
-/admin/fleet/[id]    # Vehicle details
-/admin/rentals       # Rental approvals
-/admin/rentals/[id]  # Rental details
-/admin/users         # User management
-/admin/users/[id]    # User details
-```
-
-## 🧪 Testing
+## Verify
 
 ```bash
-# Run all tests
-npm test
-
-# Watch mode
-npm run test:watch
-
-# Architecture tests only
-npm run test:architecture
-
-# Coverage report
-npm run test:coverage
+bash scripts/verify.sh
 ```
 
-**Test Coverage:**
-- 843 tests passing, 6 skipped (68 test files, including the architecture tests)
-- 80%+ coverage for auth, book-car, manage-rentals
-- FSD boundary verification (0 violations)
-- Property-based tests with fast-check
+[`scripts/verify.sh`](scripts/verify.sh) runs `npm run lint` with zero warnings allowed, `npm run contract:check`, `npm run type-check`, `npm test` and [`scripts/check-no-ai-files.mjs`](scripts/check-no-ai-files.mjs), which fails if AI-tooling or planning files are tracked. On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). `npm test` runs about 1,200 Vitest tests (1,196 passing and 3 skipped at the last full run), including the architecture and contract tests. The [Husky](.husky) pre-push hook runs the same script. There is no hosted CI; this local gate is the check.
 
-## 📂 Project Structure (FSD Architecture)
+With the API running, `npm run test:e2e:stack` starts the web app on port 3100 against `http://localhost:8082` and runs the stack suite; `E2E_API_URL` and `E2E_BASE_URL` override the targets. `npm run e2e` runs a separate smoke test against an app that is already running.
 
-```
-src/
-├── app/                 # App + Pages Layer (Next.js App Router)
-│   ├── (public)/        # Public route group
-│   ├── (auth)/          # Auth route group
-│   ├── (protected)/     # Protected route group
-│   ├── (admin)/         # Admin route group
-│   ├── api/             # API Proxy Routes
-│   ├── layout.tsx       # Root layout
-│   └── providers.tsx    # Global providers
-├── widgets/             # Widget Layer (Composite UI blocks)
-│   ├── header/          # Navigation header
-│   ├── car-filters/     # Car filtering widget
-│   ├── car-search/      # Search widget
-│   ├── car-booking-card/# Booking card widget
-│   ├── damage-report/   # Damage reporting widget
-│   ├── home/            # Home page widgets
-│   ├── layout/          # Layout widgets
-│   └── rental-dashboard/# Rental dashboard widget
-├── features/            # Feature Layer (Business logic & user actions)
-│   ├── auth/            # Authentication feature
-│   ├── book-car/        # Car booking feature
-│   ├── manage-rentals/  # Rental management feature
-│   ├── manage-fleet/    # Fleet management feature
-│   ├── manage-users/    # User management feature
-│   ├── process-rentals/ # Rental processing feature
-│   ├── manage-damages/  # Damage management feature
-│   ├── user-settings/   # User settings feature
-│   └── admin/           # Admin feature
-├── entities/            # Entity Layer (Domain models)
-│   ├── car/             # Car entity (types, store, utils, UI)
-│   ├── user/            # User entity (types, store, utils)
-│   ├── rental/          # Rental entity (types, store, utils)
-│   ├── currency/        # Currency entity (types, store, utils, UI)
-│   ├── damage/          # Damage entity (types, store, utils, UI)
-│   └── payment/         # Payment entity (types)
-├── shared/              # Shared Layer (Infrastructure)
-│   ├── api/             # API client
-│   ├── config/          # Configuration
-│   ├── events/          # Event bus
-│   ├── lib/             # Utilities
-│   ├── types/           # Shared types
-│   └── ui/              # UI primitives (shadcn/ui)
-└── __tests__/           # Architecture tests
-    └── architecture/    # FSD boundary tests
-```
+## Configuration
 
-**Layer Dependencies (Enforced by ESLint):**
-- `app` → `widgets`, `features`, `entities`, `shared`
-- `widgets` → `features`, `entities`, `shared`
-- `features` → `entities`, `shared` (no cross-feature imports)
-- `entities` → `entities` (via `@x`), `shared`
-- `shared` → `shared` only
+[`.env.example`](.env.example) lists the variables.
 
-## 🔧 Configuration
+| Variable | Purpose |
+| --- | --- |
+| `API_URL` | Base URL of the API, default `http://localhost:8082`; required when `NODE_ENV=production` |
+| `JWT_SECRET` | Required, at least 32 characters, the HS256 secret the API signs with |
+| `API_TIMEOUT_MS` | Upstream timeout, default 5000 |
+| `NEXT_PUBLIC_APP_URL` | Public URL of this app |
+| `STRIPE_PUBLISHABLE_KEY` | Optional fallback; must start with `pk_test_` |
 
-Copy `.env.example` to `.env` and adjust it. Configuration covers:
-- Backend API URLs (browser vs server-side)
-- JWT secret configuration
-- OAuth2 providers (Google, GitHub)
-- Cache configuration
+## License
 
-**Quick Reference:**
-
-```env
-# Backend API URL (Browser Access)
-NEXT_PUBLIC_API_URL=http://localhost:8082
-
-# Internal API URL (Server-side Access / Docker Network)
-API_URL=http://localhost:8082
-
-# JWT Secret - Must match the backend JWT signing key
-JWT_SECRET=your-jwt-secret-key-here
-```
-
-## 📊 Technical Highlights
-
-- **Feature-Sliced Design** with 5 layers, 9 features, 6 entities, 8 widgets
-- **21 Architecture Properties** verified with Vitest + ESLint boundaries
-- **843 passing Vitest tests** (68 test files, incl. architecture tests); 6 skipped
-- **Type Safety** with 0 `any` types, 0 `@ts-ignore`
-- **9 ADRs** documenting architectural decisions
-- **API Proxy Pattern** for secure backend communication (HTTP-Only cookies)
-
-## 🤝 Contributing
-
-Contributions are welcome! Please open an issue first for larger changes.
-
-Quick steps:
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Run tests (`npm test`)
-4. Commit using [Conventional Commits](https://www.conventionalcommits.org/)
-5. Push and open Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
-## 👤 Author
-
-**Mehmet Akif Uludag**
-
-[![GitHub](https://img.shields.io/badge/GitHub-TheOdrig-black?logo=github)](https://github.com/TheOdrig)
-
----
-
-**Backend Repository:** [car-rental-api](https://github.com/TheOdrig/car-rental)
+[MIT](LICENSE)
