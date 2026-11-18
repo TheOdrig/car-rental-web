@@ -203,6 +203,12 @@ export const RentalCard = memo(function RentalCard({
                                 </div>
                             </div>
 
+                            {status === 'Cancelled' && rental.cancellationReason && (
+                                <p className="mb-3 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
+                                    Cancelled: {rental.cancellationReason}
+                                </p>
+                            )}
+
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <div className="flex items-center gap-2">
                                     <span className="text-xl font-bold text-slate-900 dark:text-white">
@@ -262,6 +268,12 @@ export const RentalCard = memo(function RentalCard({
                             <ArrowRight className="h-3 w-3" />
                             <span>{safeFormatDate(endDate)}</span>
                         </div>
+
+                        {status === 'Cancelled' && rental.cancellationReason && (
+                            <p className="mb-2 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
+                                Cancelled: {rental.cancellationReason}
+                            </p>
+                        )}
 
                         <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1 text-muted-foreground">

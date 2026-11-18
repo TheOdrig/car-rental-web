@@ -2,13 +2,21 @@
 
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { format, addDays, isBefore, startOfDay, isSameDay } from 'date-fns';
+import { format } from 'date-fns';
 import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Calendar } from '@/shared/ui/calendar';
 import { Label } from '@/shared/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
-import { useCreateRental } from '@/entities/rental';
+import {
+    findRentalDateIssue,
+    getEndDateRange,
+    getRentalRequestErrorMessage,
+    isEndDateDisabled,
+    isStartDateDisabled,
+    rentalLengthInDays,
+    useCreateRental,
+} from '@/entities/rental';
 import { cn } from '@/shared/lib';
 import { toast } from 'sonner';
 import type { Car as CarType } from '@/entities/car';
@@ -34,7 +42,6 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
     const router = useRouter();
     const createRentalMutation = useCreateRental();
 
-    const today = startOfDay(new Date());
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('online');
@@ -45,17 +52,16 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
 
         if (!startDate) {
             newErrors.startDate = 'Start date is required';
-        } else if (isBefore(startDate, today)) {
-            newErrors.startDate = 'Start date cannot be in the past';
         }
 
         if (!endDate) {
             newErrors.endDate = 'End date is required';
-        } else if (startDate) {
-            if (isBefore(endDate, startDate)) {
-                newErrors.endDate = 'End date must be after start date';
-            } else if (isSameDay(endDate, startDate)) {
-                newErrors.endDate = 'End date must be after start date (minimum 1 day)';
+        }
+
+        if (startDate && endDate) {
+            const issue = findRentalDateIssue(startDate, endDate);
+            if (issue) {
+                newErrors[issue.field] = issue.message;
             }
         }
 
@@ -94,17 +100,16 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
 
             onSuccess?.();
             router.push('/rentals');
-        } catch {
+        } catch (error) {
             setErrors({
-                form: 'Failed to create rental request. Please try again.',
+                form: getRentalRequestErrorMessage(error, 'Failed to create rental request. Please try again.'),
             });
         }
     };
 
     const calculateDays = (): number => {
         if (!startDate || !endDate) return 0;
-        const diffTime = endDate.getTime() - startDate.getTime();
-        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return rentalLengthInDays(startDate, endDate);
     };
 
     const calculateTotal = (): number => {
@@ -159,11 +164,14 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                     if (errors.startDate) {
                                         setErrors(prev => ({ ...prev, startDate: '' }));
                                     }
-                                    if (date && endDate && isBefore(endDate, date)) {
-                                        setEndDate(addDays(date, 1));
+                                    if (date && endDate) {
+                                        const range = getEndDateRange(date);
+                                        if (endDate < range.min || endDate > range.max) {
+                                            setEndDate(undefined);
+                                        }
                                     }
                                 }}
-                                disabled={(date) => isBefore(date, today)}
+                                disabled={(date) => isStartDateDisabled(date)}
                             />
                         </PopoverContent>
                     </Popover>
@@ -200,10 +208,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                         setErrors(prev => ({ ...prev, endDate: '' }));
                                     }
                                 }}
-                                disabled={(date) => {
-                                    if (isBefore(date, today)) return true;
-                                    return !!(startDate && (isBefore(date, startDate) || isSameDay(date, startDate)));
-                                }}
+                                disabled={(date) => isEndDateDisabled(date, startDate)}
                             />
                         </PopoverContent>
                     </Popover>
