@@ -62,9 +62,14 @@ function guardRequest(request: NextRequest, options: RouteOptions): NextResponse
 
 export function errorResponse(error: unknown, options: RouteOptions): NextResponse {
     if (isApiError(error)) {
+        const headers: Record<string, string> = {};
+        if (error.retryAfter !== undefined) {
+            headers['Retry-After'] = String(error.retryAfter);
+        }
+
         return NextResponse.json(
-            { message: error.message, error: error.message, errors: error.errors },
-            { status: error.status }
+            { message: error.message, error: error.message, errors: error.errors, code: error.code },
+            { status: error.status, headers }
         );
     }
 

@@ -25,6 +25,8 @@ export interface ApiError {
     timestamp: string;
     path?: string;
     errors?: Record<string, string>;
+    code?: string;
+    retryAfter?: number;
 }
 
 export interface ApiResponse<T> {
