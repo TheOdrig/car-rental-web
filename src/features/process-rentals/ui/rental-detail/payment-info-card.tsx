@@ -1,26 +1,26 @@
 'use client';
 
-import { DollarSign, CreditCard, AlertTriangle } from 'lucide-react';
+import { DollarSign, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
 import { formatCurrency } from '@/shared/lib';
-import type { RentalPaymentInfo, RentalPricing } from '@/entities/rental';
+import type { RentalPricing } from '@/entities/rental';
+import { RentalPaymentStatus } from '@/entities/payment';
 import type { LateReturnStatus } from '@/entities/rental';
 import { LateReturnStatusBadge } from '@/entities/rental';
-import { CopyButton } from '@/shared/ui/copy-button';
 
 interface PaymentInfoCardProps {
+    rentalId: number;
     pricing: RentalPricing;
-    payment: RentalPaymentInfo;
     penaltyAmount?: number;
     lateReturnStatus?: LateReturnStatus;
 }
 
-export function PaymentInfoCard({ pricing, payment, penaltyAmount, lateReturnStatus }: PaymentInfoCardProps) {
+export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnStatus }: PaymentInfoCardProps) {
     const hasPenalty = (penaltyAmount ?? 0) > 0;
     const grandTotal = pricing.finalTotal + (penaltyAmount ?? 0);
 
     return (
+        <div className="space-y-6">
         <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
@@ -99,32 +99,9 @@ export function PaymentInfoCard({ pricing, payment, penaltyAmount, lateReturnSta
                         </span>
                     </div>
                 )}
-
-                <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-700">
-                    <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400">
-                        <CreditCard className="h-4 w-4" />
-                        <span>
-                            Payment via {payment.method}
-                            {payment.last4 && <span className="font-mono ml-1">•••• {payment.last4}</span>}
-                        </span>
-                    </div>
-                    <Badge variant={payment.status === 'CAPTURED' ? 'default' : 'secondary'}>
-                        {payment.status}
-                    </Badge>
-                </div>
-
-                {payment.paymentIntentId && (
-                    <div className="flex items-center justify-between text-sm pt-2 border-t border-slate-200 dark:border-slate-700">
-                        <span className="text-slate-500 dark:text-slate-400">Payment ID</span>
-                        <div className="flex items-center gap-1">
-                            <span className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate max-w-[180px]">
-                                {payment.paymentIntentId}
-                            </span>
-                            <CopyButton value={payment.paymentIntentId} />
-                        </div>
-                    </div>
-                )}
             </CardContent>
         </Card>
+        <RentalPaymentStatus rentalId={rentalId} className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm" />
+        </div>
     );
 }

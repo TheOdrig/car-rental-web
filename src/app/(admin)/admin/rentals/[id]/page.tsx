@@ -36,6 +36,8 @@ import {
     useProcessPickup,
     useProcessReturn,
 } from '@/features/process-rentals';
+import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
+import { PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -51,6 +53,7 @@ export default function RentalDetailPage({ params }: PageProps) {
     const rejectRental = useRejectRental();
     const processPickup = useProcessPickup();
     const processReturn = useProcessReturn();
+    const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
@@ -166,13 +169,10 @@ export default function RentalDetailPage({ params }: PageProps) {
         type: rental.vehicle.bodyType || 'Sedan',
     };
 
-    const paymentInfo = {
-        ...rental.payment,
-        id: rentalId,
-        transactionId: `TX-${rentalId}`,
-        last4: '4242',
-        paidAt: rental.startDate,
-    };
+    const pickupBlockedReason =
+        rental.status === 'CONFIRMED' && !paymentQuery.isLoading && !isPaymentSecured(paymentQuery.data?.status)
+            ? PICKUP_PAYMENT_REQUIRED_MESSAGE
+            : undefined;
 
     const timelineEvents = rental.timeline.map((event, index) => ({
         ...event,
@@ -216,6 +216,7 @@ export default function RentalDetailPage({ params }: PageProps) {
                         onReject={handleReject}
                         onPickup={handlePickup}
                         onReturn={handleReturn}
+                        pickupBlockedReason={pickupBlockedReason}
                         isLoading={isActionLoading}
                     />
                     {hasPenalty && (
@@ -250,8 +251,8 @@ export default function RentalDetailPage({ params }: PageProps) {
 
             <div className="grid gap-6 md:grid-cols-2">
                 <PaymentInfoCard
+                    rentalId={rental.id}
                     pricing={rental.pricing}
-                    payment={paymentInfo}
                     penaltyAmount={rentalWithPenalty.penaltyAmount}
                     lateReturnStatus={rentalWithPenalty.lateReturnStatus}
                 />

@@ -107,6 +107,10 @@ export function ProcessPickupDialog({
                         </div>
                     </div>
 
+                    <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100" data-testid="pickup-payment-note">
+                        Pickup captures the customer payment. It only works when the payment is authorized.
+                    </p>
+
                     <div className="space-y-4">
                         <h4 className="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
                             <ClipboardCheck className="h-4 w-4 text-primary" />

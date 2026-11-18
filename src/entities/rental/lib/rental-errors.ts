@@ -15,6 +15,15 @@ export const RENTAL_TOO_LONG_MESSAGE = `Rentals can last at most ${MAX_RENTAL_DA
 export const RENTAL_TOO_FAR_AHEAD_MESSAGE = `You can only book up to ${MAX_LEAD_DAYS} days ahead. Please pick an earlier start date.`;
 export const RENTAL_END_BEFORE_START_MESSAGE = 'The end date must be after the start date.';
 
+export const INVALID_RENTAL_STATE_CODE = 'INVALID_RENTAL_STATE';
+export const RENTAL_NOT_FOUND_CODE = 'RENTAL_NOT_FOUND';
+export const PAYMENT_FAILED_CODE = 'PAYMENT_FAILED';
+
+export const PICKUP_PAYMENT_REQUIRED_MESSAGE =
+    'Pickup needs an authorized payment. Ask the customer to pay for this rental first; the payment is captured at pickup.';
+export const PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE =
+    'The payment could not be captured, so the pickup was not recorded. Check the payment status and try again.';
+
 export const ADMIN_CAR_NOT_AVAILABLE_MESSAGE =
     'The car cannot be handed over: it is in maintenance or still out on another rental. Resolve the car status or the other rental first.';
 
@@ -61,6 +70,19 @@ export function getAdminActionErrorMessage(error: unknown): string {
 
     if (isApiError(error) && error.code === CAR_NOT_AVAILABLE_CODE && (error.status === 409 || error.status === 400)) {
         return ADMIN_CAR_NOT_AVAILABLE_MESSAGE;
+    }
+
+    if (isApiError(error)) {
+        const text = error.message ?? '';
+        if (error.code === INVALID_RENTAL_STATE_CODE && error.status === 400 && text.includes('Payment must be AUTHORIZED')) {
+            return PICKUP_PAYMENT_REQUIRED_MESSAGE;
+        }
+        if (error.code === RENTAL_NOT_FOUND_CODE && error.status === 404 && text.includes('Payment not found')) {
+            return PICKUP_PAYMENT_REQUIRED_MESSAGE;
+        }
+        if (error.code === PAYMENT_FAILED_CODE && error.status === 402) {
+            return PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE;
+        }
     }
 
     return error instanceof Error ? error.message : 'An unexpected error occurred';

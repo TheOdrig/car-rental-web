@@ -12,6 +12,7 @@ interface RentalActionButtonsProps {
     onPickup?: () => void;
     onReturn?: () => void;
     onCancel?: () => void;
+    pickupBlockedReason?: string;
     isLoading?: boolean;
 }
 
@@ -49,6 +50,7 @@ export function RentalActionButtons({
     onPickup,
     onReturn,
     onCancel,
+    pickupBlockedReason,
     isLoading,
 }: RentalActionButtonsProps) {
     const actions = statusActions[status] ?? [];
@@ -77,8 +79,10 @@ export function RentalActionButtons({
         }
     };
 
+    const showPickupHint = actions.some((action) => action.action === 'pickup');
+
     return (
-        <div className="flex flex-wrap gap-2">
+        <div className="flex flex-wrap items-center gap-2">
             {actions.map((action) => {
                 const Icon = action.icon;
                 return (
@@ -86,13 +90,18 @@ export function RentalActionButtons({
                         key={action.action}
                         variant={action.variant}
                         onClick={() => handleAction(action.action)}
-                        disabled={isLoading}
+                        disabled={isLoading || (action.action === 'pickup' && !!pickupBlockedReason)}
                     >
                         <Icon className="h-4 w-4 mr-2" />
                         {action.label}
                     </Button>
                 );
             })}
+            {showPickupHint && (
+                <p className="basis-full text-xs text-muted-foreground" data-testid="pickup-payment-hint">
+                    {pickupBlockedReason ?? 'Pickup captures the customer payment, which must be authorized first.'}
+                </p>
+            )}
         </div>
     );
 }
