@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { RENTAL_ENDPOINTS } from '@/entities/rental';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => RENTAL_ENDPOINTS.me,
+    target: () => API.rentals.me.resolve(),
     forwardQuery: true,
     tags: ['rentals', 'my-rentals'],
     errorMessage: 'Failed to fetch rentals',

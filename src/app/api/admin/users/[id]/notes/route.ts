@@ -1,13 +1,12 @@
-import { ADMIN_ENDPOINTS } from '@/features/admin';
 import { ApiError } from '@/shared/api';
-import { created, parseIdParam, proxy, readJson, route, upstream } from '@/shared/server';
+import { API, created, parseIdParam, proxy, readJson, route, upstream } from '@/shared/server';
 
 interface AddNoteRequest {
     text?: string;
 }
 
 export const GET = proxy<{ id: string }>({
-    path: ({ id }) => ADMIN_ENDPOINTS.users.notes(parseIdParam(id, 'user ID')),
+    target: ({ id }) => API.admin.users.notes.resolve({ id: parseIdParam(id, 'user ID') }),
     tags: ['admin', 'users', 'notes'],
     errorMessage: 'Failed to fetch notes',
     errorStatus: 503,
@@ -22,7 +21,7 @@ export const POST = route<{ id: string }>(
             throw new ApiError(400, 'Note text is required');
         }
 
-        const note = await upstream.post(ADMIN_ENDPOINTS.users.notes(userId), body, { cache: 'no-store' });
+        const note = await upstream.post(API.admin.users.addNote.resolve({ id: userId }), body, { cache: 'no-store' });
         return created(note);
     },
     { errorMessage: 'Failed to add note', errorStatus: 503 }

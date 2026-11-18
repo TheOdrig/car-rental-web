@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.lateReturnStatistics,
+    target: () => API.admin.lateReturnStatistics.resolve(),
     forwardQuery: true,
     errorMessage: 'Failed to fetch late return statistics',
     errorStatus: 503,

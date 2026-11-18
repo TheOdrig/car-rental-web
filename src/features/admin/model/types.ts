@@ -1,3 +1,4 @@
+import type { PageResponse } from '@/shared/types';
 import type {
     FleetStatus,
     VehicleStatistics,
@@ -207,13 +208,4 @@ export interface AdminAlert {
     dismissible?: boolean;
 }
 
-export interface PaginatedResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-    first: boolean;
-    last: boolean;
-    empty: boolean;
-}
+export type PaginatedResponse<T> = PageResponse<T>;

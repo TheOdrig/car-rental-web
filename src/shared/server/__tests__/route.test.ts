@@ -115,14 +115,20 @@ describe('route', () => {
     it('maps ApiError to its status with message and field errors', async () => {
         const handler = route(
             async () => {
-                throw new ApiError({ status: 422, message: 'bad', errors: { a: 'x' }, timestamp: 't' });
+                throw new ApiError({ status: 422, message: 'bad', errors: [{ field: 'a', message: 'x' }], timestamp: 't', code: 'VALIDATION_FAILED' });
             },
             { errorMessage: 'failed' }
         );
         const response = await handler(request(), context({}));
 
         expect(response.status).toBe(422);
-        expect(await response.json()).toEqual({ message: 'bad', error: 'bad', errors: { a: 'x' } });
+        expect(response.headers.get('content-type')).toContain('application/problem+json');
+        expect(await response.json()).toMatchObject({
+            status: 422,
+            detail: 'bad',
+            code: 'VALIDATION_FAILED',
+            errors: [{ field: 'a', message: 'x' }],
+        });
     });
 
     it('hides unexpected error details behind the fallback message', async () => {
@@ -136,7 +142,7 @@ describe('route', () => {
         const body = await response.json();
 
         expect(response.status).toBe(500);
-        expect(body.message).toBe('Failed to do it');
+        expect(body.detail).toBe('Failed to do it');
         expect(JSON.stringify(body)).not.toContain('leaked');
     });
 
@@ -162,7 +168,7 @@ describe('proxy', () => {
 
     it('validates path ids before calling the upstream', async () => {
         const handler = proxy<{ id: string }>({
-            path: ({ id }) => `/api/cars/${parseIdParam(id, 'car ID')}`,
+            target: ({ id }) => ({ method: 'GET', path: `/api/cars/${parseIdParam(id, 'car ID')}` }),
             errorMessage: 'failed',
         });
         const response = await handler(request(), context({ id: 'abc' }));
@@ -176,8 +182,7 @@ describe('proxy', () => {
             new Response(JSON.stringify({ id: 1 }), { status: 200, headers: { 'Content-Type': 'application/json' } })
         );
         const handler = proxy({
-            path: () => '/api/things',
-            method: 'POST',
+            target: () => ({ method: 'POST', path: '/api/things' }),
             forwardQuery: true,
             status: 201,
             errorMessage: 'failed',
@@ -198,7 +203,7 @@ describe('proxy', () => {
     });
 
     it('rejects an invalid json body with 400', async () => {
-        const handler = proxy({ path: () => '/api/things', method: 'POST', errorMessage: 'failed' });
+        const handler = proxy({ target: () => ({ method: 'POST', path: '/api/things' }), errorMessage: 'failed' });
         const response = await handler(request('http://localhost:3000/api/things', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' }), context({}));
 
         expect(response.status).toBe(400);
@@ -207,7 +212,7 @@ describe('proxy', () => {
 
     it('returns an empty object for 204 upstream responses', async () => {
         fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
-        const handler = proxy({ path: () => '/api/things/1', method: 'DELETE', errorMessage: 'failed' });
+        const handler = proxy({ target: () => ({ method: 'DELETE', path: '/api/things/1' }), errorMessage: 'failed' });
         const response = await handler(request(), context({}));
 
         expect(await response.json()).toEqual({});

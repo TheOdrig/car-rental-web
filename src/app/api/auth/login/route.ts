@@ -1,7 +1,6 @@
-import { AUTH_ENDPOINTS } from '@/features/auth';
-import { readJson, route, signIn } from '@/shared/server';
+import { API, readJson, route, signIn } from '@/shared/server';
 
 export const POST = route(
-    async (request) => signIn(AUTH_ENDPOINTS.login, await readJson(request)),
+    async (request) => signIn(API.auth.login.resolve(), await readJson(request)),
     { errorMessage: 'Internal server error' }
 );

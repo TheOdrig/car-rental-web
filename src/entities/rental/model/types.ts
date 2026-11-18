@@ -1,4 +1,5 @@
-import { CurrencyType } from '@/shared/types';
+import type { Schemas } from '@/shared/api';
+import type { CurrencyType, PageResponse } from '@/shared/types';
 import { UserSummary } from '@/entities/user';
 import { CarSummary } from '@/entities/car';
 
@@ -108,13 +109,7 @@ export interface LateReturnFilters {
     sortBy?: 'endDate' | 'penaltyAmount' | 'lateHours';
     sortDirection?: 'ASC' | 'DESC';
 }
-export interface PaginatedLateReturns {
-    content: LateReturnReport[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-}
+export type PaginatedLateReturns = PageResponse<LateReturnReport>;
 export interface PenaltyWaiverRequest {
     waiverAmount?: number;
     reason: string;
@@ -242,7 +237,7 @@ export interface RentalDetailResponse {
         subtotal: number;
         discounts: number;
         finalTotal: number;
-        currency: 'USD' | 'EUR' | 'TRY';
+        currency: CurrencyType;
     };
     customer: {
         id: number;
@@ -280,7 +275,7 @@ export interface RentalDetailResponse {
         title?: string;
         description?: string;
     }[];
-    damages: import('@/entities/damage').DamageReport[];
+    damages: Schemas['DamageReportDto'][];
     notes: {
         approval?: string;
         pickup?: string;

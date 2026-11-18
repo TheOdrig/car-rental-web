@@ -62,7 +62,7 @@ export default function MyDamagesPage() {
                         {data && data.totalPages > 1 && (
                             <div className="mt-6">
                                 <Pagination
-                                    currentPage={data.number}
+                                    currentPage={data.page}
                                     totalPages={data.totalPages}
                                     onPageChange={handlePageChange}
                                 />

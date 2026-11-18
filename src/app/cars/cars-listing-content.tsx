@@ -128,7 +128,7 @@ export function CarsListingContent() {
     const sortedCars = useMemo(() => {
         const cars = isSearchMode
             ? searchQuery.data?.cars ?? []
-            : defaultQuery.data?.content ?? defaultQuery.data?.cars ?? [];
+            : defaultQuery.data?.content ?? [];
         return sortCars(cars, sortBy);
     }, [isSearchMode, searchQuery.data, defaultQuery.data, sortBy]);
 

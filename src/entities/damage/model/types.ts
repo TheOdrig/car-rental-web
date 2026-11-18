@@ -1,3 +1,5 @@
+import type { PageResponse } from '@/shared/types';
+
 export type DamageStatus =
     | 'REPORTED'
     | 'UNDER_ASSESSMENT'
@@ -96,10 +98,4 @@ export interface DamageStatistics {
     resolvedCount: number;
 }
 
-export interface DamageListResponse {
-    content: DamageReport[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-}
+export type DamageListResponse = PageResponse<DamageReport>;

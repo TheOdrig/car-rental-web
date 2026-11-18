@@ -28,7 +28,6 @@ export {
 } from './model/types';
 export { AUTH_EVENTS } from './model/auth-events';
 
-export { AUTH_ENDPOINTS } from './api/endpoints';
 export { login, register, logout, handleAuthError } from './api/auth-api';
 export { LoginForm } from './ui/login-form';
 export { RegisterForm } from './ui/register-form';

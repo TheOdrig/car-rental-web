@@ -7,8 +7,8 @@ function apiError(status: number, message: string, code?: string, retryAfter?: n
 }
 
 describe('getBookingErrorMessage', () => {
-    it('explains a 409 CAR_NOT_AVAILABLE booking conflict', () => {
-        const error = apiError(409, 'Car with id 5 is already booked between 2026-12-01 and 2026-12-05', 'CAR_NOT_AVAILABLE');
+    it('explains a 409 CAR_DATES_UNAVAILABLE booking conflict', () => {
+        const error = apiError(409, 'Car with id 5 is already booked between 2026-12-01 and 2026-12-05', 'CAR_DATES_UNAVAILABLE');
 
         expect(getBookingErrorMessage(error)).toBe(CAR_BOOKED_MESSAGE);
     });
@@ -36,7 +36,7 @@ describe('getBookingErrorMessage rental rules', () => {
             message: 'Validation failed',
             timestamp: new Date().toISOString(),
             code: 'VALIDATION_FAILED',
-            errors: { withinMaxRentalLength: 'Rental cannot be longer than 30 days' },
+            errors: [{ field: 'endDate', message: 'Rental cannot be longer than 30 days' }],
         });
 
         expect(getBookingErrorMessage(error)).toContain('at most 30 days');

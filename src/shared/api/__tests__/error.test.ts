@@ -1,5 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { ApiError, apiClient, getFormErrorMessage, parseErrorResponse, rateLimitMessage } from '@/shared/api';
+import {
+    ApiError,
+    apiClient,
+    detailString,
+    fieldErrorMap,
+    fieldErrorMessages,
+    getFormErrorMessage,
+    parseErrorResponse,
+    rateLimitMessage,
+} from '@/shared/api';
 
 function json(status: number, body: unknown, headers: Record<string, string> = {}): Response {
     return new Response(JSON.stringify(body), {
@@ -11,7 +20,7 @@ function json(status: number, body: unknown, headers: Record<string, string> = {
 describe('parseErrorResponse', () => {
     it('reads the error code and Retry-After of a rate limit response', async () => {
         const parsed = await parseErrorResponse(
-            json(429, { errorCode: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' }, { 'Retry-After': '30' })
+            json(429, { code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' }, { 'Retry-After': '30' })
         );
 
         expect(parsed).toMatchObject({ status: 429, code: 'RATE_LIMIT_EXCEEDED', retryAfter: 30 });
@@ -26,12 +35,60 @@ describe('parseErrorResponse', () => {
         expect(parsed.retryAfter).toBeUndefined();
     });
 
-    it('maps the API validationErrors onto errors', async () => {
+    it('reads an RFC 9457 problem body', async () => {
         const parsed = await parseErrorResponse(
-            json(400, { message: 'Validation failed', validationErrors: { email: 'bad' } })
+            json(409, {
+                type: 'urn:car-rental:problem:payment-window-not-open',
+                title: 'Conflict',
+                status: 409,
+                detail: 'Payment is not open yet',
+                instance: '/api/v1/rentals/4/payment-intent',
+                code: 'PAYMENT_WINDOW_NOT_OPEN',
+                timestamp: '2026-11-18T10:00:00Z',
+                traceId: 'trace-1',
+                details: { paymentOpensOn: '2026-12-01' },
+                errors: [
+                    { field: 'startDate', message: 'must not be null' },
+                    { field: 'startDate', message: 'must be a date' },
+                    { nope: true },
+                ],
+            })
         );
 
-        expect(parsed.errors).toEqual({ email: 'bad' });
+        expect(parsed).toMatchObject({
+            status: 409,
+            message: 'Payment is not open yet',
+            title: 'Conflict',
+            instance: '/api/v1/rentals/4/payment-intent',
+            code: 'PAYMENT_WINDOW_NOT_OPEN',
+            traceId: 'trace-1',
+            timestamp: '2026-11-18T10:00:00Z',
+            details: { paymentOpensOn: '2026-12-01' },
+            errors: [
+                { field: 'startDate', message: 'must not be null' },
+                { field: 'startDate', message: 'must be a date' },
+            ],
+        });
+    });
+
+    it('maps field errors to a field map and details to strings', () => {
+        const error = new ApiError({
+            status: 400,
+            message: 'Validation failed',
+            timestamp: '',
+            details: { paymentOpensOn: '2026-12-01', count: 3 },
+            errors: [
+                { field: 'email', message: 'is invalid' },
+                { field: 'email', message: 'is required' },
+                { field: 'name', message: 'too short' },
+            ],
+        });
+
+        expect(fieldErrorMap(error)).toEqual({ email: 'is invalid is required', name: 'too short' });
+        expect(fieldErrorMessages(error, 'email')).toEqual(['is invalid', 'is required']);
+        expect(detailString(error, 'paymentOpensOn')).toBe('2026-12-01');
+        expect(detailString(error, 'count')).toBeUndefined();
+        expect(fieldErrorMap(new Error('x'))).toEqual({});
     });
 
     it('keeps Retry-After when the body is not JSON', async () => {
@@ -69,7 +126,7 @@ describe('clientFetch refresh handling', () => {
     });
 
     it('does not try to refresh after a 403', async () => {
-        fetchMock.mockResolvedValueOnce(json(403, { errorCode: 'ACCESS_DENIED', message: 'Forbidden' }));
+        fetchMock.mockResolvedValueOnce(json(403, { code: 'ACCESS_DENIED', message: 'Forbidden' }));
 
         await expect(apiClient.get('/api/admin/users')).rejects.toMatchObject({ status: 403, code: 'ACCESS_DENIED' });
 
@@ -78,7 +135,7 @@ describe('clientFetch refresh handling', () => {
 
     it('refreshes once after a 401 and retries the original request', async () => {
         fetchMock
-            .mockResolvedValueOnce(json(401, { errorCode: 'AUTHENTICATION_FAILED', message: 'Authentication is required' }))
+            .mockResolvedValueOnce(json(401, { code: 'AUTHENTICATION_FAILED', message: 'Authentication is required' }))
             .mockResolvedValueOnce(json(200, {}))
             .mockResolvedValueOnce(json(200, { ok: true }));
 

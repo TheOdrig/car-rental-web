@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast } from '@/shared/lib';
+import { toAdminRentalStatus } from '@/entities/rental';
 import type { Car, CarStatus, VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
@@ -53,13 +54,7 @@ export interface RentalHistoryItem {
     status: string;
 }
 
-export interface PaginatedResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-}
+export type PaginatedResponse<T> = PageResponse<T>;
 
 
 
@@ -199,7 +194,7 @@ async function fetchVehicleRentalHistory(id: number, page: number): Promise<Pagi
             endDate: rental.endDate,
             duration: rental.days,
             totalAmount: rental.totalPrice,
-            status: rental.status,
+            status: toAdminRentalStatus(rental.status),
         })),
     };
 }

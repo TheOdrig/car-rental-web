@@ -1,6 +1,5 @@
-import { USER_ENDPOINTS } from '@/entities/user';
 import { ApiError, isApiError } from '@/shared/api';
-import { readJson, route, upstream } from '@/shared/server';
+import { API, readJson, route, upstream } from '@/shared/server';
 
 function isWrongPasswordMessage(message: string): boolean {
     const lower = message.toLowerCase();
@@ -12,7 +11,7 @@ export const POST = route(
         const body = await readJson(request);
 
         try {
-            return await upstream.post(USER_ENDPOINTS.password, body, { cache: 'no-store' });
+            return await upstream.post(API.users.changePassword.resolve(), body, { cache: 'no-store' });
         } catch (error) {
             if (isApiError(error) && isWrongPasswordMessage(error.message)) {
                 throw new ApiError(400, 'Current password is incorrect');

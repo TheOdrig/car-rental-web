@@ -29,14 +29,10 @@ const mockToast = vi.mocked(showToast);
 function createMockPageResponse<T>(content: T[]): PageResponse<T> {
     return {
         content,
-        pageable: { pageNumber: 0, pageSize: 10, offset: 0, paged: true, unpaged: false },
         totalPages: 1,
         totalElements: content.length,
         size: 10,
-        number: 0,
-        first: true,
-        last: true,
-        empty: content.length === 0,
+        page: 0,
     };
 }
 describe('use-fleet hooks', () => {

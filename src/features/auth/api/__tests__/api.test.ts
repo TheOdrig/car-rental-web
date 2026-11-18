@@ -22,7 +22,7 @@ describe('Auth API', () => {
             const mockResponse = createMockAuthResponse();
             vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
             const result = await login(mockData);
-            expect(apiClient.post).toHaveBeenCalledWith('/auth/login', mockData);
+            expect(apiClient.post).toHaveBeenCalledWith('/api/auth/login', mockData);
             expect(result).toEqual(mockResponse);
         });
     });
@@ -32,7 +32,7 @@ describe('Auth API', () => {
             const mockResponse = createMockAuthResponse();
             vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
             const result = await register(mockData);
-            expect(apiClient.post).toHaveBeenCalledWith('/auth/register', mockData);
+            expect(apiClient.post).toHaveBeenCalledWith('/api/auth/register', mockData);
             expect(result).toEqual(mockResponse);
         });
     });

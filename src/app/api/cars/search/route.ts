@@ -1,6 +1,6 @@
-import { CAR_ENDPOINTS, type AvailabilitySearchRequest, type AvailabilitySearchResponse } from '@/entities/car';
+import { type AvailabilitySearchRequest, type AvailabilitySearchResponse } from '@/entities/car';
 import { ApiError } from '@/shared/api';
-import { readJson, route, upstream } from '@/shared/server';
+import { API, readJson, route, upstream } from '@/shared/server';
 
 export const POST = route(
     async (request) => {
@@ -28,7 +28,7 @@ export const POST = route(
             throw new ApiError(400, 'Start date cannot be in the past');
         }
 
-        return upstream.post<AvailabilitySearchResponse>(CAR_ENDPOINTS.availability.search, body, {
+        return upstream.post<AvailabilitySearchResponse>(API.cars.availabilitySearch.resolve(), body, {
             anonymous: true,
             cache: 'no-store',
         });

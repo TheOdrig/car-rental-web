@@ -1,8 +1,7 @@
-import { ADMIN_ENDPOINTS } from '@/features/admin';
-import { parseIdParam, proxy } from '@/shared/server';
+import { API, parseIdParam, proxy } from '@/shared/server';
 
 export const GET = proxy<{ id: string }>({
-    path: ({ id }) => ADMIN_ENDPOINTS.users.byId(parseIdParam(id, 'user ID')),
+    target: ({ id }) => API.admin.users.byId.resolve({ id: parseIdParam(id, 'user ID') }),
     tags: ['admin', 'users', 'detail'],
     errorMessage: 'Failed to fetch user',
     errorStatus: 503,

@@ -1,49 +1,38 @@
 import { apiClient } from '@/shared/api';
 import type { Rental } from '@/entities/rental';
 import type { RentalFilter, RentalActionRequest, PaginatedRentals } from '../model/types';
-import { RENTAL_ENDPOINTS } from './endpoints';
 
 export async function getRentals(filter?: RentalFilter): Promise<PaginatedRentals> {
-    return apiClient.get<PaginatedRentals>(RENTAL_ENDPOINTS.GET_RENTALS, {
+    return apiClient.get<PaginatedRentals>('/api/rentals', {
         params: filter as unknown as Record<string, string | number | boolean>,
     });
 }
 
 export async function getRentalById(id: number): Promise<Rental> {
-    return apiClient.get<Rental>(RENTAL_ENDPOINTS.GET_RENTAL(id));
+    return apiClient.get<Rental>(`/api/rentals/${id}`);
 }
 
 export async function performRentalAction(request: RentalActionRequest): Promise<Rental> {
     const { rentalId, action, notes, reason } = request;
 
-    let endpoint: string;
+    const body = { notes, reason };
+
     switch (action) {
         case 'approve':
-            endpoint = RENTAL_ENDPOINTS.APPROVE(rentalId);
-            break;
+            return apiClient.post<Rental>(`/api/admin/rentals/${rentalId}/approve`, body);
         case 'reject':
-            endpoint = RENTAL_ENDPOINTS.REJECT(rentalId);
-            break;
+            return apiClient.post<Rental>(`/api/admin/rentals/${rentalId}/reject`, body);
         case 'pickup':
-            endpoint = RENTAL_ENDPOINTS.PICKUP(rentalId);
-            break;
+            return apiClient.post<Rental>(`/api/admin/rentals/${rentalId}/pickup`, body);
         case 'return':
-            endpoint = RENTAL_ENDPOINTS.RETURN(rentalId);
-            break;
+            return apiClient.post<Rental>(`/api/admin/rentals/${rentalId}/return`, body);
         case 'cancel':
-            endpoint = RENTAL_ENDPOINTS.CANCEL(rentalId);
-            break;
+            return apiClient.delete<Rental>(`/api/rentals/${rentalId}`);
         default:
             throw new Error(`Unknown action: ${action}`);
     }
-
-    return apiClient.post<Rental>(endpoint, { notes, reason });
 }
 
-export async function cancelRental(rentalId: number, reason?: string): Promise<Rental> {
-    return performRentalAction({ rentalId, action: 'cancel', reason });
-}
-
-export async function updateRental(rentalId: number, data: Partial<Rental>): Promise<Rental> {
-    return apiClient.put<Rental>(RENTAL_ENDPOINTS.GET_RENTAL(rentalId), data);
+export async function cancelRental(rentalId: number): Promise<Rental> {
+    return performRentalAction({ rentalId, action: 'cancel' });
 }

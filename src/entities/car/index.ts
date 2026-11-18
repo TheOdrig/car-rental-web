@@ -23,7 +23,6 @@ export {
     type VehicleDetailResponse,
 } from './model/types';
 export { useCarStore } from './model/store';
-export { CAR_ENDPOINTS } from './api/endpoints';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
 export { CarCard, CarCardSkeleton } from './ui/car-card';
 export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';

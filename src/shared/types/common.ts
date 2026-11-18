@@ -2,29 +2,27 @@ export type CurrencyType = 'TRY' | 'USD' | 'EUR' | 'GBP' | 'JPY';
 
 export interface PageResponse<T> {
     content: T[];
-    cars?: T[];
-    pageable: {
-        pageNumber: number;
-        pageSize: number;
-        offset: number;
-        paged: boolean;
-        unpaged: boolean;
-    };
-    totalPages: number;
-    totalElements: number;
+    page: number;
     size: number;
-    number: number;
-    first: boolean;
-    last: boolean;
-    empty: boolean;
+    totalElements: number;
+    totalPages: number;
+}
+
+export interface FieldProblem {
+    field: string;
+    message: string;
 }
 
 export interface ApiError {
     status: number;
     message: string;
     timestamp: string;
-    path?: string;
-    errors?: Record<string, string>;
+    title?: string;
+    type?: string;
+    instance?: string;
+    traceId?: string;
+    errors?: FieldProblem[];
+    details?: Record<string, unknown>;
     code?: string;
     retryAfter?: number;
 }

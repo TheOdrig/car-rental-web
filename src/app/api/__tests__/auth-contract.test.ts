@@ -37,7 +37,7 @@ function post(path: string, body: unknown = {}, headers: Record<string, string> 
 
 function rateLimited(retryAfter: string): Response {
     return new Response(
-        JSON.stringify({ errorCode: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Retry after 30 seconds.' }),
+        JSON.stringify({ code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests. Retry after 30 seconds.' }),
         { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': retryAfter } }
     );
 }
@@ -71,7 +71,7 @@ describe('auth BFF contract', () => {
             expect(response.status).toBe(200);
             expect(jar.get('refresh_token')).toBe('r2');
             expect(jar.get('access_token')).toBe('a2');
-            expect(upstreamBodies('/api/auth/refresh')).toEqual([{ refreshToken: 'r1' }]);
+            expect(upstreamBodies('/api/v1/auth/refresh')).toEqual([{ refreshToken: 'r1' }]);
         });
 
         it('does not call the API twice with the same token when requests overlap', async () => {
@@ -85,14 +85,14 @@ describe('auth BFF contract', () => {
                 refresh(post('/api/auth/refresh'), context),
             ]);
 
-            expect(upstreamBodies('/api/auth/refresh')).toEqual([{ refreshToken: 'r1' }]);
+            expect(upstreamBodies('/api/v1/auth/refresh')).toEqual([{ refreshToken: 'r1' }]);
         });
 
         it('clears both cookies and answers 401 when the API answers 401 INVALID_TOKEN', async () => {
             jar.set('access_token', 'a1');
             jar.set('refresh_token', 'reused');
             fetchMock.mockResolvedValueOnce(
-                new Response(JSON.stringify({ errorCode: 'INVALID_TOKEN', message: 'Invalid refresh token' }), { status: 401 })
+                new Response(JSON.stringify({ code: 'INVALID_TOKEN', message: 'Invalid refresh token' }), { status: 401 })
             );
 
             const response = await refresh(post('/api/auth/refresh'), context);
@@ -142,7 +142,7 @@ describe('auth BFF contract', () => {
             const response = await logout(post('/api/auth/logout'), context);
 
             expect(response.status).toBe(200);
-            expect(upstreamBodies('/api/auth/logout')).toEqual([{ refreshToken: 'r1' }]);
+            expect(upstreamBodies('/api/v1/auth/logout')).toEqual([{ refreshToken: 'r1' }]);
             const headers = fetchMock.mock.calls[0][1].headers as Record<string, string>;
             expect(headers.Authorization).toBeUndefined();
             expect(jar.has('access_token')).toBe(false);

@@ -13,7 +13,7 @@ export function HomeContent() {
     const homeFilters = { ...filters, carStatusType: 'AVAILABLE' };
     const { data, isLoading, error, refetch } = useCars(homeFilters, 0, sortBy);
 
-    const cars = data?.content ?? data?.cars ?? [];
+    const cars = data?.content ?? [];
 
     if (error) {
         return (

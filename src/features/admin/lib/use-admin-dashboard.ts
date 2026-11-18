@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost } from '@/shared/api';
+import { clientGet, clientPost, type Schemas } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type {
     DailySummary,
@@ -11,6 +11,7 @@ import type {
     AdminAlert,
 } from '@/features/admin';
 import type { PageResponse } from '@/shared/types';
+import type { AlertVariant } from '../model/types';
 import { adminKeys, type PendingFilters } from './admin-keys';
 
 async function fetchDashboardSummary(): Promise<DailySummary> {
@@ -101,16 +102,39 @@ async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
     return clientGet<RevenueAnalytics>('/api/admin/dashboard/revenue');
 }
 
+const ALERT_VARIANTS: Record<NonNullable<AlertDto['severity']>, AlertVariant> = {
+    CRITICAL: 'critical',
+    HIGH: 'critical',
+    WARNING: 'warning',
+    MEDIUM: 'warning',
+    LOW: 'info',
+};
+
+type AlertDto = Schemas['AlertDto'];
+
+export function toAdminAlert(alert: AlertDto): AdminAlert {
+    return {
+        id: String(alert.id ?? ''),
+        type: alert.severity ? ALERT_VARIANTS[alert.severity] : 'info',
+        title: alert.title ?? 'Alert',
+        description: alert.message ?? '',
+        timestamp: alert.createdAt ?? new Date().toISOString(),
+        dismissible: true,
+    };
+}
+
 async function fetchAlerts(): Promise<AdminAlert[]> {
-    return clientGet<AdminAlert[]>('/api/admin/alerts');
+    const alerts = await clientGet<AlertDto[]>('/api/admin/alerts');
+    return alerts.filter((alert) => !alert.acknowledged).map(toAdminAlert);
 }
 
-async function dismissAlert(alertId: string): Promise<void> {
-    return clientPost<void>(`/api/admin/alerts/${alertId}/dismiss`);
+async function acknowledgeAlert(alertId: string): Promise<void> {
+    await clientPost<AlertDto>(`/api/admin/alerts/${alertId}/acknowledge`);
 }
 
-async function markAllAlertsRead(): Promise<void> {
-    return clientPost<void>('/api/admin/alerts/mark-all-read');
+async function acknowledgeAllAlerts(): Promise<void> {
+    const alerts = await clientGet<AlertDto[]>('/api/admin/alerts');
+    await Promise.all(alerts.filter((alert) => !alert.acknowledged).map((alert) => acknowledgeAlert(String(alert.id))));
 }
 
 export function useDashboardSummary() {
@@ -182,7 +206,7 @@ export function useDismissAlert() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: dismissAlert,
+        mutationFn: acknowledgeAlert,
         onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
         },
@@ -193,7 +217,7 @@ export function useMarkAllAlertsRead() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: markAllAlertsRead,
+        mutationFn: acknowledgeAllAlerts,
         onSuccess: () => {
             void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
             showToast.success('All alerts marked as read');

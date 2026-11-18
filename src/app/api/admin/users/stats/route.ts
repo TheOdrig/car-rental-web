@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.users.stats,
+    target: () => API.admin.users.stats.resolve(),
     tags: ['admin', 'users', 'stats'],
     errorMessage: 'Failed to fetch user statistics',
     errorStatus: 503,

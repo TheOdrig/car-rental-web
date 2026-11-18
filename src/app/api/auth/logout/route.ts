@@ -1,6 +1,5 @@
-import { AUTH_ENDPOINTS } from '@/features/auth';
 import { logger } from '@/shared/lib/logger';
-import { clearAuthTokens, getRefreshToken, route, upstream } from '@/shared/server';
+import { API, clearAuthTokens, getRefreshToken, route, upstream } from '@/shared/server';
 
 export const POST = route(
     async () => {
@@ -8,7 +7,7 @@ export const POST = route(
 
         try {
             if (refreshToken) {
-                await upstream.post(AUTH_ENDPOINTS.logout, { refreshToken }, { anonymous: true, cache: 'no-store' });
+                await upstream.post(API.auth.logout.resolve(), { refreshToken }, { anonymous: true, cache: 'no-store' });
             }
         } catch (error) {
             logger.warn('[BFF] Upstream logout failed', error);

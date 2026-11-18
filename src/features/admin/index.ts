@@ -24,7 +24,6 @@ export type {
     RentalDetailResponse,
 } from './model/types';
 
-export { ADMIN_ENDPOINTS } from './api/endpoints';
 
 export * from './ui';
 

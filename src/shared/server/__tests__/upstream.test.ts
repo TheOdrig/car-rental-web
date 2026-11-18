@@ -46,16 +46,16 @@ describe('upstream', () => {
     }
 
     it('resolves paths against the server-side API_URL and forwards params', () => {
-        const url = buildUpstreamUrl('/api/cars', new URLSearchParams('a=1&a=2'));
+        const url = buildUpstreamUrl('/api/v1/cars', new URLSearchParams('a=1&a=2'));
 
-        expect(url.toString()).toBe('http://localhost:8082/api/cars?a=1&a=2');
+        expect(url.toString()).toBe('http://localhost:8082/api/v1/cars?a=1&a=2');
     });
 
     it('sends the access token from the cookie as a bearer header', async () => {
         jar.set('access_token', 'tok');
         fetchMock.mockResolvedValueOnce(jsonResponse(200, { ok: true }));
 
-        await upstream.get('/api/cars');
+        await upstream.get('/api/v1/cars');
 
         expect(lastHeaders().Authorization).toBe('Bearer tok');
     });
@@ -65,7 +65,7 @@ describe('upstream', () => {
         jar.set('refresh_token', 'ref');
         fetchMock.mockResolvedValueOnce(jsonResponse(401, { message: 'bad credentials' }));
 
-        await expect(upstream.post('/api/auth/login', { u: 1 }, { anonymous: true })).rejects.toMatchObject({
+        await expect(upstream.post('/api/v1/auth/login', { u: 1 }, { anonymous: true })).rejects.toMatchObject({
             status: 401,
         });
 
@@ -82,7 +82,7 @@ describe('upstream', () => {
             .mockResolvedValueOnce(jsonResponse(200, refreshed))
             .mockResolvedValueOnce(jsonResponse(200, { data: 1 }));
 
-        const result = await upstream.get('/api/rentals/me');
+        const result = await upstream.get('/api/v1/rentals/me');
 
         expect(result).toEqual({ data: 1 });
         expect(fetchMock).toHaveBeenCalledTimes(3);
@@ -96,7 +96,7 @@ describe('upstream', () => {
         jar.set('refresh_token', 'ref');
         fetchMock.mockResolvedValueOnce(jsonResponse(403, { message: 'forbidden' }));
 
-        await expect(upstream.get('/api/admin/users')).rejects.toMatchObject({ status: 403 });
+        await expect(upstream.get('/api/v1/admin/users')).rejects.toMatchObject({ status: 403 });
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
@@ -105,7 +105,7 @@ describe('upstream', () => {
         jar.set('refresh_token', 'ref');
         fetchMock.mockResolvedValueOnce(jsonResponse(200, refreshed)).mockResolvedValueOnce(jsonResponse(200, {}));
 
-        await upstream.get('/api/rentals/me');
+        await upstream.get('/api/v1/rentals/me');
 
         expect(lastHeaders(1).Authorization).toBe('Bearer fresh-access');
     });
@@ -114,10 +114,10 @@ describe('upstream', () => {
         jar.set('access_token', 'stale');
         jar.set('refresh_token', 'ref');
         fetchMock
-            .mockResolvedValueOnce(jsonResponse(401, { errorCode: 'AUTHENTICATION_FAILED', message: 'expired' }))
-            .mockResolvedValueOnce(jsonResponse(401, { errorCode: 'INVALID_TOKEN', message: 'Invalid refresh token' }));
+            .mockResolvedValueOnce(jsonResponse(401, { code: 'AUTHENTICATION_FAILED', message: 'expired' }))
+            .mockResolvedValueOnce(jsonResponse(401, { code: 'INVALID_TOKEN', message: 'Invalid refresh token' }));
 
-        await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
+        await expect(upstream.get('/api/v1/rentals/me')).rejects.toMatchObject({ status: 401 });
 
         expect(jar.has('access_token')).toBe(false);
         expect(jar.has('refresh_token')).toBe(false);
@@ -127,14 +127,14 @@ describe('upstream', () => {
         ['a server error', () => jsonResponse(503, {})],
         ['an internal error', () => jsonResponse(500, {})],
         ['a timeout', () => Promise.reject(new DOMException('timed out', 'TimeoutError'))],
-        ['a rate limit', () => jsonResponse(429, { errorCode: 'RATE_LIMIT_EXCEEDED' })],
+        ['a rate limit', () => jsonResponse(429, { code: 'RATE_LIMIT_EXCEEDED' })],
         ['a network error', () => Promise.reject(new TypeError('fetch failed'))],
     ])('keeps the cookies when the refresh fails transiently with %s', async (_label, outcome) => {
         jar.set('access_token', 'stale');
         jar.set('refresh_token', 'ref');
         fetchMock.mockResolvedValueOnce(jsonResponse(401, { message: 'expired' })).mockImplementationOnce(async () => outcome());
 
-        await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
+        await expect(upstream.get('/api/v1/rentals/me')).rejects.toMatchObject({ status: 401 });
 
         expect(jar.get('access_token')).toBe('stale');
         expect(jar.get('refresh_token')).toBe('ref');
@@ -143,18 +143,18 @@ describe('upstream', () => {
     it('stores the rotated refresh token and never sends the old one again within the share window', async () => {
         jar.set('refresh_token', 'old-refresh');
         fetchMock.mockImplementation(async (url: URL) =>
-            url.pathname === '/api/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
+            url.pathname === '/api/v1/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
         );
 
-        await upstream.get('/api/a');
+        await upstream.get('/api/v1/a');
         expect(jar.get('refresh_token')).toBe('fresh-refresh');
 
         jar.set('refresh_token', 'old-refresh');
         jar.delete('access_token');
-        await upstream.get('/api/b');
+        await upstream.get('/api/v1/b');
 
         const refreshBodies = fetchMock.mock.calls
-            .filter(([url]) => (url as URL).pathname === '/api/auth/refresh')
+            .filter(([url]) => (url as URL).pathname === '/api/v1/auth/refresh')
             .map(([, init]) => JSON.parse(init.body as string));
         expect(refreshBodies).toEqual([{ refreshToken: 'old-refresh' }]);
         expect(jar.get('refresh_token')).toBe('fresh-refresh');
@@ -172,7 +172,7 @@ describe('upstream', () => {
     });
 
     it('does not replay a token the API already rejected', async () => {
-        fetchMock.mockImplementation(async () => jsonResponse(401, { errorCode: 'INVALID_TOKEN' }));
+        fetchMock.mockImplementation(async () => jsonResponse(401, { code: 'INVALID_TOKEN' }));
 
         expect(await refreshAuthSession('dead')).toEqual({ kind: 'rejected' });
         expect(await refreshAuthSession('dead')).toEqual({ kind: 'rejected' });
@@ -206,9 +206,9 @@ describe('upstream', () => {
     it('does not treat 403 as a reason to refresh', async () => {
         jar.set('access_token', 'tok');
         jar.set('refresh_token', 'ref');
-        fetchMock.mockResolvedValueOnce(jsonResponse(403, { errorCode: 'ACCESS_DENIED' }));
+        fetchMock.mockResolvedValueOnce(jsonResponse(403, { code: 'ACCESS_DENIED' }));
 
-        await expect(upstream.get('/api/admin/users')).rejects.toMatchObject({ status: 403, code: 'ACCESS_DENIED' });
+        await expect(upstream.get('/api/v1/admin/users')).rejects.toMatchObject({ status: 403, code: 'ACCESS_DENIED' });
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(jar.get('refresh_token')).toBe('ref');
@@ -216,13 +216,13 @@ describe('upstream', () => {
 
     it('exposes the error code and Retry-After of upstream failures', async () => {
         fetchMock.mockResolvedValueOnce(
-            new Response(JSON.stringify({ errorCode: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' }), {
+            new Response(JSON.stringify({ code: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' }), {
                 status: 429,
                 headers: { 'Content-Type': 'application/json', 'Retry-After': '30' },
             })
         );
 
-        await expect(upstream.post('/api/auth/login', {}, { anonymous: true })).rejects.toMatchObject({
+        await expect(upstream.post('/api/v1/auth/login', {}, { anonymous: true })).rejects.toMatchObject({
             status: 429,
             code: 'RATE_LIMIT_EXCEEDED',
             retryAfter: 30,
@@ -234,7 +234,7 @@ describe('upstream', () => {
         jar.set('refresh_token', 'ref');
         fetchMock.mockResolvedValueOnce(jsonResponse(200, { content: [] }));
 
-        await upstream.get('/api/cars', { anonymous: true });
+        await upstream.get('/api/v1/cars', { anonymous: true });
 
         expect(lastHeaders().Authorization).toBeUndefined();
         expect(fetchMock).toHaveBeenCalledTimes(1);
@@ -244,12 +244,12 @@ describe('upstream', () => {
     it('shares one refresh call between parallel requests using the same refresh token', async () => {
         jar.set('refresh_token', 'ref');
         fetchMock.mockImplementation(async (url: URL) =>
-            url.pathname === '/api/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
+            url.pathname === '/api/v1/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
         );
 
-        await Promise.all([upstream.get('/api/a'), upstream.get('/api/b'), upstream.get('/api/c')]);
+        await Promise.all([upstream.get('/api/v1/a'), upstream.get('/api/v1/b'), upstream.get('/api/v1/c')]);
 
-        const refreshCalls = fetchMock.mock.calls.filter(([url]) => (url as URL).pathname === '/api/auth/refresh');
+        const refreshCalls = fetchMock.mock.calls.filter(([url]) => (url as URL).pathname === '/api/v1/auth/refresh');
         expect(refreshCalls).toHaveLength(1);
     });
 
@@ -272,7 +272,7 @@ describe('upstream', () => {
     it('attaches an abort signal to upstream calls', async () => {
         fetchMock.mockResolvedValueOnce(jsonResponse(200, {}));
 
-        await upstream.get('/api/cars');
+        await upstream.get('/api/v1/cars');
 
         expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
     });
@@ -280,7 +280,7 @@ describe('upstream', () => {
     it('maps an upstream timeout to 504', async () => {
         fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
 
-        await expect(upstream.get('/api/cars')).rejects.toMatchObject({ status: 504 });
+        await expect(upstream.get('/api/v1/cars')).rejects.toMatchObject({ status: 504 });
     });
 
     it('treats a refresh timeout as a failed refresh', async () => {
@@ -296,7 +296,7 @@ describe('upstream', () => {
             .mockResolvedValueOnce(jsonResponse(401, { message: 'expired' }))
             .mockResolvedValueOnce(jsonResponse(200, { accessToken: 5 }));
 
-        await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
+        await expect(upstream.get('/api/v1/rentals/me')).rejects.toMatchObject({ status: 401 });
 
         expect(jar.get('access_token')).toBe('stale');
     });
@@ -307,7 +307,7 @@ describe('upstream', () => {
         const form = new FormData();
         form.append('file', new Blob(['x']), 'x.png');
 
-        await upstream.post('/api/users/me/avatar', form);
+        await upstream.post('/api/v1/users/me/avatar', form);
 
         expect(lastHeaders()['Content-Type']).toBeUndefined();
         expect(fetchMock.mock.calls[0][1].body).toBe(form);
@@ -316,6 +316,6 @@ describe('upstream', () => {
     it('returns undefined for 204 responses', async () => {
         fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
 
-        expect(await upstream.delete('/api/cars/1')).toBeUndefined();
+        expect(await upstream.delete('/api/v1/cars/1')).toBeUndefined();
     });
 });

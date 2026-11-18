@@ -23,6 +23,6 @@ export function createMockDamageListResponse(content: DamageReport[]): DamageLis
         totalElements: content.length,
         totalPages: 1,
         size: 20,
-        number: 0,
+        page: 0,
     };
 }

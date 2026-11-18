@@ -26,7 +26,7 @@ describe('Booking API', () => {
             const mockResponse = createMockBooking();
             vi.mocked(apiClient.post).mockResolvedValue(mockResponse);
             const result = await createBooking(mockRequest);
-            expect(apiClient.post).toHaveBeenCalledWith('/rentals', mockRequest);
+            expect(apiClient.post).toHaveBeenCalledWith('/api/rentals', mockRequest);
             expect(result).toEqual(mockResponse);
         });
         it('should handle unavailable car error', async () => {

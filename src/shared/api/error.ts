@@ -1,10 +1,14 @@
-import type { ApiError as IApiError } from '@/shared/types';
+import type { ApiError as IApiError, FieldProblem } from '@/shared/types';
 
 export class ApiError extends Error {
     status: number;
-    errors?: Record<string, string>;
+    errors?: FieldProblem[];
     timestamp: string;
-    path?: string;
+    title?: string;
+    type?: string;
+    instance?: string;
+    traceId?: string;
+    details?: Record<string, unknown>;
     data?: unknown;
     code?: string;
     retryAfter?: number;
@@ -24,7 +28,11 @@ export class ApiError extends Error {
             this.status = arg1.status;
             this.errors = arg1.errors;
             this.timestamp = arg1.timestamp;
-            this.path = arg1.path;
+            this.title = arg1.title;
+            this.type = arg1.type;
+            this.instance = arg1.instance;
+            this.traceId = arg1.traceId;
+            this.details = arg1.details;
             this.code = arg1.code;
             this.retryAfter = arg1.retryAfter;
         } else {
@@ -46,18 +54,69 @@ export function parseRetryAfter(value: string | null | undefined): number | unde
     return trimmed && /^[0-9]+$/.test(trimmed) ? Number(trimmed) : undefined;
 }
 
+function text(value: unknown): string | undefined {
+    return typeof value === 'string' && value.trim() ? value : undefined;
+}
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+    return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+export function parseFieldProblems(value: unknown): FieldProblem[] | undefined {
+    if (!Array.isArray(value)) {
+        return undefined;
+    }
+
+    const problems = value.filter(
+        (entry): entry is FieldProblem =>
+            isRecord(entry) && typeof entry.field === 'string' && typeof entry.message === 'string'
+    );
+
+    return problems.length > 0 ? problems.map(({ field, message }) => ({ field, message })) : undefined;
+}
+
+export function fieldErrorMap(error: unknown): Record<string, string> {
+    const result: Record<string, string> = {};
+
+    if (isApiError(error)) {
+        for (const { field, message } of error.errors ?? []) {
+            result[field] = result[field] ? `${result[field]} ${message}` : message;
+        }
+    }
+
+    return result;
+}
+
+export function fieldErrorMessages(error: unknown, field: string): string[] {
+    if (!isApiError(error)) {
+        return [];
+    }
+
+    return (error.errors ?? []).filter((entry) => entry.field === field).map((entry) => entry.message);
+}
+
+export function detailString(error: unknown, key: string): string | undefined {
+    return isApiError(error) ? text(error.details?.[key]) : undefined;
+}
+
 export async function parseErrorResponse(response: Response): Promise<IApiError> {
     const retryAfter = parseRetryAfter(response.headers.get('Retry-After'));
 
     try {
-        const data = await response.json();
+        const data: unknown = await response.json();
+        const body = isRecord(data) ? data : {};
+
         return {
             status: response.status,
-            message: data.message || response.statusText,
-            timestamp: data.timestamp || new Date().toISOString(),
-            path: data.path,
-            errors: data.errors ?? data.validationErrors,
-            code: data.errorCode ?? data.code,
+            message: text(body.detail) ?? text(body.message) ?? text(body.title) ?? response.statusText,
+            timestamp: text(body.timestamp) ?? new Date().toISOString(),
+            title: text(body.title),
+            type: text(body.type),
+            instance: text(body.instance),
+            traceId: text(body.traceId),
+            code: text(body.code),
+            errors: parseFieldProblems(body.errors),
+            details: isRecord(body.details) ? body.details : undefined,
             retryAfter,
         };
     } catch {

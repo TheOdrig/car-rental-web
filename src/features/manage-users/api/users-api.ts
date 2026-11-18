@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
+import { toAdminRentalStatus } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 import { usersKeys } from './users-keys';
 import type { UserFilters } from './users-keys';
@@ -110,7 +111,7 @@ async function fetchCustomerRentalHistory(
             endDate: rental.endDate,
             duration: rental.days,
             totalAmount: rental.totalPrice,
-            status: rental.status as AdminRentalStatus,
+            status: toAdminRentalStatus(rental.status),
         })),
     };
 }

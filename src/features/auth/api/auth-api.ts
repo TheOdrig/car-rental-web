@@ -2,11 +2,11 @@ import { apiClient, ApiError } from '@/shared/api';
 import { LoginRequest, RegisterRequest, AuthResponse } from '../model/types';
 
 export const login = async (data: LoginRequest): Promise<AuthResponse> => {
-    return apiClient.post<AuthResponse>('/auth/login', data);
+    return apiClient.post<AuthResponse>('/api/auth/login', data);
 };
 
 export const register = async (data: RegisterRequest): Promise<AuthResponse> => {
-    return apiClient.post<AuthResponse>('/auth/register', data);
+    return apiClient.post<AuthResponse>('/api/auth/register', data);
 };
 
 export const logout = async (): Promise<void> => {

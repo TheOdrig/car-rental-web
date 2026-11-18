@@ -85,7 +85,7 @@ function DamagesContent() {
 
             {data && data.totalPages > 1 && (
                 <Pagination
-                    currentPage={data.number}
+                    currentPage={data.page}
                     totalPages={data.totalPages}
                     onPageChange={handlePageChange}
                 />

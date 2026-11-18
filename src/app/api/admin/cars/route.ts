@@ -1,9 +1,8 @@
-import { CAR_ENDPOINTS } from '@/entities/car';
-import { created, proxy, readJson, route, upstream } from '@/shared/server';
+import { API, created, proxy, readJson, route, upstream } from '@/shared/server';
 import { DEFAULT_CAR_IMAGE, toBackendCar, type CarFormBody } from './_lib/to-backend-car';
 
 export const GET = proxy({
-    path: () => CAR_ENDPOINTS.admin.list,
+    target: () => API.cars.list.resolve(),
     forwardQuery: true,
     errorMessage: 'Failed to fetch cars',
 });
@@ -11,7 +10,7 @@ export const GET = proxy({
 export const POST = route(
     async (request) => {
         const body = await readJson<CarFormBody>(request);
-        const data = await upstream.post(CAR_ENDPOINTS.admin.create, toBackendCar(body, DEFAULT_CAR_IMAGE), {
+        const data = await upstream.post(API.cars.create.resolve(), toBackendCar(body, DEFAULT_CAR_IMAGE), {
             cache: 'no-store',
         });
         return created(data);

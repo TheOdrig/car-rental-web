@@ -3,6 +3,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { ApiError, isApiError } from '@/shared/api/error';
 import { logger } from '@/shared/lib/logger';
 import { upstreamFetch, type UpstreamOptions } from './upstream';
+import type { UpstreamTarget } from './upstream-endpoints';
 
 type RouteParams = Record<string, string | string[]>;
 
@@ -13,6 +14,7 @@ interface RouteOptions {
 }
 
 const JSON_CONTENT_TYPE = 'application/json';
+const PROBLEM_CONTENT_TYPE = 'application/problem+json';
 const BODY_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 const STATE_CHANGING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
 
@@ -38,22 +40,34 @@ function isCrossOrigin(request: NextRequest): boolean {
     }
 }
 
+function problemResponse(
+    status: number,
+    detail: string,
+    extra: Record<string, unknown> = {},
+    headers: Record<string, string> = {}
+): NextResponse {
+    return NextResponse.json(
+        { status, detail, timestamp: new Date().toISOString(), ...extra },
+        { status, headers: { 'Content-Type': PROBLEM_CONTENT_TYPE, ...headers } }
+    );
+}
+
 function guardRequest(request: NextRequest, options: RouteOptions): NextResponse | null {
     if (!STATE_CHANGING_METHODS.has(request.method)) {
         return null;
     }
 
     if (isCrossOrigin(request)) {
-        return NextResponse.json({ message: 'Forbidden', error: 'Forbidden' }, { status: 403 });
+        return problemResponse(403, 'Forbidden', { title: 'Forbidden', code: 'ACCESS_DENIED' });
     }
 
     if (BODY_METHODS.has(request.method)) {
         const allowed = options.contentTypes ?? [JSON_CONTENT_TYPE];
         if (!allowed.includes(mediaType(request.headers.get('content-type')))) {
-            return NextResponse.json(
-                { message: 'Unsupported media type', error: 'Unsupported media type' },
-                { status: 415 }
-            );
+            return problemResponse(415, 'Unsupported media type', {
+                title: 'Unsupported Media Type',
+                code: 'UNSUPPORTED_MEDIA_TYPE',
+            });
         }
     }
 
@@ -67,9 +81,20 @@ export function errorResponse(error: unknown, options: RouteOptions): NextRespon
             headers['Retry-After'] = String(error.retryAfter);
         }
 
-        return NextResponse.json(
-            { message: error.message, error: error.message, errors: error.errors, code: error.code },
-            { status: error.status, headers }
+        return problemResponse(
+            error.status,
+            error.message,
+            {
+                title: error.title,
+                type: error.type,
+                instance: error.instance,
+                traceId: error.traceId,
+                code: error.code,
+                errors: error.errors,
+                details: error.details,
+                ...(error.timestamp ? { timestamp: error.timestamp } : {}),
+            },
+            headers
         );
     }
 
@@ -79,7 +104,7 @@ export function errorResponse(error: unknown, options: RouteOptions): NextRespon
     const message = unreachable ? 'Service unavailable' : options.errorMessage;
     const status = unreachable ? 503 : (options.errorStatus ?? 500);
 
-    return NextResponse.json({ message, error: message }, { status });
+    return problemResponse(status, message);
 }
 
 export function route<P extends RouteParams = Record<string, never>>(
@@ -136,9 +161,9 @@ export function searchParamsOf(request: NextRequest): URLSearchParams {
 type ProxyBody = 'required' | 'optional' | 'none';
 
 interface ProxyConfig<P extends RouteParams> extends RouteOptions {
-    path: (params: P, request: NextRequest) => string;
-    method?: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+    target: (params: P, request: NextRequest) => UpstreamTarget;
     forwardQuery?: boolean;
+    transformQuery?: (query: URLSearchParams) => URLSearchParams;
     body?: ProxyBody;
     tags?: string[];
     status?: number;
@@ -156,10 +181,11 @@ async function readOptionalJson(request: NextRequest): Promise<unknown> {
 }
 
 export function proxy<P extends RouteParams = Record<string, never>>(config: ProxyConfig<P>) {
-    const method = config.method ?? 'GET';
-    const bodyMode: ProxyBody = config.body ?? (method === 'GET' || method === 'DELETE' ? 'none' : 'required');
-
     return route<P>(async (request, params) => {
+        const target = config.target(params, request);
+        const method = target.method;
+        const bodyMode: ProxyBody = config.body ?? (method === 'GET' || method === 'DELETE' ? 'none' : 'required');
+
         let body: unknown;
         if (bodyMode === 'required') {
             body = await readJson(request);
@@ -172,15 +198,16 @@ export function proxy<P extends RouteParams = Record<string, never>>(config: Pro
         }
 
         const options: UpstreamOptions = {
-            method,
             body,
             cache: 'no-store',
             tags: config.tags,
             anonymous: config.anonymous,
-            params: config.forwardQuery ? searchParamsOf(request) : undefined,
+            params: config.forwardQuery
+                ? (config.transformQuery ?? ((query) => query))(searchParamsOf(request))
+                : undefined,
         };
 
-        const data = await upstreamFetch<unknown>(config.path(params, request), options);
+        const data = await upstreamFetch<unknown>(target, options);
         const payload = config.respond ? config.respond(data) : data;
 
         return config.status ? NextResponse.json(payload ?? {}, { status: config.status }) : payload;

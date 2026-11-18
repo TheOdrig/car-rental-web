@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { DAMAGE_ENDPOINTS } from '@/entities/damage';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => DAMAGE_ENDPOINTS.admin.statistics,
+    target: () => API.admin.damages.statistics.resolve(),
     forwardQuery: true,
     errorMessage: 'Failed to fetch damage statistics',
 });

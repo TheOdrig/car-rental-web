@@ -1,4 +1,5 @@
-import type { RentalStatus } from '@/entities/rental';
+import type { PageResponse } from '@/shared/types';
+import type { Rental, RentalStatus } from '@/entities/rental';
 
 export interface RentalFilter {
     status?: RentalStatus;
@@ -33,10 +34,4 @@ export interface RentalListItem {
     currency: string;
 }
 
-export interface PaginatedRentals {
-    rentals: RentalListItem[];
-    totalElements: number;
-    totalPages: number;
-    currentPage: number;
-    pageSize: number;
-}
+export type PaginatedRentals = PageResponse<Rental>;

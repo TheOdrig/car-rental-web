@@ -1,7 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { AUTH_ENDPOINTS } from '@/features/auth';
 import { logger } from '@/shared/lib/logger';
-import { buildUpstreamUrl } from '@/shared/server';
+import { API, buildUpstreamUrl } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { setOAuthStateCookie } from '../../_lib/oauth-state';
 
@@ -21,7 +20,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     try {
-        const response = await fetch(buildUpstreamUrl(AUTH_ENDPOINTS.oauth.authorize(provider)), {
+        const response = await fetch(buildUpstreamUrl(API.oauth.authorize.resolve({ provider }).path), {
             redirect: 'manual',
             cache: 'no-store',
         });

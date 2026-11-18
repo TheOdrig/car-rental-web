@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.users.list,
+    target: () => API.admin.users.list.resolve(),
     forwardQuery: true,
     tags: ['admin', 'users'],
     errorMessage: 'Failed to fetch users',

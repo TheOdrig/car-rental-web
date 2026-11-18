@@ -82,7 +82,7 @@ describe('payment BFF contract', () => {
             expect(response.status).toBe(200);
             expect(await response.json()).toEqual(intentBody);
             const [url, init] = fetchMock.mock.calls[0];
-            expect((url as URL).pathname).toBe('/api/rentals/42/payment-intent');
+            expect((url as URL).pathname).toBe('/api/v1/rentals/42/payment-intent');
             expect(init.method).toBe('POST');
             expect(init.headers.Authorization).toBe('Bearer a1');
         });
@@ -149,7 +149,7 @@ describe('payment BFF contract', () => {
             [404, 'RENTAL_NOT_FOUND'],
             [409, 'INVALID_PAYMENT_STATE'],
         ])('passes a %i %s error through with its code', async (status, code) => {
-            fetchMock.mockResolvedValueOnce(upstreamJson(status, { errorCode: code, message: 'nope' }));
+            fetchMock.mockResolvedValueOnce(upstreamJson(status, { code: code, message: 'nope' }));
 
             const response = await createIntent(intentRequest(), ctx('42'));
 
@@ -173,7 +173,7 @@ describe('payment BFF contract', () => {
 
         it('passes a 401 through when there is no session', async () => {
             jar.clear();
-            fetchMock.mockResolvedValueOnce(upstreamJson(401, { errorCode: 'AUTHENTICATION_FAILED', message: 'no' }));
+            fetchMock.mockResolvedValueOnce(upstreamJson(401, { code: 'AUTHENTICATION_FAILED', message: 'no' }));
 
             const response = await createIntent(intentRequest(), ctx('42'));
 
@@ -198,7 +198,7 @@ describe('payment BFF contract', () => {
             expect(response.status).toBe(200);
             expect(await response.json()).toEqual(paymentBody);
             const [url, init] = fetchMock.mock.calls[0];
-            expect((url as URL).pathname).toBe('/api/rentals/42/payment');
+            expect((url as URL).pathname).toBe('/api/v1/rentals/42/payment');
             expect(init.method).toBe('GET');
             expect(init.headers.Authorization).toBe('Bearer a1');
         });
@@ -224,7 +224,7 @@ describe('payment BFF contract', () => {
             [403, 'ACCESS_DENIED'],
             [404, 'RENTAL_NOT_FOUND'],
         ])('passes a %i %s error through', async (status, code) => {
-            fetchMock.mockResolvedValueOnce(upstreamJson(status, { errorCode: code, message: 'nope' }));
+            fetchMock.mockResolvedValueOnce(upstreamJson(status, { code: code, message: 'nope' }));
 
             const response = await getPayment(paymentRequest(), ctx('42'));
 

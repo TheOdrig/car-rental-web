@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { CAR_ENDPOINTS } from '@/entities/car';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => CAR_ENDPOINTS.filterOptions,
+    target: () => API.cars.filterOptions.resolve(),
     anonymous: true,
     errorMessage: 'Failed to fetch filter options',
     errorStatus: 503,

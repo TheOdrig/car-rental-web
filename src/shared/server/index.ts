@@ -26,5 +26,12 @@ export {
     type RefreshOutcome,
     type UpstreamOptions,
 } from './upstream';
+export {
+    API,
+    listUpstreamEndpoints,
+    type UpstreamEndpoint,
+    type UpstreamMethod,
+    type UpstreamTarget,
+} from './upstream-endpoints';
 export { created, errorResponse, parseIdParam, proxy, readJson, route, searchParamsOf } from './route';
 export { getSession, signIn } from './auth-session';

@@ -16,11 +16,11 @@ export const createMockRentalListItem = (overrides = {}): RentalListItem => ({
     ...overrides,
 });
 export const createMockPaginatedRentals = (overrides = {}): PaginatedRentals => ({
-    rentals: [createMockRentalListItem()],
+    content: [createMockRental()],
     totalElements: 1,
     totalPages: 1,
-    currentPage: 0,
-    pageSize: 10,
+    page: 0,
+    size: 10,
     ...overrides,
 });
 export const createMockRental = (overrides = {}): Rental => ({

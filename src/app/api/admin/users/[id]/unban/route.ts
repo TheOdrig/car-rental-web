@@ -1,9 +1,7 @@
-import { ADMIN_ENDPOINTS } from '@/features/admin';
-import { parseIdParam, proxy } from '@/shared/server';
+import { API, parseIdParam, proxy } from '@/shared/server';
 
 export const POST = proxy<{ id: string }>({
-    path: ({ id }) => ADMIN_ENDPOINTS.users.unban(parseIdParam(id, 'user ID')),
-    method: 'POST',
+    target: ({ id }) => API.admin.users.unban.resolve({ id: parseIdParam(id, 'user ID') }),
     body: 'optional',
     respond: () => ({ success: true }),
     errorMessage: 'Failed to unban user',

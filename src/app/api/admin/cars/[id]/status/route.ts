@@ -1,6 +1,5 @@
-import { CAR_ENDPOINTS } from '@/entities/car';
 import { ApiError } from '@/shared/api';
-import { parseIdParam, readJson, route, upstream } from '@/shared/server';
+import { API, parseIdParam, readJson, route, upstream } from '@/shared/server';
 
 interface StatusBody {
     status?: string;
@@ -20,7 +19,7 @@ export const POST = route<{ id: string }>(
         const carStatusType = body.status.charAt(0).toUpperCase() + body.status.slice(1).toLowerCase();
 
         return upstream.patch(
-            CAR_ENDPOINTS.admin.updateStatus(carId),
+            API.cars.updateStatus.resolve({ id: carId }),
             {
                 carStatusType,
                 reason: body.reason || 'Status updated from admin panel',

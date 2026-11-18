@@ -126,7 +126,7 @@ async function uploadPhotos(damageId: number, formData: FormData): Promise<Damag
 }
 
 async function deletePhoto(damageId: number, photoId: number): Promise<void> {
-    await clientDelete<void>(`/api/admin/damages/${damageId}/photos/${photoId}`);
+    await clientDelete<void>(`/api/admin/damages/${damageId}/photos?photoId=${photoId}`);
 }
 
 export function useDamages(filters?: DamageSearchFilters, page = 0, size = 20) {

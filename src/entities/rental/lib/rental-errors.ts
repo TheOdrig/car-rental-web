@@ -1,7 +1,10 @@
-import { isApiError, isRateLimited, rateLimitMessage } from '@/shared/api';
+import { fieldErrorMessages, isApiError, isRateLimited, rateLimitMessage } from '@/shared/api';
 import { MAX_OPEN_REQUESTS, MAX_LEAD_DAYS, MAX_RENTAL_DAYS, RENTAL_MESSAGES } from './rental-rules';
 
 export const CAR_NOT_AVAILABLE_CODE = 'CAR_NOT_AVAILABLE';
+export const CAR_DATES_UNAVAILABLE_CODE = 'CAR_DATES_UNAVAILABLE';
+export const PAYMENT_NOT_AUTHORIZED_CODE = 'PAYMENT_NOT_AUTHORIZED';
+export const PAYMENT_NOT_FOUND_CODE = 'PAYMENT_NOT_FOUND';
 export const OPEN_RENTAL_REQUEST_LIMIT_CODE = 'OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED';
 export const VALIDATION_FAILED_CODE = 'VALIDATION_FAILED';
 export const RENTAL_VALIDATION_FAILED_CODE = 'RENTAL_VALIDATION_FAILED';
@@ -15,8 +18,6 @@ export const RENTAL_TOO_LONG_MESSAGE = `Rentals can last at most ${MAX_RENTAL_DA
 export const RENTAL_TOO_FAR_AHEAD_MESSAGE = `You can only book up to ${MAX_LEAD_DAYS} days ahead. Please pick an earlier start date.`;
 export const RENTAL_END_BEFORE_START_MESSAGE = 'The end date must be after the start date.';
 
-export const INVALID_RENTAL_STATE_CODE = 'INVALID_RENTAL_STATE';
-export const RENTAL_NOT_FOUND_CODE = 'RENTAL_NOT_FOUND';
 export const PAYMENT_FAILED_CODE = 'PAYMENT_FAILED';
 
 export const PICKUP_PAYMENT_REQUIRED_MESSAGE =
@@ -27,21 +28,31 @@ export const PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE =
 export const ADMIN_CAR_NOT_AVAILABLE_MESSAGE =
     'The car cannot be handed over: it is in maintenance or still out on another rental. Resolve the car status or the other rental first.';
 
-function validationTexts(error: { message: string; errors?: Record<string, string> }): string[] {
-    return [error.message, ...Object.values(error.errors ?? {})].filter(
-        (text): text is string => typeof text === 'string'
-    );
-}
+const RENTAL_DATE_FIELDS = ['startDate', 'endDate'] as const;
 
 export function getRentalValidationMessage(error: unknown): string | null {
     if (!isApiError(error) || error.status !== 400) return null;
     if (error.code !== VALIDATION_FAILED_CODE && error.code !== RENTAL_VALIDATION_FAILED_CODE) return null;
 
-    const texts = validationTexts(error);
+    const texts = [
+        ...(error.code === RENTAL_VALIDATION_FAILED_CODE ? [error.message] : []),
+        ...RENTAL_DATE_FIELDS.flatMap((field) => fieldErrorMessages(error, field)),
+    ];
     if (texts.some((text) => text.includes(RENTAL_MESSAGES.tooLong))) return RENTAL_TOO_LONG_MESSAGE;
     if (texts.some((text) => text.includes(RENTAL_MESSAGES.tooFarAhead))) return RENTAL_TOO_FAR_AHEAD_MESSAGE;
     if (texts.some((text) => text.includes(RENTAL_MESSAGES.endBeforeStart))) return RENTAL_END_BEFORE_START_MESSAGE;
     return null;
+}
+
+export function getRentalFieldErrors(error: unknown): Partial<Record<(typeof RENTAL_DATE_FIELDS)[number], string>> {
+    const result: Partial<Record<(typeof RENTAL_DATE_FIELDS)[number], string>> = {};
+
+    for (const field of RENTAL_DATE_FIELDS) {
+        const [first] = fieldErrorMessages(error, field);
+        if (first) result[field] = first;
+    }
+
+    return result;
 }
 
 export function getRentalRequestErrorMessage(error: unknown, fallback: string): string {
@@ -50,8 +61,11 @@ export function getRentalRequestErrorMessage(error: unknown, fallback: string): 
     }
 
     if (isApiError(error)) {
+        if (error.code === CAR_DATES_UNAVAILABLE_CODE) {
+            return CAR_BOOKED_MESSAGE;
+        }
         if (error.code === CAR_NOT_AVAILABLE_CODE) {
-            return error.status === 409 ? CAR_BOOKED_MESSAGE : error.message;
+            return error.message;
         }
         if (error.status === 409 && error.code === OPEN_RENTAL_REQUEST_LIMIT_CODE) {
             return OPEN_REQUEST_LIMIT_MESSAGE;
@@ -68,16 +82,11 @@ export function getAdminActionErrorMessage(error: unknown): string {
         return rateLimitMessage(error.retryAfter);
     }
 
-    if (isApiError(error) && error.code === CAR_NOT_AVAILABLE_CODE && (error.status === 409 || error.status === 400)) {
-        return ADMIN_CAR_NOT_AVAILABLE_MESSAGE;
-    }
-
     if (isApiError(error)) {
-        const text = error.message ?? '';
-        if (error.code === INVALID_RENTAL_STATE_CODE && error.status === 400 && text.includes('Payment must be AUTHORIZED')) {
-            return PICKUP_PAYMENT_REQUIRED_MESSAGE;
+        if (error.code === CAR_NOT_AVAILABLE_CODE || error.code === CAR_DATES_UNAVAILABLE_CODE) {
+            return ADMIN_CAR_NOT_AVAILABLE_MESSAGE;
         }
-        if (error.code === RENTAL_NOT_FOUND_CODE && error.status === 404 && text.includes('Payment not found')) {
+        if (error.code === PAYMENT_NOT_AUTHORIZED_CODE || error.code === PAYMENT_NOT_FOUND_CODE) {
             return PICKUP_PAYMENT_REQUIRED_MESSAGE;
         }
         if (error.code === PAYMENT_FAILED_CODE && error.status === 402) {

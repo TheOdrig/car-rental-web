@@ -1,7 +1,7 @@
-import { proxy } from '@/shared/server';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => '/api/pricing/preview',
+    target: () => API.pricing.preview.resolve(),
     forwardQuery: true,
     anonymous: true,
     errorMessage: 'Failed to fetch pricing preview',

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ApiError, parseErrorResponse, parseRetryAfter } from '@/shared/api/error';
 import type { ServerRequestOptions } from '@/shared/api/types';
 import { getServerEnv } from './env';
+import { API, type UpstreamTarget } from './upstream-endpoints';
 import {
     clearAuthTokens,
     getAccessToken,
@@ -11,7 +12,7 @@ import {
     setAuthTokens,
 } from './auth-cookies';
 
-const REFRESH_PATH = '/api/auth/refresh';
+const REFRESH_PATH = API.auth.refresh.resolve().path;
 
 export const authResponseSchema = z.object({
     accessToken: z.string().min(1),
@@ -209,7 +210,11 @@ function buildRequestInit(options: UpstreamOptions, token: string | undefined): 
     return init;
 }
 
-export async function upstreamFetch<T>(path: string, options: UpstreamOptions = {}): Promise<T> {
+export type UpstreamPath<M extends ServerRequestOptions['method'] = ServerRequestOptions['method']> = string | UpstreamTarget<NonNullable<M>>;
+
+export async function upstreamFetch<T>(target: UpstreamPath, rawOptions: UpstreamOptions = {}): Promise<T> {
+    const path = typeof target === 'string' ? target : target.path;
+    const options = typeof target === 'string' ? rawOptions : { ...rawOptions, method: target.method };
     const url = buildUpstreamUrl(path, options.params);
     const authenticated = !options.anonymous;
 
@@ -241,13 +246,13 @@ export async function upstreamFetch<T>(path: string, options: UpstreamOptions = 
 type MethodOptions = Omit<UpstreamOptions, 'method' | 'body'>;
 
 export const upstream = {
-    get: <T>(path: string, options?: MethodOptions) => upstreamFetch<T>(path, { ...options, method: 'GET' }),
-    post: <T>(path: string, body?: unknown, options?: MethodOptions) =>
+    get: <T>(path: UpstreamPath<'GET'>, options?: MethodOptions) => upstreamFetch<T>(path, { ...options, method: 'GET' }),
+    post: <T>(path: UpstreamPath<'POST'>, body?: unknown, options?: MethodOptions) =>
         upstreamFetch<T>(path, { ...options, method: 'POST', body }),
-    put: <T>(path: string, body?: unknown, options?: MethodOptions) =>
+    put: <T>(path: UpstreamPath<'PUT'>, body?: unknown, options?: MethodOptions) =>
         upstreamFetch<T>(path, { ...options, method: 'PUT', body }),
-    patch: <T>(path: string, body?: unknown, options?: MethodOptions) =>
+    patch: <T>(path: UpstreamPath<'PATCH'>, body?: unknown, options?: MethodOptions) =>
         upstreamFetch<T>(path, { ...options, method: 'PATCH', body }),
-    delete: <T>(path: string, options?: MethodOptions) =>
+    delete: <T>(path: UpstreamPath<'DELETE'>, options?: MethodOptions) =>
         upstreamFetch<T>(path, { ...options, method: 'DELETE' }),
 };

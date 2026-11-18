@@ -1,9 +1,8 @@
-import { DAMAGE_ENDPOINTS } from '@/entities/damage';
 import { ApiError } from '@/shared/api';
-import { created, proxy, readJson, route, searchParamsOf, upstream } from '@/shared/server';
+import { API, created, proxy, readJson, route, searchParamsOf, upstream } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => DAMAGE_ENDPOINTS.admin.search,
+    target: () => API.admin.damages.search.resolve(),
     forwardQuery: true,
     errorMessage: 'Failed to fetch damages',
 });
@@ -17,7 +16,7 @@ export const POST = route(
         }
 
         const body = await readJson(request);
-        const data = await upstream.post(DAMAGE_ENDPOINTS.admin.list, body, {
+        const data = await upstream.post(API.admin.damages.create.resolve(), body, {
             params: { rentalId },
             cache: 'no-store',
         });

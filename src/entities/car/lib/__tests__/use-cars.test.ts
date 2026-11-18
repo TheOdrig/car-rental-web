@@ -25,20 +25,10 @@ const mockClientPost = vi.mocked(clientPost);
 function createMockPageResponse<T>(content: T[], page = 0, totalPages = 1): PageResponse<T> {
     return {
         content,
-        pageable: {
-            pageNumber: page,
-            pageSize: 10,
-            offset: page * 10,
-            paged: true,
-            unpaged: false,
-        },
+        page,
+        size: 10,
         totalPages,
         totalElements: content.length,
-        size: 10,
-        number: page,
-        first: page === 0,
-        last: page === totalPages - 1,
-        empty: content.length === 0,
     };
 }
 function createMockCalendar(): CarAvailabilityCalendar {

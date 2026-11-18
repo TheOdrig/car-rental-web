@@ -1,15 +1,13 @@
-import { proxy } from '@/shared/server';
-import { USER_ENDPOINTS } from '@/entities/user';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => USER_ENDPOINTS.profile,
+    target: () => API.users.profile.resolve(),
     errorMessage: 'Failed to fetch profile',
     errorStatus: 503,
 });
 
 export const PUT = proxy({
-    path: () => USER_ENDPOINTS.profile,
-    method: 'PUT',
+    target: () => API.users.updateProfile.resolve(),
     errorMessage: 'Failed to update profile',
     errorStatus: 503,
 });

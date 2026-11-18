@@ -1,6 +1,5 @@
-import { AUTH_ENDPOINTS } from '@/features/auth';
 import { ApiError, isApiError } from '@/shared/api';
-import { readJson, route, upstream } from '@/shared/server';
+import { API, readJson, route, upstream } from '@/shared/server';
 
 function mapResetError(error: ApiError): ApiError {
     const message = error.message.toLowerCase();
@@ -21,7 +20,7 @@ export const POST = route(
         const body = await readJson(request);
 
         try {
-            return await upstream.post(AUTH_ENDPOINTS.resetPassword, body, { anonymous: true, cache: 'no-store' });
+            return await upstream.post(API.auth.resetPassword.resolve(), body, { anonymous: true, cache: 'no-store' });
         } catch (error) {
             throw isApiError(error) ? mapResetError(error) : error;
         }

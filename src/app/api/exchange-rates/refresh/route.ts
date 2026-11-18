@@ -1,10 +1,9 @@
 import { revalidatePath } from 'next/cache';
-import { CURRENCY_ENDPOINTS } from '@/entities/currency';
-import { route, upstream } from '@/shared/server';
+import { API, route, upstream } from '@/shared/server';
 
 export const POST = route(
     async () => {
-        const data = await upstream.post<unknown>(CURRENCY_ENDPOINTS.refresh, undefined, { cache: 'no-store' });
+        const data = await upstream.post<unknown>(API.exchangeRates.refresh.resolve(), undefined, { cache: 'no-store' });
         revalidatePath('/api/exchange-rates');
         return data ?? { success: true };
     },

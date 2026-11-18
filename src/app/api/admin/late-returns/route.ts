@@ -1,9 +1,10 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
+import { mapLateReturnPage } from '../_lib/late-return-status';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.lateReturns,
+    target: () => API.admin.lateReturns.resolve(),
     forwardQuery: true,
+    respond: mapLateReturnPage,
     errorMessage: 'Failed to fetch late returns',
     errorStatus: 503,
 });

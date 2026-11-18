@@ -12,17 +12,13 @@ function apiError(status: number, code: string, message: string) {
 
 describe('getAdminActionErrorMessage pickup payment mapping', () => {
     it('explains that pickup needs an authorized payment', () => {
-        const error = apiError(
-            400,
-            'INVALID_RENTAL_STATE',
-            'Payment must be AUTHORIZED before pickup. Current status: Pending'
-        );
+        const error = apiError(409, 'PAYMENT_NOT_AUTHORIZED', 'Payment must be AUTHORIZED before pickup.');
 
         expect(getAdminActionErrorMessage(error)).toBe(PICKUP_PAYMENT_REQUIRED_MESSAGE);
     });
 
     it('explains a missing payment the same way', () => {
-        const error = apiError(404, 'RENTAL_NOT_FOUND', 'Payment not found for rental: 5');
+        const error = apiError(404, 'PAYMENT_NOT_FOUND', 'Payment not found for rental: 5');
 
         expect(getAdminActionErrorMessage(error)).toBe(PICKUP_PAYMENT_REQUIRED_MESSAGE);
     });

@@ -1,8 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { AUTH_ENDPOINTS } from '@/features/auth';
 import { isApiError } from '@/shared/api';
 import { logger } from '@/shared/lib/logger';
-import { authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
+import { API, authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { OAUTH_STATE_COOKIE, clearOAuthStateCookie, oauthStateMatches } from '../../_lib/oauth-state';
 
@@ -34,7 +33,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     try {
-        const data = await upstream.get<unknown>(AUTH_ENDPOINTS.oauth.callback(provider), {
+        const data = await upstream.get<unknown>(API.oauth.callback.resolve({ provider }), {
             params: { code, state },
             anonymous: true,
             cache: 'no-store',

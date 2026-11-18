@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.dashboard.summary,
+    target: () => API.admin.dashboard.summary.resolve(),
     tags: ['admin', 'dashboard', 'summary'],
     errorMessage: 'Failed to fetch dashboard summary',
     errorStatus: 503,

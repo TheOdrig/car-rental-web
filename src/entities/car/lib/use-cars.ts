@@ -118,7 +118,9 @@ export function useCarCalendar(id: number | null | undefined, month?: string) {
                 if (month) params.append('month', month);
 
                 const queryString = params.toString();
-                const url = `/api/cars/${id}/availability/calendar${queryString ? '?' + queryString : ''}`;
+                const url = queryString
+                    ? `/api/cars/${id}/availability/calendar?${queryString}`
+                    : `/api/cars/${id}/availability/calendar`;
 
                 const data = await clientGet<CarAvailabilityCalendar>(url);
                 return data ?? null;

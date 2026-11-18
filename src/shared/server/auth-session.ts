@@ -2,9 +2,9 @@ import 'server-only';
 import { ApiError } from '@/shared/api/error';
 import { getAccessToken, setAuthTokens } from './auth-cookies';
 import { verifyAccessToken, type Session } from './session';
-import { authResponseSchema, upstream } from './upstream';
+import { authResponseSchema, upstream, type UpstreamPath } from './upstream';
 
-export async function signIn(path: string, credentials: unknown): Promise<{ username?: string; tokenType?: string }> {
+export async function signIn(path: UpstreamPath<'POST'>, credentials: unknown): Promise<{ username?: string; tokenType?: string }> {
     const data = await upstream.post<unknown>(path, credentials, { anonymous: true, cache: 'no-store' });
     const parsed = authResponseSchema.safeParse(data);
 

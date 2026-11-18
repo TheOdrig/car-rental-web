@@ -1,9 +1,7 @@
-import { ADMIN_ENDPOINTS } from '@/features/admin';
-import { parseIdParam, proxy } from '@/shared/server';
+import { API, parseIdParam, proxy } from '@/shared/server';
 
 export const POST = proxy<{ id: string }>({
-    path: ({ id }) => ADMIN_ENDPOINTS.users.ban(parseIdParam(id, 'user ID')),
-    method: 'POST',
+    target: ({ id }) => API.admin.users.ban.resolve({ id: parseIdParam(id, 'user ID') }),
     respond: () => ({ success: true }),
     errorMessage: 'Failed to ban user',
     errorStatus: 503,

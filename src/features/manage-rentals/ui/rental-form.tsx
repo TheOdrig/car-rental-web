@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import {
     findRentalDateIssue,
     getEndDateRange,
+    getRentalFieldErrors,
     getRentalRequestErrorMessage,
     isEndDateDisabled,
     isStartDateDisabled,
@@ -101,7 +102,9 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
             onSuccess?.();
             router.push('/rentals');
         } catch (error) {
+            const fieldErrors = getRentalFieldErrors(error);
             setErrors({
+                ...fieldErrors,
                 form: getRentalRequestErrorMessage(error, 'Failed to create rental request. Please try again.'),
             });
         }

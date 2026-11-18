@@ -61,7 +61,7 @@ describe('public catalogue routes', () => {
     it('does not send the bearer token for the car list', async () => {
         await listCars(get('/api/cars?page=0&sortBy=price&sortDirection=asc'), noContext);
 
-        expect(fetchMock.mock.calls[0][0].toString()).toContain('/api/cars/search?page=0&sortBy=price&sortDirection=asc');
+        expect(fetchMock.mock.calls[0][0].toString()).toContain('/api/v1/cars/search?page=0&sortBy=price&sortDirection=asc');
         expect(authHeaders()).toEqual([undefined]);
     });
 
@@ -108,7 +108,7 @@ describe('public catalogue routes', () => {
     });
 
     it('never refreshes the session for public calls even when the API answers 401', async () => {
-        fetchMock.mockImplementation(async () => new Response(JSON.stringify({ errorCode: 'AUTHENTICATION_FAILED' }), { status: 401 }));
+        fetchMock.mockImplementation(async () => new Response(JSON.stringify({ code: 'AUTHENTICATION_FAILED' }), { status: 401 }));
 
         const response = await listCars(get('/api/cars'), noContext);
 

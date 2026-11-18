@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { RENTAL_ENDPOINTS } from '@/entities/rental';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => RENTAL_ENDPOINTS.list,
+    target: () => API.rentals.admin.resolve(),
     forwardQuery: true,
     tags: ['rentals'],
     errorMessage: 'Failed to fetch rentals',
@@ -10,8 +9,7 @@ export const GET = proxy({
 });
 
 export const POST = proxy({
-    path: () => RENTAL_ENDPOINTS.request,
-    method: 'POST',
+    target: () => API.rentals.request.resolve(),
     status: 201,
     errorMessage: 'Failed to create rental request',
     errorStatus: 503,

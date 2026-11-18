@@ -1,9 +1,7 @@
-import { proxy } from '@/shared/server';
-import { AUTH_ENDPOINTS } from '@/features/auth';
+import { API, proxy } from '@/shared/server';
 
 export const POST = proxy({
-    path: () => AUTH_ENDPOINTS.forgotPassword,
-    method: 'POST',
+    target: () => API.auth.forgotPassword.resolve(),
     anonymous: true,
     errorMessage: 'Failed to send password reset email',
     errorStatus: 503,

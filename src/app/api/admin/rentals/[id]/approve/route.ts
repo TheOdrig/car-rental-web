@@ -1,9 +1,7 @@
-import { ADMIN_ENDPOINTS } from '@/features/admin';
-import { parseIdParam, proxy } from '@/shared/server';
+import { API, parseIdParam, proxy } from '@/shared/server';
 
 export const POST = proxy<{ id: string }>({
-    path: ({ id }) => ADMIN_ENDPOINTS.quickActions.approve(parseIdParam(id, 'rental ID')),
-    method: 'POST',
+    target: ({ id }) => API.admin.quickActions.approve.resolve({ id: parseIdParam(id, 'rental ID') }),
     body: 'optional',
     errorMessage: 'Failed to approve rental',
     errorStatus: 503,

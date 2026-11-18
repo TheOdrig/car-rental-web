@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getRentals, getRentalById, performRentalAction, cancelRental, updateRental } from '@/features/manage-rentals';
+import { getRentals, getRentalById, performRentalAction, cancelRental } from '@/features/manage-rentals';
 import { apiClient } from '@/shared/api';
 import { ApiError } from '@/shared/api';
 import {
@@ -29,7 +29,7 @@ describe('Rental API', () => {
             const mockResponse = createMockPaginatedRentals();
             vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
             const result = await getRentals(mockFilter);
-            expect(apiClient.get).toHaveBeenCalledWith('/rentals', {
+            expect(apiClient.get).toHaveBeenCalledWith('/api/rentals', {
                 params: expect.any(Object),
             });
             expect(result).toEqual(mockResponse);
@@ -38,7 +38,7 @@ describe('Rental API', () => {
             const mockResponse = createMockPaginatedRentals();
             vi.mocked(apiClient.get).mockResolvedValue(mockResponse);
             const result = await getRentals();
-            expect(apiClient.get).toHaveBeenCalledWith('/rentals', {
+            expect(apiClient.get).toHaveBeenCalledWith('/api/rentals', {
                 params: undefined,
             });
             expect(result).toEqual(mockResponse);
@@ -49,7 +49,7 @@ describe('Rental API', () => {
             const mockRental = createMockRental();
             vi.mocked(apiClient.get).mockResolvedValue(mockRental);
             const result = await getRentalById(1);
-            expect(apiClient.get).toHaveBeenCalledWith('/rentals/1');
+            expect(apiClient.get).toHaveBeenCalledWith('/api/rentals/1');
             expect(result).toEqual(mockRental);
         });
         it('should handle rental not found', async () => {
@@ -64,7 +64,7 @@ describe('Rental API', () => {
             const mockRental = createMockRental({ status: 'Confirmed' });
             vi.mocked(apiClient.post).mockResolvedValue(mockRental);
             const result = await performRentalAction(mockRequest);
-            expect(apiClient.post).toHaveBeenCalledWith('/rentals/1/approve', { notes: undefined, reason: undefined });
+            expect(apiClient.post).toHaveBeenCalledWith('/api/admin/rentals/1/approve', { notes: undefined, reason: undefined });
             expect(result.status).toBe('Confirmed');
         });
         it('should reject rental with reason', async () => {
@@ -72,7 +72,7 @@ describe('Rental API', () => {
             const mockRental = createMockRental({ status: 'Cancelled' });
             vi.mocked(apiClient.post).mockResolvedValue(mockRental);
             const result = await performRentalAction(mockRequest);
-            expect(apiClient.post).toHaveBeenCalledWith('/rentals/1/reject', { notes: undefined, reason: 'Invalid documents' });
+            expect(apiClient.post).toHaveBeenCalledWith('/api/admin/rentals/1/reject', { notes: undefined, reason: 'Invalid documents' });
             expect(result.status).toBe('Cancelled');
         });
         it('should handle unknown action', async () => {
@@ -81,22 +81,12 @@ describe('Rental API', () => {
         });
     });
     describe('cancelRental', () => {
-        it('should cancel rental with reason', async () => {
+        it('should cancel the rental through the BFF', async () => {
             const mockRental = createMockRental({ status: 'Cancelled' });
-            vi.mocked(apiClient.post).mockResolvedValue(mockRental);
-            const result = await cancelRental(1, 'Customer request');
-            expect(apiClient.post).toHaveBeenCalledWith('/rentals/1/cancel', { notes: undefined, reason: 'Customer request' });
+            vi.mocked(apiClient.delete).mockResolvedValue(mockRental);
+            const result = await cancelRental(1);
+            expect(apiClient.delete).toHaveBeenCalledWith('/api/rentals/1');
             expect(result.status).toBe('Cancelled');
-        });
-    });
-    describe('updateRental', () => {
-        it('should update rental data', async () => {
-            const updateData = { pickupNotes: 'Check fuel level' };
-            const mockRental = createMockRental({ pickupNotes: 'Check fuel level' });
-            vi.mocked(apiClient.put).mockResolvedValue(mockRental);
-            const result = await updateRental(1, updateData);
-            expect(apiClient.put).toHaveBeenCalledWith('/rentals/1', updateData);
-            expect(result.pickupNotes).toBe('Check fuel level');
         });
     });
 });

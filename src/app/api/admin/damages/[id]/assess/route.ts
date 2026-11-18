@@ -1,8 +1,6 @@
-import { DAMAGE_ENDPOINTS } from '@/entities/damage';
-import { parseIdParam, proxy } from '@/shared/server';
+import { API, parseIdParam, proxy } from '@/shared/server';
 
 export const POST = proxy<{ id: string }>({
-    path: ({ id }) => DAMAGE_ENDPOINTS.admin.assess(parseIdParam(id, 'damage ID')),
-    method: 'POST',
+    target: ({ id }) => API.admin.damages.assess.resolve({ id: parseIdParam(id, 'damage ID') }),
     errorMessage: 'Failed to assess damage',
 });

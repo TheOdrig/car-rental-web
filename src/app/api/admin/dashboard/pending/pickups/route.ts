@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.dashboard.pending.pickups,
+    target: () => API.admin.dashboard.pickups.resolve(),
     forwardQuery: true,
     tags: ['admin', 'pending', 'pickups'],
     errorMessage: 'Failed to fetch pending pickups',

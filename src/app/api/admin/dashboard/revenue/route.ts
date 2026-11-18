@@ -1,8 +1,7 @@
-import { proxy } from '@/shared/server';
-import { ADMIN_ENDPOINTS } from '@/features/admin';
+import { API, proxy } from '@/shared/server';
 
 export const GET = proxy({
-    path: () => ADMIN_ENDPOINTS.dashboard.revenue,
+    target: () => API.admin.dashboard.revenue.resolve(),
     tags: ['admin', 'dashboard', 'revenue'],
     errorMessage: 'Failed to fetch revenue analytics',
     errorStatus: 503,
