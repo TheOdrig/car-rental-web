@@ -26,7 +26,6 @@ export {
     type ResetPasswordRequest,
     type MessageResponse,
 } from './model/types';
-export { authActions } from './model/store';
 export { AUTH_EVENTS } from './model/auth-events';
 
 export { AUTH_ENDPOINTS } from './api/endpoints';
@@ -44,5 +43,3 @@ export { AuthProvider, useAuthContext } from './ui/auth-provider';
 export { useAuth, useCurrentUser, useLogin, useLogout, useRefreshToken, useRegister, authKeys } from './lib/use-auth';
 export { useChangePassword } from './lib/use-password';
 export { useForgotPassword, useResetPassword } from './lib/use-password-reset';
-export * from './lib/cookies';
-export { verifyToken, type TokenPayload, type VerifyResult } from './lib/jwt-verifier';

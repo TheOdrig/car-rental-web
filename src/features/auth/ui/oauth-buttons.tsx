@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { AUTH_ENDPOINTS } from '@/features/auth';
 import { cn } from '@/shared/lib';
 
 interface OAuthButtonsProps {
@@ -49,7 +48,7 @@ export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps
     const handleOAuthLogin = (provider: 'google' | 'github') => {
         try {
             setLoadingProvider(provider);
-            window.location.href = AUTH_ENDPOINTS.oauth.authorize(provider);
+            window.location.href = `/api/auth/oauth/${provider}`;
         } catch {
             setLoadingProvider(null);
             onError?.(`Failed to connect to ${provider}. Please try again.`);

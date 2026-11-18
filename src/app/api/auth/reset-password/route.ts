@@ -1,44 +1,30 @@
-import { NextResponse } from 'next/server';
-import { serverPost } from '@/shared/api/server';
-import { isApiError } from '@/shared/api';
-import { AUTH_ENDPOINTS, type ResetPasswordRequest, type MessageResponse } from '@/features/auth';
+import { AUTH_ENDPOINTS } from '@/features/auth';
+import { ApiError, isApiError } from '@/shared/api';
+import { readJson, route, upstream } from '@/shared/server';
 
-export async function POST(request: Request) {
-    try {
-        const body: ResetPasswordRequest = await request.json();
+function mapResetError(error: ApiError): ApiError {
+    const message = error.message.toLowerCase();
 
-        const data = await serverPost<MessageResponse>(AUTH_ENDPOINTS.resetPassword, body);
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/auth/reset-password error:', error);
-
-        if (isApiError(error)) {
-            const message = error.message.toLowerCase();
-
-            if (message.includes('expired')) {
-                return NextResponse.json(
-                    { error: 'This password reset link has expired. Please request a new one.' },
-                    { status: 400 }
-                );
-            }
-
-            if (message.includes('invalid') || message.includes('used')) {
-                return NextResponse.json(
-                    { error: 'This password reset link is invalid or has already been used.' },
-                    { status: 400 }
-                );
-            }
-
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to reset password' },
-            { status: 503 }
-        );
+    if (message.includes('expired')) {
+        return new ApiError(400, 'This password reset link has expired. Please request a new one.');
     }
+
+    if (message.includes('invalid') || message.includes('used')) {
+        return new ApiError(400, 'This password reset link is invalid or has already been used.');
+    }
+
+    return error;
 }
+
+export const POST = route(
+    async (request) => {
+        const body = await readJson(request);
+
+        try {
+            return await upstream.post(AUTH_ENDPOINTS.resetPassword, body, { anonymous: true, cache: 'no-store' });
+        } catch (error) {
+            throw isApiError(error) ? mapResetError(error) : error;
+        }
+    },
+    { errorMessage: 'Failed to reset password', errorStatus: 503 }
+);

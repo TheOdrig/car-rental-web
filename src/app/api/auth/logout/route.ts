@@ -1,16 +1,9 @@
-import { NextResponse } from 'next/server';
-import { clearAuthTokens } from '@/features/auth';
+import { clearAuthTokens, route } from '@/shared/server';
 
-export async function POST() {
-    try {
+export const POST = route(
+    async () => {
         await clearAuthTokens();
-
-        return NextResponse.json({ message: 'Logged out successfully' });
-    } catch (error) {
-        console.error('Logout error:', error);
-        return NextResponse.json(
-            { message: 'Internal server error' },
-            { status: 500 }
-        );
-    }
-}
+        return { message: 'Logged out successfully' };
+    },
+    { errorMessage: 'Internal server error' }
+);

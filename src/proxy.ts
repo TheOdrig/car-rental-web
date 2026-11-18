@@ -1,85 +1,101 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { verifyToken, type TokenPayload } from '@/features/auth';
+import { classifyRoute } from '@/shared/config/route-access';
+import {
+    ACCESS_COOKIE,
+    REFRESH_COOKIE,
+    buildAuthCookies,
+    isAdminSession,
+    mergeCookieHeader,
+    refreshAuthTokens,
+    verifyAccessToken,
+    type AuthResponse,
+    type Session,
+} from '@/shared/server';
 
-const PUBLIC_ROUTES = ['/', '/cars', '/login', '/register', '/callback', '/forgot-password', '/reset-password'];
-const AUTH_ROUTES = ['/login', '/register', '/callback', '/forgot-password', '/reset-password'];
-const ADMIN_ROUTES = ['/admin', '/dashboard'];
-const PROTECTED_ROUTES = ['/rentals', '/profile', '/settings'];
-
-function isPublicRoute(pathname: string): boolean {
-    if (PUBLIC_ROUTES.includes(pathname)) return true;
-    if (pathname.startsWith('/cars/')) return true;
-    return pathname.startsWith('/api/');
-}
-
-function isAuthRoute(pathname: string): boolean {
-    return AUTH_ROUTES.some(route => pathname.startsWith(route));
-}
-
-function isAdminRoute(pathname: string): boolean {
-    return ADMIN_ROUTES.some(route => pathname.startsWith(route));
-}
-
-function isProtectedRoute(pathname: string): boolean {
-    return PROTECTED_ROUTES.some(route => pathname.startsWith(route));
-}
-
-function redirectToLogin(request: NextRequest, pathname: string): NextResponse {
+function redirectToLogin(request: NextRequest, staleRefresh: boolean): NextResponse {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('callbackUrl', pathname);
-    return NextResponse.redirect(loginUrl);
+    loginUrl.searchParams.set('callbackUrl', `${request.nextUrl.pathname}${request.nextUrl.search}`);
+
+    const response = NextResponse.redirect(loginUrl);
+    if (staleRefresh) {
+        response.cookies.delete(ACCESS_COOKIE);
+        response.cookies.delete(REFRESH_COOKIE);
+    }
+
+    return response;
+}
+
+function passThrough(request: NextRequest, renewed: AuthResponse | null): NextResponse {
+    if (!renewed) {
+        return NextResponse.next();
+    }
+
+    const headers = new Headers(request.headers);
+    const cookies = buildAuthCookies(renewed);
+    headers.set(
+        'cookie',
+        mergeCookieHeader(
+            request.headers.get('cookie'),
+            cookies.map(({ name, value }) => ({ name, value }))
+        )
+    );
+
+    const response = NextResponse.next({ request: { headers } });
+    for (const { name, value, options } of cookies) {
+        response.cookies.set(name, value, options);
+    }
+
+    return response;
+}
+
+function jsonError(status: number, message: string): NextResponse {
+    return NextResponse.json({ message, error: message }, { status });
 }
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
-    const { pathname } = request.nextUrl;
-    const token = request.cookies.get('access_token')?.value;
+    const access = classifyRoute(request.nextUrl.pathname);
 
-    if (isPublicRoute(pathname)) {
+    if (access === 'public' || access === 'auth-flow') {
         return NextResponse.next();
     }
 
-    const hasAccessToken = !!token;
-    const hasRefreshToken = !!request.cookies.get('refresh_token')?.value;
+    const accessToken = request.cookies.get(ACCESS_COOKIE)?.value;
+    const refreshToken = request.cookies.get(REFRESH_COOKIE)?.value;
+    let session: Session | null = await verifyAccessToken(accessToken);
 
-    let payload: TokenPayload | null = null;
-    const isAuthenticated = hasAccessToken || hasRefreshToken;
-
-    if (token && isAdminRoute(pathname)) {
-        const result = await verifyToken(token);
-        if (result.valid && result.payload) {
-            payload = result.payload;
-        }
+    if (access === 'guest-only') {
+        return session ? NextResponse.redirect(new URL('/', request.url)) : NextResponse.next();
     }
 
-    const isAdmin = payload?.roles?.includes('ADMIN') ?? false;
-
-    if (isAuthRoute(pathname) && isAuthenticated) {
-        return NextResponse.redirect(new URL('/', request.url));
-    }
-
-    if (isAdminRoute(pathname)) {
-        if (!isAuthenticated) {
-            return redirectToLogin(request, pathname);
+    if (access === 'admin-api') {
+        if (!session && !refreshToken) {
+            return jsonError(401, 'Not authenticated');
         }
 
-        if (!isAdmin && !hasRefreshToken) {
-            return NextResponse.redirect(new URL('/forbidden', request.url));
+        if (session && !isAdminSession(session)) {
+            return jsonError(403, 'Forbidden');
         }
 
         return NextResponse.next();
     }
 
-    if (isProtectedRoute(pathname) || !isPublicRoute(pathname)) {
-        if (!isAuthenticated) {
-            return redirectToLogin(request, pathname);
-        }
+    let renewed: AuthResponse | null = null;
+    if (!session && refreshToken) {
+        renewed = await refreshAuthTokens(refreshToken);
+        session = renewed ? await verifyAccessToken(renewed.accessToken) : null;
     }
 
-    return NextResponse.next();
+    if (!session) {
+        return redirectToLogin(request, !!refreshToken);
+    }
+
+    if (access === 'admin' && !isAdminSession(session)) {
+        return NextResponse.redirect(new URL('/forbidden', request.url));
+    }
+
+    return passThrough(request, renewed);
 }
 
 export const config = {
-    matcher: [
-        '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)',
-    ],
+    matcher: ['/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.[\\w]+$).*)'],
 };

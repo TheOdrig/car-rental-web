@@ -1,46 +1,30 @@
-import { NextResponse } from 'next/server';
-import { AUTH_ENDPOINTS, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
-import { AuthResponse } from '@/features/auth';
+import { ApiError } from '@/shared/api';
+import {
+    clearAuthTokens,
+    getRefreshToken,
+    refreshAuthTokens,
+    route,
+    setAuthTokens,
+} from '@/shared/server';
 
-export async function POST() {
-    try {
+export const POST = route(
+    async () => {
         const refreshToken = await getRefreshToken();
 
         if (!refreshToken) {
-            return NextResponse.json(
-                { message: 'No refresh token' },
-                { status: 401 }
-            );
+            throw new ApiError(401, 'No refresh token');
         }
 
-        const response = await fetch(AUTH_ENDPOINTS.refresh, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ refreshToken }),
-        });
+        const tokens = await refreshAuthTokens(refreshToken);
 
-        if (!response.ok) {
+        if (!tokens) {
             await clearAuthTokens();
-            return NextResponse.json(
-                { message: 'Token refresh failed' },
-                { status: 401 }
-            );
+            throw new ApiError(401, 'Token refresh failed');
         }
 
-        const data: AuthResponse = await response.json();
+        await setAuthTokens(tokens);
 
-        await setAuthTokens(data.accessToken, data.refreshToken, data.expiresIn);
-
-        return NextResponse.json({
-            username: data.username,
-            tokenType: data.tokenType,
-        });
-    } catch (error) {
-        console.error('Refresh error:', error);
-        await clearAuthTokens();
-        return NextResponse.json(
-            { message: 'Internal server error' },
-            { status: 500 }
-        );
-    }
-}
+        return { username: tokens.username, tokenType: tokens.tokenType };
+    },
+    { errorMessage: 'Internal server error' }
+);

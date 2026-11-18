@@ -1,68 +1,24 @@
-import { NextResponse } from 'next/server';
-import { AUTH_ENDPOINTS, getAccessToken, getRefreshToken, setAuthTokens, clearAuthTokens } from '@/features/auth';
-import type { AuthResponse } from '@/features/auth';
+import { ApiError } from '@/shared/api';
+import { getAccessToken, renewAccessToken, route, verifyAccessToken } from '@/shared/server';
 
-export async function GET() {
-    try {
-        let token = await getAccessToken();
+export const GET = route(
+    async () => {
+        let session = await verifyAccessToken(await getAccessToken());
 
-        if (!token) {
-            const refreshToken = await getRefreshToken();
-
-            if (!refreshToken) {
-                return NextResponse.json(
-                    { message: 'Not authenticated' },
-                    { status: 401 }
-                );
-            }
-
-            try {
-                const response = await fetch(AUTH_ENDPOINTS.refresh, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ refreshToken }),
-                });
-
-                if (!response.ok) {
-                    await clearAuthTokens();
-                    return NextResponse.json(
-                        { message: 'Token refresh failed' },
-                        { status: 401 }
-                    );
-                }
-
-                const data: AuthResponse = await response.json();
-                await setAuthTokens(data.accessToken, data.refreshToken, data.expiresIn);
-                token = data.accessToken;
-            } catch {
-                await clearAuthTokens();
-                return NextResponse.json(
-                    { message: 'Token refresh failed' },
-                    { status: 401 }
-                );
-            }
+        if (!session) {
+            session = await verifyAccessToken(await renewAccessToken());
         }
 
-        if (!token) {
-            return NextResponse.json(
-                { message: 'Authentication failed' },
-                { status: 401 }
-            );
+        if (!session) {
+            throw new ApiError(401, 'Not authenticated');
         }
 
-        const payload = JSON.parse(atob(token.split('.')[1]));
-
-        return NextResponse.json({
-            id: payload.userId,
-            username: payload.sub,
-            roles: payload.roles || [],
-            exp: payload.exp,
-        });
-    } catch (error) {
-        console.error('Me error:', error);
-        return NextResponse.json(
-            { message: 'Invalid token' },
-            { status: 401 }
-        );
-    }
-}
+        return {
+            id: session.userId,
+            username: session.username,
+            roles: session.roles,
+            exp: session.exp,
+        };
+    },
+    { errorMessage: 'Internal server error' }
+);

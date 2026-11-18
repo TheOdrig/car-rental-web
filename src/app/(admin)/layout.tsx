@@ -1,51 +1,26 @@
 import { redirect } from 'next/navigation';
-import { getAccessToken } from '@/features/auth';
+import type { ReactNode } from 'react';
 import { AdminSidebar } from '@/features/admin';
-import type { MeResponse } from '@/features/auth';
-import React from "react";
+import { getSession, isAdminSession } from '@/shared/server';
 
 interface AdminLayoutProps {
-    children: React.ReactNode;
-}
-
-async function getCurrentUser(): Promise<MeResponse | null> {
-    const token = await getAccessToken();
-
-    if (!token) {
-        return null;
-    }
-
-    try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        return {
-            id: payload.userId,
-            username: payload.sub,
-            roles: payload.roles || [],
-            exp: payload.exp,
-        };
-    } catch {
-        return null;
-    }
-}
-
-function isAdmin(user: MeResponse | null): boolean {
-    return user?.roles.includes('ADMIN') ?? false;
+    children: ReactNode;
 }
 
 export default async function AdminLayout({ children }: AdminLayoutProps) {
-    const user = await getCurrentUser();
+    const session = await getSession();
 
-    if (!user) {
+    if (!session) {
         redirect('/login');
     }
 
-    if (!isAdmin(user)) {
+    if (!isAdminSession(session)) {
         redirect('/forbidden');
     }
 
     return (
         <div className="flex min-h-screen">
-            <AdminSidebar username={user.username} />
+            <AdminSidebar username={session.username} />
             <main className="flex-1 overflow-auto glass-bg-pattern">
                 <div className="container py-6">
                     {children}

@@ -1,15 +1,15 @@
 import { redirect } from 'next/navigation';
-import { getAccessToken } from '@/features/auth';
-import React from "react";
+import type { ReactNode } from 'react';
+import { getSession } from '@/shared/server';
 
 interface ProtectedLayoutProps {
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
 export default async function ProtectedLayout({ children }: ProtectedLayoutProps) {
-    const token = await getAccessToken();
+    const session = await getSession();
 
-    if (!token) {
+    if (!session) {
         redirect('/login');
     }
 
