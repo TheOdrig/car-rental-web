@@ -927,49 +927,9 @@ export interface paths {
         put?: never;
         /**
          * Mark car as available
-         * @description Mark a car as available for sale
+         * @description Return a car to service as available for rental
          */
         post: operations["markAsAvailable"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/cars/business/{id}/can-reserve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Check if car can be reserved
-         * @description Check if car can be reserved
-         */
-        get: operations["canCarBeReserved"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/api/v1/cars/business/{id}/cancel-reservation": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Cancel reservation
-         * @description Cancel car reservation
-         */
-        post: operations["cancelReservation"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1014,26 +974,6 @@ export interface paths {
          * @description Update car price and currency
          */
         patch: operations["updateCarPrice"];
-        trace?: never;
-    };
-    "/api/v1/cars/business/{id}/reserve": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Reserve car
-         * @description Reserve a car for a customer
-         */
-        post: operations["reserveCar"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
         trace?: never;
     };
     "/api/v1/cars/business/{id}/status": {
@@ -2246,7 +2186,6 @@ export interface components {
         CarPriceUpdateRequest: {
             /** @enum {string} */
             currencyType: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            damagePrice?: number;
             notes?: string;
             price: number;
             reason?: string;
@@ -2256,11 +2195,10 @@ export interface components {
             bodyType?: string;
             brand: string;
             /** @enum {string} */
-            carStatusType: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
+            carStatusType: "Available" | "Maintenance" | "Damaged" | "Inspection";
             color?: string;
             /** @enum {string} */
             currencyType: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            damagePrice?: number;
             /** Format: int32 */
             doors?: number;
             engineDisplacement?: number;
@@ -2297,16 +2235,14 @@ export interface components {
             age?: number;
             bodyType?: string;
             brand?: string;
-            canBeReserved?: boolean;
             /** @enum {string} */
-            carStatusType?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
+            carStatusType?: "Available" | "Maintenance" | "Damaged" | "Inspection";
             color?: string;
             convertedPrice?: number;
             /** Format: date-time */
             createTime?: string;
             /** @enum {string} */
             currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            damagePrice?: number;
             /** @enum {string} */
             displayCurrency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             displayName?: string;
@@ -2319,8 +2255,6 @@ export interface components {
             formattedPriceWithSeparators?: string;
             fuelType?: string;
             fullName?: string;
-            hasDamage?: boolean;
-            hasExpiredDocuments?: boolean;
             /** Format: int64 */
             id?: number;
             imageUrl?: string;
@@ -2328,18 +2262,12 @@ export interface components {
             inspectionExpiryDate?: string;
             /** Format: date */
             insuranceExpiryDate?: string;
-            isAvailable?: boolean;
-            isInspectionExpired?: boolean;
-            isInsuranceExpired?: boolean;
-            isNew?: boolean;
-            isOld?: boolean;
             /** Format: int64 */
             kilometer?: number;
             /** Format: date */
             lastServiceDate?: string;
             licensePlate?: string;
             model?: string;
-            needsService?: boolean;
             /** Format: date */
             nextServiceDate?: string;
             notes?: string;
@@ -2350,11 +2278,9 @@ export interface components {
             rating?: number;
             /** Format: date */
             registrationDate?: string;
-            requiresAttention?: boolean;
             /** Format: int32 */
             seats?: number;
             thumbnailUrl?: string;
-            totalPrice?: number;
             transmissionType?: string;
             /** Format: date-time */
             updateTime?: string;
@@ -2362,36 +2288,34 @@ export interface components {
             version?: number;
             vinNumber?: string;
         };
+        CarStatisticsResponse: {
+            /** Format: int64 */
+            activeCars?: number;
+            averagePrice?: number;
+            brandCounts?: {
+                [key: string]: number;
+            };
+            maxPrice?: number;
+            minPrice?: number;
+            statusCounts?: {
+                [key: string]: number;
+            };
+            /** Format: int64 */
+            totalCars?: number;
+        };
         /** @description Status update data */
         CarStatusUpdateRequest: {
             /** @enum {string} */
-            carStatusType: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
+            carStatusType: "Available" | "Maintenance" | "Damaged" | "Inspection";
             notes?: string;
             reason?: string;
         };
         CarSummaryResponse: {
-            /** Format: int32 */
-            age?: number;
             brand?: string;
-            /** @enum {string} */
-            carStatusType?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
-            color?: string;
-            /** @enum {string} */
-            currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            displayName?: string;
-            formattedPrice?: string;
-            fullName?: string;
             /** Format: int64 */
             id?: number;
-            isAvailable?: boolean;
-            isNew?: boolean;
-            /** Format: int64 */
-            kilometer?: number;
             licensePlate?: string;
             model?: string;
-            /** Format: int32 */
-            productionYear?: number;
-            rating?: number;
             thumbnailUrl?: string;
         };
         ConversionResult: {
@@ -2918,7 +2842,7 @@ export interface components {
              * @description Stable machine readable error code
              * @enum {string}
              */
-            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "CAR_ALREADY_EXISTS" | "CAR_CANNOT_BE_RESERVED" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_OPERATION_NOT_ALLOWED" | "CAR_VALIDATION_FAILED" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_PENALTY_CONFIG" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "LATE_RETURN_ERROR" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_CALCULATION_ERROR" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
+            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "BAD_REQUEST" | "CAR_ALREADY_EXISTS" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_VALIDATION_FAILED" | "CONCURRENT_MODIFICATION" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "DATA_CONFLICT" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_MULTIPART_REQUEST" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "INVALID_USER_STATE" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OAUTH2_ACCOUNT_ALREADY_LINKED" | "OAUTH2_AUTHENTICATION_FAILED" | "OAUTH2_AUTHORIZATION_DENIED" | "OAUTH2_EMAIL_REQUIRED" | "OAUTH2_INVALID_STATE" | "OAUTH2_INVALID_TOKEN" | "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED" | "OAUTH2_PROVIDER_NOT_SUPPORTED" | "OAUTH2_PROVIDER_UNAVAILABLE" | "OAUTH2_SOCIAL_LOGIN_REQUIRED" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYLOAD_TOO_LARGE" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
             /** @description Explanation specific to this occurrence */
             detail: string;
             /** @description Error specific extra data */
@@ -3102,11 +3026,12 @@ export interface components {
             damageCostByCurrency?: components["schemas"]["CurrencyTotals"][];
             /** Format: int32 */
             lateReturns?: number;
+            /** @description Amount spent on returned rentals, grouped by rental currency; amounts of different currencies are never summed together. */
+            spentByCurrency?: components["schemas"]["CurrencyTotals"][];
             /** Format: int32 */
             totalDamageReports?: number;
             /** Format: int32 */
             totalRentals?: number;
-            totalSpent?: number;
         };
         UserStatsResponse: {
             /** Format: int64 */
@@ -6273,144 +6198,6 @@ export interface operations {
             };
         };
     };
-    canCarBeReserved: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Car ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Check completed */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        [key: string]: boolean;
-                    };
-                };
-            };
-            /** @description Invalid car ID */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Authentication required */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Access denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Car not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Unexpected error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
-    };
-    cancelReservation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Car ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Reservation cancelled successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CarResponse"];
-                };
-            };
-            /** @description Car is not reserved */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Authentication required */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Access denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Car not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Unexpected error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
-    };
     markAsMaintenance: {
         parameters: {
             query?: never;
@@ -6505,74 +6292,6 @@ export interface operations {
                 };
             };
             /** @description Invalid price data */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Authentication required */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Access denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Car not found */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Unexpected error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
-    };
-    reserveCar: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description Car ID */
-                id: number;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Car reserved successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CarResponse"];
-                };
-            };
-            /** @description Car cannot be reserved */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -6790,7 +6509,7 @@ export interface operations {
                 minPrice?: number;
                 maxPrice?: number;
                 currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-                carStatusType?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
+                carStatusType?: "Available" | "Maintenance" | "Damaged" | "Inspection";
                 engineType?: string;
                 fuelType?: string;
                 transmissionType?: string;
@@ -6912,13 +6631,11 @@ export interface operations {
                 /** @description Maximum price */
                 maxPrice?: number;
                 /** @description Status */
-                status?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
-                /** @description Zero-based page index (0..N) */
+                status?: "Available" | "Maintenance" | "Damaged" | "Inspection";
+                /** @description Page number, zero based */
                 page?: number;
-                /** @description The size of the page to be returned */
+                /** @description Page size */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -7121,9 +6838,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CarStatisticsResponse"];
                 };
             };
             /** @description Internal server error */
