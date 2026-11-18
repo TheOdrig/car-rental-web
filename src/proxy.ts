@@ -49,8 +49,16 @@ function passThrough(request: NextRequest, renewed: AuthResponse | null): NextRe
     return response;
 }
 
+const PROBLEM_CODES: Record<number, { title: string; code: string }> = {
+    401: { title: 'Unauthorized', code: 'AUTHENTICATION_FAILED' },
+    403: { title: 'Forbidden', code: 'ACCESS_DENIED' },
+};
+
 function jsonError(status: number, message: string, clearCookies = false): NextResponse {
-    const response = NextResponse.json({ message, error: message }, { status });
+    const response = NextResponse.json(
+        { status, detail: message, timestamp: new Date().toISOString(), ...PROBLEM_CODES[status] },
+        { status, headers: { 'Content-Type': 'application/problem+json' } }
+    );
     if (clearCookies) {
         response.cookies.delete(ACCESS_COOKIE);
         response.cookies.delete(REFRESH_COOKIE);

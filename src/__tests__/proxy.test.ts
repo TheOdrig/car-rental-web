@@ -237,6 +237,17 @@ describe('proxy', () => {
             expect(response.status).toBe(403);
         });
 
+        it('answers application/problem+json like the route handlers', async () => {
+            const anonymous = await proxy(requestFor('/api/admin/users'));
+            const token = await createToken({ roles: ['USER'] });
+            const forbidden = await proxy(requestFor('/api/admin/users', { access_token: token }));
+
+            expect(anonymous.headers.get('content-type')).toContain('application/problem+json');
+            expect(await anonymous.json()).toMatchObject({ status: 401, detail: 'Not authenticated', code: 'AUTHENTICATION_FAILED' });
+            expect(forbidden.headers.get('content-type')).toContain('application/problem+json');
+            expect(await forbidden.json()).toMatchObject({ status: 403, detail: 'Forbidden', code: 'ACCESS_DENIED' });
+        });
+
         it('refreshes an expired session and lets a verified admin through', async () => {
             const adminToken = await createToken({ roles: ['ADMIN'] });
             fetchMock.mockResolvedValueOnce(
