@@ -2,6 +2,7 @@ import 'server-only';
 import { z } from 'zod';
 
 const DEFAULT_API_URL = 'http://localhost:8082';
+const DEFAULT_API_TIMEOUT_MS = 5000;
 
 function buildSchema(isProduction: boolean) {
     const apiUrl = isProduction ? z.url() : z.url().default(DEFAULT_API_URL);
@@ -9,6 +10,7 @@ function buildSchema(isProduction: boolean) {
     return z.object({
         NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
         API_URL: apiUrl.transform((value) => value.replace(/\/+$/, '')),
+        API_TIMEOUT_MS: z.coerce.number().int().positive().default(DEFAULT_API_TIMEOUT_MS),
         JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
     });
 }
@@ -20,6 +22,7 @@ export function parseServerEnv(source: Record<string, string | undefined>): Serv
     const result = buildSchema(isProduction).safeParse({
         NODE_ENV: source.NODE_ENV,
         API_URL: source.API_URL || undefined,
+        API_TIMEOUT_MS: source.API_TIMEOUT_MS || undefined,
         JWT_SECRET: source.JWT_SECRET || undefined,
     });
 

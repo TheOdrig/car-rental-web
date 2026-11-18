@@ -1,10 +1,10 @@
 import 'server-only';
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { ApiError, parseErrorResponse } from '@/shared/api/error';
 import type { ServerRequestOptions } from '@/shared/api/types';
 import { getServerEnv } from './env';
 import {
-    clearAuthTokens,
     getAccessToken,
     getRefreshToken,
     setAuthTokens,
@@ -47,13 +47,22 @@ export function buildUpstreamUrl(path: string, params?: UpstreamParams): URL {
     return url;
 }
 
-export async function refreshAuthTokens(refreshToken: string): Promise<AuthResponse | null> {
+function isTimeout(error: unknown): boolean {
+    return error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError');
+}
+
+function timeoutSignal(): AbortSignal {
+    return AbortSignal.timeout(getServerEnv().API_TIMEOUT_MS);
+}
+
+async function requestRefresh(refreshToken: string): Promise<AuthResponse | null> {
     try {
         const response = await fetch(buildUpstreamUrl(REFRESH_PATH), {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ refreshToken }),
             cache: 'no-store',
+            signal: timeoutSignal(),
         });
 
         if (!response.ok) {
@@ -65,6 +74,43 @@ export async function refreshAuthTokens(refreshToken: string): Promise<AuthRespo
     } catch {
         return null;
     }
+}
+
+const REFRESH_SHARE_TTL_MS = 10_000;
+const sharedRefreshes = new Map<string, Promise<AuthResponse | null>>();
+
+function refreshKey(refreshToken: string): string {
+    return createHash('sha256').update(refreshToken).digest('hex');
+}
+
+export function resetRefreshCacheForTests(): void {
+    sharedRefreshes.clear();
+}
+
+export function refreshAuthTokens(refreshToken: string): Promise<AuthResponse | null> {
+    const key = refreshKey(refreshToken);
+    const existing = sharedRefreshes.get(key);
+    if (existing) {
+        return existing;
+    }
+
+    const pending = requestRefresh(refreshToken);
+    sharedRefreshes.set(key, pending);
+
+    void pending.then((tokens) => {
+        if (!tokens) {
+            sharedRefreshes.delete(key);
+            return;
+        }
+
+        setTimeout(() => {
+            if (sharedRefreshes.get(key) === pending) {
+                sharedRefreshes.delete(key);
+            }
+        }, REFRESH_SHARE_TTL_MS).unref?.();
+    });
+
+    return pending;
 }
 
 async function ignoreCookieWriteFailure(action: () => Promise<void>): Promise<void> {
@@ -83,12 +129,22 @@ export async function renewAccessToken(): Promise<string | undefined> {
 
     const tokens = await refreshAuthTokens(refreshToken);
     if (!tokens) {
-        await ignoreCookieWriteFailure(clearAuthTokens);
         return undefined;
     }
 
     await ignoreCookieWriteFailure(() => setAuthTokens(tokens));
     return tokens.accessToken;
+}
+
+async function sendUpstream(url: URL, options: UpstreamOptions, token: string | undefined): Promise<Response> {
+    try {
+        return await fetch(url, { ...buildRequestInit(options, token), signal: timeoutSignal() });
+    } catch (error) {
+        if (isTimeout(error)) {
+            throw new ApiError(504, 'Upstream request timed out');
+        }
+        throw error;
+    }
 }
 
 function buildRequestInit(options: UpstreamOptions, token: string | undefined): RequestInit & {
@@ -129,12 +185,12 @@ export async function upstreamFetch<T>(path: string, options: UpstreamOptions = 
         token = await renewAccessToken();
     }
 
-    let response = await fetch(url, buildRequestInit(options, token));
+    let response = await sendUpstream(url, options, token);
 
     if (response.status === 401 && authenticated) {
         const renewed = await renewAccessToken();
         if (renewed) {
-            response = await fetch(url, buildRequestInit(options, renewed));
+            response = await sendUpstream(url, options, renewed);
         }
     }
 

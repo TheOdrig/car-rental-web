@@ -23,6 +23,22 @@ describe('parseServerEnv', () => {
         expect(() => parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: 'short' })).toThrow(/JWT_SECRET/);
     });
 
+    it('defaults API_TIMEOUT_MS to 5000 and accepts an override', () => {
+        expect(parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET }).API_TIMEOUT_MS).toBe(5000);
+        expect(
+            parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, API_TIMEOUT_MS: '1500' }).API_TIMEOUT_MS
+        ).toBe(1500);
+    });
+
+    it('rejects a non-positive API_TIMEOUT_MS', () => {
+        expect(() => parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, API_TIMEOUT_MS: '0' })).toThrow(
+            /API_TIMEOUT_MS/
+        );
+        expect(() => parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, API_TIMEOUT_MS: 'abc' })).toThrow(
+            /API_TIMEOUT_MS/
+        );
+    });
+
     it('rejects an invalid API_URL', () => {
         expect(() => parseServerEnv({ NODE_ENV: 'development', API_URL: 'not a url', JWT_SECRET: SECRET })).toThrow(
             /API_URL/

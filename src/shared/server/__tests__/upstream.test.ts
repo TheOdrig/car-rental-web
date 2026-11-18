@@ -14,9 +14,8 @@ vi.mock('next/headers', () => ({
     })),
 }));
 
-import { ApiError } from '@/shared/api/error';
 import { resetServerEnvForTests } from '../env';
-import { buildUpstreamUrl, upstream } from '../upstream';
+import { buildUpstreamUrl, refreshAuthTokens, resetRefreshCacheForTests, upstream } from '../upstream';
 
 function jsonResponse(status: number, body: unknown): Response {
     return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -32,6 +31,7 @@ describe('upstream', () => {
         fetchMock.mockReset();
         global.fetch = fetchMock as unknown as typeof fetch;
         resetServerEnvForTests();
+        resetRefreshCacheForTests();
     });
 
     function lastHeaders(call = 0): Record<string, string> {
@@ -103,17 +103,65 @@ describe('upstream', () => {
         expect(lastHeaders(1).Authorization).toBe('Bearer fresh-access');
     });
 
-    it('clears the session when the refresh token is rejected', async () => {
+    it('keeps the cookies when the refresh token is rejected so a concurrent winner is not logged out', async () => {
         jar.set('access_token', 'stale');
         jar.set('refresh_token', 'ref');
         fetchMock
             .mockResolvedValueOnce(jsonResponse(401, { message: 'expired' }))
             .mockResolvedValueOnce(jsonResponse(401, { message: 'invalid refresh' }));
 
-        await expect(upstream.get('/api/rentals/me')).rejects.toBeInstanceOf(ApiError);
+        await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
 
-        expect(jar.has('access_token')).toBe(false);
-        expect(jar.has('refresh_token')).toBe(false);
+        expect(jar.get('access_token')).toBe('stale');
+        expect(jar.get('refresh_token')).toBe('ref');
+    });
+
+    it('shares one refresh call between parallel requests using the same refresh token', async () => {
+        jar.set('refresh_token', 'ref');
+        fetchMock.mockImplementation(async (url: URL) =>
+            url.pathname === '/api/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
+        );
+
+        await Promise.all([upstream.get('/api/a'), upstream.get('/api/b'), upstream.get('/api/c')]);
+
+        const refreshCalls = fetchMock.mock.calls.filter(([url]) => (url as URL).pathname === '/api/auth/refresh');
+        expect(refreshCalls).toHaveLength(1);
+    });
+
+    it('does not reuse a refresh result for a different refresh token', async () => {
+        fetchMock.mockResolvedValue(jsonResponse(200, refreshed));
+
+        await refreshAuthTokens('one');
+        await refreshAuthTokens('two');
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+    });
+
+    it('does not cache failed refreshes', async () => {
+        fetchMock.mockResolvedValueOnce(jsonResponse(401, {})).mockResolvedValueOnce(jsonResponse(200, refreshed));
+
+        expect(await refreshAuthTokens('ref')).toBeNull();
+        expect(await refreshAuthTokens('ref')).toMatchObject({ accessToken: 'fresh-access' });
+    });
+
+    it('attaches an abort signal to upstream calls', async () => {
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, {}));
+
+        await upstream.get('/api/cars');
+
+        expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+    });
+
+    it('maps an upstream timeout to 504', async () => {
+        fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
+
+        await expect(upstream.get('/api/cars')).rejects.toMatchObject({ status: 504 });
+    });
+
+    it('treats a refresh timeout as a failed refresh', async () => {
+        fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
+
+        expect(await refreshAuthTokens('slow')).toBeNull();
     });
 
     it('rejects a malformed refresh response instead of storing it', async () => {
@@ -125,7 +173,7 @@ describe('upstream', () => {
 
         await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
 
-        expect(jar.has('refresh_token')).toBe(false);
+        expect(jar.get('access_token')).toBe('stale');
     });
 
     it('sends FormData without a JSON content type', async () => {
