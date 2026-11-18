@@ -8,6 +8,7 @@ import { createBooking } from '@/features/book-car';
 import { validateDateRange } from '../lib/date-validation';
 import { bookingActions } from '@/features/book-car';
 import { publishBookingCreated } from '@/features/book-car';
+import { getBookingErrorMessage } from '../lib/utils';
 
 interface BookingFormProps {
     carId: number;
@@ -62,7 +63,7 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
 
             onSuccess?.();
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to create booking';
+            const errorMessage = getBookingErrorMessage(err);
             setError(errorMessage);
             onError?.(errorMessage);
         } finally {
