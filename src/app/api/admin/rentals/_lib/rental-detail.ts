@@ -1,4 +1,5 @@
 import type { Schemas } from '@/shared/api';
+import { ownValue } from '@/shared/lib/utils';
 import { toAdminRentalStatus, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
 import { toLateReturnStatus } from '../../_lib/late-return-status';
 
@@ -28,7 +29,7 @@ const STATUS_EVENTS: Record<string, { type: TimelineEventType; title: string; no
 function timeline(rental: Rental): RentalDetailResponse['timeline'] {
     const created = rental.createTime ?? rental.startDate ?? '';
     const events: RentalDetailResponse['timeline'] = [{ type: 'created', timestamp: created, title: 'Rental requested' }];
-    const current = rental.status ? STATUS_EVENTS[rental.status] : undefined;
+    const current = ownValue(STATUS_EVENTS, rental.status);
 
     if (current) {
         events.push({

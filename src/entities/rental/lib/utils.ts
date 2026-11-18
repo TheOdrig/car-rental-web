@@ -1,5 +1,5 @@
 import { Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
-import { formatCurrency, formatDate } from '@/shared/lib';
+import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.ACTIVE;
@@ -118,7 +118,7 @@ const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
 };
 
 export function getActionButtons(status: RentalStatus): ActionButton[] {
-    return ACTION_BUTTONS_CONFIG[status as string] || [];
+    return ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
 }
 
 export const RENTAL_TABS: { value: RentalTab; label: string }[] = [

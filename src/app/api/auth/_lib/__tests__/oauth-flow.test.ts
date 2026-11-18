@@ -113,6 +113,19 @@ describe('OAuth login flow binding', () => {
         expect(loginError(response)).toBe(expected);
     });
 
+    it.each(['constructor', '__proto__', 'toString'])('treats the inherited key %s as an unknown API code', async (code) => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ code, detail: 'x' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/problem+json' },
+            })
+        );
+
+        const response = await callback(callbackRequest('?code=c&state=abc123', 'oauth_state=abc123'), params('google'));
+
+        expect(loginError(response)).toBe('callback_failed');
+    });
+
     it('no longer trusts the legacy lowercase codes', async () => {
         fetchMock.mockResolvedValueOnce(
             new Response(JSON.stringify({ code: 'local_account_unverified', message: 'old shape' }), {

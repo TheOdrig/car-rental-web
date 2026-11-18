@@ -1,3 +1,5 @@
+import { ownValue } from '@/shared/lib/utils';
+
 export type PendingRentalsType = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
 type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
@@ -51,7 +53,7 @@ const STATUS_CONFIG: Record<string, StatusDisplay> = {
 
 export function getStatusDisplay(status: string): StatusDisplay {
     return (
-        STATUS_CONFIG[status?.toUpperCase()] || {
+        ownValue(STATUS_CONFIG, status?.toUpperCase()) ?? {
             label: status,
             variant: 'outline',
             className: '',

@@ -1,3 +1,4 @@
+import { ownValue } from '@/shared/lib/utils';
 import type { AdminRentalStatus } from '../model/types';
 
 const API_TO_ADMIN: Record<string, AdminRentalStatus> = {
@@ -19,9 +20,9 @@ const ADMIN_TO_API: Record<AdminRentalStatus, string> = {
 };
 
 export function toAdminRentalStatus(status: string | undefined): AdminRentalStatus {
-    return (status && API_TO_ADMIN[status]) || 'PENDING';
+    return ownValue(API_TO_ADMIN, status) ?? 'PENDING';
 }
 
 export function toApiRentalStatus(status: string): string {
-    return ADMIN_TO_API[status as AdminRentalStatus] ?? status;
+    return ownValue(ADMIN_TO_API, status) ?? status;
 }

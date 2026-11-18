@@ -1,4 +1,5 @@
 import type { LateReturnStatus } from '@/entities/rental';
+import { ownValue } from '@/shared/lib/utils';
 
 const LABELS: Record<string, LateReturnStatus> = {
     'On Time': 'ON_TIME',
@@ -8,7 +9,7 @@ const LABELS: Record<string, LateReturnStatus> = {
 };
 
 export function toLateReturnStatus(label: string | undefined): LateReturnStatus | undefined {
-    return label ? LABELS[label] : undefined;
+    return ownValue(LABELS, label);
 }
 
 interface WithStatus {
