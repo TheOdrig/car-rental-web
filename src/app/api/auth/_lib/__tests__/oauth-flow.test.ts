@@ -90,20 +90,53 @@ describe('OAuth login flow binding', () => {
     });
 
     it.each([
-        ['local_account_unverified', 409],
-        ['account_already_linked', 409],
-        ['authorization_denied', 401],
-    ])('redirects an API %s failure to the login page with that code', async (code, status) => {
+        ['OAUTH2_LOCAL_ACCOUNT_UNVERIFIED', 409, 'local_account_unverified'],
+        ['OAUTH2_ACCOUNT_ALREADY_LINKED', 409, 'account_already_linked'],
+        ['OAUTH2_AUTHORIZATION_DENIED', 401, 'authorization_denied'],
+        ['OAUTH2_AUTHENTICATION_FAILED', 401, 'authentication_failed'],
+        ['OAUTH2_INVALID_TOKEN', 401, 'invalid_token'],
+        ['OAUTH2_PROVIDER_UNAVAILABLE', 503, 'provider_unavailable'],
+        ['OAUTH2_EMAIL_REQUIRED', 400, 'email_required'],
+        ['OAUTH2_INVALID_STATE', 400, 'invalid_state'],
+        ['OAUTH2_SOCIAL_LOGIN_REQUIRED', 409, 'social_login_required'],
+        ['OAUTH2_PROVIDER_NOT_SUPPORTED', 400, 'unsupported_provider'],
+    ])('redirects an API %s problem to the login page as %s', async (code, status, expected) => {
         fetchMock.mockResolvedValueOnce(
-            new Response(JSON.stringify({ code, message: 'internal wording' }), {
-                status,
+            new Response(
+                JSON.stringify({ status, title: 'x', detail: 'internal wording', code, details: { provider: 'google' } }),
+                { status, headers: { 'Content-Type': 'application/problem+json' } }
+            )
+        );
+
+        const response = await callback(callbackRequest('?code=c&state=abc123', 'oauth_state=abc123'), params('google'));
+
+        expect(loginError(response)).toBe(expected);
+    });
+
+    it('no longer trusts the legacy lowercase codes', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ code: 'local_account_unverified', message: 'old shape' }), {
+                status: 409,
                 headers: { 'Content-Type': 'application/json' },
             })
         );
 
         const response = await callback(callbackRequest('?code=c&state=abc123', 'oauth_state=abc123'), params('google'));
 
-        expect(loginError(response)).toBe(code);
+        expect(loginError(response)).toBe('callback_failed');
+    });
+
+    it('maps an unsupported provider answer from the authorize endpoint', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ status: 400, code: 'OAUTH2_PROVIDER_NOT_SUPPORTED', detail: 'nope' }), {
+                status: 400,
+                headers: { 'Content-Type': 'application/problem+json' },
+            })
+        );
+
+        const response = await start(startRequest(), params('google'));
+
+        expect(loginError(response)).toBe('unsupported_provider');
     });
 
     it('never reflects an unknown API message into the login redirect', async () => {

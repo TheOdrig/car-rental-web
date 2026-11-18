@@ -1,6 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
 import { API, buildUpstreamUrl, clientIpHeaders } from '@/shared/server';
+import { oauthProblemRedirectCode } from '../../_lib/oauth-errors';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { setOAuthStateCookie } from '../../_lib/oauth-state';
 
@@ -28,7 +29,8 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         const location = response.headers.get('location');
 
         if (response.status < 300 || response.status >= 400 || !location) {
-            return loginRedirect(request, 'oauth_unavailable');
+            const problem = await response.json().catch(() => null);
+            return loginRedirect(request, oauthProblemRedirectCode(problem) ?? 'oauth_unavailable');
         }
 
         const target = new URL(location);
