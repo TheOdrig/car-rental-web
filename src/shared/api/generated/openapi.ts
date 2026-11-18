@@ -2949,8 +2949,11 @@ export interface components {
         };
         /** @description RFC 9457 problem details */
         ProblemDetail: {
-            /** @description Stable machine readable error code */
-            code: string;
+            /**
+             * @description Stable machine readable error code
+             * @enum {string}
+             */
+            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "CAR_ALREADY_EXISTS" | "CAR_CANNOT_BE_RESERVED" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_OPERATION_NOT_ALLOWED" | "CAR_VALIDATION_FAILED" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_PENALTY_CONFIG" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "LATE_RETURN_ERROR" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_CALCULATION_ERROR" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
             /** @description Explanation specific to this occurrence */
             detail: string;
             /** @description Error specific extra data */
@@ -5758,6 +5761,17 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5794,6 +5808,17 @@ export interface operations {
             /** @description Invalid request */
             400: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -5882,6 +5907,17 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5918,6 +5954,17 @@ export interface operations {
             /** @description Invalid request */
             400: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -5962,6 +6009,17 @@ export interface operations {
             /** @description Invalid request */
             400: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -8343,6 +8401,17 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -8757,6 +8826,17 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -9120,6 +9200,17 @@ export interface operations {
             /** @description Payment already settled */
             409: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
                     [name: string]: unknown;
                 };
                 content: {
