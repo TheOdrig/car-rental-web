@@ -26,35 +26,8 @@ import {
 } from '@/widgets/car-filters';
 import { Breadcrumb } from '@/widgets/layout';
 import { useCars, useCarSearchResults, getSortParams } from '@/entities/car';
-import { useFilterStore, type SortOption } from '@/widgets/car-filters';
+import { useFilterStore } from '@/widgets/car-filters';
 import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/entities/car';
-
-function getCarPrice(car: Car | AvailableCar): number {
-    if ('dailyRate' in car) {
-        return car.dailyRate;
-    }
-    return car.price;
-}
-
-function sortCars(cars: (Car | AvailableCar)[], sortBy: SortOption): (Car | AvailableCar)[] {
-    const sorted = [...cars];
-
-    switch (sortBy) {
-        case 'price-asc':
-            return sorted.sort((a, b) => getCarPrice(a) - getCarPrice(b));
-        case 'price-desc':
-            return sorted.sort((a, b) => getCarPrice(b) - getCarPrice(a));
-        case 'rating-desc':
-            return sorted.sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-        case 'name-asc':
-            return sorted.sort((a, b) =>
-                `${a.brand} ${a.model}`.localeCompare(`${b.brand} ${b.model}`)
-            );
-        case 'recommended':
-        default:
-            return sorted;
-    }
-}
 
 export function CarsListingContent() {
     const searchParams = useSearchParams();
@@ -125,12 +98,9 @@ export function CarsListingContent() {
         ? searchQuery.data?.totalPages ?? 0
         : defaultQuery.data?.totalPages ?? 0;
 
-    const sortedCars = useMemo(() => {
-        const cars = isSearchMode
-            ? searchQuery.data?.cars ?? []
-            : defaultQuery.data?.content ?? [];
-        return sortCars(cars, sortBy);
-    }, [isSearchMode, searchQuery.data, defaultQuery.data, sortBy]);
+    const cars: (Car | AvailableCar)[] = isSearchMode
+        ? searchQuery.data?.cars ?? []
+        : defaultQuery.data?.content ?? [];
 
     const breadcrumbItems = [{ label: 'Cars' }];
 
@@ -226,7 +196,7 @@ export function CarsListingContent() {
                         <p className="text-sm text-muted-foreground">
                             Showing{' '}
                             <span className="font-medium text-foreground">
-                                {sortedCars.length}
+                                {cars.length}
                             </span>{' '}
                             of{' '}
                             <span className="font-medium text-foreground">
@@ -249,9 +219,9 @@ export function CarsListingContent() {
                             <CarListViewSkeleton count={4} />
                         )
                     ) : viewMode === 'grid' ? (
-                        <CarGrid cars={sortedCars} />
+                        <CarGrid cars={cars} />
                     ) : (
-                        <CarListView cars={sortedCars} />
+                        <CarListView cars={cars} />
                     )}
 
                     {!isLoading && totalCars > 0 && (

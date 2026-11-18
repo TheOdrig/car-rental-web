@@ -41,3 +41,4 @@ export {
 export { DamageStatusBadge } from './ui/damage-status-badge';
 export { DamageSeverityBadge } from './ui/damage-severity-badge';
 export { DamageReportForm } from './ui/damage-report-form';
+export { DamageCurrencyTotals } from './ui/damage-currency-totals';

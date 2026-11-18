@@ -1109,11 +1109,7 @@ export interface paths {
          */
         get: operations["searchCars"];
         put?: never;
-        /**
-         * Search cars
-         * @description Search cars with various criteria
-         */
-        post: operations["searchCars_1"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2143,13 +2139,10 @@ export interface components {
             brand?: string;
             /** Format: date */
             endDate: string;
-            endDateAfterStartDate?: boolean;
             fuelType?: string;
             maxPrice?: number;
-            maxPriceGreaterThanMinPrice?: boolean;
             /** Format: int32 */
             maxProductionYear?: number;
-            maxYearGreaterThanMinYear?: boolean;
             minPrice?: number;
             /** Format: int32 */
             minProductionYear?: number;
@@ -2228,23 +2221,6 @@ export interface components {
             carName?: string;
             days?: components["schemas"]["DayAvailabilityDto"][];
             month?: string;
-        };
-        CarListResponse: {
-            cars?: components["schemas"]["CarResponse"][];
-            /** Format: int32 */
-            currentPage?: number;
-            hasNext?: boolean;
-            hasPrevious?: boolean;
-            isFirst?: boolean;
-            isLast?: boolean;
-            /** Format: int32 */
-            numberOfElements?: number;
-            /** Format: int32 */
-            pageSize?: number;
-            /** Format: int64 */
-            totalElements?: number;
-            /** Format: int32 */
-            totalPages?: number;
         };
         /** @description Price update data */
         CarPriceUpdateRequest: {
@@ -2366,51 +2342,6 @@ export interface components {
             version?: number;
             vinNumber?: string;
         };
-        /** @description Search criteria */
-        CarSearchRequest: {
-            bodyType?: string;
-            brand?: string;
-            /** @enum {string} */
-            carStatusType?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
-            color?: string;
-            /** @enum {string} */
-            currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-            engineType?: string;
-            fuelType?: string;
-            hasDamage?: boolean;
-            hasExpiredDocuments?: boolean;
-            isNew?: boolean;
-            /** Format: int32 */
-            maxDoors?: number;
-            /** Format: int64 */
-            maxKilometer?: number;
-            maxPrice?: number;
-            /** Format: int32 */
-            maxProductionYear?: number;
-            maxRating?: number;
-            /** Format: int32 */
-            maxSeats?: number;
-            /** Format: int32 */
-            minDoors?: number;
-            /** Format: int64 */
-            minKilometer?: number;
-            minPrice?: number;
-            /** Format: int32 */
-            minProductionYear?: number;
-            minRating?: number;
-            /** Format: int32 */
-            minSeats?: number;
-            model?: string;
-            needsService?: boolean;
-            /** Format: int32 */
-            page?: number;
-            searchTerm?: string;
-            /** Format: int32 */
-            size?: number;
-            sortBy?: string;
-            sortDirection?: string;
-            transmissionType?: string;
-        };
         /** @description Status update data */
         CarStatusUpdateRequest: {
             /** @enum {string} */
@@ -2467,6 +2398,13 @@ export interface components {
             /** @enum {string} */
             toCurrency: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
         };
+        CurrencyTotals: {
+            /** Format: int64 */
+            assessedCount?: number;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            totalCustomerLiability?: number;
+        };
         DailyRevenueDto: {
             /** Format: date */
             date?: string;
@@ -2517,6 +2455,15 @@ export interface components {
             repairCostEstimate?: number;
             /** @enum {string} */
             severity?: "MINOR" | "MODERATE" | "MAJOR" | "TOTAL_LOSS";
+        };
+        DamageCurrencyTotals: {
+            /** Format: int64 */
+            assessedCount?: number;
+            averageRepairCost?: number;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            totalCustomerLiability?: number;
+            totalRepairCost?: number;
         };
         DamageDisputeRequest: {
             comments?: string;
@@ -2618,7 +2565,8 @@ export interface components {
             status?: "REPORTED" | "UNDER_ASSESSMENT" | "ASSESSED" | "CHARGED" | "DISPUTED" | "RESOLVED";
         };
         DamageStatisticsDto: {
-            averageRepairCost?: number;
+            /** @description Monetary totals grouped by the currency each report was assessed in; amounts of different currencies are never summed together. Reports not yet assessed carry no currency and are not listed. */
+            byCurrency?: components["schemas"]["DamageCurrencyTotals"][];
             /** Format: int32 */
             disputedCount?: number;
             /** Format: int32 */
@@ -2629,12 +2577,10 @@ export interface components {
             moderateCount?: number;
             /** Format: int32 */
             resolvedCount?: number;
-            totalCustomerLiability?: number;
             /** Format: int32 */
             totalDamages?: number;
             /** Format: int32 */
             totalLossCount?: number;
-            totalRepairCost?: number;
         };
         DayAvailabilityDto: {
             /** Format: date */
@@ -2932,7 +2878,6 @@ export interface components {
             carId: number;
             /** Format: date */
             endDate: string;
-            endDateAfterStartDate?: boolean;
             /** Format: date */
             startDate: string;
         };
@@ -3023,12 +2968,9 @@ export interface components {
             carId: number;
             /** Format: date */
             endDate: string;
-            endDateAfterStartDate?: boolean;
             notes?: string;
             /** Format: date */
             startDate: string;
-            withinMaxLeadTime?: boolean;
-            withinMaxRentalLength?: boolean;
         };
         RentalResponse: {
             appliedDiscounts?: string[];
@@ -3136,9 +3078,10 @@ export interface components {
             completedRentals?: number;
             /** Format: int32 */
             customerSinceDays?: number;
+            /** @description Customer damage liability grouped by assessment currency; amounts of different currencies are never summed together. */
+            damageCostByCurrency?: components["schemas"]["CurrencyTotals"][];
             /** Format: int32 */
             lateReturns?: number;
-            totalDamageCost?: number;
             /** Format: int32 */
             totalDamageReports?: number;
             /** Format: int32 */
@@ -5057,7 +5000,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PenaltyWaiverResponse"][];
                 };
             };
             /** @description Invalid request */
@@ -6328,7 +6271,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: boolean;
+                    };
                 };
             };
             /** @description Invalid car ID */
@@ -6816,9 +6761,30 @@ export interface operations {
     };
     searchCars: {
         parameters: {
-            query: {
-                /** @description Search filters */
-                searchRequest: components["schemas"]["CarSearchRequest"];
+            query?: {
+                searchTerm?: string;
+                brand?: string;
+                model?: string;
+                minProductionYear?: number;
+                maxProductionYear?: number;
+                minPrice?: number;
+                maxPrice?: number;
+                currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+                carStatusType?: "Available" | "Rented" | "Maintenance" | "Reserved" | "Damaged" | "Inspection";
+                engineType?: string;
+                fuelType?: string;
+                transmissionType?: string;
+                bodyType?: string;
+                color?: string;
+                maxKilometer?: number;
+                minDoors?: number;
+                minSeats?: number;
+                maxSeats?: number;
+                minRating?: number;
+                sortBy?: string;
+                sortDirection?: string;
+                page?: number;
+                size?: number;
             };
             header?: never;
             path?: never;
@@ -6832,62 +6798,11 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CarListResponse"];
+                    "application/json": components["schemas"]["PageResponseCarResponse"];
                 };
             };
             /** @description Invalid search parameters */
             400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Unexpected error */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-        };
-    };
-    searchCars_1: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CarSearchRequest"];
-            };
-        };
-        responses: {
-            /** @description Search completed successfully */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CarListResponse"];
-                };
-            };
-            /** @description Invalid search criteria */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Authentication required */
-            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7186,7 +7101,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7215,7 +7132,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7244,7 +7163,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7273,7 +7194,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7302,7 +7225,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7331,7 +7256,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: number;
+                    };
                 };
             };
             /** @description Internal server error */
@@ -7364,7 +7291,9 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             /** @description Invalid car data */
@@ -7742,7 +7671,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["SimilarCarDto"][];
                 };
             };
             /** @description Invalid car ID or date parameters */
@@ -8653,7 +8582,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PageResponseRentalResponse"];
                 };
             };
             /** @description Invalid request */
@@ -8718,7 +8647,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["PageResponseRentalResponse"];
                 };
             };
             /** @description Invalid request */

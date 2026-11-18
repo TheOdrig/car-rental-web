@@ -44,6 +44,13 @@ describe('upstream endpoint registry against the OpenAPI snapshot', () => {
         }
     );
 
+    it('does not register the removed POST /cars/search', () => {
+        expect(
+            endpoints.filter((endpoint) => endpoint.method === 'POST' && endpoint.template === '/api/v1/cars/search')
+        ).toEqual([]);
+        expect(Object.keys(paths['/api/v1/cars/search']).map((method) => method.toUpperCase())).toEqual(['GET']);
+    });
+
     it('only targets /api/v1 paths', () => {
         expect(endpoints.every((endpoint) => endpoint.template.startsWith('/api/v1/'))).toBe(true);
     });

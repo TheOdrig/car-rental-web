@@ -139,9 +139,9 @@ describe('admin BFF routes', () => {
         expect(body.content.map((item: { status: string }) => item.status)).toEqual(['SEVERELY_LATE', 'ON_TIME']);
     });
 
-    it('returns the car list as a PageResponse', async () => {
+    it('passes the upstream PageResponse through unchanged', async () => {
         fetchMock.mockResolvedValueOnce(
-            json({ cars: [{ id: 1 }], currentPage: 2, pageSize: 5, totalElements: 11, totalPages: 3, hasNext: false })
+            json({ content: [{ id: 1 }], page: 2, size: 5, totalElements: 11, totalPages: 3 })
         );
 
         const response = await listCars(new NextRequest('http://localhost:3000/api/cars?page=2&size=5'), noParams);

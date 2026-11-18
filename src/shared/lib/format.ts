@@ -91,3 +91,9 @@ export function formatTime(date: Date | string | null | undefined): string {
     if (!isValid(d)) return 'N/A';
     return format(d, 'h:mm a');
 }
+export function formatMixedCurrencyAmount(amount: number): string {
+    return new Intl.NumberFormat('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    }).format(amount);
+}

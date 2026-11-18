@@ -3,7 +3,7 @@
 import { BarChart3, Car, CheckCircle, XCircle, DollarSign, Clock, AlertTriangle, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { StatCard } from '@/shared/ui/stat-card';
-import { formatCurrency } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatMixedCurrencyAmount } from '@/shared/lib';
 import type { CustomerStatistics } from '@/entities/user';
 
 interface CustomerStatisticsCardProps {
@@ -46,8 +46,8 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         className="p-3"
                     />
                     <StatCard
-                        label="Total Spent"
-                        value={formatCurrency(statistics.totalSpent, 'USD')}
+                        label="Total Spent (mixed currencies)"
+                        value={formatMixedCurrencyAmount(statistics.totalSpent)}
                         icon={DollarSign}
                         className="p-3"
                     />
@@ -64,12 +64,6 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         className="p-3"
                     />
                     <StatCard
-                        label="Damage Cost"
-                        value={formatCurrency(statistics.totalDamageCost, 'USD')}
-                        icon={DollarSign}
-                        className="p-3"
-                    />
-                    <StatCard
                         label="Late Returns"
                         value={statistics.lateReturns}
                         icon={Clock}
@@ -81,6 +75,27 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         icon={Calendar}
                         className="p-3"
                     />
+                </div>
+                <div className="mt-4" data-testid="damage-cost-by-currency">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                        <DollarSign className="h-4 w-4" />
+                        Damage Cost by Currency
+                    </p>
+                    {statistics.damageCostByCurrency.length === 0 ? (
+                        <p className="text-sm text-muted-foreground">No assessed damage costs.</p>
+                    ) : (
+                        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                            {statistics.damageCostByCurrency.map((entry) => (
+                                <li key={entry.currency}>
+                                    <StatCard
+                                        label={`${entry.currency} (${entry.assessedCount ?? 0} assessed)`}
+                                        value={formatCurrencyWithDecimals(entry.totalCustomerLiability ?? 0, entry.currency ?? 'USD')}
+                                        className="p-3"
+                                    />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
                 </div>
             </CardContent>
         </Card>

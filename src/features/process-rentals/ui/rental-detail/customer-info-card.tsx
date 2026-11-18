@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { StatCard } from '@/shared/ui/stat-card';
-import { formatCurrency } from '@/shared/lib';
+import { formatMixedCurrencyAmount } from '@/shared/lib';
 import type { RentalCustomerInfo } from '@/entities/rental';
 
 interface CustomerInfoCardProps {
@@ -105,8 +105,8 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         className="p-2"
                     />
                     <StatCard
-                        label="Spent"
-                        value={formatCurrency(customer.stats.totalSpent, 'USD')}
+                        label="Spent (mixed)"
+                        value={formatMixedCurrencyAmount(customer.stats.totalSpent)}
                         icon={DollarSign}
                         className="p-2"
                     />
