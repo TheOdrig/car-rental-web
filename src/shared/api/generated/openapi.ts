@@ -1841,7 +1841,7 @@ export interface paths {
         put?: never;
         /**
          * Cancel rental
-         * @description Cancel a rental (user can cancel own, admin can cancel any)
+         * @description Cancel a REQUESTED or CONFIRMED rental (user can cancel own, admin can cancel any). A rental in use ends only through the return flow.
          */
         post: operations["cancelRental"];
         delete?: never;
@@ -1864,6 +1864,26 @@ export interface paths {
          * @description Admin confirms a rental request and authorizes payment
          */
         post: operations["confirmRental"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/rentals/{id}/early-return": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Early return
+         * @description Admin returns the car before the end date; the unused days are refunded partially through the normal refund path. Late and damage handling are unchanged.
+         */
+        post: operations["earlyReturnRental"];
         delete?: never;
         options?: never;
         head?: never;
@@ -2898,7 +2918,7 @@ export interface components {
              * @description Stable machine readable error code
              * @enum {string}
              */
-            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "CAR_ALREADY_EXISTS" | "CAR_CANNOT_BE_RESERVED" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_OPERATION_NOT_ALLOWED" | "CAR_VALIDATION_FAILED" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_PENALTY_CONFIG" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "LATE_RETURN_ERROR" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_CALCULATION_ERROR" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
+            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "CAR_ALREADY_EXISTS" | "CAR_CANNOT_BE_RESERVED" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_OPERATION_NOT_ALLOWED" | "CAR_VALIDATION_FAILED" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_PENALTY_CONFIG" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "LATE_RETURN_ERROR" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_CALCULATION_ERROR" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
             /** @description Explanation specific to this occurrence */
             detail: string;
             /** @description Error specific extra data */
@@ -8873,7 +8893,7 @@ export interface operations {
                     "application/json": components["schemas"]["RentalResponse"];
                 };
             };
-            /** @description Invalid rental state */
+            /** @description Rental cannot be cancelled in its current status (RENTAL_CANCEL_NOT_ALLOWED) */
             400: {
                 headers: {
                     [name: string]: unknown;
@@ -8965,6 +8985,78 @@ export interface operations {
             };
             /** @description Payment failed */
             402: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied - Admin role required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rental not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    earlyReturnRental: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Rental ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ReturnRequest"];
+            };
+        };
+        responses: {
+            /** @description Early return processed successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RentalResponse"];
+                };
+            };
+            /** @description Invalid rental state */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
