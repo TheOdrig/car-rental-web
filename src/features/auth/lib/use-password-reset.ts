@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { clientPost } from '@/shared/api';
+import { clientPost, isRateLimited } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
 
@@ -20,6 +20,10 @@ export function useForgotPassword() {
             showToast.success('Password reset email sent. Please check your inbox.');
         },
         onError: (error: Error) => {
+            if (isRateLimited(error)) {
+                return;
+            }
+
             const message = error.message.toLowerCase();
 
             if (message.includes('not found') || message.includes('no user')) {
@@ -38,6 +42,10 @@ export function useResetPassword() {
             showToast.success('Password reset successfully. You can now log in with your new password.');
         },
         onError: (error: Error) => {
+            if (isRateLimited(error)) {
+                return;
+            }
+
             const message = error.message.toLowerCase();
 
             if (message.includes('expired')) {

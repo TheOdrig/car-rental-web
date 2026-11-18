@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { useForgotPassword } from '@/features/auth';
+import { isRateLimited, rateLimitMessage } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { FormError } from '@/features/auth';
 
@@ -38,7 +39,10 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
         try {
             await forgotPassword.mutateAsync({ email });
             setIsSubmitted(true);
-        } catch {
+        } catch (error) {
+            if (isRateLimited(error)) {
+                setFormError(rateLimitMessage(error.retryAfter));
+            }
         }
     };
 

@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
+import { getFormErrorMessage } from '@/shared/api';
 import { useRegister } from '../lib/use-auth';
 import { cn } from '@/shared/lib';
 import { FormError } from './form-error';
@@ -85,8 +86,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 lastName: formData.lastName || undefined,
             });
             router.push('/');
-        } catch {
-            setFormError('Registration failed. Please try again.');
+        } catch (error) {
+            setFormError(getFormErrorMessage(error, 'Registration failed. Please try again.'));
         }
     };
 

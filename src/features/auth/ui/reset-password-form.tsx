@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { useResetPassword } from '@/features/auth';
+import { isRateLimited, rateLimitMessage } from '@/shared/api';
 import { cn } from '@/shared/lib';
 import { FormError } from '@/features/auth';
 
@@ -53,7 +54,10 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                 newPassword: formData.newPassword,
             });
             setIsSuccess(true);
-        } catch {
+        } catch (error) {
+            if (isRateLimited(error)) {
+                setFormError(rateLimitMessage(error.retryAfter));
+            }
         }
     };
 

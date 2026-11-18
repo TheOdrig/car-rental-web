@@ -7,6 +7,7 @@ import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
+import { getFormErrorMessage } from '@/shared/api';
 import { useLogin } from '../lib/use-auth';
 import { cn, safeRedirectPath } from '@/shared/lib';
 import { FormError } from './form-error';
@@ -92,8 +93,8 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 password: formData.password,
             });
             router.push(safeRedirectPath(callbackUrl));
-        } catch {
-            setFormError('Invalid credentials. Please try again.');
+        } catch (error) {
+            setFormError(getFormErrorMessage(error, 'Invalid credentials. Please try again.'));
         }
     };
 

@@ -27,6 +27,7 @@ vi.mock('@/features/auth/lib/use-auth', () => ({
     authKeys: { all: ['auth'] },
 }));
 
+import { ApiError } from '@/shared/api';
 import { LoginForm } from '@/features/auth';
 import { useLogin } from '@/features/auth/lib/use-auth';
 
@@ -172,6 +173,33 @@ describe('LoginForm', () => {
             await waitFor(() => {
                 expect(screen.getByText(/invalid credentials/i)).toBeInTheDocument();
             });
+        });
+    });
+
+    describe('Rate limiting', () => {
+        it('should show a retry hint when the API answers 429 with Retry-After', async () => {
+            const limited = new ApiError({
+                status: 429,
+                message: 'Too many requests',
+                timestamp: new Date().toISOString(),
+                code: 'RATE_LIMIT_EXCEEDED',
+                retryAfter: 30,
+            });
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: vi.fn().mockRejectedValue(limited),
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm />);
+
+            await user.type(getUsernameInput(), 'testuser');
+            await user.type(getPasswordInput(), 'password123');
+            submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/too many attempts.*30 seconds/i)).toBeInTheDocument();
+            });
+            expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
         });
     });
 
