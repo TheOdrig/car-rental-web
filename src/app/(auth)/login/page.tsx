@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { LoginForm } from '@/features/auth';
-import { OAuthButtons, OAuthDivider } from '@/features/auth';
+import { FormError, OAuthButtons, OAuthDivider, oauthErrorMessage } from '@/features/auth';
 import { safeRedirectPath } from '@/shared/lib';
 
 export const metadata: Metadata = {
@@ -10,11 +10,12 @@ export const metadata: Metadata = {
 };
 
 interface LoginPageProps {
-    searchParams: Promise<{ callbackUrl?: string }>;
+    searchParams: Promise<{ callbackUrl?: string; error?: string }>;
 }
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
-    const { callbackUrl } = await searchParams;
+    const { callbackUrl, error } = await searchParams;
+    const oauthError = oauthErrorMessage(error);
 
     return (
         <div className="space-y-8">
@@ -26,6 +27,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                     Sign in to manage your fleet and access exclusive deals.
                 </p>
             </div>
+
+            {oauthError && <FormError message={oauthError} />}
 
             <LoginForm callbackUrl={safeRedirectPath(callbackUrl)} />
 

@@ -1,8 +1,8 @@
 import { NextResponse, type NextRequest } from 'next/server';
-import { isApiError } from '@/shared/api';
 import { logger } from '@/shared/lib/logger';
 import { API, authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
+import { oauthRedirectCode } from '../../_lib/oauth-errors';
 import { OAUTH_STATE_COOKIE, clearOAuthStateCookie, oauthStateMatches } from '../../_lib/oauth-state';
 
 interface RouteParams {
@@ -49,6 +49,6 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
         return finish(NextResponse.redirect(new URL('/', request.url)));
     } catch (error) {
         logger.error('[BFF] OAuth callback failed', error);
-        return loginRedirect(request, isApiError(error) && error.message ? error.message : 'callback_failed');
+        return loginRedirect(request, oauthRedirectCode(error));
     }
 }

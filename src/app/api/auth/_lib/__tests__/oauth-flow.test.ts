@@ -89,6 +89,36 @@ describe('OAuth login flow binding', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
+    it.each([
+        ['local_account_unverified', 409],
+        ['account_already_linked', 409],
+        ['authorization_denied', 401],
+    ])('redirects an API %s failure to the login page with that code', async (code, status) => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ code, message: 'internal wording' }), {
+                status,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        );
+
+        const response = await callback(callbackRequest('?code=c&state=abc123', 'oauth_state=abc123'), params('google'));
+
+        expect(loginError(response)).toBe(code);
+    });
+
+    it('never reflects an unknown API message into the login redirect', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ code: 'SOMETHING_NEW', message: '<script>alert(1)</script>' }), {
+                status: 500,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        );
+
+        const response = await callback(callbackRequest('?code=c&state=abc123', 'oauth_state=abc123'), params('google'));
+
+        expect(loginError(response)).toBe('callback_failed');
+    });
+
     it('accepts a matching state, signs in and deletes the cookie', async () => {
         fetchMock.mockResolvedValueOnce(
             new Response(JSON.stringify({ accessToken: 'a', refreshToken: 'r' }), {

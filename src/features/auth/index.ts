@@ -40,5 +40,6 @@ export { PasswordStrengthIndicator } from './ui/password-strength-indicator';
 export { AuthProvider, useAuthContext } from './ui/auth-provider';
 
 export { useAuth, useCurrentUser, useLogin, useLogout, useRefreshToken, useRegister, authKeys } from './lib/use-auth';
+export { oauthErrorMessage, isKnownOAuthErrorCode } from './lib/oauth-errors';
 export { useChangePassword } from './lib/use-password';
 export { useForgotPassword, useResetPassword } from './lib/use-password-reset';
