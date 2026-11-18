@@ -46,7 +46,9 @@ function check() {
             return;
         }
         if (existsSync(apiSpec) && normalize(readFileSync(apiSpec, 'utf8')) !== normalize(readFileSync(snapshot, 'utf8'))) {
-            console.warn('contract: warning, contract/openapi.json differs from ../car-rental-api/openapi/openapi.json; run `npm run contract:sync` to adopt it');
+            console.error('contract: contract/openapi.json differs from ../car-rental-api/openapi/openapi.json; run `npm run contract:sync` to adopt it');
+            process.exitCode = 1;
+            return;
         }
         console.log('contract: generated types match the snapshot');
     } finally {

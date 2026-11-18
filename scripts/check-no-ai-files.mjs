@@ -1,27 +1,12 @@
 #!/usr/bin/env node
 import { execFileSync } from 'node:child_process';
-
-const forbidden = [
-  /^\.kiro\//,
-  /^kiro\.steering\//,
-  /^\.agent\//,
-  /^\.agents\//,
-  /^\.claude\//,
-  /^\.codex\//,
-  /^AGENTS\.md$/,
-  /^CLAUDE\.md$/,
-  /^docs\//,
-  /^\.obsidian\//,
-  /^specs\//,
-  /^UIdesign\//,
-  /Zone\.Identifier$/,
-];
+import { isForbiddenPath } from './ai-file-patterns.mjs';
 
 const files = execFileSync('git', ['ls-files', '-z'], { encoding: 'utf8', maxBuffer: 64 * 1024 * 1024 })
   .split('\0')
   .filter(Boolean);
 
-const hits = files.filter((f) => forbidden.some((re) => re.test(f)));
+const hits = files.filter(isForbiddenPath);
 
 if (hits.length > 0) {
   console.error('check-no-ai-files: forbidden paths are tracked by git:');

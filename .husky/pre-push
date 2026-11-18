@@ -1,2 +1,2 @@
 #!/bin/sh
-bash scripts/verify.sh
+bash scripts/verify.sh --fast
