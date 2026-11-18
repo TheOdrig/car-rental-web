@@ -105,7 +105,7 @@ export const CarCard = memo(function CarCard({
             </div>
 
             <CardContent className={cn('p-4', variant === 'compact' && 'p-3')}>
-                <h3 className="font-semibold text-lg leading-tight mb-1">
+                <h3 className="font-semibold text-lg leading-tight mb-1 line-clamp-2 break-words" title={`${brand} ${model}`}>
                     {brand} {model}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-3">{year}</p>

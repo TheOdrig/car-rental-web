@@ -27,6 +27,16 @@ describe('CarCard', () => {
     beforeEach(() => {
         resetCarCounters();
     });
+    describe('Long content', () => {
+        it('keeps a very long model name wrapped and readable through its title', () => {
+            const model = 'Grand Touring Extended Wheelbase Limited Anniversary Edition Hybrid';
+            const car = createMockCar({ brand: 'Mercedes-Benz', model });
+            renderWithProviders(<CarCard car={car} />);
+            const heading = screen.getByRole('heading', { name: new RegExp(model) });
+            expect(heading).toHaveClass('line-clamp-2', 'break-words');
+            expect(heading).toHaveAttribute('title', `Mercedes-Benz ${model}`);
+        });
+    });
     describe('Rendering', () => {
         it('should render car brand and model', () => {
             const car = createMockCar({ brand: 'Toyota', model: 'Corolla' });

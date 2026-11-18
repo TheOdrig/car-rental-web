@@ -156,9 +156,9 @@ export const RentalCard = memo(function RentalCard({
 
                         <div className="flex flex-1 flex-col p-4">
                             <div className="mb-3 flex items-start justify-between gap-2">
-                                <div>
+                                <div className="min-w-0">
                                     <p className="text-xs text-muted-foreground">{referenceId}</p>
-                                    <h3 className="text-lg font-semibold">
+                                    <h3 className="truncate text-lg font-semibold" title={`${carSummary?.brand} ${carSummary?.model}`}>
                                         {carSummary?.brand} {carSummary?.model}
                                     </h3>
                                 </div>
