@@ -18,6 +18,7 @@ interface RentalInfoCardProps {
     pickupLocation?: string;
     dropoffLocation?: string;
     notes?: string;
+    cancellationReason?: string;
 }
 
 const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -51,6 +52,7 @@ export function RentalInfoCard({
     pickupLocation,
     dropoffLocation,
     notes,
+    cancellationReason,
 }: RentalInfoCardProps) {
     const referenceNumber = `CR-${String(rentalId).padStart(6, '0')}`;
 
@@ -162,6 +164,13 @@ export function RentalInfoCard({
                                 </div>
                             )}
                         </div>
+                    </div>
+                )}
+
+                {cancellationReason && (
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Cancellation Reason</span>
+                        <p className="text-sm text-red-600 dark:text-red-400">{cancellationReason}</p>
                     </div>
                 )}
 

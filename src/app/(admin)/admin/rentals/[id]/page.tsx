@@ -242,6 +242,7 @@ export default function RentalDetailPage({ params }: PageProps) {
                     duration={rental.duration}
                     pricing={rental.pricing}
                     notes={rental.notes.approval}
+                    cancellationReason={rental.notes.cancellation}
                 />
                 <CustomerInfoCard customer={customerInfo} />
                 <VehicleInfoCard vehicle={vehicleInfo} />

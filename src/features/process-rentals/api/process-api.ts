@@ -3,6 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
+import { getAdminActionErrorMessage } from '@/entities/rental';
 import { processKeys } from './process-keys';
 import type {
     QuickActionResult,
@@ -65,7 +66,7 @@ export function useApproveRental() {
             });
         },
         onError: (error: Error) => {
-            showToast.error(toastMessages.rental.approveError, error.message);
+            showToast.error(toastMessages.rental.approveError, getAdminActionErrorMessage(error));
         },
     });
 }
@@ -88,7 +89,7 @@ export function useProcessPickup() {
             });
         },
         onError: (error: Error) => {
-            showToast.error(toastMessages.rental.pickupError, error.message);
+            showToast.error(toastMessages.rental.pickupError, getAdminActionErrorMessage(error));
         },
     });
 }
@@ -112,7 +113,7 @@ export function useProcessReturn() {
             });
         },
         onError: (error: Error) => {
-            showToast.error(toastMessages.rental.returnError, error.message);
+            showToast.error(toastMessages.rental.returnError, getAdminActionErrorMessage(error));
         },
     });
 }
@@ -135,7 +136,7 @@ export function useRejectRental() {
             });
         },
         onError: (error: Error) => {
-            showToast.error(toastMessages.rental.rejectError, error.message);
+            showToast.error(toastMessages.rental.rejectError, getAdminActionErrorMessage(error));
         },
     });
 }
