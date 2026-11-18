@@ -178,14 +178,14 @@ describe('calculateFleetPercentages', () => {
 });
 describe('processRevenueData', () => {
     const mockData: MonthlyRevenue[] = [
-        { month: { year: 2024, monthValue: 6, month: 'Jun' }, revenue: 6000, rentalCount: 60, growthPercentage: 0 },
-        { month: { year: 2024, monthValue: 5, month: 'May' }, revenue: 5000, rentalCount: 50, growthPercentage: 0 },
-        { month: { year: 2024, monthValue: 4, month: 'Apr' }, revenue: 4000, rentalCount: 40, growthPercentage: 0 },
-        { month: { year: 2024, monthValue: 3, month: 'Mar' }, revenue: 3000, rentalCount: 30, growthPercentage: 0 },
-        { month: { year: 2024, monthValue: 2, month: 'Feb' }, revenue: 2000, rentalCount: 20, growthPercentage: 0 },
-        { month: { year: 2024, monthValue: 1, month: 'Jan' }, revenue: 1000, rentalCount: 10, growthPercentage: 0 },
-        { month: { year: 2023, monthValue: 12, month: 'Dec' }, revenue: 1200, rentalCount: 12, growthPercentage: 0 },
-        { month: { year: 2023, monthValue: 11, month: 'Nov' }, revenue: 1100, rentalCount: 11, growthPercentage: 0 },
+        { month: '2024-06', revenue: 6000, rentalCount: 60, growthPercentage: 0 },
+        { month: '2024-05', revenue: 5000, rentalCount: 50, growthPercentage: 0 },
+        { month: '2024-04', revenue: 4000, rentalCount: 40, growthPercentage: 0 },
+        { month: '2024-03', revenue: 3000, rentalCount: 30, growthPercentage: 0 },
+        { month: '2024-02', revenue: 2000, rentalCount: 20, growthPercentage: 0 },
+        { month: '2024-01', revenue: 1000, rentalCount: 10, growthPercentage: 0 },
+        { month: '2023-12', revenue: 1200, rentalCount: 12, growthPercentage: 0 },
+        { month: '2023-11', revenue: 1100, rentalCount: 11, growthPercentage: 0 },
     ];
     it('should filter for last 6 months by default', () => {
         const result = processRevenueData(mockData);
@@ -216,8 +216,8 @@ describe('processRevenueData', () => {
     });
     it('should handle data spanning multiple years', () => {
         const multiYearData: MonthlyRevenue[] = [
-            { month: { year: 2024, monthValue: 1, month: 'Jan' }, revenue: 100, rentalCount: 1, growthPercentage: 0 },
-            { month: { year: 2023, monthValue: 12, month: 'Dec' }, revenue: 200, rentalCount: 1, growthPercentage: 0 },
+            { month: '2024-01', revenue: 100, rentalCount: 1, growthPercentage: 0 },
+            { month: '2023-12', revenue: 200, rentalCount: 1, growthPercentage: 0 },
         ];
         const result = processRevenueData(multiYearData);
         expect(result[0].month).toBe('Dec');

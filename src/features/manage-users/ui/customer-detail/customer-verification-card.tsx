@@ -34,7 +34,7 @@ export function CustomerVerificationCard({ verification }: CustomerVerificationC
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-3 gap-4">
                     <div className="text-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                        {verification.isEmailVerified ? (
+                        {verification.emailVerified ? (
                             <ShieldCheck className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
                         ) : (
                             <ShieldAlert className="h-8 w-8 text-red-500 mx-auto mb-2" />
@@ -42,17 +42,17 @@ export function CustomerVerificationCard({ verification }: CustomerVerificationC
                         <span className="text-xs font-medium text-slate-600 dark:text-slate-400 block">Email</span>
                         <Badge
                             variant="outline"
-                            className={verification.isEmailVerified
+                            className={verification.emailVerified
                                 ? 'text-emerald-600 border-emerald-300 mt-1'
                                 : 'text-red-600 border-red-300 mt-1'
                             }
                         >
-                            {verification.isEmailVerified ? 'Verified' : 'Not Verified'}
+                            {verification.emailVerified ? 'Verified' : 'Not Verified'}
                         </Badge>
                     </div>
 
                     <div className="text-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                        {verification.isPhoneVerified ? (
+                        {verification.phoneVerified ? (
                             <ShieldCheck className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
                         ) : (
                             <ShieldAlert className="h-8 w-8 text-red-500 mx-auto mb-2" />
@@ -60,12 +60,12 @@ export function CustomerVerificationCard({ verification }: CustomerVerificationC
                         <span className="text-xs font-medium text-slate-600 dark:text-slate-400 block">Phone</span>
                         <Badge
                             variant="outline"
-                            className={verification.isPhoneVerified
+                            className={verification.phoneVerified
                                 ? 'text-emerald-600 border-emerald-300 mt-1'
                                 : 'text-red-600 border-red-300 mt-1'
                             }
                         >
-                            {verification.isPhoneVerified ? 'Verified' : 'Not Verified'}
+                            {verification.phoneVerified ? 'Verified' : 'Not Verified'}
                         </Badge>
                     </div>
 

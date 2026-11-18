@@ -27,21 +27,9 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
         <TableRow>
             <TableCell>
                 <div className="flex items-center gap-3">
-                    {item.customerImage ? (
-                        <div className="relative h-9 w-9 shrink-0">
-                            <DynamicImage
-                                src={item.customerImage}
-                                alt={item.customerName}
-                                fill
-                                className="rounded-full object-cover border bg-muted shadow-sm"
-                                sizes="36px"
-                            />
-                        </div>
-                    ) : (
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted">
-                            <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-                        </div>
-                    )}
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted">
+                        <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    </div>
                     <div className="min-w-0 max-w-[14rem]">
                         {item.customerId && item.customerId > 0 ? (
                             <Link href={`/admin/users/${item.customerId}`} className={LINK_CLASS}>

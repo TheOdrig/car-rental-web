@@ -11,18 +11,13 @@ describe('ApproveRentalDialog', () => {
         rentalId: 101,
         customerName: 'John Doe',
         customerEmail: 'john@example.com',
-        customerImage: '/avatars/john.jpg',
-        isCustomerVerified: true,
         carId: 1,
         carBrand: 'Tesla',
         carModel: 'Model 3',
         carImage: '/cars/tesla.jpg',
         licensePlate: 'ABC-1234',
-        fuelType: 'Electric',
-        transmission: 'Automatic',
         startDate: '2025-12-01T10:00:00Z',
         endDate: '2025-12-05T10:00:00Z',
-        duration: 4,
         totalAmount: 480,
         status: 'Requested',
         createdAt: '2025-11-25T14:00:00Z'
@@ -38,8 +33,6 @@ describe('ApproveRentalDialog', () => {
         );
         expect(screen.getByText(/Tesla Model 3/i)).toBeInTheDocument();
         expect(screen.getByText(/ABC-1234/i)).toBeInTheDocument();
-        expect(screen.getByText(/Electric/i)).toBeInTheDocument();
-        expect(screen.getByText(/Automatic/i)).toBeInTheDocument();
         expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
         expect(screen.getByText(/john@example.com/i)).toBeInTheDocument();
         expect(screen.getByText(/VERIFIED IDENTITY/i)).toBeInTheDocument();

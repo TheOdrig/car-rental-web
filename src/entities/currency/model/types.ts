@@ -1,4 +1,6 @@
-export type CurrencyCode = 'USD' | 'EUR' | 'GBP' | 'TRY' | 'JPY';
+import type { Schemas, WithRequired } from '@/shared/api/contract';
+
+export type CurrencyCode = NonNullable<Schemas['ExchangeRatesResponse']['baseCurrency']>;
 
 export interface Currency {
     code: CurrencyCode;
@@ -8,25 +10,14 @@ export interface Currency {
     decimals: number;
 }
 
-export interface ExchangeRatesResponse {
-    baseCurrency: CurrencyCode;
-    rates: Record<CurrencyCode, number>;
-    timestamp: string;
-    source: 'LIVE' | 'CACHE' | 'FALLBACK';
-}
+export type ExchangeRatesResponse = Omit<
+    WithRequired<Schemas['ExchangeRatesResponse'], 'baseCurrency' | 'timestamp' | 'source'>,
+    'rates'
+> & { rates: Record<CurrencyCode, number> };
 
-export interface ConversionRequest {
-    amount: number;
-    fromCurrency: CurrencyCode;
-    toCurrency: CurrencyCode;
-}
+export type ConversionRequest = Schemas['ConvertRequest'];
 
-export interface ConversionResponse {
-    originalAmount: number;
-    originalCurrency: CurrencyCode;
-    convertedAmount: number;
-    targetCurrency: CurrencyCode;
-    exchangeRate: number;
-    rateTimestamp: string;
-    source: 'LIVE' | 'CACHE' | 'FALLBACK';
-}
+export type ConversionResponse = WithRequired<
+    Schemas['ConversionResult'],
+    'originalAmount' | 'originalCurrency' | 'convertedAmount' | 'targetCurrency' | 'exchangeRate' | 'rateTimestamp' | 'source'
+>;

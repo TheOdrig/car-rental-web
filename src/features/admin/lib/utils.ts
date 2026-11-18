@@ -37,31 +37,30 @@ export function formatDate(date: Date | string): string {
     });
 }
 
+const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function parseYearMonth(value: string): { year: number; monthValue: number } {
+    const [year, month] = value.split('-').map(Number);
+    return { year: year || 0, monthValue: month || 0 };
+}
+
 export function processRevenueData(
     data: MonthlyRevenue[],
     period: 'last6months' | 'lastyear' = 'last6months'
 ): RevenueDataPoint[] {
     if (!data || data.length === 0) return [];
 
-    const sorted = [...data].sort((a, b) => {
-        if (a.month.year !== b.month.year) {
-            return b.month.year - a.month.year;
-        }
-        return b.month.monthValue - a.month.monthValue;
-    });
+    const sorted = data
+        .map((item) => ({ item, ...parseYearMonth(item.month) }))
+        .sort((a, b) => b.year - a.year || b.monthValue - a.monthValue);
 
     const limit = period === 'last6months' ? 6 : 12;
-    const filtered = sorted.slice(0, limit);
 
-    return filtered
-        .sort((a, b) => {
-            if (a.month.year !== b.month.year) {
-                return a.month.year - b.month.year;
-            }
-            return a.month.monthValue - b.month.monthValue;
-        })
-        .map((item, index, array) => ({
-            month: item.month.month,
+    return sorted
+        .slice(0, limit)
+        .reverse()
+        .map(({ item, monthValue }, index, array) => ({
+            month: MONTH_LABELS[monthValue - 1] ?? item.month,
             revenue: item.revenue,
             isCurrent: index === array.length - 1,
         }));

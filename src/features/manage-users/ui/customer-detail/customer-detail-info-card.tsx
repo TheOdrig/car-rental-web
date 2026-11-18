@@ -66,7 +66,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                             </a>
                         </div>
                         <CopyButton value={customer.email} />
-                        {customer.verification.isEmailVerified ? (
+                        {customer.verification.emailVerified ? (
                             <Badge variant="outline" className="text-emerald-600 border-emerald-300">Verified</Badge>
                         ) : (
                             <Badge variant="outline" className="text-amber-600 border-amber-300">Unverified</Badge>
@@ -85,7 +85,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                                 </a>
                             </div>
                             <CopyButton value={customer.phone} />
-                            {customer.verification.isPhoneVerified ? (
+                            {customer.verification.phoneVerified ? (
                                 <Badge variant="outline" className="text-emerald-600 border-emerald-300">Verified</Badge>
                             ) : (
                                 <Badge variant="outline" className="text-amber-600 border-amber-300">Unverified</Badge>
@@ -100,7 +100,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                         <div>
                             <span className="text-xs text-slate-500 dark:text-slate-400 block">Registered</span>
                             <span className="text-sm text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(customer.createdAt)}
+                                {safeFormatDate(customer.registrationDate)}
                             </span>
                         </div>
                     </div>

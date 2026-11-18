@@ -1,3 +1,4 @@
+import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { PageResponse } from '@/shared/types';
 import type {
     FleetStatus,
@@ -8,6 +9,7 @@ import type {
     VehicleDetailResponse,
 } from '@/entities/car';
 import type {
+    PendingItem,
     AdminRentalStatus,
     RentalHistoryItem,
     RentalDetailResponse,
@@ -62,118 +64,35 @@ export interface TrendIndicator {
     label?: string;
 }
 
-export interface DailySummary {
-    pendingApprovals: number;
-    todaysPickups: number;
-    todaysReturns: number;
-    overdueRentals: number;
-    pendingDamageAssessments: number;
-    generatedAt: string;
-}
+export type DailySummary = Required<Schemas['DailySummaryDto']>;
 
-export interface MonthlyMetrics {
-    totalRevenue: number;
-    completedRentals: number;
-    cancelledRentals: number;
-    penaltyRevenue: number;
-    damageCharges: number;
-    averageRentalDurationDays: number;
-    startDate: string;
-    endDate: string;
-    generatedAt: string;
-}
+export type MonthlyMetrics = Required<Schemas['MonthlyMetricsDto']>;
 
-export type AlertType =
-    | 'LATE_RETURN'
-    | 'FAILED_PAYMENT'
-    | 'LOW_AVAILABILITY'
-    | 'UNRESOLVED_DISPUTE'
-    | 'MAINTENANCE_REQUIRED';
+export type AlertType = NonNullable<Schemas['AlertDto']['type']>;
 
-export type AlertSeverity =
-    | 'CRITICAL'
-    | 'HIGH'
-    | 'WARNING'
-    | 'MEDIUM'
-    | 'LOW';
+export type AlertSeverity = NonNullable<Schemas['AlertDto']['severity']>;
 
-export interface Alert {
-    id: number;
-    type: AlertType;
-    severity: AlertSeverity;
-    title: string;
-    message: string;
-    actionUrl?: string;
-    acknowledged: boolean;
-    acknowledgedAt?: string;
-    acknowledgedBy?: string;
-    createdAt: string;
-}
+export type Alert = WithRequired<Schemas['AlertDto'], 'id' | 'type' | 'severity' | 'title' | 'message' | 'acknowledged' | 'createdAt'>;
 
-export interface PendingItem {
-    rentalId: number;
-    customerId?: number;
-    customerName: string;
-    customerEmail: string;
-    customerImage?: string;
-    isCustomerVerified?: boolean;
-    carId: number;
-    carBrand: string;
-    carModel: string;
-    carImage?: string;
-    licensePlate: string;
-    fuelType?: string;
-    transmission?: string;
-    startDate: string;
-    endDate: string;
-    duration?: number;
-    totalAmount: number;
-    status: string;
-    lateHours?: number;
-    createdAt: string;
-}
+export type { PendingItem };
 
-export interface QuickActionResult {
-    success: boolean;
-    message: string;
-    newStatus?: string;
-    updatedSummary?: DailySummary;
-}
+export type QuickActionResult = WithRequired<Schemas['QuickActionResultDto'], 'success' | 'message'>;
 
 export interface ProcessReturnData {
     hasDamage?: boolean;
     notes?: string;
 }
 
-export interface DailyRevenue {
-    date: string;
-    revenue: number;
-    rentalCount: number;
-}
+export type DailyRevenue = Required<Schemas['DailyRevenueDto']>;
 
 export interface MonthlyRevenue {
-    month: {
-        year: number;
-        monthValue: number;
-        month: string;
-    };
+    month: string;
     revenue: number;
     rentalCount: number;
     growthPercentage: number;
 }
 
-export interface RevenueBreakdown {
-    rentalRevenue: number;
-    penaltyRevenue: number;
-    damageRecovered: number;
-    damageRepairCosts: number;
-    netDamageImpact: number;
-    totalRevenue: number;
-    netRevenue: number;
-    rentalPercentage: number;
-    penaltyPercentage: number;
-    damagePercentage: number;
-}
+export type RevenueBreakdown = Required<Schemas['RevenueBreakdownDto']>;
 
 export type RevenuePeriod = 'last6months' | 'lastyear';
 

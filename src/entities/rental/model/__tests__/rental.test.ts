@@ -3,8 +3,6 @@ import { useRentalStore, type Rental, RentalStatus, isActive, canCancel, getForm
 import { act } from 'react';
 const mockRental: Rental = {
   id: 1,
-  userId: 1,
-  carId: 1,
   startDate: '2023-12-01T10:00:00Z',
   endDate: '2023-12-05T10:00:00Z',
   totalPrice: 200,

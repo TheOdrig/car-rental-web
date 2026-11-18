@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Schemas } from '@/shared/api/contract';
 
 export const PAYMENT_STATUSES = ['PENDING', 'AUTHORIZED', 'CAPTURED', 'FAILED', 'REFUNDED', 'CANCELLED'] as const;
 
@@ -31,6 +32,11 @@ export const rentalPaymentSchema = z.object({
 
 export type PaymentIntent = z.infer<typeof paymentIntentSchema>;
 export type RentalPayment = z.infer<typeof rentalPaymentSchema>;
+
+type IntentMatchesContract = keyof PaymentIntent extends keyof Schemas['PaymentIntentResult'] ? true : never;
+type PaymentMatchesContract = keyof RentalPayment extends keyof Schemas['PaymentSummary'] ? true : never;
+
+export const paymentSchemasMatchContract: [IntentMatchesContract, PaymentMatchesContract] = [true, true];
 
 export const PAYMENT_POLL_CAP_MS = 30_000;
 export const PAYMENT_POLL_INITIAL_MS = 1_000;

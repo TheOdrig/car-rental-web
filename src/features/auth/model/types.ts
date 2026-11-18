@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Schemas } from '@/shared/api/contract';
 
 export const LoginSchema = z.object({
     username: z.string().min(1, { message: 'Username is required' }),
@@ -15,6 +16,12 @@ export const RegisterSchema = z.object({
 
 export type LoginRequest = z.infer<typeof LoginSchema>;
 export type RegisterRequest = z.infer<typeof RegisterSchema>;
+
+type FormsMatchContract = [LoginRequest, RegisterRequest] extends [Schemas['LoginRequest'], Schemas['RegisterRequest']]
+    ? true
+    : never;
+
+export const authFormsMatchContract: FormsMatchContract = true;
 
 import {
     Role,
@@ -42,12 +49,7 @@ export type {
     AvatarUploadResponse
 };
 
-export interface LinkAccountResponse {
-    message: string;
-    provider: string;
-    providerEmail?: string;
-    linkedAt?: string;
-}
+export type LinkAccountResponse = Schemas['LinkAccountResponse'];
 
 export interface PasswordChangeRequest {
     currentPassword: string;

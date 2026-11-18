@@ -1,3 +1,6 @@
+import type { Schemas, WithRequired } from '@/shared/api/contract';
+import type { PageResponse } from '@/shared/types';
+
 
 
 
@@ -13,89 +16,28 @@ export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED'
 
 
 
-export interface User {
-    id: number;
-    email: string;
-    firstName: string;
-    lastName: string;
-    role: UserRole;
-    status: UserStatus;
-    avatarUrl?: string;
-    isEmailVerified: boolean;
-    createdAt: string;
-    lastLoginAt?: string;
-}
-
-
-
-
-
-export interface UserStats {
-    totalUsers: number;
-    activeUsers: number;
-    bannedUsers: number;
-}
-
-export interface CustomerStatistics {
-    totalRentals: number;
-    activeRentals: number;
-    completedRentals: number;
-    cancelledRentals: number;
-    lateReturns: number;
-    totalDamageReports: number;
-    totalDamageCost: number;
-    totalSpent: number;
-    averageRentalDuration: number;
-    customerSinceDays: number;
-}
-
-
-
-
-
-export interface CustomerVerification {
-    isEmailVerified: boolean;
-    isPhoneVerified: boolean;
-    documentsVerified: DocumentVerificationStatus;
-    documentTypes: string[];
-}
-
-export interface CustomerAccountStatus {
-    status: AccountStatusType;
-    isEnabled: boolean;
-    isLocked: boolean;
-    isExpired: boolean;
-    isCredentialsExpired: boolean;
-    banReason?: string;
-    bannedAt?: string;
-    lastStatusChange: string;
-}
-
-export interface AdminNote {
-    id: number;
-    content: string;
-    adminName: string;
-    createdAt: string;
-    isImportant: boolean;
-}
-
-export interface CustomerDetailResponse {
-    id: number;
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string | null;
-    avatarUrl: string | null;
+export type User = Omit<
+    WithRequired<Schemas['AdminUserListItem'], 'id' | 'email' | 'createdAt'>,
+    'roles' | 'status' | 'isEmailVerified'
+> & {
     roles: Role[];
-    createdAt: string;
-    registrationDate: string;
-    lastLoginDate?: string;
-    statistics: CustomerStatistics;
-    verification: CustomerVerification;
-    accountStatus: CustomerAccountStatus;
-    adminNotes: AdminNote[];
-}
+    status: UserStatus;
+    isEmailVerified: boolean;
+};
+
+
+
+
+
+export type UserStats = Required<Schemas['UserStatsResponse']>;
+
+export type {
+    CustomerStatistics,
+    CustomerVerification,
+    CustomerAccountStatus,
+    AdminNote,
+    CustomerDetailResponse,
+} from '@/entities/user';
 
 
 
@@ -114,16 +56,7 @@ export interface RentalHistoryItem {
     status: AdminRentalStatus;
 }
 
-export interface PaginatedResponse<T> {
-    content: T[];
-    totalElements: number;
-    totalPages: number;
-    size: number;
-    number: number;
-    first: boolean;
-    last: boolean;
-    empty: boolean;
-}
+export type PaginatedResponse<T> = PageResponse<T>;
 
 
 

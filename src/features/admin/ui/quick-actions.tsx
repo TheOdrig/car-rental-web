@@ -331,21 +331,9 @@ export const QuickActionItem = memo(function QuickActionItem({
         >
             <div className="flex items-center gap-4 min-w-0">
                 <div className="relative shrink-0">
-                    {item.customerImage ? (
-                        <div className="relative h-10 w-10">
-                            <Image
-                                src={item.customerImage}
-                                alt={item.customerName}
-                                fill
-                                className="rounded-full object-cover border bg-muted"
-                                sizes="40px"
-                            />
-                        </div>
-                    ) : (
-                        <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center border">
-                            <User className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                    )}
+                    <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center border">
+                        <User className="h-5 w-5 text-muted-foreground" />
+                    </div>
                     {item.carImage && (
                         <div className="absolute -bottom-1 -right-1 h-6 w-9 rounded-md border-2 border-background overflow-hidden bg-muted shadow-sm">
                             <Image

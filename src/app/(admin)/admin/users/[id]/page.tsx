@@ -111,7 +111,7 @@ export default function CustomerDetailPage({ params }: PageProps) {
                         </h1>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {customer.email} • Member since {new Date(customer.registrationDate).toLocaleDateString()}
+                        {customer.email} • Member since {customer.registrationDate ? new Date(customer.registrationDate).toLocaleDateString() : 'N/A'}
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

@@ -7,6 +7,7 @@ import {
     usePendingApprovals,
     useRevenueData,
     useAlerts,
+    useDismissAlert,
     useMarkAllAlertsRead
 } from '../use-admin-dashboard';
 import { clientGet, clientPost } from '@/shared/api';
@@ -88,27 +89,55 @@ describe('use-admin-dashboard hooks', () => {
         });
     });
     describe('useAlerts', () => {
-        it('should fetch alerts successfully', async () => {
-            const mockAlerts = [{ id: '1', message: 'Low fuel' }];
-            mockClientGet.mockResolvedValueOnce(mockAlerts);
+        it('should map unacknowledged alerts to admin alerts', async () => {
+            mockClientGet.mockResolvedValueOnce([
+                { id: 1, severity: 'HIGH', title: 'Late return', message: 'Rental 4 is late', createdAt: '2026-11-18T10:00:00Z', acknowledged: false },
+                { id: 2, severity: 'LOW', title: 'Seen', message: 'done', acknowledged: true },
+            ]);
             const { result } = renderHook(() => useAlerts(), {
                 wrapper: createQueryWrapper(),
             });
             await waitFor(() => {
                 expect(result.current.isSuccess).toBe(true);
             });
-            expect(result.current.data).toEqual(mockAlerts);
+            expect(result.current.data).toEqual([
+                {
+                    id: '1',
+                    type: 'critical',
+                    title: 'Late return',
+                    description: 'Rental 4 is late',
+                    timestamp: '2026-11-18T10:00:00Z',
+                    dismissible: true,
+                },
+            ]);
             expect(mockClientGet).toHaveBeenCalledWith('/api/admin/alerts');
         });
     });
+    describe('useDismissAlert', () => {
+        it('should acknowledge the alert', async () => {
+            mockClientPost.mockResolvedValueOnce({ id: 7, acknowledged: true });
+            const { result } = renderHook(() => useDismissAlert(), {
+                wrapper: createQueryWrapper(),
+            });
+            await result.current.mutateAsync('7');
+            expect(mockClientPost).toHaveBeenCalledWith('/api/admin/alerts/7/acknowledge');
+        });
+    });
     describe('useMarkAllAlertsRead', () => {
-        it('should mark all alerts as read successfully', async () => {
-            mockClientPost.mockResolvedValueOnce(undefined);
+        it('should acknowledge every unacknowledged alert', async () => {
+            mockClientGet.mockResolvedValueOnce([
+                { id: 1, acknowledged: false },
+                { id: 2, acknowledged: true },
+                { id: 3, acknowledged: false },
+            ]);
+            mockClientPost.mockResolvedValue({ acknowledged: true });
             const { result } = renderHook(() => useMarkAllAlertsRead(), {
                 wrapper: createQueryWrapper(),
             });
             await result.current.mutateAsync();
-            expect(mockClientPost).toHaveBeenCalledWith('/api/admin/alerts/mark-all-read');
+            expect(mockClientPost).toHaveBeenCalledTimes(2);
+            expect(mockClientPost).toHaveBeenCalledWith('/api/admin/alerts/1/acknowledge');
+            expect(mockClientPost).toHaveBeenCalledWith('/api/admin/alerts/3/acknowledge');
             expect(mockToast.success).toHaveBeenCalledWith('All alerts marked as read');
         });
     });

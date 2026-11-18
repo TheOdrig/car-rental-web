@@ -106,7 +106,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                                     <div className="flex items-center gap-2 text-sm">
                                         <User className="h-4 w-4 text-slate-400" />
                                         <span className="font-medium text-slate-900 dark:text-slate-100">
-                                            {note.adminName}
+                                            {note.adminUsername}
                                         </span>
                                     </div>
                                     <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
@@ -115,7 +115,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                                     </div>
                                 </div>
                                 <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
-                                    {note.content}
+                                    {note.text}
                                 </p>
                             </div>
                         ))}

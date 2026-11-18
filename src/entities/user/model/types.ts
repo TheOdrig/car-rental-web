@@ -1,36 +1,25 @@
-export type Role = 'USER' | 'ADMIN';
+import type { Schemas, WithRequired } from '@/shared/api/contract';
+
+export type Role = NonNullable<Schemas['UserDto']['roles']>[number];
 
 export enum UserRole {
     USER = 'USER',
     ADMIN = 'ADMIN',
 }
 
-export interface UserSummary {
-    id: number;
-    username: string;
-    email: string;
-}
+export type UserSummary = WithRequired<Schemas['UserSummaryResponse'], 'id' | 'username' | 'email'>;
 
-export interface User extends UserSummary {
-    firstName?: string;
-    lastName?: string;
+export type User = Omit<WithRequired<Schemas['AdminUserListItem'], 'id' | 'email'>, 'roles'> & {
+    username?: string;
     roles: Role[];
-    phoneNumber?: string;
-    createdAt?: string;
-    avatarUrl?: string;
-}
+};
 
-export interface AuthResponse {
-    accessToken: string;
-    refreshToken: string;
-    tokenType: string;
-    expiresIn: number;
-    username: string;
-}
+export type AuthResponse = WithRequired<
+    Schemas['AuthResponse'],
+    'accessToken' | 'refreshToken' | 'tokenType' | 'expiresIn' | 'username'
+>;
 
-export interface RefreshTokenRequest {
-    refreshToken: string;
-}
+export type RefreshTokenRequest = Schemas['RefreshTokenRequest'];
 
 import type { ValidationState } from '@/shared/types/validation';
 
@@ -41,92 +30,39 @@ export interface ValidationDisplayProps {
     className?: string;
 }
 
-export interface UserProfile {
-    id: number;
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string | null;
-    avatarUrl: string | null;
+export type UserProfile = Omit<WithRequired<Schemas['UserDto'], 'id' | 'username' | 'email'>, 'roles'> & {
     roles: Role[];
-    enabled: boolean;
-}
+};
 
-export interface ProfileUpdateData {
-    firstName: string;
-    lastName: string;
-    phone?: string;
-}
+export type ProfileUpdateData = Schemas['ProfileUpdateRequest'];
 
-export interface AvatarUploadResponse {
-    avatarUrl: string;
-    message: string;
-}
+export type AvatarUploadResponse = WithRequired<Schemas['AvatarUploadResponse'], 'avatarUrl' | 'message'>;
 
-export interface PasswordChangeData {
-    currentPassword: string;
-    newPassword: string;
-}
+export type PasswordChangeData = Schemas['PasswordChangeRequest'];
 
 
-export interface CustomerStatistics {
-    totalRentals: number;
-    activeRentals: number;
-    completedRentals: number;
-    cancelledRentals: number;
-    lateReturns: number;
-    totalDamageReports: number;
-    totalDamageCost: number;
-    totalSpent: number;
-    averageRentalDuration: number;
-    customerSinceDays: number;
-}
+export type CustomerStatistics = Required<Schemas['UserStatistics']>;
 
-export type DocumentVerificationStatus = 'YES' | 'NO' | 'PENDING';
 
-export interface CustomerVerification {
-    isEmailVerified: boolean;
-    isPhoneVerified: boolean;
+export type CustomerVerification = Omit<Required<Schemas['VerificationInfo']>, 'documentsVerified'> & {
     documentsVerified: DocumentVerificationStatus;
-    documentTypes: string[];
-}
+};
 
-export type AccountStatusType = 'ACTIVE' | 'BANNED' | 'LOCKED' | 'PENDING';
+export type CustomerAccountStatus = Omit<Schemas['AccountStatus'], 'status'> & { status: AccountStatusType };
 
-export interface CustomerAccountStatus {
-    status: AccountStatusType;
-    isEnabled: boolean;
-    isLocked: boolean;
-    isExpired: boolean;
-    isCredentialsExpired: boolean;
-    banReason?: string;
-    bannedAt?: string;
-    lastStatusChange: string;
-}
+export type AdminNote = WithRequired<Schemas['AdminNoteDto'], 'id' | 'text' | 'createdAt'>;
 
-export interface AdminNote {
-    id: number;
-    content: string;
-    adminName: string;
-    createdAt: string;
-    isImportant: boolean;
-}
-
-export interface CustomerDetailResponse {
-    id: number;
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    phone: string | null;
-    avatarUrl: string | null;
+export type CustomerDetailResponse = Omit<
+    WithRequired<Schemas['AdminUserDetailResponse'], 'id' | 'email'>,
+    'roles' | 'statistics' | 'verification' | 'accountStatus' | 'adminNotes'
+> & {
     roles: Role[];
-    createdAt: string;
-    registrationDate: string;
-    lastLoginDate?: string;
     statistics: CustomerStatistics;
     verification: CustomerVerification;
     accountStatus: CustomerAccountStatus;
     adminNotes: AdminNote[];
-}
+};
+
+export type DocumentVerificationStatus = 'YES' | 'NO' | 'PENDING';
+
+export type AccountStatusType = 'ACTIVE' | 'BANNED' | 'LOCKED' | 'PENDING';

@@ -69,10 +69,7 @@ export function getPrimaryRole(roles: string[]): UserRole {
 }
 
 export function resolveRoles(user: User): string[] {
-    const source = (user as unknown as { roles?: string[]; role?: string | string[] }).roles || user.role;
-
-    if (Array.isArray(source)) return source;
-    return typeof source === 'string' ? [source] : [];
+    return user.roles;
 }
 
 export function resolveStatus(user: User): UserStatus {

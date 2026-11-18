@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { differenceInCalendarDays } from 'date-fns';
 import {
     Dialog,
     DialogContent,
@@ -96,18 +97,6 @@ export function ApproveRentalDialog({
                                     <p className="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2 py-0.5 rounded w-fit">
                                         {item.licensePlate}
                                     </p>
-                                    <div className="flex flex-wrap gap-1.5 mt-2">
-                                        {item.fuelType && (
-                                            <Badge variant="outline" className="text-[10px] h-4.5 px-1.5 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-normal">
-                                                {item.fuelType}
-                                            </Badge>
-                                        )}
-                                        {item.transmission && (
-                                            <Badge variant="outline" className="text-[10px] h-4.5 px-1.5 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 font-normal">
-                                                {item.transmission}
-                                            </Badge>
-                                        )}
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -122,27 +111,12 @@ export function ApproveRentalDialog({
                                 Customer
                             </h4>
                             <div className="flex gap-4 relative z-10">
-                                {item.customerImage ? (
-                                    <div className="relative h-14 w-14 shrink-0 shadow-sm border border-white dark:border-slate-700 rounded-full overflow-hidden">
-                                        <DynamicImage
-                                            src={item.customerImage}
-                                            alt={item.customerName}
-                                            fill
-                                            className="object-cover"
-                                            sizes="56px"
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="h-14 w-14 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
-                                        <User className="h-6 w-6 text-slate-400 dark:text-slate-600" />
-                                    </div>
-                                )}
+                                <div className="h-14 w-14 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                                    <User className="h-6 w-6 text-slate-400 dark:text-slate-600" />
+                                </div>
                                 <div className="space-y-1.5 min-w-0">
                                     <div className="flex items-center gap-1.5">
                                         <p className="font-bold text-base text-slate-900 dark:text-white truncate">{item.customerName}</p>
-                                        {item.isCustomerVerified && (
-                                            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                        )}
                                     </div>
                                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                                         {item.customerEmail}
@@ -181,7 +155,7 @@ export function ApproveRentalDialog({
                             <div className="space-y-1.5">
                                 <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Duration</p>
                                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    <span className="text-primary">{item.duration || 0}</span> Days
+                                    <span className="text-primary">{differenceInCalendarDays(new Date(item.endDate), new Date(item.startDate))}</span> Days
                                 </div>
                             </div>
                             <div className="space-y-1 ml-auto text-right">

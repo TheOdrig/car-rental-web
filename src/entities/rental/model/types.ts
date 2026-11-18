@@ -1,4 +1,4 @@
-import type { Schemas } from '@/shared/api';
+import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { CurrencyType, PageResponse } from '@/shared/types';
 import { UserSummary } from '@/entities/user';
 import { CarSummary } from '@/entities/car';
@@ -10,98 +10,59 @@ export enum RentalStatus {
     COMPLETED = 'Returned',
     CANCELLED = 'Cancelled',
 }
-export interface Rental {
-    id: number;
-    userId?: number;
-    carId?: number;
+export type Rental = Omit<
+    WithRequired<Schemas['RentalResponse'], 'id' | 'startDate' | 'endDate' | 'totalPrice'>,
+    'status' | 'carSummary' | 'userSummary'
+> & {
+    status: RentalStatus;
     carSummary?: CarSummary;
     userSummary?: UserSummary;
-    startDate: string;
-    endDate: string;
-    days?: number;
-    dailyPrice?: number;
-    totalPrice: number;
-    currency?: CurrencyType;
-    status: RentalStatus;
-    originalPrice?: number;
-    finalPrice?: number;
-    totalSavings?: number;
-    appliedDiscounts?: string[];
-    convertedTotalPrice?: number;
-    displayCurrency?: CurrencyType;
-    exchangeRate?: number;
-    rateSource?: string;
-    pickupNotes?: string;
-    returnNotes?: string;
-    approvalNotes?: string;
-    cancellationReason?: string;
-    createTime?: string;
-    updateTime?: string;
-}
-export interface RentalRequest {
-    carId: number;
-    startDate: string;
-    endDate: string;
-    notes?: string;
-}
-export interface PickupRequest {
-    notes?: string;
-}
-export interface ReturnRequest {
-    notes?: string;
-}
-export interface PricingRequest {
-    carId: number;
-    startDate: string;
-    endDate: string;
-}
-export interface PricingModifier {
-    strategyName: string;
-    multiplier: number;
-    description: string;
-    isDiscount: boolean;
-    formattedPercentage: string;
-}
-export interface PricingResponse {
-    basePrice: number;
-    baseTotalPrice: number;
-    finalPrice: number;
-    effectiveDailyPrice: number;
-    totalSavings: number;
-    combinedMultiplier: number;
-    rentalDays: number;
-    appliedModifiers: PricingModifier[];
-}
+};
+export type RentalRequest = Omit<
+    Schemas['RentalRequest'],
+    'endDateAfterStartDate' | 'withinMaxLeadTime' | 'withinMaxRentalLength'
+>;
+export type PickupRequest = Schemas['PickupRequest'];
+export type ReturnRequest = Schemas['ReturnRequest'];
+export type PricingRequest = Schemas['PricingRequest'];
+export type PricingModifier = WithRequired<
+    Schemas['ModifierDto'],
+    'strategyName' | 'multiplier' | 'description' | 'isDiscount' | 'formattedPercentage'
+>;
+export type PricingResponse = WithRequired<
+    Omit<Schemas['PricingResponse'], 'appliedModifiers'>,
+    | 'basePrice'
+    | 'baseTotalPrice'
+    | 'finalPrice'
+    | 'effectiveDailyPrice'
+    | 'totalSavings'
+    | 'combinedMultiplier'
+    | 'rentalDays'
+> & { appliedModifiers: PricingModifier[] };
 export type LateReturnStatus =
     | 'ON_TIME'
     | 'GRACE_PERIOD'
     | 'LATE'
     | 'SEVERELY_LATE';
-export interface LateReturnReport {
-    rentalId: number;
-    customerName: string;
-    customerEmail: string;
-    carBrand: string;
-    carModel: string;
-    licensePlate: string;
-    endDate: string;
-    actualReturnTime?: string;
-    lateHours: number;
-    lateDays: number;
-    status: LateReturnStatus;
-    penaltyAmount: number;
-    currency: CurrencyType;
-    penaltyPaid: boolean;
-}
-export interface LateReturnStatistics {
-    totalLateReturns: number;
-    severelyLateCount: number;
-    totalPenaltyAmount: number;
-    collectedPenaltyAmount: number;
-    pendingPenaltyAmount: number;
-    averageLateHours: number;
-    lateReturnPercentage: number;
-}
+export type LateReturnReport = Omit<
+    WithRequired<
+        Schemas['LateReturnReportDto'],
+        | 'rentalId'
+        | 'customerName'
+        | 'customerEmail'
+        | 'carBrand'
+        | 'carModel'
+        | 'licensePlate'
+        | 'endDate'
+        | 'lateHours'
+        | 'lateDays'
+        | 'penaltyAmount'
+        | 'currency'
+        | 'penaltyPaid'
+    >,
+    'status'
+> & { status: LateReturnStatus };
+export type LateReturnStatistics = Required<Schemas['LateReturnStatisticsDto']>;
 export interface LateReturnFilters {
     startDate?: string;
     endDate?: string;
@@ -110,23 +71,11 @@ export interface LateReturnFilters {
     sortDirection?: 'ASC' | 'DESC';
 }
 export type PaginatedLateReturns = PageResponse<LateReturnReport>;
-export interface PenaltyWaiverRequest {
-    waiverAmount?: number;
-    reason: string;
-    fullWaiver?: boolean;
-}
-export interface PenaltyWaiverResponse {
-    id: number;
-    rentalId: number;
-    originalPenalty: number;
-    waivedAmount: number;
-    remainingPenalty: number;
-    reason: string;
-    adminId: number;
-    waivedAt: string;
-    refundInitiated: boolean;
-    refundTransactionId?: string;
-}
+export type PenaltyWaiverRequest = Schemas['PenaltyWaiverRequest'];
+export type PenaltyWaiverResponse = WithRequired<
+    Schemas['PenaltyWaiverResponse'],
+    'id' | 'rentalId' | 'originalPenalty' | 'waivedAmount' | 'remainingPenalty' | 'reason' | 'adminId' | 'waivedAt' | 'refundInitiated'
+>;
 export type RentalTab = 'all' | 'active' | 'upcoming' | 'completed' | 'cancelled';
 export interface RentalTabCounts {
     all: number;
@@ -286,30 +235,27 @@ export interface RentalDetailResponse {
     lateReturnStatus?: LateReturnStatus;
 }
 
-export interface PendingItem {
-    rentalId: number;
-    customerId?: number;
-    customerName: string;
-    customerEmail: string;
-    customerImage?: string;
-    isCustomerVerified?: boolean;
-    carId: number;
-    carBrand: string;
-    carModel: string;
-    carImage?: string;
-    licensePlate: string;
-    fuelType?: string;
-    transmission?: string;
-    startDate: string;
-    endDate: string;
-    duration?: number;
-    totalAmount: number;
-    status: string;
-    lateHours?: number;
-    createdAt: string;
-}
+export type PendingItem = WithRequired<
+    Schemas['PendingItemDto'],
+    | 'rentalId'
+    | 'customerName'
+    | 'customerEmail'
+    | 'carId'
+    | 'carBrand'
+    | 'carModel'
+    | 'licensePlate'
+    | 'startDate'
+    | 'endDate'
+    | 'totalAmount'
+    | 'status'
+    | 'createdAt'
+>;
 
 export interface ProcessReturnData {
     hasDamage?: boolean;
     notes?: string;
 }
+
+
+type RentalStatusMatchesContract = `${RentalStatus}` extends NonNullable<Schemas['RentalResponse']['status']> ? true : never;
+export const rentalStatusMatchesContract: RentalStatusMatchesContract = true;
