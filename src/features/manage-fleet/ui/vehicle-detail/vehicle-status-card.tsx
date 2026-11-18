@@ -16,7 +16,6 @@ const statusColors: Record<CarStatus, string> = {
     Rented: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30 border-blue-300 dark:border-blue-700',
     Maintenance: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700',
     Reserved: 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 border-indigo-300 dark:border-indigo-700',
-    Sold: 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700',
     Damaged: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
     Inspection: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30 border-purple-300 dark:border-purple-700',
 };
@@ -26,7 +25,6 @@ const statusDescriptions: Record<CarStatus, string> = {
     Rented: 'Vehicle is currently rented out',
     Maintenance: 'Vehicle is undergoing maintenance',
     Reserved: 'Vehicle is reserved for an upcoming rental',
-    Sold: 'Vehicle has been sold and is no longer in fleet',
     Damaged: 'Vehicle has damage that needs repair',
     Inspection: 'Vehicle is undergoing inspection',
 };

@@ -54,11 +54,6 @@ const statusConfig: Record<CarStatus, { label: string; dotColor: string; textCol
         dotColor: 'bg-violet-500',
         textColor: 'text-violet-700 dark:text-violet-400',
     },
-    Sold: {
-        label: 'Sold',
-        dotColor: 'bg-slate-500',
-        textColor: 'text-slate-700 dark:text-slate-400',
-    },
     Reserved: {
         label: 'Reserved',
         dotColor: 'bg-blue-500',

@@ -180,7 +180,7 @@ export default function FleetManagementPage() {
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>
                             <SelectItem value="Available">Available</SelectItem>
-                            <SelectItem value="Sold">On Road</SelectItem>
+                            <SelectItem value="Rented">Rented</SelectItem>
                             <SelectItem value="Maintenance">Maintenance</SelectItem>
                             <SelectItem value="Damaged">Damaged</SelectItem>
                         </SelectContent>

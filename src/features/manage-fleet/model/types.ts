@@ -6,7 +6,6 @@ export interface FleetStatistics {
     maintenanceCars: number;
     inspectionCars: number;
     damagedCars: number;
-    soldCars?: number;
     occupancyRate: number;
     generatedAt: string;
 }

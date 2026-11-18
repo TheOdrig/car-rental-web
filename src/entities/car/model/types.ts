@@ -3,7 +3,6 @@ import { CurrencyType } from '@/shared/types/common';
 export type CarStatus =
     | 'Available'
     | 'Rented'
-    | 'Sold'
     | 'Maintenance'
     | 'Reserved'
     | 'Damaged'
@@ -21,7 +20,6 @@ export interface CarSummary {
     color?: string;
     kilometer?: number;
     thumbnailUrl?: string;
-    isFeatured?: boolean;
 }
 
 export enum FuelType {
@@ -62,16 +60,11 @@ export interface Car {
     notes?: string;
     imageUrl?: string;
     thumbnailUrl?: string;
-    isFeatured?: boolean;
-    isTestDriveAvailable?: boolean;
     rating?: number;
-    viewCount?: number;
-    likeCount?: number;
     createTime?: string;
     updateTime?: string;
     version?: number;
     isAvailable?: boolean;
-    canBeSold?: boolean;
     canBeReserved?: boolean;
     requiresAttention?: boolean;
     formattedPrice?: string;
@@ -185,7 +178,6 @@ export interface FleetStatus {
     maintenanceCars: number;
     inspectionCars: number;
     damagedCars: number;
-    soldCars?: number;
     occupancyRate: number;
     generatedAt: string;
 }

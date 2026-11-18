@@ -41,7 +41,6 @@ const statusOptions: { value: CarStatus; label: string }[] = [
     { value: 'Reserved', label: 'Reserved' },
     { value: 'Damaged', label: 'Damaged' },
     { value: 'Inspection', label: 'Inspection' },
-    { value: 'Sold', label: 'Sold' },
 ];
 
 export default function VehicleDetailPage({ params }: PageProps) {

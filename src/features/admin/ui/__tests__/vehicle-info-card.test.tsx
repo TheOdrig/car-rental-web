@@ -47,7 +47,7 @@ describe('VehicleInfoCard', () => {
         expect(image).toBeInTheDocument();
     });
     it('should handle different vehicle statuses', () => {
-        const statuses = ['Available', 'Rented', 'Maintenance', 'Reserved', 'Damaged', 'Inspection', 'Sold'];
+        const statuses = ['Available', 'Rented', 'Maintenance', 'Reserved', 'Damaged', 'Inspection'];
         statuses.forEach(status => {
             const vehicleWithStatus = { ...mockVehicle, status: status as RentalVehicleInfo['status'] };
             const { unmount } = renderWithProviders(<VehicleInfoCard vehicle={vehicleWithStatus} />);

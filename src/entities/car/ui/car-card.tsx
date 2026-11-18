@@ -31,7 +31,6 @@ function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destr
         case 'Reserved':
         case 'Maintenance':
             return 'secondary';
-        case 'Sold':
         case 'Damaged':
             return 'destructive';
         default:

@@ -13,7 +13,6 @@ export interface CarFormBody {
     dailyRate?: number | string;
     kilometer?: number | string;
     doors?: number | string;
-    isFeatured?: boolean;
     rating?: number | string;
     imageUrl?: string;
     vin?: string;
@@ -39,8 +38,6 @@ export function toBackendCar(body: CarFormBody, fallbackImage: string | undefine
         carStatusType: 'Available',
         kilometer: Number(body.kilometer) || 0,
         doors: Number(body.doors) || 4,
-        isFeatured: !!body.isFeatured,
-        isTestDriveAvailable: true,
         rating: Number(body.rating) || 5.0,
         imageUrl: body.imageUrl || fallbackImage,
     };
