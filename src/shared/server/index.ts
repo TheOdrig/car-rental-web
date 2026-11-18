@@ -17,11 +17,13 @@ export { isAdminSession, verifyAccessToken, type Session } from './session';
 export {
     authResponseSchema,
     buildUpstreamUrl,
+    refreshAuthSession,
     refreshAuthTokens,
     renewAccessToken,
     upstream,
     upstreamFetch,
     type AuthResponse,
+    type RefreshOutcome,
     type UpstreamOptions,
 } from './upstream';
 export { created, errorResponse, parseIdParam, proxy, readJson, route, searchParamsOf } from './route';

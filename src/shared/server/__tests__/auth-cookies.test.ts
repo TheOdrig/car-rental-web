@@ -5,25 +5,20 @@ vi.mock('next/headers', () => ({ cookies: vi.fn() }));
 import { buildAuthCookies, mergeCookieHeader, resolveAccessMaxAge } from '../auth-cookies';
 
 describe('resolveAccessMaxAge', () => {
-    const now = 1_700_000_000_000;
-
-    it('treats small values as relative seconds', () => {
-        expect(resolveAccessMaxAge(3600, now)).toBe(3600);
+    it('uses expiresIn as relative seconds', () => {
+        expect(resolveAccessMaxAge(900)).toBe(900);
+        expect(resolveAccessMaxAge(3600)).toBe(3600);
     });
 
-    it('treats epoch seconds as an absolute expiry', () => {
-        expect(resolveAccessMaxAge(1_700_000_900, now)).toBe(900);
+    it('floors fractional seconds', () => {
+        expect(resolveAccessMaxAge(899.9)).toBe(899);
     });
 
-    it('treats epoch milliseconds as an absolute expiry', () => {
-        expect(resolveAccessMaxAge(now + 600_000, now)).toBe(600);
-    });
-
-    it('falls back to 15 minutes for missing, invalid or past values', () => {
-        expect(resolveAccessMaxAge(undefined, now)).toBe(900);
-        expect(resolveAccessMaxAge(Number.NaN, now)).toBe(900);
-        expect(resolveAccessMaxAge(now - 1000, now)).toBe(900);
-        expect(resolveAccessMaxAge(0, now)).toBe(900);
+    it('falls back to 15 minutes for missing, invalid or non-positive values', () => {
+        expect(resolveAccessMaxAge(undefined)).toBe(900);
+        expect(resolveAccessMaxAge(Number.NaN)).toBe(900);
+        expect(resolveAccessMaxAge(-5)).toBe(900);
+        expect(resolveAccessMaxAge(0)).toBe(900);
     });
 });
 

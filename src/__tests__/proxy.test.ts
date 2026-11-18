@@ -113,6 +113,56 @@ describe('proxy', () => {
         });
     });
 
+    describe('transient refresh failures', () => {
+        it.each([503, 429])('keeps the cookies on a page redirect when the refresh answers %i', async (status) => {
+            fetchMock.mockResolvedValueOnce(new Response('{}', { status }));
+
+            const response = await proxy(requestFor('/dashboard', { refresh_token: `slow-${status}` }));
+
+            expect(location(response)).toBe('/login');
+            expect(response.headers.get('set-cookie')).toBeNull();
+        });
+
+        it('keeps the cookies when the refresh times out', async () => {
+            fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
+
+            const response = await proxy(requestFor('/dashboard', { refresh_token: 'timeout-token' }));
+
+            expect(location(response)).toBe('/login');
+            expect(response.headers.get('set-cookie')).toBeNull();
+        });
+
+        it('answers 401 for the admin API without clearing the cookies on a transient failure', async () => {
+            fetchMock.mockResolvedValueOnce(new Response('{}', { status: 503 }));
+
+            const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'admin-transient' }));
+
+            expect(response.status).toBe(401);
+            expect(response.headers.get('set-cookie')).toBeNull();
+        });
+
+        it('clears the cookies on the admin API when the refresh token is rejected', async () => {
+            fetchMock.mockResolvedValueOnce(new Response('{}', { status: 401 }));
+
+            const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'admin-dead' }));
+
+            expect(response.status).toBe(401);
+            expect(response.headers.get('set-cookie')).toContain('refresh_token=;');
+        });
+
+        it('does not replay a refresh token that was already rotated within the share window', async () => {
+            const fresh = await createToken();
+            fetchMock.mockResolvedValue(
+                new Response(JSON.stringify({ accessToken: fresh, refreshToken: 'rotated', expiresIn: 900 }), { status: 200 })
+            );
+
+            await proxy(requestFor('/dashboard', { refresh_token: 'rotating-token' }));
+            await proxy(requestFor('/dashboard', { refresh_token: 'rotating-token' }));
+
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('admin pages', () => {
         it('sends anonymous visitors to login', async () => {
             expect(location(await proxy(requestFor('/admin/dashboard')))).toBe('/login');

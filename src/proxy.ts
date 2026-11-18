@@ -6,18 +6,18 @@ import {
     buildAuthCookies,
     isAdminSession,
     mergeCookieHeader,
-    refreshAuthTokens,
+    refreshAuthSession,
     verifyAccessToken,
     type AuthResponse,
     type Session,
 } from '@/shared/server';
 
-function redirectToLogin(request: NextRequest, staleRefresh: boolean): NextResponse {
+function redirectToLogin(request: NextRequest, clearCookies: boolean): NextResponse {
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('callbackUrl', `${request.nextUrl.pathname}${request.nextUrl.search}`);
 
     const response = NextResponse.redirect(loginUrl);
-    if (staleRefresh) {
+    if (clearCookies) {
         response.cookies.delete(ACCESS_COOKIE);
         response.cookies.delete(REFRESH_COOKIE);
     }
@@ -48,8 +48,14 @@ function passThrough(request: NextRequest, renewed: AuthResponse | null): NextRe
     return response;
 }
 
-function jsonError(status: number, message: string): NextResponse {
-    return NextResponse.json({ message, error: message }, { status });
+function jsonError(status: number, message: string, clearCookies = false): NextResponse {
+    const response = NextResponse.json({ message, error: message }, { status });
+    if (clearCookies) {
+        response.cookies.delete(ACCESS_COOKIE);
+        response.cookies.delete(REFRESH_COOKIE);
+    }
+
+    return response;
 }
 
 export async function proxy(request: NextRequest): Promise<NextResponse> {
@@ -68,21 +74,24 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     }
 
     let renewed: AuthResponse | null = null;
+    let refreshRejected = false;
     if (!session && refreshToken) {
-        renewed = await refreshAuthTokens(refreshToken);
+        const outcome = await refreshAuthSession(refreshToken);
+        renewed = outcome.kind === 'ok' ? outcome.tokens : null;
+        refreshRejected = outcome.kind === 'rejected';
         session = renewed ? await verifyAccessToken(renewed.accessToken) : null;
     }
 
     if (access === 'admin-api') {
         if (!session) {
-            return jsonError(401, 'Not authenticated');
+            return jsonError(401, 'Not authenticated', refreshRejected);
         }
 
         return isAdminSession(session) ? passThrough(request, renewed) : jsonError(403, 'Forbidden');
     }
 
     if (!session) {
-        return redirectToLogin(request, !!refreshToken);
+        return redirectToLogin(request, refreshRejected);
     }
 
     if (access === 'admin' && !isAdminSession(session)) {

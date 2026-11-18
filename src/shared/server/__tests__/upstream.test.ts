@@ -15,7 +15,14 @@ vi.mock('next/headers', () => ({
 }));
 
 import { resetServerEnvForTests } from '../env';
-import { buildUpstreamUrl, refreshAuthTokens, resetRefreshCacheForTests, upstream } from '../upstream';
+import {
+    buildUpstreamUrl,
+    refreshAuthSession,
+    refreshAuthTokens,
+    renewAccessToken,
+    resetRefreshCacheForTests,
+    upstream,
+} from '../upstream';
 
 function jsonResponse(status: number, body: unknown): Response {
     return new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -103,16 +110,134 @@ describe('upstream', () => {
         expect(lastHeaders(1).Authorization).toBe('Bearer fresh-access');
     });
 
-    it('keeps the cookies when the refresh token is rejected so a concurrent winner is not logged out', async () => {
+    it('clears the auth cookies when the refresh token is definitively rejected with 401 INVALID_TOKEN', async () => {
         jar.set('access_token', 'stale');
         jar.set('refresh_token', 'ref');
         fetchMock
-            .mockResolvedValueOnce(jsonResponse(401, { message: 'expired' }))
-            .mockResolvedValueOnce(jsonResponse(401, { message: 'invalid refresh' }));
+            .mockResolvedValueOnce(jsonResponse(401, { errorCode: 'AUTHENTICATION_FAILED', message: 'expired' }))
+            .mockResolvedValueOnce(jsonResponse(401, { errorCode: 'INVALID_TOKEN', message: 'Invalid refresh token' }));
+
+        await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
+
+        expect(jar.has('access_token')).toBe(false);
+        expect(jar.has('refresh_token')).toBe(false);
+    });
+
+    it.each([
+        ['a server error', () => jsonResponse(503, {})],
+        ['an internal error', () => jsonResponse(500, {})],
+        ['a timeout', () => Promise.reject(new DOMException('timed out', 'TimeoutError'))],
+        ['a rate limit', () => jsonResponse(429, { errorCode: 'RATE_LIMIT_EXCEEDED' })],
+        ['a network error', () => Promise.reject(new TypeError('fetch failed'))],
+    ])('keeps the cookies when the refresh fails transiently with %s', async (_label, outcome) => {
+        jar.set('access_token', 'stale');
+        jar.set('refresh_token', 'ref');
+        fetchMock.mockResolvedValueOnce(jsonResponse(401, { message: 'expired' })).mockImplementationOnce(async () => outcome());
 
         await expect(upstream.get('/api/rentals/me')).rejects.toMatchObject({ status: 401 });
 
         expect(jar.get('access_token')).toBe('stale');
+        expect(jar.get('refresh_token')).toBe('ref');
+    });
+
+    it('stores the rotated refresh token and never sends the old one again within the share window', async () => {
+        jar.set('refresh_token', 'old-refresh');
+        fetchMock.mockImplementation(async (url: URL) =>
+            url.pathname === '/api/auth/refresh' ? jsonResponse(200, refreshed) : jsonResponse(200, {})
+        );
+
+        await upstream.get('/api/a');
+        expect(jar.get('refresh_token')).toBe('fresh-refresh');
+
+        jar.set('refresh_token', 'old-refresh');
+        jar.delete('access_token');
+        await upstream.get('/api/b');
+
+        const refreshBodies = fetchMock.mock.calls
+            .filter(([url]) => (url as URL).pathname === '/api/auth/refresh')
+            .map(([, init]) => JSON.parse(init.body as string));
+        expect(refreshBodies).toEqual([{ refreshToken: 'old-refresh' }]);
+        expect(jar.get('refresh_token')).toBe('fresh-refresh');
+    });
+
+    it('serves a second sequential refresh with the same token from the cached rotated pair', async () => {
+        fetchMock.mockResolvedValue(jsonResponse(200, refreshed));
+
+        const first = await refreshAuthSession('old');
+        const second = await refreshAuthSession('old');
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(first).toEqual({ kind: 'ok', tokens: refreshed });
+        expect(second).toBe(first);
+    });
+
+    it('does not replay a token the API already rejected', async () => {
+        fetchMock.mockImplementation(async () => jsonResponse(401, { errorCode: 'INVALID_TOKEN' }));
+
+        expect(await refreshAuthSession('dead')).toEqual({ kind: 'rejected' });
+        expect(await refreshAuthSession('dead')).toEqual({ kind: 'rejected' });
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('stores the new refresh token for every successful renewal', async () => {
+        jar.set('refresh_token', 'r0');
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, { accessToken: 'a1', refreshToken: 'r1', expiresIn: 900 }));
+
+        expect(await renewAccessToken()).toBe('a1');
+        expect(jar.get('refresh_token')).toBe('r1');
+
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, { accessToken: 'a2', refreshToken: 'r2', expiresIn: 900 }));
+
+        expect(await renewAccessToken()).toBe('a2');
+        expect(JSON.parse(fetchMock.mock.calls[1][1].body as string)).toEqual({ refreshToken: 'r1' });
+        expect(jar.get('refresh_token')).toBe('r2');
+    });
+
+    it('reports a 429 refresh with its Retry-After and does not cache it', async () => {
+        fetchMock
+            .mockResolvedValueOnce(new Response('{}', { status: 429, headers: { 'Retry-After': '42' } }))
+            .mockResolvedValueOnce(jsonResponse(200, refreshed));
+
+        expect(await refreshAuthSession('ref')).toEqual({ kind: 'rate-limited', retryAfter: 42 });
+        expect(await refreshAuthSession('ref')).toMatchObject({ kind: 'ok' });
+    });
+
+    it('does not treat 403 as a reason to refresh', async () => {
+        jar.set('access_token', 'tok');
+        jar.set('refresh_token', 'ref');
+        fetchMock.mockResolvedValueOnce(jsonResponse(403, { errorCode: 'ACCESS_DENIED' }));
+
+        await expect(upstream.get('/api/admin/users')).rejects.toMatchObject({ status: 403, code: 'ACCESS_DENIED' });
+
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(jar.get('refresh_token')).toBe('ref');
+    });
+
+    it('exposes the error code and Retry-After of upstream failures', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ errorCode: 'RATE_LIMIT_EXCEEDED', message: 'Too many requests' }), {
+                status: 429,
+                headers: { 'Content-Type': 'application/json', 'Retry-After': '30' },
+            })
+        );
+
+        await expect(upstream.post('/api/auth/login', {}, { anonymous: true })).rejects.toMatchObject({
+            status: 429,
+            code: 'RATE_LIMIT_EXCEEDED',
+            retryAfter: 30,
+        });
+    });
+
+    it('sends public catalogue calls without an Authorization header and never refreshes them', async () => {
+        jar.set('access_token', 'stale');
+        jar.set('refresh_token', 'ref');
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, { content: [] }));
+
+        await upstream.get('/api/cars', { anonymous: true });
+
+        expect(lastHeaders().Authorization).toBeUndefined();
+        expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(jar.get('refresh_token')).toBe('ref');
     });
 
@@ -137,8 +262,8 @@ describe('upstream', () => {
         expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
-    it('does not cache failed refreshes', async () => {
-        fetchMock.mockResolvedValueOnce(jsonResponse(401, {})).mockResolvedValueOnce(jsonResponse(200, refreshed));
+    it('does not cache transient refresh failures', async () => {
+        fetchMock.mockResolvedValueOnce(jsonResponse(503, {})).mockResolvedValueOnce(jsonResponse(200, refreshed));
 
         expect(await refreshAuthTokens('ref')).toBeNull();
         expect(await refreshAuthTokens('ref')).toMatchObject({ accessToken: 'fresh-access' });

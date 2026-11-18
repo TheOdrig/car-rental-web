@@ -1,10 +1,11 @@
 import 'server-only';
 import { createHash } from 'node:crypto';
 import { z } from 'zod';
-import { ApiError, parseErrorResponse } from '@/shared/api/error';
+import { ApiError, parseErrorResponse, parseRetryAfter } from '@/shared/api/error';
 import type { ServerRequestOptions } from '@/shared/api/types';
 import { getServerEnv } from './env';
 import {
+    clearAuthTokens,
     getAccessToken,
     getRefreshToken,
     setAuthTokens,
@@ -55,7 +56,13 @@ function timeoutSignal(): AbortSignal {
     return AbortSignal.timeout(getServerEnv().API_TIMEOUT_MS);
 }
 
-async function requestRefresh(refreshToken: string): Promise<AuthResponse | null> {
+export type RefreshOutcome =
+    | { kind: 'ok'; tokens: AuthResponse }
+    | { kind: 'rejected' }
+    | { kind: 'rate-limited'; retryAfter?: number }
+    | { kind: 'unavailable' };
+
+async function requestRefresh(refreshToken: string): Promise<RefreshOutcome> {
     try {
         const response = await fetch(buildUpstreamUrl(REFRESH_PATH), {
             method: 'POST',
@@ -65,52 +72,73 @@ async function requestRefresh(refreshToken: string): Promise<AuthResponse | null
             signal: timeoutSignal(),
         });
 
+        if (response.status === 401) {
+            return { kind: 'rejected' };
+        }
+
+        if (response.status === 429) {
+            return { kind: 'rate-limited', retryAfter: parseRetryAfter(response.headers.get('Retry-After')) };
+        }
+
         if (!response.ok) {
-            return null;
+            return { kind: 'unavailable' };
         }
 
         const parsed = authResponseSchema.safeParse(await response.json());
-        return parsed.success ? parsed.data : null;
+        return parsed.success ? { kind: 'ok', tokens: parsed.data } : { kind: 'unavailable' };
     } catch {
-        return null;
+        return { kind: 'unavailable' };
     }
 }
 
 const REFRESH_SHARE_TTL_MS = 10_000;
-const sharedRefreshes = new Map<string, Promise<AuthResponse | null>>();
+const REFRESH_CACHE_KEY = Symbol.for('car-rental.refresh-cache');
+
+type RefreshCache = Map<string, Promise<RefreshOutcome>>;
+
+function sharedRefreshes(): RefreshCache {
+    const holder = globalThis as typeof globalThis & { [REFRESH_CACHE_KEY]?: RefreshCache };
+    return (holder[REFRESH_CACHE_KEY] ??= new Map());
+}
 
 function refreshKey(refreshToken: string): string {
     return createHash('sha256').update(refreshToken).digest('hex');
 }
 
 export function resetRefreshCacheForTests(): void {
-    sharedRefreshes.clear();
+    sharedRefreshes().clear();
 }
 
-export function refreshAuthTokens(refreshToken: string): Promise<AuthResponse | null> {
+export function refreshAuthSession(refreshToken: string): Promise<RefreshOutcome> {
+    const cache = sharedRefreshes();
     const key = refreshKey(refreshToken);
-    const existing = sharedRefreshes.get(key);
+    const existing = cache.get(key);
     if (existing) {
         return existing;
     }
 
     const pending = requestRefresh(refreshToken);
-    sharedRefreshes.set(key, pending);
+    cache.set(key, pending);
 
-    void pending.then((tokens) => {
-        if (!tokens) {
-            sharedRefreshes.delete(key);
+    void pending.then((outcome) => {
+        if (outcome.kind !== 'ok' && outcome.kind !== 'rejected') {
+            cache.delete(key);
             return;
         }
 
         setTimeout(() => {
-            if (sharedRefreshes.get(key) === pending) {
-                sharedRefreshes.delete(key);
+            if (cache.get(key) === pending) {
+                cache.delete(key);
             }
         }, REFRESH_SHARE_TTL_MS).unref?.();
     });
 
     return pending;
+}
+
+export async function refreshAuthTokens(refreshToken: string): Promise<AuthResponse | null> {
+    const outcome = await refreshAuthSession(refreshToken);
+    return outcome.kind === 'ok' ? outcome.tokens : null;
 }
 
 async function ignoreCookieWriteFailure(action: () => Promise<void>): Promise<void> {
@@ -127,13 +155,18 @@ export async function renewAccessToken(): Promise<string | undefined> {
         return undefined;
     }
 
-    const tokens = await refreshAuthTokens(refreshToken);
-    if (!tokens) {
+    const outcome = await refreshAuthSession(refreshToken);
+    if (outcome.kind === 'rejected') {
+        await ignoreCookieWriteFailure(clearAuthTokens);
         return undefined;
     }
 
-    await ignoreCookieWriteFailure(() => setAuthTokens(tokens));
-    return tokens.accessToken;
+    if (outcome.kind !== 'ok') {
+        return undefined;
+    }
+
+    await ignoreCookieWriteFailure(() => setAuthTokens(outcome.tokens));
+    return outcome.tokens.accessToken;
 }
 
 async function sendUpstream(url: URL, options: UpstreamOptions, token: string | undefined): Promise<Response> {

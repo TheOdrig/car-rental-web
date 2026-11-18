@@ -6,8 +6,6 @@ export const REFRESH_COOKIE = 'refresh_token';
 
 const REFRESH_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
 const DEFAULT_ACCESS_MAX_AGE_SECONDS = 900;
-const EPOCH_MS_THRESHOLD = 1_000_000_000_000;
-const EPOCH_SECONDS_THRESHOLD = 1_000_000_000;
 
 export interface AuthTokens {
     accessToken: string;
@@ -23,20 +21,12 @@ export interface AuthCookieOptions {
     maxAge: number;
 }
 
-export function resolveAccessMaxAge(expiresIn: number | undefined, nowMs: number = Date.now()): number {
+export function resolveAccessMaxAge(expiresIn: number | undefined): number {
     if (expiresIn === undefined || !Number.isFinite(expiresIn)) {
         return DEFAULT_ACCESS_MAX_AGE_SECONDS;
     }
 
-    let seconds: number;
-    if (expiresIn > EPOCH_MS_THRESHOLD) {
-        seconds = Math.floor((expiresIn - nowMs) / 1000);
-    } else if (expiresIn > EPOCH_SECONDS_THRESHOLD) {
-        seconds = Math.floor(expiresIn - nowMs / 1000);
-    } else {
-        seconds = Math.floor(expiresIn);
-    }
-
+    const seconds = Math.floor(expiresIn);
     return seconds > 0 ? seconds : DEFAULT_ACCESS_MAX_AGE_SECONDS;
 }
 

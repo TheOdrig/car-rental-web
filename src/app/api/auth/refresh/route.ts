@@ -2,7 +2,7 @@ import { ApiError } from '@/shared/api';
 import {
     clearAuthTokens,
     getRefreshToken,
-    refreshAuthTokens,
+    refreshAuthSession,
     route,
     setAuthTokens,
 } from '@/shared/server';
@@ -15,16 +15,26 @@ export const POST = route(
             throw new ApiError(401, 'No refresh token');
         }
 
-        const tokens = await refreshAuthTokens(refreshToken);
+        const outcome = await refreshAuthSession(refreshToken);
 
-        if (!tokens) {
+        if (outcome.kind === 'rejected') {
             await clearAuthTokens();
             throw new ApiError(401, 'Token refresh failed');
         }
 
-        await setAuthTokens(tokens);
+        if (outcome.kind === 'rate-limited') {
+            const error = new ApiError(429, 'Too many refresh attempts');
+            error.retryAfter = outcome.retryAfter;
+            throw error;
+        }
 
-        return { username: tokens.username, tokenType: tokens.tokenType };
+        if (outcome.kind === 'unavailable') {
+            throw new ApiError(503, 'Authentication service unavailable');
+        }
+
+        await setAuthTokens(outcome.tokens);
+
+        return { username: outcome.tokens.username, tokenType: outcome.tokens.tokenType };
     },
     { errorMessage: 'Internal server error' }
 );
