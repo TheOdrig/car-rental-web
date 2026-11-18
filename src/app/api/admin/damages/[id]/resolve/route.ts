@@ -1,41 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { routePost } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { DAMAGE_ENDPOINTS } from '@/entities/damage';
+import { parseIdParam, proxy } from '@/shared/server';
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const damageId = parseInt(id, 10);
-
-        if (isNaN(damageId)) {
-            return NextResponse.json(
-                { error: 'Invalid damage ID' },
-                { status: 400 }
-            );
-        }
-
-        const body = await request.json();
-        const data = await routePost(
-            DAMAGE_ENDPOINTS.admin.resolve(damageId),
-            body,
-            { cache: 'no-store' }
-        );
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/admin/damages/[id]/resolve error:', error);
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-        return NextResponse.json(
-            { error: 'Failed to resolve dispute' },
-            { status: 500 }
-        );
-    }
-}
+export const POST = proxy<{ id: string }>({
+    path: ({ id }) => DAMAGE_ENDPOINTS.admin.resolve(parseIdParam(id, 'damage ID')),
+    method: 'POST',
+    errorMessage: 'Failed to resolve damage',
+});

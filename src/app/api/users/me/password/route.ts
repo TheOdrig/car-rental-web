@@ -1,40 +1,24 @@
-import { NextResponse } from 'next/server';
-import { serverPost } from '@/shared/api/server';
-import { isApiError } from '@/shared/api';
-import { USER_ENDPOINTS, type PasswordChangeData } from '@/entities/user';
-import type { MessageResponse } from '@/shared/types';
+import { USER_ENDPOINTS } from '@/entities/user';
+import { ApiError, isApiError } from '@/shared/api';
+import { readJson, route, upstream } from '@/shared/server';
 
-export async function POST(request: Request) {
-    try {
-        const body: PasswordChangeData = await request.json();
-
-        const data = await serverPost<MessageResponse>(USER_ENDPOINTS.password, body);
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/users/me/password error:', error);
-
-        if (isApiError(error)) {
-            const message = error.message.toLowerCase();
-
-            if (message.includes('current password') ||
-                message.includes('incorrect') ||
-                message.includes('invalid password')) {
-                return NextResponse.json(
-                    { error: 'Current password is incorrect' },
-                    { status: 400 }
-                );
-            }
-
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to change password' },
-            { status: 503 }
-        );
-    }
+function isWrongPasswordMessage(message: string): boolean {
+    const lower = message.toLowerCase();
+    return lower.includes('current password') || lower.includes('incorrect') || lower.includes('invalid password');
 }
+
+export const POST = route(
+    async (request) => {
+        const body = await readJson(request);
+
+        try {
+            return await upstream.post(USER_ENDPOINTS.password, body, { cache: 'no-store' });
+        } catch (error) {
+            if (isApiError(error) && isWrongPasswordMessage(error.message)) {
+                throw new ApiError(400, 'Current password is incorrect');
+            }
+            throw error;
+        }
+    },
+    { errorMessage: 'Failed to change password', errorStatus: 503 }
+);

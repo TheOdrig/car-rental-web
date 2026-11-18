@@ -1,49 +1,33 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { routePatch } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { CAR_ENDPOINTS } from '@/entities/car';
+import { ApiError } from '@/shared/api';
+import { parseIdParam, readJson, route, upstream } from '@/shared/server';
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const carId = parseInt(id, 10);
+interface StatusBody {
+    status?: string;
+    reason?: string;
+    notes?: string;
+}
 
-        if (isNaN(carId)) {
-            return NextResponse.json(
-                { error: 'Invalid car ID' },
-                { status: 400 }
-            );
+export const POST = route<{ id: string }>(
+    async (request, { id }) => {
+        const carId = parseIdParam(id, 'car ID');
+        const body = await readJson<StatusBody>(request);
+
+        if (!body.status) {
+            throw new ApiError(400, 'status is required');
         }
-
-        const body = await request.json();
 
         const carStatusType = body.status.charAt(0).toUpperCase() + body.status.slice(1).toLowerCase();
 
-        const data = await routePatch(CAR_ENDPOINTS.admin.updateStatus(carId), {
-            carStatusType: carStatusType,
-            reason: body.reason || 'Status updated from admin panel',
-            notes: body.notes
-        }, {
-            cache: 'no-store',
-        });
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/admin/cars/[id]/status error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to update car status' },
-            { status: 500 }
+        return upstream.patch(
+            CAR_ENDPOINTS.admin.updateStatus(carId),
+            {
+                carStatusType,
+                reason: body.reason || 'Status updated from admin panel',
+                notes: body.notes,
+            },
+            { cache: 'no-store' }
         );
-    }
-}
+    },
+    { errorMessage: 'Failed to update car status' }
+);

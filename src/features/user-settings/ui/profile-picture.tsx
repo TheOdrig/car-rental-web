@@ -8,8 +8,6 @@ import { Button } from '@/shared/ui/button';
 import { validateAvatarFile } from '@/features/user-settings';
 import { showToast } from '@/shared/lib';
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8082';
-
 function normalizeAvatarUrl(url: string | null | undefined): string | null {
     if (!url) return null;
 
@@ -17,11 +15,7 @@ function normalizeAvatarUrl(url: string | null | undefined): string | null {
         return url;
     }
 
-    if (url.startsWith('/')) {
-        return `${BACKEND_URL}${url}`;
-    }
-
-    return `${BACKEND_URL}/${url}`;
+    return url.startsWith('/') ? url : `/${url}`;
 }
 
 interface ProfilePictureProps {

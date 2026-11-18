@@ -1,98 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
-import { routeDelete } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { DAMAGE_ENDPOINTS } from '@/entities/damage';
+import { ApiError } from '@/shared/api';
+import { created, parseIdParam, route, searchParamsOf, upstream } from '@/shared/server';
 
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const damageId = parseInt(id, 10);
-
-        if (isNaN(damageId)) {
-            return NextResponse.json(
-                { error: 'Invalid damage ID' },
-                { status: 400 }
-            );
-        }
-
+export const POST = route<{ id: string }>(
+    async (request, { id }) => {
+        const damageId = parseIdParam(id, 'damage ID');
         const formData = await request.formData();
-        const cookieStore = await cookies();
-        const accessToken = cookieStore.get('access_token')?.value;
-
-        if (!accessToken) {
-            return NextResponse.json(
-                { error: 'Unauthorized' },
-                { status: 401 }
-            );
-        }
-
-        const response = await fetch(DAMAGE_ENDPOINTS.admin.photos(damageId), {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${accessToken}`,
-            },
-            body: formData,
+        const data = await upstream.post(DAMAGE_ENDPOINTS.admin.photos(damageId), formData, {
+            cache: 'no-store',
         });
+        return created(data);
+    },
+    { errorMessage: 'Failed to upload photos' }
+);
 
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            return NextResponse.json(
-                { error: errorData.message || 'Failed to upload photos' },
-                { status: response.status }
-            );
+export const DELETE = route<{ id: string }>(
+    async (request, { id }) => {
+        const damageId = parseIdParam(id, 'damage ID');
+        const photoId = searchParamsOf(request).get('photoId');
+
+        if (!photoId) {
+            throw new ApiError(400, 'photoId is required');
         }
 
-        const data = await response.json();
-        return NextResponse.json(data, { status: 201 });
-    } catch (error) {
-        console.error('[API] POST /api/admin/damages/[id]/photos error:', error);
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-        return NextResponse.json(
-            { error: 'Failed to upload photos' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function DELETE(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const damageId = parseInt(id, 10);
-        const { searchParams } = new URL(request.url);
-        const photoId = searchParams.get('photoId');
-
-        if (isNaN(damageId) || !photoId) {
-            return NextResponse.json(
-                { error: 'Invalid damage ID or photo ID' },
-                { status: 400 }
-            );
-        }
-
-        await routeDelete(DAMAGE_ENDPOINTS.admin.deletePhoto(damageId, parseInt(photoId, 10)));
-        return NextResponse.json({ success: true });
-    } catch (error) {
-        console.error('[API] DELETE /api/admin/damages/[id]/photos error:', error);
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-        return NextResponse.json(
-            { error: 'Failed to delete photo' },
-            { status: 500 }
-        );
-    }
-}
+        await upstream.delete(DAMAGE_ENDPOINTS.admin.deletePhoto(damageId, parseIdParam(photoId, 'photo ID')), {
+            cache: 'no-store',
+        });
+        return { success: true };
+    },
+    { errorMessage: 'Failed to delete photo' }
+);

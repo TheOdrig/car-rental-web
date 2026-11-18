@@ -2,7 +2,8 @@ import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
 import { afterEach, vi } from 'vitest';
 import React from 'react';
-process.env.NEXT_PUBLIC_API_URL = 'http://localhost:8082';
+process.env.API_URL = 'http://localhost:8082';
+process.env.JWT_SECRET = 'test-jwt-secret-with-at-least-32-chars!!';
 Object.defineProperty(window, 'location', {
     writable: true,
     value: {

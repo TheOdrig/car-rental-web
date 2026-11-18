@@ -1,99 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { routeGet, routePost } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { ADMIN_ENDPOINTS } from '@/features/admin';
-
-interface AdminNote {
-    id: number;
-    userId: number;
-    adminId: number;
-    adminUsername: string;
-    text: string;
-    createdAt: string;
-}
+import { ApiError } from '@/shared/api';
+import { created, parseIdParam, proxy, readJson, route, upstream } from '@/shared/server';
 
 interface AddNoteRequest {
-    text: string;
+    text?: string;
 }
 
-export async function GET(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const userId = parseInt(id, 10);
+export const GET = proxy<{ id: string }>({
+    path: ({ id }) => ADMIN_ENDPOINTS.users.notes(parseIdParam(id, 'user ID')),
+    tags: ['admin', 'users', 'notes'],
+    errorMessage: 'Failed to fetch notes',
+    errorStatus: 503,
+});
 
-        if (isNaN(userId)) {
-            return NextResponse.json(
-                { error: 'Invalid user ID' },
-                { status: 400 }
-            );
-        }
-
-        const notes = await routeGet<AdminNote[]>(ADMIN_ENDPOINTS.users.notes(userId), {
-            cache: 'no-store',
-            tags: ['admin', 'users', 'notes'],
-        });
-
-        return NextResponse.json(notes);
-    } catch (error) {
-        console.error('[API] GET /api/admin/users/[id]/notes error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to fetch notes' },
-            { status: 503 }
-        );
-    }
-}
-
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const userId = parseInt(id, 10);
-
-        if (isNaN(userId)) {
-            return NextResponse.json(
-                { error: 'Invalid user ID' },
-                { status: 400 }
-            );
-        }
-
-        const body: AddNoteRequest = await request.json();
+export const POST = route<{ id: string }>(
+    async (request, { id }) => {
+        const userId = parseIdParam(id, 'user ID');
+        const body = await readJson<AddNoteRequest>(request);
 
         if (!body.text?.trim()) {
-            return NextResponse.json(
-                { error: 'Note text is required' },
-                { status: 400 }
-            );
+            throw new ApiError(400, 'Note text is required');
         }
 
-        const note = await routePost<AdminNote>(ADMIN_ENDPOINTS.users.notes(userId), body);
-
-        return NextResponse.json(note, { status: 201 });
-    } catch (error) {
-        console.error('[API] POST /api/admin/users/[id]/notes error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to add note' },
-            { status: 503 }
-        );
-    }
-}
+        const note = await upstream.post(ADMIN_ENDPOINTS.users.notes(userId), body, { cache: 'no-store' });
+        return created(note);
+    },
+    { errorMessage: 'Failed to add note', errorStatus: 503 }
+);

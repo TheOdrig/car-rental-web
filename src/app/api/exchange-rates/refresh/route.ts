@@ -1,42 +1,12 @@
-import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 import { CURRENCY_ENDPOINTS } from '@/entities/currency';
-import { cookies } from 'next/headers';
+import { route, upstream } from '@/shared/server';
 
-export async function POST() {
-    try {
-        const cookieStore = await cookies();
-        const token = cookieStore.get('access_token')?.value;
-
-        const response = await fetch(CURRENCY_ENDPOINTS.refresh, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error('[API] Backend error:', response.status, errorText);
-            return NextResponse.json(
-                { error: errorText || 'Failed to refresh exchange rates' },
-                { status: response.status }
-            );
-        }
-
+export const POST = route(
+    async () => {
+        const data = await upstream.post<unknown>(CURRENCY_ENDPOINTS.refresh, undefined, { cache: 'no-store' });
         revalidatePath('/api/exchange-rates');
-
-        const text = await response.text();
-        const data = text ? JSON.parse(text) : { success: true };
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/exchange-rates/refresh error:', error);
-
-        return NextResponse.json(
-            { error: 'Failed to refresh exchange rates' },
-            { status: 503 }
-        );
-    }
-}
+        return data ?? { success: true };
+    },
+    { errorMessage: 'Failed to refresh exchange rates', errorStatus: 503 }
+);

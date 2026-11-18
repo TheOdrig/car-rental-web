@@ -1,74 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { routeGet, routePost } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { CAR_ENDPOINTS } from '@/entities/car';
+import { created, proxy, readJson, route, upstream } from '@/shared/server';
+import { DEFAULT_CAR_IMAGE, toBackendCar, type CarFormBody } from './_lib/to-backend-car';
 
-export async function GET(request: NextRequest) {
-    try {
-        const { searchParams } = new URL(request.url);
-        const data = await routeGet(CAR_ENDPOINTS.admin.list + '?' + searchParams.toString(), {
+export const GET = proxy({
+    path: () => CAR_ENDPOINTS.admin.list,
+    forwardQuery: true,
+    errorMessage: 'Failed to fetch cars',
+});
+
+export const POST = route(
+    async (request) => {
+        const body = await readJson<CarFormBody>(request);
+        const data = await upstream.post(CAR_ENDPOINTS.admin.create, toBackendCar(body, DEFAULT_CAR_IMAGE), {
             cache: 'no-store',
         });
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] GET /api/admin/cars error:', error);
-        return NextResponse.json(
-            { error: 'Failed to fetch cars' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function POST(request: NextRequest) {
-    try {
-        const body = await request.json();
-        console.log('[API] POST /api/admin/cars - Received body:', JSON.stringify(body));
-
-        const backendRequest: Record<string, unknown> = {
-            brand: body.brand?.replace(/-/g, ' '),
-            model: body.model,
-            productionYear: Number(body.year),
-            licensePlate: body.licensePlate?.replace(/[^A-Z0-9]/gi, '').toUpperCase(),
-            fuelType: body.fuelType,
-            transmissionType: body.transmissionType,
-            bodyType: body.bodyType,
-            seats: Number(body.seats) || 5,
-            color: body.color,
-            price: Number(body.dailyRate),
-            currencyType: 'USD',
-            carStatusType: 'Available',
-            kilometer: 0,
-            doors: 4,
-            isFeatured: false,
-            isTestDriveAvailable: true,
-            rating: 5.0,
-            imageUrl: body.imageUrl || 'https://images.unsplash.com/photo-1542281286-9e0a16bb7366?auto=format&fit=crop&q=80&w=1000'
-        };
-
-        if (body.vin && body.vin.length === 17) {
-            backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-        }
-
-        console.log('[API] POST /api/admin/cars - Transformed for backend:', JSON.stringify(backendRequest));
-
-        const data = await routePost(CAR_ENDPOINTS.admin.create, backendRequest, {
-            cache: 'no-store',
-        });
-
-        return NextResponse.json(data, { status: 201 });
-    } catch (error) {
-        console.error('[API] POST /api/admin/cars error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to create car: ' + (error instanceof Error ? error.message : 'Unknown error') },
-            { status: 500 }
-        );
-    }
-}
+        return created(data);
+    },
+    { errorMessage: 'Failed to create car' }
+);

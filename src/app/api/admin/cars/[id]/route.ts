@@ -1,142 +1,27 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { routeGet, routePut, routeDelete } from '@/shared/api/route-handler';
-import { isApiError } from '@/shared/api';
 import { CAR_ENDPOINTS } from '@/entities/car';
+import { parseIdParam, proxy, readJson, route, upstream } from '@/shared/server';
+import { toBackendCar, type CarFormBody } from '../_lib/to-backend-car';
 
-export async function GET(
-    _request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const carId = parseInt(id, 10);
+export const GET = proxy<{ id: string }>({
+    path: ({ id }) => CAR_ENDPOINTS.admin.byId(parseIdParam(id, 'car ID')),
+    errorMessage: 'Failed to fetch car',
+});
 
-        if (isNaN(carId)) {
-            return NextResponse.json(
-                { error: 'Invalid car ID' },
-                { status: 400 }
-            );
-        }
-
-        const data = await routeGet(CAR_ENDPOINTS.admin.byId(carId), {
+export const POST = route<{ id: string }>(
+    async (request, { id }) => {
+        const carId = parseIdParam(id, 'car ID');
+        const body = await readJson<CarFormBody>(request);
+        return upstream.put(CAR_ENDPOINTS.admin.update(carId), toBackendCar(body, undefined), {
             cache: 'no-store',
         });
+    },
+    { errorMessage: 'Failed to update car' }
+);
 
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] GET /api/admin/cars/[id] error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to fetch car' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function POST(
-    request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const carId = parseInt(id, 10);
-
-        if (isNaN(carId)) {
-            return NextResponse.json(
-                { error: 'Invalid car ID' },
-                { status: 400 }
-            );
-        }
-
-        const body = await request.json();
-
-        const backendRequest: Record<string, unknown> = {
-            brand: body.brand?.replace(/-/g, ' '),
-            model: body.model,
-            productionYear: Number(body.year),
-            licensePlate: body.licensePlate?.replace(/[^A-Z0-9]/gi, '').toUpperCase(),
-            fuelType: body.fuelType,
-            transmissionType: body.transmissionType,
-            bodyType: body.bodyType,
-            seats: Number(body.seats),
-            color: body.color,
-            price: Number(body.dailyRate),
-            currencyType: 'USD',
-            carStatusType: 'Available',
-            kilometer: Number(body.kilometer) || 0,
-            doors: Number(body.doors) || 4,
-            isFeatured: !!body.isFeatured,
-            isTestDriveAvailable: true,
-            rating: Number(body.rating) || 5.0,
-            imageUrl: body.imageUrl || undefined
-        };
-
-        if (body.vin && body.vin.length === 17) {
-            backendRequest.vinNumber = body.vin.replace(/[^A-Z0-9]/gi, '').toUpperCase();
-        }
-
-        const data = await routePut(CAR_ENDPOINTS.admin.update(carId), backendRequest, {
-            cache: 'no-store',
-        });
-
-        return NextResponse.json(data);
-    } catch (error) {
-        console.error('[API] POST /api/admin/cars/[id] error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to update car' },
-            { status: 500 }
-        );
-    }
-}
-
-export async function DELETE(
-    _request: NextRequest,
-    { params }: { params: Promise<{ id: string }> }
-) {
-    try {
-        const { id } = await params;
-        const carId = parseInt(id, 10);
-
-        if (isNaN(carId)) {
-            return NextResponse.json(
-                { error: 'Invalid car ID' },
-                { status: 400 }
-            );
-        }
-
-        await routeDelete(CAR_ENDPOINTS.admin.delete(carId), {
-            cache: 'no-store',
-        });
-
-        return NextResponse.json({ success: true });
-    } catch (error) {
-        console.error('[API] DELETE /api/admin/cars/[id] error:', error);
-
-        if (isApiError(error)) {
-            return NextResponse.json(
-                { error: error.message, errors: error.errors },
-                { status: error.status }
-            );
-        }
-
-        return NextResponse.json(
-            { error: 'Failed to delete car' },
-            { status: 500 }
-        );
-    }
-}
+export const DELETE = route<{ id: string }>(
+    async (_request, { id }) => {
+        await upstream.delete(CAR_ENDPOINTS.admin.delete(parseIdParam(id, 'car ID')), { cache: 'no-store' });
+        return { success: true };
+    },
+    { errorMessage: 'Failed to delete car' }
+);
