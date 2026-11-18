@@ -1,5 +1,3 @@
-import type { CarStatus, VehicleStatistics, VehicleCurrentStatus, VehicleActiveRental } from '@/entities/car';
-
 export interface FleetStatistics {
     totalCars: number;
     availableCars: number;
