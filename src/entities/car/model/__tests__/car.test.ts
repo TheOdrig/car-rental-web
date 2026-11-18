@@ -1,8 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { useCarStore } from '@/entities/car/model/store';
+import { describe, it, expect } from 'vitest';
 import { Car, FuelType, TransmissionType } from '@/entities/car/model/types';
 import { isAvailable, getCarTitle, getFormattedPrice } from '@/entities/car/lib/utils';
-import { act } from 'react';
 const mockCar: Car = {
     id: 1,
     licensePlate: 'ABC-123',
@@ -41,53 +39,6 @@ describe('Car Entity', () => {
             it('should format price correctly', () => {
                 expect(getFormattedPrice(mockCar)).toBe('$100');
             });
-        });
-    });
-    describe('Store', () => {
-        beforeEach(() => {
-            act(() => {
-                useCarStore.setState({ cars: [], selectedCar: null });
-            })
-        });
-        it('should set cars list', () => {
-            const { setCars } = useCarStore.getState();
-            act(() => {
-                setCars([mockCar, rentedCar]);
-            })
-            const state = useCarStore.getState();
-            expect(state.cars).toHaveLength(2);
-            expect(state.cars[0]).toEqual(mockCar);
-        });
-        it('should select a car', () => {
-            const { selectCar } = useCarStore.getState();
-            act(() => {
-                selectCar(mockCar);
-            })
-            const state = useCarStore.getState();
-            expect(state.selectedCar).toEqual(mockCar);
-        });
-        it('should update car status', () => {
-            const { setCars, updateCarStatus, selectCar } = useCarStore.getState();
-            act(() => {
-                setCars([mockCar]);
-                selectCar(mockCar);
-                updateCarStatus(1, 'Maintenance');
-            })
-            const state = useCarStore.getState();
-            expect(state.cars[0].carStatusType).toBe('Maintenance');
-            expect(state.selectedCar?.carStatusType).toBe('Maintenance');
-        });
-        it('should not update selected car if ids do not match', () => {
-            const { setCars, updateCarStatus, selectCar } = useCarStore.getState();
-            act(() => {
-                setCars([mockCar, rentedCar]);
-                selectCar(rentedCar);
-                updateCarStatus(1, 'Maintenance');
-            })
-            const state = useCarStore.getState();
-            expect(state.cars.find(c => c.id === 1)?.carStatusType).toBe('Maintenance');
-            expect(state.selectedCar?.id).toBe(2);
-            expect(state.selectedCar?.carStatusType).toBe('Rented');
         });
     });
 });

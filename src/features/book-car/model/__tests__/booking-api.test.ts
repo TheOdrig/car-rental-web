@@ -42,16 +42,4 @@ describe('Booking API', () => {
             await expect(createBooking(mockRequest)).rejects.toThrow('Unauthorized');
         });
     });
-    describe.skip('getAvailableCars', () => {
-        it('should fetch available cars with filters', async () => {
-        });
-    });
-    describe.skip('getBooking', () => {
-        it('should fetch booking by id', async () => {
-        });
-    });
-    describe.skip('cancelBooking', () => {
-        it('should cancel booking successfully', async () => {
-        });
-    });
 });

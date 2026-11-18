@@ -1,6 +1,5 @@
 import { eventBus } from '@/shared/events';
 import { RENTAL_EVENTS } from '@/entities/rental';
-import { rentalActions } from './rental-store';
 import type { Rental } from '@/entities/rental';
 
 export type { RentalEventType } from '@/entities/rental';
@@ -28,7 +27,3 @@ export function publishRentalCancelled(rentalId: number): void {
 export function publishRentalUpdated(rental: Rental): void {
     eventBus.publish(RENTAL_EVENTS.UPDATED, rental);
 }
-
-eventBus.subscribe('auth:logout', () => {
-    rentalActions.clearRentals();
-});

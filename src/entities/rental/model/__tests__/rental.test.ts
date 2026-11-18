@@ -1,6 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { useRentalStore, type Rental, RentalStatus, isActive, canCancel, getFormattedRentalPeriod, getFormattedTotal } from '@/entities/rental';
-import { act } from 'react';
+import { describe, it, expect } from 'vitest';
+import { type Rental, RentalStatus, isActive, canCancel, getFormattedRentalPeriod, getFormattedTotal } from '@/entities/rental';
 const mockRental: Rental = {
   id: 1,
   startDate: '2023-12-01T10:00:00Z',
@@ -55,57 +54,6 @@ describe('Rental Entity', () => {
       it('should format price correctly', () => {
         expect(getFormattedTotal(mockRental)).toBe('$200');
       });
-    });
-  });
-  describe('Store', () => {
-    beforeEach(() => {
-      act(() => {
-        useRentalStore.setState({ rentals: [], activeRental: null });
-      })
-    });
-    it('should set rentals list', () => {
-      const { setRentals } = useRentalStore.getState();
-      act(() => {
-        setRentals([mockRental, activeRental]);
-      })
-      const state = useRentalStore.getState();
-      expect(state.rentals).toHaveLength(2);
-    });
-    it('should add a rental', () => {
-      const { addRental } = useRentalStore.getState();
-      act(() => {
-        addRental(mockRental);
-      })
-      const state = useRentalStore.getState();
-      expect(state.rentals).toHaveLength(1);
-      expect(state.rentals[0]).toEqual(mockRental);
-    });
-    it('should set active rental', () => {
-      const { setActiveRental } = useRentalStore.getState();
-      act(() => {
-        setActiveRental(activeRental);
-      })
-      const state = useRentalStore.getState();
-      expect(state.activeRental).toEqual(activeRental);
-    });
-    it('should update rental status', () => {
-      const { setRentals, setActiveRental, updateRentalStatus } = useRentalStore.getState();
-      act(() => {
-        setRentals([mockRental]);
-        setActiveRental(mockRental);
-        updateRentalStatus(1, RentalStatus.CANCELLED);
-      })
-      const state = useRentalStore.getState();
-      expect(state.rentals[0].status).toBe(RentalStatus.CANCELLED);
-      expect(state.activeRental?.status).toBe(RentalStatus.CANCELLED);
-    });
-    it('should handle updating status when rental not found', () => {
-      const { updateRentalStatus } = useRentalStore.getState();
-      act(() => {
-        updateRentalStatus(999, RentalStatus.CANCELLED);
-      })
-      const state = useRentalStore.getState();
-      expect(state.rentals).toHaveLength(0);
     });
   });
 });

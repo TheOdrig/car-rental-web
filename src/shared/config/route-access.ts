@@ -3,7 +3,7 @@ export type RouteAccess = 'public' | 'guest-only' | 'auth-flow' | 'protected' | 
 const ADMIN_PAGE_ROUTES = ['/admin'];
 const ADMIN_API_ROUTES = ['/api/admin'];
 const GUEST_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
-const AUTH_FLOW_ROUTES = ['/callback', '/reset-password'];
+const AUTH_FLOW_ROUTES = ['/reset-password'];
 const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api'];
 
 function matches(pathname: string, route: string): boolean {

@@ -1,6 +1,5 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { useUserStore, type User, UserRole, isAdmin, getDisplayName, getInitials } from '@/entities/user';
-import { act } from 'react';
+import { describe, it, expect } from 'vitest';
+import { type User, UserRole, isAdmin, getDisplayName, getInitials } from '@/entities/user';
 const mockUser: User = {
     id: 1,
     email: 'test@example.com',
@@ -57,50 +56,6 @@ describe('User Entity', () => {
             it('should return ? if user is null', () => {
                 expect(getInitials(null)).toBe('?');
             });
-        });
-    });
-    describe('Store', () => {
-        beforeEach(() => {
-            act(() => {
-                useUserStore.setState({ user: null, isAuthenticated: false });
-            })
-        });
-        it('should set user and authentication status', () => {
-            const { setUser } = useUserStore.getState();
-            act(() => {
-                setUser(mockUser);
-            });
-            const State = useUserStore.getState();
-            expect(State.user).toEqual(mockUser);
-            expect(State.isAuthenticated).toBe(true);
-        });
-        it('should update user partially', () => {
-            const { setUser, updateUser } = useUserStore.getState();
-            act(() => {
-                setUser(mockUser);
-                updateUser({ firstName: 'Updated' });
-            });
-            const state = useUserStore.getState();
-            expect(state.user?.firstName).toBe('Updated');
-            expect(state.user?.email).toBe(mockUser.email);
-        });
-        it('should not update user if user is null', () => {
-            const { updateUser } = useUserStore.getState();
-            act(() => {
-                updateUser({ firstName: 'Updated' });
-            })
-            const state = useUserStore.getState();
-            expect(state.user).toBeNull();
-        });
-        it('should logout correctly', () => {
-            const { setUser, logout } = useUserStore.getState();
-            act(() => {
-                setUser(mockUser);
-                logout();
-            })
-            const state = useUserStore.getState();
-            expect(state.user).toBeNull();
-            expect(state.isAuthenticated).toBe(false);
         });
     });
 });

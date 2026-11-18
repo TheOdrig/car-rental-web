@@ -14,7 +14,6 @@ describe('classifyRoute', () => {
         ['/register', 'guest-only'],
         ['/forgot-password', 'guest-only'],
         ['/reset-password', 'auth-flow'],
-        ['/callback', 'auth-flow'],
         ['/admin', 'admin'],
         ['/admin/users/3', 'admin'],
         ['/api/admin/users', 'admin-api'],
