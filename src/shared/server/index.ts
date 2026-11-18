@@ -13,6 +13,14 @@ export {
     setAuthTokens,
     type AuthTokens,
 } from './auth-cookies';
+export {
+    CLIENT_IP_HEADER,
+    clientIpFromRequestHeaders,
+    clientIpHeaders,
+    currentClientIp,
+    resolveClientIp,
+    type ClientIpRule,
+} from './client-ip';
 export { isAdminSession, verifyAccessToken, type Session } from './session';
 export {
     authResponseSchema,

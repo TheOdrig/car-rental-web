@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ApiError, parseErrorResponse, parseRetryAfter } from '@/shared/api/error';
 import type { ServerRequestOptions } from '@/shared/api/types';
 import { getServerEnv } from './env';
+import { clientIpHeaders } from './client-ip';
 import { API, type UpstreamTarget } from './upstream-endpoints';
 import {
     clearAuthTokens,
@@ -63,11 +64,11 @@ export type RefreshOutcome =
     | { kind: 'rate-limited'; retryAfter?: number }
     | { kind: 'unavailable' };
 
-async function requestRefresh(refreshToken: string): Promise<RefreshOutcome> {
+async function requestRefresh(refreshToken: string, clientIp?: string): Promise<RefreshOutcome> {
     try {
         const response = await fetch(buildUpstreamUrl(REFRESH_PATH), {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', ...(await clientIpHeaders(clientIp)) },
             body: JSON.stringify({ refreshToken }),
             cache: 'no-store',
             signal: timeoutSignal(),
@@ -110,7 +111,7 @@ export function resetRefreshCacheForTests(): void {
     sharedRefreshes().clear();
 }
 
-export function refreshAuthSession(refreshToken: string): Promise<RefreshOutcome> {
+export function refreshAuthSession(refreshToken: string, clientIp?: string): Promise<RefreshOutcome> {
     const cache = sharedRefreshes();
     const key = refreshKey(refreshToken);
     const existing = cache.get(key);
@@ -118,7 +119,7 @@ export function refreshAuthSession(refreshToken: string): Promise<RefreshOutcome
         return existing;
     }
 
-    const pending = requestRefresh(refreshToken);
+    const pending = requestRefresh(refreshToken, clientIp);
     cache.set(key, pending);
 
     void pending.then((outcome) => {
@@ -172,7 +173,9 @@ export async function renewAccessToken(): Promise<string | undefined> {
 
 async function sendUpstream(url: URL, options: UpstreamOptions, token: string | undefined): Promise<Response> {
     try {
-        return await fetch(url, { ...buildRequestInit(options, token), signal: timeoutSignal() });
+        const init = buildRequestInit(options, token);
+        init.headers = { ...(init.headers as Record<string, string>), ...(await clientIpHeaders()) };
+        return await fetch(url, { ...init, signal: timeoutSignal() });
     } catch (error) {
         if (isTimeout(error)) {
             throw new ApiError(504, 'Upstream request timed out');

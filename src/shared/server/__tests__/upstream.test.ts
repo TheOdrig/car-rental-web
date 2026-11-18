@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const jar = new Map<string, string>();
+let incomingHeaders: Record<string, string> = {};
 
 vi.mock('next/headers', () => ({
+    headers: vi.fn(async () => new Headers(incomingHeaders)),
     cookies: vi.fn(async () => ({
         get: (name: string) => (jar.has(name) ? { name, value: jar.get(name) } : undefined),
         set: (name: string, value: string) => {
@@ -35,6 +37,8 @@ describe('upstream', () => {
 
     beforeEach(() => {
         jar.clear();
+        incomingHeaders = {};
+        delete process.env.TRUSTED_PROXY_HOPS;
         fetchMock.mockReset();
         global.fetch = fetchMock as unknown as typeof fetch;
         resetServerEnvForTests();
@@ -311,6 +315,56 @@ describe('upstream', () => {
 
         expect(lastHeaders()['Content-Type']).toBeUndefined();
         expect(fetchMock.mock.calls[0][1].body).toBe(form);
+    });
+
+    it('sends no client IP when no proxy hops are trusted', async () => {
+        incomingHeaders = { 'x-forwarded-for': '198.51.100.7', 'x-client-ip': '6.6.6.6' };
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, {}));
+
+        await upstream.get('/api/v1/cars', { anonymous: true });
+
+        expect(lastHeaders()['X-Client-IP']).toBeUndefined();
+    });
+
+    it('forwards the right-most trusted hop as X-Client-IP', async () => {
+        process.env.TRUSTED_PROXY_HOPS = '1';
+        resetServerEnvForTests();
+        incomingHeaders = { 'x-forwarded-for': '6.6.6.6, 198.51.100.7' };
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, {}));
+
+        await upstream.get('/api/v1/cars', { anonymous: true });
+
+        expect(lastHeaders()['X-Client-IP']).toBe('198.51.100.7');
+    });
+
+    it('never forwards a client-supplied X-Client-IP, even through caller headers', async () => {
+        process.env.TRUSTED_PROXY_HOPS = '1';
+        resetServerEnvForTests();
+        incomingHeaders = { 'x-forwarded-for': '198.51.100.7', 'x-client-ip': '6.6.6.6' };
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, {}));
+
+        await upstream.get('/api/v1/cars', { anonymous: true, headers: { 'X-Client-IP': '6.6.6.6' } });
+
+        expect(lastHeaders()['X-Client-IP']).toBe('198.51.100.7');
+    });
+
+    it('sends X-Client-IP on refresh calls', async () => {
+        process.env.TRUSTED_PROXY_HOPS = '1';
+        resetServerEnvForTests();
+        incomingHeaders = { 'x-forwarded-for': '198.51.100.7' };
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, refreshed));
+
+        await refreshAuthSession('ref-ip');
+
+        expect(lastHeaders()['X-Client-IP']).toBe('198.51.100.7');
+    });
+
+    it('prefers an explicit client IP for refresh calls made outside a request scope', async () => {
+        fetchMock.mockResolvedValueOnce(jsonResponse(200, refreshed));
+
+        await refreshAuthSession('ref-explicit', '192.0.2.5');
+
+        expect(lastHeaders()['X-Client-IP']).toBe('192.0.2.5');
     });
 
     it('returns undefined for 204 responses', async () => {

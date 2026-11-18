@@ -113,6 +113,26 @@ describe('proxy', () => {
         });
     });
 
+    describe('client IP forwarding', () => {
+        it('sends the trusted client IP on the refresh call', async () => {
+            process.env.TRUSTED_PROXY_HOPS = '1';
+            resetServerEnvForTests();
+            const fresh = await createToken();
+            fetchMock.mockResolvedValueOnce(
+                new Response(JSON.stringify({ accessToken: fresh, refreshToken: 'r2', expiresIn: 900 }), { status: 200 })
+            );
+            const request = new NextRequest('http://localhost:3000/dashboard', {
+                headers: { cookie: 'refresh_token=ip-token', 'x-forwarded-for': '6.6.6.6, 198.51.100.7' },
+            });
+
+            await proxy(request);
+            delete process.env.TRUSTED_PROXY_HOPS;
+
+            const headers = fetchMock.mock.calls[0][1].headers as Record<string, string>;
+            expect(headers['X-Client-IP']).toBe('198.51.100.7');
+        });
+    });
+
     describe('transient refresh failures', () => {
         it.each([503, 429])('keeps the cookies on a page redirect when the refresh answers %i', async (status) => {
             fetchMock.mockResolvedValueOnce(new Response('{}', { status }));

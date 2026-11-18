@@ -17,6 +17,8 @@ function buildSchema(isProduction: boolean) {
         API_URL: apiUrl.transform((value) => value.replace(/\/+$/, '')),
         API_TIMEOUT_MS: z.coerce.number().int().positive().default(DEFAULT_API_TIMEOUT_MS),
         JWT_SECRET: z.string().min(32, 'JWT_SECRET must be at least 32 characters'),
+        TRUSTED_PROXY_HOPS: z.coerce.number().int().min(0).max(10).default(0),
+        TRUSTED_CLIENT_IP_HEADER: z.string().regex(/^[A-Za-z0-9-]+$/).optional(),
         STRIPE_PUBLISHABLE_KEY: stripePublishableKey,
     });
 }
@@ -31,6 +33,8 @@ export function parseServerEnv(source: Record<string, string | undefined>): Serv
         API_TIMEOUT_MS: source.API_TIMEOUT_MS || undefined,
         JWT_SECRET: source.JWT_SECRET || undefined,
         STRIPE_PUBLISHABLE_KEY: source.STRIPE_PUBLISHABLE_KEY?.trim() || undefined,
+        TRUSTED_PROXY_HOPS: source.TRUSTED_PROXY_HOPS?.trim() || undefined,
+        TRUSTED_CLIENT_IP_HEADER: source.TRUSTED_CLIENT_IP_HEADER?.trim() || undefined,
     });
 
     if (!result.success) {

@@ -4,6 +4,7 @@ import {
     ACCESS_COOKIE,
     REFRESH_COOKIE,
     buildAuthCookies,
+    clientIpFromRequestHeaders,
     isAdminSession,
     mergeCookieHeader,
     refreshAuthSession,
@@ -76,7 +77,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     let renewed: AuthResponse | null = null;
     let refreshRejected = false;
     if (!session && refreshToken) {
-        const outcome = await refreshAuthSession(refreshToken);
+        const outcome = await refreshAuthSession(refreshToken, clientIpFromRequestHeaders(request.headers));
         renewed = outcome.kind === 'ok' ? outcome.tokens : null;
         refreshRejected = outcome.kind === 'rejected';
         session = renewed ? await verifyAccessToken(renewed.accessToken) : null;

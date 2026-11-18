@@ -45,3 +45,21 @@ describe('parseServerEnv', () => {
         );
     });
 });
+
+describe('parseServerEnv client IP settings', () => {
+    it('defaults TRUSTED_PROXY_HOPS to 0 and parses an override', () => {
+        expect(parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET }).TRUSTED_PROXY_HOPS).toBe(0);
+        expect(
+            parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, TRUSTED_PROXY_HOPS: '2' }).TRUSTED_PROXY_HOPS
+        ).toBe(2);
+    });
+
+    it('rejects a negative or non-numeric TRUSTED_PROXY_HOPS', () => {
+        expect(() => parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, TRUSTED_PROXY_HOPS: '-1' })).toThrow(
+            /TRUSTED_PROXY_HOPS/
+        );
+        expect(() => parseServerEnv({ NODE_ENV: 'development', JWT_SECRET: SECRET, TRUSTED_PROXY_HOPS: 'x' })).toThrow(
+            /TRUSTED_PROXY_HOPS/
+        );
+    });
+});

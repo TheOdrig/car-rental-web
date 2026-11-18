@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
-import { API, buildUpstreamUrl } from '@/shared/server';
+import { API, buildUpstreamUrl, clientIpHeaders } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { setOAuthStateCookie } from '../../_lib/oauth-state';
 
@@ -22,6 +22,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     try {
         const response = await fetch(buildUpstreamUrl(API.oauth.authorize.resolve({ provider }).path), {
             redirect: 'manual',
+            headers: await clientIpHeaders(),
             cache: 'no-store',
         });
         const location = response.headers.get('location');
