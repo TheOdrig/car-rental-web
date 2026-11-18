@@ -302,6 +302,28 @@ describe('PayRental', () => {
         expect(clientPost).not.toHaveBeenCalled();
     });
 
+    it('removes the client secret from the URL after a 3DS return and keeps the status params', async () => {
+        clientGet.mockResolvedValue(payment('AUTHORIZED'));
+
+        renderPay({ returnedPaymentIntent: 'pi_1', returnedClientSecret: 'pi_1_secret_x', redirectStatus: 'succeeded' });
+
+        await waitFor(() =>
+            expect(routerReplace).toHaveBeenCalledWith('/rentals/7/pay?payment_intent=pi_1&redirect_status=succeeded', {
+                scroll: false,
+            })
+        );
+        expect(routerReplace.mock.calls.flat().join(' ')).not.toContain('secret');
+    });
+
+    it('leaves the URL alone when no client secret came back', async () => {
+        clientGet.mockResolvedValue(payment('AUTHORIZED'));
+
+        renderPay({ returnedPaymentIntent: 'pi_1', redirectStatus: 'succeeded' });
+
+        expect(await screen.findByTestId('payment-state-authorized')).toBeInTheDocument();
+        expect(routerReplace).not.toHaveBeenCalled();
+    });
+
     it('keeps the form and shows an inline message on a validation error', async () => {
         clientPost.mockResolvedValue(intent());
         confirmPayment.mockResolvedValue({ error: { type: 'validation_error', message: 'Your card number is incomplete.' } });

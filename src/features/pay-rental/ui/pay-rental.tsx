@@ -224,6 +224,18 @@ export function PayRental({
     const intentQuery = usePaymentIntent(rentalId, attempt, !processing && failure === null);
     const paymentQuery = useRentalPayment(rentalId, { poll: processing, enabled: processing, runKey: pollRun });
 
+    useEffect(() => {
+        if (!returnedClientSecret) {
+            return;
+        }
+
+        const kept = new URLSearchParams();
+        if (returnedPaymentIntent) kept.set('payment_intent', returnedPaymentIntent);
+        if (redirectStatus) kept.set('redirect_status', redirectStatus);
+        const query = kept.toString();
+        router.replace(`/rentals/${rentalId}/pay${query ? `?${query}` : ''}`, { scroll: false });
+    }, [returnedClientSecret, returnedPaymentIntent, redirectStatus, rentalId, router]);
+
     const intentStatus = isApiError(intentQuery.error) ? intentQuery.error.status : undefined;
     useEffect(() => {
         if (intentStatus === 409) {
