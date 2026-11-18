@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { useCallback } from 'react';
 import { clientPost, clientGet } from '@/shared/api';
@@ -22,6 +22,16 @@ export const authKeys = {
 
 async function fetchMe(): Promise<MeResponse> {
     return clientGet<MeResponse>('/api/auth/me');
+}
+
+function forgetPrincipal(queryClient: QueryClient): void {
+    queryClient.clear();
+    queryClient.setQueryData(authKeys.me(), null);
+}
+
+async function adoptPrincipal(queryClient: QueryClient): Promise<void> {
+    queryClient.clear();
+    await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: 0 }).catch(() => undefined);
 }
 
 async function loginApi(credentials: LoginRequest): Promise<LoginResponse> {
@@ -77,7 +87,7 @@ export function useAuth(): AuthContextValue {
         mutationFn: loginApi,
         onSuccess: async () => {
             showToast.success(toastMessages.auth.loginSuccess);
-            await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+            await adoptPrincipal(queryClient);
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.auth.loginError, error.message);
@@ -88,12 +98,10 @@ export function useAuth(): AuthContextValue {
         mutationFn: logoutApi,
         onSuccess: () => {
             showToast.success(toastMessages.auth.logoutSuccess);
-            queryClient.setQueryData(authKeys.me(), null);
-            queryClient.removeQueries({ queryKey: authKeys.all });
             router.push('/');
         },
-        onError: () => {
-            queryClient.setQueryData(authKeys.me(), null);
+        onSettled: () => {
+            forgetPrincipal(queryClient);
         },
     });
 
@@ -160,7 +168,7 @@ export function useLogin() {
     return useMutation({
         mutationFn: loginApi,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+            await adoptPrincipal(queryClient);
         },
     });
 }
@@ -172,9 +180,10 @@ export function useLogout() {
     return useMutation({
         mutationFn: logoutApi,
         onSuccess: () => {
-            queryClient.setQueryData(authKeys.me(), null);
-            queryClient.removeQueries({ queryKey: authKeys.all });
             router.push('/');
+        },
+        onSettled: () => {
+            forgetPrincipal(queryClient);
         },
     });
 }
@@ -189,8 +198,7 @@ export function useRefreshToken() {
             await queryClient.invalidateQueries({ queryKey: authKeys.me() });
         },
         onError: () => {
-            queryClient.setQueryData(authKeys.me(), null);
-            queryClient.removeQueries({ queryKey: authKeys.all });
+            forgetPrincipal(queryClient);
             router.push('/login');
         },
     });
@@ -202,7 +210,7 @@ export function useRegister() {
     return useMutation({
         mutationFn: registerApi,
         onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: authKeys.me() });
+            await adoptPrincipal(queryClient);
         },
     });
 }

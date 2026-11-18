@@ -16,7 +16,7 @@ vi.mock('next/headers', () => ({
 }));
 
 import { resetServerEnvForTests } from '@/shared/server/env';
-import { resetRefreshCacheForTests } from '@/shared/server/upstream';
+import { refreshAuthSession, resetRefreshCacheForTests } from '@/shared/server/upstream';
 import { POST as login } from '../auth/login/route';
 import { POST as register } from '../auth/register/route';
 import { POST as refresh } from '../auth/refresh/route';
@@ -147,6 +147,21 @@ describe('auth BFF contract', () => {
             expect(headers.Authorization).toBeUndefined();
             expect(jar.has('access_token')).toBe(false);
             expect(jar.has('refresh_token')).toBe(false);
+        });
+
+        it('forgets the shared refresh outcome of the logged-out token', async () => {
+            jar.set('refresh_token', 'r-shared');
+            fetchMock.mockResolvedValueOnce(
+                new Response(JSON.stringify({ accessToken: 'a2', refreshToken: 'r2', expiresIn: 900 }), { status: 200 })
+            );
+            await refreshAuthSession('r-shared');
+            fetchMock.mockResolvedValueOnce(new Response(null, { status: 204 }));
+
+            await logout(post('/api/auth/logout'), context);
+            fetchMock.mockResolvedValueOnce(new Response('{}', { status: 401 }));
+            const replay = await refreshAuthSession('r-shared');
+
+            expect(replay.kind).toBe('rejected');
         });
 
         it('clears the cookies even when the upstream call fails', async () => {

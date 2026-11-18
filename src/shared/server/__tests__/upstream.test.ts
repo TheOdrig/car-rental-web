@@ -20,6 +20,7 @@ import { resetServerEnvForTests } from '../env';
 import {
     buildUpstreamUrl,
     refreshAuthSession,
+    forgetRefresh,
     refreshAuthTokens,
     renewAccessToken,
     resetRefreshCacheForTests,
@@ -315,6 +316,16 @@ describe('upstream', () => {
 
         expect(lastHeaders()['Content-Type']).toBeUndefined();
         expect(fetchMock.mock.calls[0][1].body).toBe(form);
+    });
+
+    it('forgetRefresh drops the shared outcome so a rotated token is not replayed after logout', async () => {
+        fetchMock.mockResolvedValue(jsonResponse(200, refreshed));
+
+        await refreshAuthSession('logout-token');
+        forgetRefresh('logout-token');
+        await refreshAuthSession('logout-token');
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 
     it('sends no client IP when no proxy hops are trusted', async () => {

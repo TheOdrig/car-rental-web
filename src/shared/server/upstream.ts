@@ -107,6 +107,10 @@ function refreshKey(refreshToken: string): string {
     return createHash('sha256').update(refreshToken).digest('hex');
 }
 
+export function forgetRefresh(refreshToken: string): void {
+    sharedRefreshes().delete(refreshKey(refreshToken));
+}
+
 export function resetRefreshCacheForTests(): void {
     sharedRefreshes().clear();
 }

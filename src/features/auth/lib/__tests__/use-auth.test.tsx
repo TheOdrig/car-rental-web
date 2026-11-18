@@ -8,6 +8,8 @@ import {
     authKeys
 } from '@/features/auth';
 import { createQueryWrapper } from '@/app/testing/test-utils';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { type ReactNode } from 'react';
 import type { MeResponse, LoginResponse } from '@/features/auth';
 const mockPush = vi.fn();
 vi.mock('next/navigation', () => ({
@@ -156,6 +158,61 @@ describe('Auth Hooks', () => {
                     password: 'Pass123!',
                 })
             ).rejects.toThrow('Email exists');
+        });
+    });
+    describe('principal change', () => {
+        function seeded() {
+            const client = new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } });
+            client.setQueryData(['rentals', 'me'], { content: [{ id: 1 }] });
+            const wrapper = ({ children }: { children: ReactNode }) => (
+                <QueryClientProvider client={client}>{children}</QueryClientProvider>
+            );
+            return { client, wrapper };
+        }
+
+        it('clears every cached query after a successful logout', async () => {
+            vi.mocked(clientPost).mockResolvedValueOnce({ message: 'Logged out' });
+            const { client, wrapper } = seeded();
+            const { result } = renderHook(() => useLogout(), { wrapper });
+
+            await result.current.mutateAsync();
+
+            await waitFor(() => expect(client.getQueryData(['rentals', 'me'])).toBeUndefined());
+            expect(client.getQueryData(authKeys.me())).toBeNull();
+        });
+
+        it('clears every cached query when logout fails', async () => {
+            vi.mocked(clientPost).mockRejectedValueOnce(new Error('network'));
+            const { client, wrapper } = seeded();
+            const { result } = renderHook(() => useLogout(), { wrapper });
+
+            await expect(result.current.mutateAsync()).rejects.toThrow('network');
+
+            await waitFor(() => expect(client.getQueryData(['rentals', 'me'])).toBeUndefined());
+            expect(mockPush).not.toHaveBeenCalled();
+        });
+
+        it('drops the previous principal data after login and loads the new one', async () => {
+            vi.mocked(clientPost).mockResolvedValueOnce(mockLoginResponse);
+            vi.mocked(clientGet).mockResolvedValueOnce(mockMeResponse);
+            const { client, wrapper } = seeded();
+            const { result } = renderHook(() => useLogin(), { wrapper });
+
+            await result.current.mutateAsync({ username: 'test', password: 'pass' });
+
+            expect(client.getQueryData(['rentals', 'me'])).toBeUndefined();
+            expect(client.getQueryData(authKeys.me())).toEqual(mockMeResponse);
+        });
+
+        it('drops the previous principal data after registration', async () => {
+            vi.mocked(clientPost).mockResolvedValueOnce(mockLoginResponse);
+            vi.mocked(clientGet).mockResolvedValueOnce(mockMeResponse);
+            const { client, wrapper } = seeded();
+            const { result } = renderHook(() => useRegister(), { wrapper });
+
+            await result.current.mutateAsync({ username: 'n', email: 'n@example.com', password: 'Pass123!' });
+
+            expect(client.getQueryData(['rentals', 'me'])).toBeUndefined();
         });
     });
     describe('authKeys', () => {

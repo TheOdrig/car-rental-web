@@ -25,6 +25,7 @@ export { isAdminSession, verifyAccessToken, type Session } from './session';
 export {
     authResponseSchema,
     buildUpstreamUrl,
+    forgetRefresh,
     refreshAuthSession,
     refreshAuthTokens,
     renewAccessToken,

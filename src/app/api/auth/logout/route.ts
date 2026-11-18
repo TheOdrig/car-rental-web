@@ -1,9 +1,12 @@
 import { logger } from '@/shared/lib/logger';
-import { API, clearAuthTokens, getRefreshToken, route, upstream } from '@/shared/server';
+import { API, clearAuthTokens, forgetRefresh, getRefreshToken, route, upstream } from '@/shared/server';
 
 export const POST = route(
     async () => {
         const refreshToken = await getRefreshToken();
+        if (refreshToken) {
+            forgetRefresh(refreshToken);
+        }
 
         try {
             if (refreshToken) {
