@@ -5,6 +5,7 @@ import { Input } from '@/shared/ui';
 import { Button } from '@/shared/ui';
 import type { CreateBookingRequest } from '@/features/book-car';
 import { createBooking } from '@/features/book-car';
+import { getEndDateRange, getStartDateRange, parseLocalDate, toDateInputValue } from '@/entities/rental';
 import { validateDateRange } from '../lib/date-validation';
 import { bookingActions } from '@/features/book-car';
 import { publishBookingCreated } from '@/features/book-car';
@@ -23,6 +24,9 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
     const [error, setError] = useState<string | null>(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+    const startRange = getStartDateRange();
+    const endRange = getEndDateRange(parseLocalDate(startDate) ?? undefined);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
@@ -32,8 +36,12 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
             return;
         }
 
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start = parseLocalDate(startDate);
+        const end = parseLocalDate(endDate);
+        if (!start || !end) {
+            setError('Please enter valid dates');
+            return;
+        }
 
         const validationError = validateDateRange(start, end);
         if (validationError) {
@@ -46,8 +54,8 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
         try {
             const request: CreateBookingRequest = {
                 carId,
-                startDate: start.toISOString(),
-                endDate: end.toISOString(),
+                startDate,
+                endDate,
                 pickupLocation: 'Default Location',
                 dropoffLocation: 'Default Location',
                 addons: [],
@@ -81,6 +89,8 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
                     id="startDate"
                     type="date"
                     value={startDate}
+                    min={toDateInputValue(startRange.min)}
+                    max={toDateInputValue(startRange.max)}
                     onChange={(e) => setStartDate(e.target.value)}
                     required
                 />
@@ -94,6 +104,8 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
                     id="endDate"
                     type="date"
                     value={endDate}
+                    min={toDateInputValue(endRange.min)}
+                    max={toDateInputValue(endRange.max)}
                     onChange={(e) => setEndDate(e.target.value)}
                     required
                 />

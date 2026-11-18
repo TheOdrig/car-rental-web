@@ -2,14 +2,14 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
-import { clientPost, isApiError } from '@/shared/api';
+import { clientPost } from '@/shared/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useCar } from '@/entities/car';
 import { usePricingPreview } from '@/entities/car';
 import { useCurrentUser } from '@/entities/user';
 import { checkoutFormSchema, type CheckoutFormSchema } from '@/features/book-car';
-import { calculatePriceBreakdown, calculateRentalDays, DEFAULT_ADDONS } from '@/features/book-car';
+import { calculatePriceBreakdown, calculateRentalDays, DEFAULT_ADDONS, getBookingErrorMessage } from '@/features/book-car';
 import { PersonalDetails } from './personal-details';
 import { PaymentForm } from './payment-form';
 import { ProtectionExtras } from './protection-extras';
@@ -85,7 +85,7 @@ export function CheckoutForm({
             });
             router.push(`/booking/success?ref=${booking.id}`);
         } catch (error) {
-            const message = isApiError(error) ? error.message : 'An unexpected error occurred';
+            const message = getBookingErrorMessage(error);
             router.push(`/booking/failure?error=${encodeURIComponent(message || 'Payment failed')}`);
         } finally {
             setIsSubmitting(false);

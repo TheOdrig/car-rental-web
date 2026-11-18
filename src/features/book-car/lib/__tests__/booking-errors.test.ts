@@ -28,3 +28,29 @@ describe('getBookingErrorMessage', () => {
         expect(getBookingErrorMessage('weird')).toBe('Failed to create booking');
     });
 });
+
+describe('getBookingErrorMessage rental rules', () => {
+    it('explains the 30 day limit from VALIDATION_FAILED', () => {
+        const error = new ApiError({
+            status: 400,
+            message: 'Validation failed',
+            timestamp: new Date().toISOString(),
+            code: 'VALIDATION_FAILED',
+            errors: { withinMaxRentalLength: 'Rental cannot be longer than 30 days' },
+        });
+
+        expect(getBookingErrorMessage(error)).toContain('at most 30 days');
+    });
+
+    it('explains the 180 day lead limit from RENTAL_VALIDATION_FAILED', () => {
+        const error = apiError(400, 'Start date cannot be more than 180 days ahead', 'RENTAL_VALIDATION_FAILED');
+
+        expect(getBookingErrorMessage(error)).toContain('180 days ahead');
+    });
+
+    it('explains the open request cap', () => {
+        const error = apiError(409, 'You already have 3 open rental requests.', 'OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED');
+
+        expect(getBookingErrorMessage(error)).toContain('3 open rental requests');
+    });
+});

@@ -1,5 +1,5 @@
 import type { Addon, CardType, PaymentErrorCode, PriceBreakdown, } from '../model/types';
-import { isApiError, isRateLimited, rateLimitMessage } from '@/shared/api';
+import { CAR_BOOKED_MESSAGE, CAR_NOT_AVAILABLE_CODE, getRentalRequestErrorMessage } from '@/entities/rental';
 import type { CurrencyType } from '@/shared/types';
 
 export function detectCardType(cardNumber: string): CardType {
@@ -156,21 +156,10 @@ export function getPaymentErrorMessage(code: PaymentErrorCode): string {
     return messages[code] || 'An unexpected error occurred.';
 }
 
-export const CAR_NOT_AVAILABLE_CODE = 'CAR_NOT_AVAILABLE';
-
-export const CAR_BOOKED_MESSAGE =
-    'This car is no longer available for the selected dates. Please choose different dates or another car.';
+export { CAR_BOOKED_MESSAGE, CAR_NOT_AVAILABLE_CODE };
 
 export function getBookingErrorMessage(error: unknown): string {
-    if (isRateLimited(error)) {
-        return rateLimitMessage(error.retryAfter);
-    }
-
-    if (isApiError(error) && error.code === CAR_NOT_AVAILABLE_CODE) {
-        return error.status === 409 ? CAR_BOOKED_MESSAGE : error.message;
-    }
-
-    return error instanceof Error ? error.message : 'Failed to create booking';
+    return getRentalRequestErrorMessage(error, 'Failed to create booking');
 }
 
 export function maskCardNumber(cardNumber: string): string {

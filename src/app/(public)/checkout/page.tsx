@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { Metadata } from 'next';
 import { CheckoutForm } from '@/features/book-car';
 import { CheckoutSkeleton } from '@/features/book-car';
+import { rentalDatesSchema } from '@/entities/rental';
 
 export const metadata: Metadata = {
     title: 'Checkout | Car Rental',
@@ -39,6 +40,28 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
                     >
                         Browse Cars
+                    </Link>
+                </div>
+            </div>
+        );
+    }
+
+    const dateCheck = rentalDatesSchema.safeParse({ startDate, endDate });
+    if (!dateCheck.success) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-foreground mb-4">
+                        Invalid Rental Dates
+                    </h1>
+                    <p className="text-muted-foreground mb-6" role="alert">
+                        {dateCheck.error.issues[0]?.message}
+                    </p>
+                    <Link
+                        href={`/cars/${carId}`}
+                        className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+                    >
+                        Choose Different Dates
                     </Link>
                 </div>
             </div>
