@@ -4,13 +4,19 @@ import { isApiError } from '@/shared/api';
 import { logger } from '@/shared/lib/logger';
 import { authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
+import { OAUTH_STATE_COOKIE, clearOAuthStateCookie, oauthStateMatches } from '../../_lib/oauth-state';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;
 }
 
+function finish(response: NextResponse): NextResponse {
+    clearOAuthStateCookie(response);
+    return response;
+}
+
 function loginRedirect(request: NextRequest, error: string): NextResponse {
-    return NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url));
+    return finish(NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url)));
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
@@ -21,6 +27,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
     if (!isOAuthProvider(provider) || !code || !state) {
         return loginRedirect(request, 'invalid_callback');
+    }
+
+    if (!oauthStateMatches(request.cookies.get(OAUTH_STATE_COOKIE)?.value, state)) {
+        return loginRedirect(request, 'invalid_state');
     }
 
     try {
@@ -37,7 +47,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         await setAuthTokens(tokens.data);
 
-        return NextResponse.redirect(new URL('/', request.url));
+        return finish(NextResponse.redirect(new URL('/', request.url)));
     } catch (error) {
         logger.error('[BFF] OAuth callback failed', error);
         return loginRedirect(request, isApiError(error) && error.message ? error.message : 'callback_failed');

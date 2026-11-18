@@ -3,6 +3,7 @@ import { AUTH_ENDPOINTS } from '@/features/auth';
 import { logger } from '@/shared/lib/logger';
 import { buildUpstreamUrl } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
+import { setOAuthStateCookie } from '../../_lib/oauth-state';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;
@@ -32,11 +33,16 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         const target = new URL(location);
 
-        if (target.protocol !== 'https:') {
+        const state = target.searchParams.get('state');
+
+        if (target.protocol !== 'https:' || !state) {
             return loginRedirect(request, 'oauth_unavailable');
         }
 
-        return NextResponse.redirect(target);
+        const redirect = NextResponse.redirect(target);
+        setOAuthStateCookie(redirect, state);
+
+        return redirect;
     } catch (error) {
         logger.error('[BFF] OAuth start failed', error);
         return loginRedirect(request, 'oauth_unavailable');
