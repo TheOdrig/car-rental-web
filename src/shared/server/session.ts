@@ -7,6 +7,7 @@ const ADMIN_ROLE = 'ADMIN';
 
 const claimsSchema = z.object({
     sub: z.string().min(1),
+    token_use: z.literal('access'),
     userId: z.number(),
     roles: z.array(z.string()),
     exp: z.number(),

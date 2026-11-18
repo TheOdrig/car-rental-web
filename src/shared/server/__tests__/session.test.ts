@@ -20,6 +20,10 @@ describe('verifyAccessToken', () => {
         expect(await verifyAccessToken(forged)).toBeNull();
     });
 
+    it('rejects a correctly signed token that is not an access token', async () => {
+        expect(await verifyAccessToken(await createToken({ tokenUse: 'refresh' }))).toBeNull();
+    });
+
     it('rejects an expired token', async () => {
         expect(await verifyAccessToken(await createToken({ expiresIn: '-1m' }))).toBeNull();
     });
@@ -36,6 +40,7 @@ describe('verifyAccessToken', () => {
     it('rejects tokens with missing claims, malformed input or no token', async () => {
         expect(await verifyAccessToken(await createToken({ omit: 'roles' }))).toBeNull();
         expect(await verifyAccessToken(await createToken({ omit: 'userId' }))).toBeNull();
+        expect(await verifyAccessToken(await createToken({ omit: 'token_use' }))).toBeNull();
         expect(await verifyAccessToken('not.a.jwt')).toBeNull();
         expect(await verifyAccessToken(undefined)).toBeNull();
     });
