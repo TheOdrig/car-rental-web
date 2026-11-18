@@ -179,3 +179,49 @@ describe('FormField', () => {
         });
     });
 });
+describe('FormField accessibility links', () => {
+    it('points the input at its error message', () => {
+        render(
+            <FormField label="Email" htmlFor="email" error="Email is required">
+                <Input id="email" />
+            </FormField>
+        );
+
+        expect(screen.getByLabelText('Email')).toHaveAttribute('aria-describedby', 'email-message');
+        expect(document.getElementById('email-message')).toHaveTextContent('Email is required');
+    });
+
+    it('points the input at both description and message and keeps an existing describedby', () => {
+        render(
+            <FormField label="Email" htmlFor="email" description="We never share it" success="Looks good">
+                <Input id="email" aria-describedby="hint" />
+            </FormField>
+        );
+
+        expect(screen.getByLabelText('Email').getAttribute('aria-describedby')).toBe(
+            'hint email-description email-message'
+        );
+    });
+
+    it('reaches an input wrapped in a plain element', () => {
+        render(
+            <FormField label="Password" htmlFor="password" error="Too short">
+                <div className="relative">
+                    <Input id="password" />
+                </div>
+            </FormField>
+        );
+
+        expect(screen.getByLabelText('Password')).toHaveAttribute('aria-describedby', 'password-message');
+    });
+
+    it('adds nothing when there is no description or message', () => {
+        render(
+            <FormField label="Email" htmlFor="email">
+                <Input id="email" />
+            </FormField>
+        );
+
+        expect(screen.getByLabelText('Email')).not.toHaveAttribute('aria-describedby');
+    });
+});

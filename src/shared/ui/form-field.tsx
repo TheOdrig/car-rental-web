@@ -1,11 +1,35 @@
 'use client';
 
-import { memo, type ReactNode } from 'react';
+import { Children, cloneElement, isValidElement, memo, type ReactElement, type ReactNode } from 'react';
 import { cn } from '@/shared/lib';
 import { Label } from '@/shared/ui/label';
 import { ValidationIcon } from '@/shared/ui';
 import type { ValidationState } from '@/shared/types';
 import { getValidationMessageClasses, getValidationAriaLabel } from '@/shared/lib';
+
+function linkControl(node: ReactNode, controlId: string, describedBy: string | undefined): ReactNode {
+    if (!describedBy) {
+        return node;
+    }
+
+    return Children.map(node, (child) => {
+        if (!isValidElement(child)) {
+            return child;
+        }
+
+        const element = child as ReactElement<{ id?: string; children?: ReactNode; 'aria-describedby'?: string }>;
+        if (element.props.id === controlId) {
+            const existing = element.props['aria-describedby'];
+            return cloneElement(element, { 'aria-describedby': existing ? `${existing} ${describedBy}` : describedBy });
+        }
+
+        if (element.props.children === undefined || typeof element.type === 'function') {
+            return child;
+        }
+
+        return cloneElement(element, undefined, linkControl(element.props.children, controlId, describedBy));
+    });
+}
 
 interface FormFieldProps {
     label: string;
@@ -45,6 +69,7 @@ export const FormField = memo(function FormField({
     const message = error || success;
     const messageId = message ? `${htmlFor}-message` : undefined;
     const descriptionId = description ? `${htmlFor}-description` : undefined;
+    const describedBy = [descriptionId, messageId].filter(Boolean).join(' ') || undefined;
 
     return (
         <div className={cn('space-y-2', className)}>
@@ -70,7 +95,7 @@ export const FormField = memo(function FormField({
             )}
 
             <div className="relative">
-                {children}
+                {linkControl(children, htmlFor, describedBy)}
 
                 {showIcon && effectiveState !== 'idle' && effectiveState !== 'focused' && effectiveState !== 'disabled' && (
                     <div
