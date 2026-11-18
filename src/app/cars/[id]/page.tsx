@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { isApiError } from '@/shared/api';
 import { SimilarCarsSection } from '@/entities/car';
 import { getCar, getCarCalendar } from '@/entities/car/api/cached-fetchers';
 import { CarBookingCard } from '@/widgets/car-booking-card';
@@ -9,29 +10,35 @@ interface PageProps {
     params: Promise<{ id: string }>;
 }
 
+function parseCarId(value: string): number | null {
+    if (!/^[0-9]+$/.test(value)) {
+        return null;
+    }
+
+    const parsed = Number(value);
+    return Number.isSafeInteger(parsed) && parsed > 0 ? parsed : null;
+}
+
 export default async function CarDetailPage({ params }: PageProps) {
     const { id } = await params;
-    const carId = parseInt(id, 10);
+    const carId = parseCarId(id);
 
-    if (isNaN(carId)) {
+    if (carId === null) {
         notFound();
     }
 
-    let car;
-    let calendar;
+    let loaded;
 
     try {
-        [car, calendar] = await Promise.all([
-            getCar(carId),
-            getCarCalendar(carId),
-        ]);
-    } catch {
-        notFound();
+        loaded = await Promise.all([getCar(carId), getCarCalendar(carId)]);
+    } catch (error) {
+        if (isApiError(error) && error.status === 404) {
+            notFound();
+        }
+        throw error;
     }
 
-    if (!car) {
-        notFound();
-    }
+    const [car, calendar] = loaded;
 
     return (
         <main className="container mx-auto px-4 py-8">
@@ -47,9 +54,9 @@ export default async function CarDetailPage({ params }: PageProps) {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
     const { id } = await params;
-    const carId = parseInt(id, 10);
+    const carId = parseCarId(id);
 
-    if (isNaN(carId)) {
+    if (carId === null) {
         return { title: 'Car Not Found' };
     }
 
@@ -57,8 +64,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
     try {
         car = await getCar(carId);
-    } catch {
-        return { title: 'Car Not Found' };
+    } catch (error) {
+        return { title: isApiError(error) && error.status === 404 ? 'Car Not Found' : 'Car | Car Rental' };
     }
 
     return {
