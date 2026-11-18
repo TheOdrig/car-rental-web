@@ -2,7 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
-import type { PricingResponse } from '@/entities/rental';
+import type { PricingResponse } from '../model/types';
 
 export const pricingKeys = {
     all: ['pricing'] as const,

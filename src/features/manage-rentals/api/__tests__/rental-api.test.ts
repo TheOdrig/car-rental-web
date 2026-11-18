@@ -23,6 +23,6 @@ describe('getRentals', () => {
     it('sends no params without a filter', async () => {
         await getRentals();
 
-        expect(apiClient.get).toHaveBeenCalledWith('/api/rentals', { params: {} });
+        expect(apiClient.get).toHaveBeenCalledWith('/api/rentals', { params: undefined });
     });
 });

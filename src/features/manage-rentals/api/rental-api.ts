@@ -2,14 +2,18 @@ import { apiClient } from '@/shared/api';
 import type { Rental } from '@/entities/rental';
 import type { RentalFilter, RentalActionRequest, PaginatedRentals } from '../model/types';
 
-function filterToParams(filter?: RentalFilter): Record<string, string | number | boolean> {
+function filterToParams(filter?: RentalFilter): Record<string, string | number | boolean> | undefined {
+    if (!filter) {
+        return undefined;
+    }
+
     const params: Record<string, string | number | boolean> = {};
 
-    if (filter?.status !== undefined) params.status = filter.status;
-    if (filter?.startDate !== undefined) params.startDate = filter.startDate;
-    if (filter?.endDate !== undefined) params.endDate = filter.endDate;
-    if (filter?.carId !== undefined) params.carId = filter.carId;
-    if (filter?.userId !== undefined) params.userId = filter.userId;
+    if (filter.status !== undefined) params.status = filter.status;
+    if (filter.startDate !== undefined) params.startDate = filter.startDate;
+    if (filter.endDate !== undefined) params.endDate = filter.endDate;
+    if (filter.carId !== undefined) params.carId = filter.carId;
+    if (filter.userId !== undefined) params.userId = filter.userId;
 
     return params;
 }

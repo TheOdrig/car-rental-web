@@ -1,7 +1,7 @@
 import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { CurrencyType, PageResponse } from '@/shared/types';
-import { UserSummary } from '@/entities/user';
-import { CarSummary } from '@/entities/car';
+import type { UserSummary } from '@/entities/user/@x/rental';
+import type { CarSummary } from '@/entities/car/@x/rental';
 
 export enum RentalStatus {
     REQUESTED = 'Requested',
@@ -24,21 +24,6 @@ export type RentalRequest = Omit<
 >;
 export type PickupRequest = Schemas['PickupRequest'];
 export type ReturnRequest = Schemas['ReturnRequest'];
-export type PricingRequest = Schemas['PricingRequest'];
-export type PricingModifier = WithRequired<
-    Schemas['ModifierDto'],
-    'strategyName' | 'multiplier' | 'description' | 'isDiscount' | 'formattedPercentage'
->;
-export type PricingResponse = WithRequired<
-    Omit<Schemas['PricingResponse'], 'appliedModifiers'>,
-    | 'basePrice'
-    | 'baseTotalPrice'
-    | 'finalPrice'
-    | 'effectiveDailyPrice'
-    | 'totalSavings'
-    | 'combinedMultiplier'
-    | 'rentalDays'
-> & { appliedModifiers: PricingModifier[] };
 export type LateReturnStatus =
     | 'ON_TIME'
     | 'GRACE_PERIOD'

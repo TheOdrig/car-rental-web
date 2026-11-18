@@ -126,3 +126,19 @@ export interface VehicleDetailResponse {
     activeRental?: VehicleActiveRental;
     status?: string;
 }
+
+export type PricingRequest = Schemas['PricingRequest'];
+export type PricingModifier = WithRequired<
+    Schemas['ModifierDto'],
+    'strategyName' | 'multiplier' | 'description' | 'isDiscount' | 'formattedPercentage'
+>;
+export type PricingResponse = WithRequired<
+    Omit<Schemas['PricingResponse'], 'appliedModifiers'>,
+    | 'basePrice'
+    | 'baseTotalPrice'
+    | 'finalPrice'
+    | 'effectiveDailyPrice'
+    | 'totalSavings'
+    | 'combinedMultiplier'
+    | 'rentalDays'
+> & { appliedModifiers: PricingModifier[] };
