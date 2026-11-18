@@ -1,4 +1,3 @@
-export * from './model/types';
 
 export * from './model/rental-payment';
 export { PAYMENT_ENDPOINTS } from './api/endpoints';

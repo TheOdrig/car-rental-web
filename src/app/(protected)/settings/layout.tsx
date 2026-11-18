@@ -23,7 +23,7 @@ const SETTINGS_TABS = [
     { label: 'Security', href: '/settings/security', icon: Shield, comingSoon: false },
     { label: 'Documents', href: '/settings/documents', icon: FileText, comingSoon: true },
     { label: 'Notifications', href: '/settings/notifications', icon: Bell, comingSoon: true },
-    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard, comingSoon: true },
+    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard, comingSoon: false },
 ];
 
 function Breadcrumb({ currentTab }: { currentTab?: string }) {
