@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { LoginForm } from '@/features/auth';
 import { OAuthButtons, OAuthDivider } from '@/features/auth';
+import { safeRedirectPath } from '@/shared/lib';
 
 export const metadata: Metadata = {
     title: 'Login | CarRental',
@@ -26,7 +27,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 </p>
             </div>
 
-            <LoginForm callbackUrl={callbackUrl || '/'} />
+            <LoginForm callbackUrl={safeRedirectPath(callbackUrl)} />
 
             <OAuthDivider />
 

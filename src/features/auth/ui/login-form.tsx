@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
 import { useLogin } from '../lib/use-auth';
-import { cn } from '@/shared/lib';
+import { cn, safeRedirectPath } from '@/shared/lib';
 import { FormError } from './form-error';
 import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
@@ -91,7 +91,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 username: formData.username,
                 password: formData.password,
             });
-            router.push(callbackUrl);
+            router.push(safeRedirectPath(callbackUrl));
         } catch {
             setFormError('Invalid credentials. Please try again.');
         }

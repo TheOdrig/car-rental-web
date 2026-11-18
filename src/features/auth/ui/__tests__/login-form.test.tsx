@@ -216,6 +216,26 @@ describe('LoginForm', () => {
         });
     });
 
+    describe('Unsafe callback URL', () => {
+        it('should ignore an external callback URL after login', async () => {
+            const mockMutateAsync = vi.fn().mockResolvedValue({});
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: mockMutateAsync,
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm callbackUrl="//evil.example/steal" />);
+
+            await user.type(getUsernameInput(), 'testuser');
+            await user.type(getPasswordInput(), 'password123');
+            submitForm();
+
+            await waitFor(() => {
+                expect(mockPush).toHaveBeenCalledWith('/');
+            });
+        });
+    });
+
     describe('Password Visibility Toggle', () => {
         it('should toggle password visibility', async () => {
             renderWithProviders(<LoginForm />);
