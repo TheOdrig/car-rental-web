@@ -5,6 +5,7 @@ export const GET = proxy({
     path: () => CAR_ENDPOINTS.search,
     forwardQuery: true,
     tags: ['cars'],
+    anonymous: true,
     errorMessage: 'Failed to fetch cars',
     errorStatus: 503,
 });

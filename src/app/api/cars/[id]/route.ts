@@ -24,6 +24,7 @@ export const GET = route<{ id: string }>(
         const include = searchParams.get('include')?.split(',') ?? [];
 
         const car = await upstream.get<Car>(CAR_ENDPOINTS.byId(carId), {
+            anonymous: true,
             cache: 'no-store',
             tags: ['cars', `car-${carId}`],
         });
@@ -40,6 +41,7 @@ export const GET = route<{ id: string }>(
                 'Calendar',
                 upstream.get<CarAvailabilityCalendar>(CAR_ENDPOINTS.availability.calendar(carId), {
                     params: { month: month ?? undefined },
+                    anonymous: true,
                     cache: 'no-store',
                 })
             );
@@ -57,6 +59,7 @@ export const GET = route<{ id: string }>(
                         startDate: searchParams.get('startDate') ?? toDateOnly(today),
                         endDate: searchParams.get('endDate') ?? toDateOnly(windowEnd),
                     },
+                    anonymous: true,
                     cache: 'no-store',
                 })
             );

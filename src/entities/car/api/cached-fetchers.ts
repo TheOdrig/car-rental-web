@@ -6,7 +6,7 @@ import type { Car, CarAvailabilityCalendar } from '../model/types';
 export const getCar = cache(async (carId: number): Promise<Car> => {
     return upstream.get<Car>(
         CAR_ENDPOINTS.byId(carId),
-        { tags: ['cars', `car-${carId}`] }
+        { anonymous: true, tags: ['cars', `car-${carId}`] }
     );
 });
 
@@ -14,7 +14,7 @@ export const getCarCalendar = cache(async (carId: number): Promise<CarAvailabili
     try {
         return await upstream.get<CarAvailabilityCalendar>(
             CAR_ENDPOINTS.availability.calendar(carId),
-            { tags: [`car-${carId}-calendar`] }
+            { anonymous: true, tags: [`car-${carId}-calendar`] }
         );
     } catch {
         return undefined;

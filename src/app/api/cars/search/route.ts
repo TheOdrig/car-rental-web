@@ -29,6 +29,7 @@ export const POST = route(
         }
 
         return upstream.post<AvailabilitySearchResponse>(CAR_ENDPOINTS.availability.search, body, {
+            anonymous: true,
             cache: 'no-store',
         });
     },
