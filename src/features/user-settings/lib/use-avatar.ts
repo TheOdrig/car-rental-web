@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientDelete, clientPost } from '@/shared/api';
+import { clientDelete, clientPost, getApiErrorMessage } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { profileKeys } from './use-profile';
 import type { AvatarUploadResponse } from '@/entities/user';
@@ -61,7 +61,7 @@ export function useUploadAvatar() {
         onError: (error: Error) => {
             showToast.error(
                 toastMessages.profile?.avatarUploadError ?? 'Failed to upload avatar',
-                error.message
+                getApiErrorMessage(error)
             );
         },
     });

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete } from '@/shared/api';
+import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
 import { carKeys, type Car, type CarStatus, type VehicleDetailResponse } from '@/entities/car';
@@ -256,7 +256,7 @@ export function useUpdateCar() {
             });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to update car', error.message);
+            showToast.error('Failed to update car', getApiErrorMessage(error));
         },
     });
 }
@@ -300,7 +300,7 @@ export function useChangeCarStatus() {
             });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to change status', error.message);
+            showToast.error('Failed to change status', getApiErrorMessage(error));
         },
     });
 }

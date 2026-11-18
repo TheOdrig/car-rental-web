@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost } from '@/shared/api';
+import { clientGet, clientPost, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
@@ -191,7 +191,7 @@ export function useBanUser() {
             });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to ban user', error.message);
+            showToast.error('Failed to ban user', getApiErrorMessage(error));
         },
     });
 }
@@ -212,7 +212,7 @@ export function useUnbanUser() {
             });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to unban user', error.message);
+            showToast.error('Failed to unban user', getApiErrorMessage(error));
         },
     });
 }

@@ -150,6 +150,30 @@ export function getFormErrorMessage(error: unknown, fallback: string): string {
     return isRateLimited(error) ? rateLimitMessage(error.retryAfter) : fallback;
 }
 
+const API_ERROR_MESSAGES: Readonly<Record<string, string>> = {
+    PAYLOAD_TOO_LARGE: 'That file is too large. Please choose a smaller file and try again.',
+    INVALID_MULTIPART_REQUEST: 'The upload could not be read. Please choose the file again.',
+    CONCURRENT_MODIFICATION: 'This record was changed by someone else. Reload the page and try again.',
+    DATA_CONFLICT: 'This change conflicts with existing data. Reload the page and try again.',
+    INVALID_USER_STATE: "This action is not possible in the user's current state. Reload the page to see the latest status.",
+};
+
+export function getApiErrorMessage(error: unknown): string {
+    if (isApiError(error)) {
+        if (error.code && Object.hasOwn(API_ERROR_MESSAGES, error.code)) {
+            return API_ERROR_MESSAGES[error.code];
+        }
+        if (error.status === 413) {
+            return API_ERROR_MESSAGES.PAYLOAD_TOO_LARGE;
+        }
+        if (isRateLimited(error)) {
+            return rateLimitMessage(error.retryAfter);
+        }
+    }
+
+    return getErrorMessage(error);
+}
+
 export function getErrorMessage(error: unknown): string {
     if (isApiError(error)) {
         return error.message;
