@@ -6,15 +6,37 @@ interface HeaderEnvironment {
 }
 
 export function buildContentSecurityPolicy({ isDevelopment }: Pick<HeaderEnvironment, "isDevelopment">): string {
-  const scriptSources = ["'self'", "'unsafe-inline'", "https://js.stripe.com"];
+  const scriptSources = [
+    "'self'",
+    "'unsafe-inline'",
+    "https://js.stripe.com",
+    "https://*.js.stripe.com",
+    "https://maps.googleapis.com",
+  ];
   if (isDevelopment) {
     scriptSources.push("'unsafe-eval'");
   }
 
-  const connectSources = ["'self'", "https://api.stripe.com"];
+  const connectSources = [
+    "'self'",
+    "https://api.stripe.com",
+    "https://maps.googleapis.com",
+    "https://link.com",
+    "https://*.link.com",
+  ];
   if (isDevelopment) {
     connectSources.push("ws:", "wss:");
   }
+
+  const frameSources = [
+    "https://js.stripe.com",
+    "https://*.js.stripe.com",
+    "https://hooks.stripe.com",
+    "https://*.stripe.com",
+    "https://m.stripe.network",
+    "https://link.com",
+    "https://*.link.com",
+  ];
 
   return [
     "default-src 'self'",
@@ -23,7 +45,7 @@ export function buildContentSecurityPolicy({ isDevelopment }: Pick<HeaderEnviron
     "img-src 'self' data: blob: https:",
     "font-src 'self' data:",
     `connect-src ${connectSources.join(" ")}`,
-    "frame-src https://js.stripe.com https://*.stripe.com https://m.stripe.network",
+    `frame-src ${frameSources.join(" ")}`,
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

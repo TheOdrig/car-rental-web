@@ -8,12 +8,37 @@ function valueOf(headers: Array<{ key: string; value: string }>, key: string): s
 describe('security headers', () => {
     const production = buildSecurityHeaders({ isDevelopment: false, isProduction: true });
 
-    it('allows Stripe scripts, frames and API calls and nothing broader', () => {
+    function directive(csp: string, name: string): string[] {
+        const entry = csp.split('; ').find((part) => part.startsWith(`${name} `));
+        return entry ? entry.split(' ').slice(1) : [];
+    }
+
+    it('allows the Stripe.js and Link origins Stripe documents and nothing broader', () => {
         const csp = buildContentSecurityPolicy({ isDevelopment: false });
 
-        expect(csp).toContain("script-src 'self' 'unsafe-inline' https://js.stripe.com");
-        expect(csp).toContain('connect-src \'self\' https://api.stripe.com');
-        expect(csp).toContain('frame-src https://js.stripe.com https://*.stripe.com');
+        expect(directive(csp, 'script-src')).toEqual([
+            "'self'",
+            "'unsafe-inline'",
+            'https://js.stripe.com',
+            'https://*.js.stripe.com',
+            'https://maps.googleapis.com',
+        ]);
+        expect(directive(csp, 'connect-src')).toEqual([
+            "'self'",
+            'https://api.stripe.com',
+            'https://maps.googleapis.com',
+            'https://link.com',
+            'https://*.link.com',
+        ]);
+        expect(directive(csp, 'frame-src')).toEqual([
+            'https://js.stripe.com',
+            'https://*.js.stripe.com',
+            'https://hooks.stripe.com',
+            'https://*.stripe.com',
+            'https://m.stripe.network',
+            'https://link.com',
+            'https://*.link.com',
+        ]);
         expect(csp).toContain("default-src 'self'");
     });
 
