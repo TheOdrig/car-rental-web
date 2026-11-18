@@ -25,16 +25,18 @@ vi.mock('@/shared/ui/dynamic-image', () => ({
 vi.mock('@/entities/car', () => ({
     useCar: vi.fn(() => ({
         data: {
-            id: 1,
-            brand: 'BMW',
-            model: '3 Series',
-            price: 100,
-            currencyType: 'USD',
-            imageUrl: '/car.jpg',
-            productionYear: 2023,
-            transmissionType: 'Automatic',
-            fuelType: 'Petrol',
-            seats: 5,
+            car: {
+                id: 1,
+                brand: 'BMW',
+                model: '3 Series',
+                price: 100,
+                currencyType: 'USD',
+                imageUrl: '/car.jpg',
+                productionYear: 2023,
+                transmissionType: 'Automatic',
+                fuelType: 'Petrol',
+                seats: 5,
+            },
         },
         isLoading: false,
         error: null,

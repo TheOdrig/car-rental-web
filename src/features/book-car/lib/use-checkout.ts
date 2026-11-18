@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 import { clientPost } from '@/shared/api';
 import { rentalKeys } from '@/entities/rental';
-import type { CreateBookingRequest } from '@/features/book-car';
+import type { CreateBookingRequest } from '../model/types';
 
 interface CreateBookingResponse {
     id: number;

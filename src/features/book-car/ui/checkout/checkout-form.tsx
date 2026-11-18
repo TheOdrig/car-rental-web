@@ -9,13 +9,12 @@ import { useCar } from '@/entities/car';
 import { parseLocalDate } from '@/entities/rental';
 import { usePricingPreview } from '@/entities/car';
 import { useCurrentUser } from '@/entities/user';
-import { checkoutFormSchema, type CheckoutFormSchema } from '@/features/book-car';
-import { calculateRentalDays, getBookingErrorMessage } from '@/features/book-car';
+import { checkoutFormSchema, type CheckoutFormSchema } from '../../lib/validations';
+import { calculateRentalDays, getBookingErrorMessage } from '../../lib/utils';
 import { PersonalDetails } from './personal-details';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
-import type { DiscountDetail, PriceBreakdown } from '@/features/book-car';
-import type { Car } from '@/entities/car';
+import type { DiscountDetail, PriceBreakdown } from '../../model/types';
 
 interface CheckoutFormProps {
     carId: string;
@@ -78,7 +77,7 @@ export function CheckoutForm({
         }
     };
 
-    const car = ((carData as unknown as { car?: Car })?.car || carData) as Car | undefined;
+    const car = carData?.car;
 
     const rentalDays = useMemo(() => {
         if (pricingData?.rentalDays) return pricingData.rentalDays;
