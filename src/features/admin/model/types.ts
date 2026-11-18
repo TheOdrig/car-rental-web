@@ -78,11 +78,6 @@ export type { PendingItem };
 
 export type QuickActionResult = WithRequired<Schemas['QuickActionResultDto'], 'success' | 'message'>;
 
-export interface ProcessReturnData {
-    hasDamage?: boolean;
-    notes?: string;
-}
-
 export type DailyRevenue = Required<Schemas['DailyRevenueDto']>;
 
 export interface MonthlyRevenue {

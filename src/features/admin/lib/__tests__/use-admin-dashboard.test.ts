@@ -13,10 +13,14 @@ import {
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 
-vi.mock('@/shared/api', () => ({
-    clientGet: vi.fn(),
-    clientPost: vi.fn(),
-}));
+vi.mock('@/shared/api', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/shared/api')>();
+    return {
+        ...original,
+        clientGet: vi.fn(),
+        clientPost: vi.fn(),
+    };
+});
 vi.mock('@/shared/lib', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/lib')>();
     return {

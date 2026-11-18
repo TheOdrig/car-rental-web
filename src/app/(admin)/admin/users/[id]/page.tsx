@@ -6,11 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui';
-import {
-    DetailPageSkeleton,
-    DetailPageError,
-    CustomerDamageHistory,
-} from '@/features/admin';
+import { DetailPageSkeleton, DetailPageError, CustomerDamageHistory } from '@/features/admin';
 import {
     CustomerDetailInfoCard,
     CustomerVerificationCard,

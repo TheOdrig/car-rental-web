@@ -8,7 +8,6 @@ export type {
     Alert,
     PendingItem,
     QuickActionResult,
-    ProcessReturnData,
     DailyRevenue,
     MonthlyRevenue,
     RevenueBreakdown,

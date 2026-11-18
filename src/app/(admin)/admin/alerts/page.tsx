@@ -2,28 +2,15 @@
 
 import { useState, useMemo } from 'react';
 import {
-    RefreshCw,
-    Search,
-    CheckCheck,
-    AlertTriangle,
-    Filter
+    RefreshCw, Search, CheckCheck, AlertTriangle, Filter
 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue
 } from '@/shared/ui/select';
 import { AlertsPanel } from '@/features/admin';
-import {
-    useAlerts,
-    useDismissAlert,
-    useMarkAllAlertsRead,
-    useInvalidateAdmin
-} from '@/features/admin';
+import { useAlerts, useDismissAlert, useMarkAllAlertsRead, useInvalidateAdmin } from '@/features/admin';
 import { AlertVariant } from '@/features/admin';
 import { toast } from 'sonner';
 import { Skeleton } from '@/shared/ui/skeleton';

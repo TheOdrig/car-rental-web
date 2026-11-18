@@ -2,9 +2,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ApproveRentalDialog } from '@/features/admin';
+import { ApproveRentalDialog } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
-import type { PendingItem } from '@/features/admin';
+import type { PendingItem } from '@/entities/rental';
 describe('ApproveRentalDialog', () => {
     const user = userEvent.setup();
     const mockItem: PendingItem = {

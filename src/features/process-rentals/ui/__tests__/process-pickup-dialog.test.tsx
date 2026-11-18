@@ -2,9 +2,9 @@
 import { describe, it, expect, vi } from 'vitest';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ProcessPickupDialog } from '@/features/admin';
+import { ProcessPickupDialog } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
-import type { PendingItem } from '@/features/admin';
+import type { PendingItem } from '@/entities/rental';
 describe('ProcessPickupDialog', () => {
     const user = userEvent.setup();
     const mockItem: PendingItem = {

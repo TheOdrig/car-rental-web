@@ -6,11 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
-import {
-    DetailPageSkeleton,
-    DetailPageError,
-    VehicleDamageHistory,
-} from '@/features/admin';
+import { DetailPageSkeleton, DetailPageError, VehicleDamageHistory } from '@/features/admin';
 import {
     VehicleDetailInfoCard,
     VehicleImagesCard,

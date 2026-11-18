@@ -7,22 +7,9 @@ import { ArrowLeft, DollarSign } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-} from '@/shared/ui/dialog';
+    Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, } from '@/shared/ui/dialog';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
-import {
-    DetailPageSkeleton,
-    DetailPageError,
-    PenaltyWaiveDialog,
-    PenaltyHistorySection,
-    VehicleDamageHistory,
-    type TimelineEventType,
-} from '@/features/admin';
+import { DetailPageSkeleton, DetailPageError, PenaltyWaiveDialog, PenaltyHistorySection, VehicleDamageHistory, type TimelineEventType } from '@/features/admin';
 import {
     RentalInfoCard,
     CustomerInfoCard,

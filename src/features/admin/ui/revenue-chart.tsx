@@ -3,19 +3,10 @@
 import { useMemo, useState } from 'react';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/shared/ui/chart';
+    ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent, } from '@/shared/ui/chart';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/shared/ui/select';
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn } from '@/shared/lib';
 import { formatCurrency } from '@/shared/lib';

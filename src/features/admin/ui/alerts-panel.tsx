@@ -1,12 +1,6 @@
 'use client';
 
-import {
-    AlertTriangle,
-    AlertCircle,
-    Info,
-    CheckCircle2,
-    X,
-    ExternalLink
+import { AlertTriangle, AlertCircle, Info, CheckCircle2, X, ExternalLink
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';

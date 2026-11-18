@@ -9,16 +9,9 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import {
-    DamageStatusBadge,
-    DamageSeverityBadge,
-    useDamageDetail,
-    getDamageCategoryLabel,
-} from '@/entities/damage';
-import {
-    DamagePhotoUpload,
-    DamageAssessDialog,
-    DamageResolveDialog,
-} from '@/features/admin';
+    DamageStatusBadge, useDamageDetail, getDamageCategoryLabel, } from '@/entities/damage';
+import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog } from '@/features/admin';
+import { DamageSeverityBadge } from '@/entities/damage';
 
 interface DamageDetailPageProps {
     params: Promise<{ id: string }>;

@@ -1,9 +1,9 @@
 'use client';
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { RentalActionButtons } from '@/features/admin';
+import { RentalActionButtons } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
-import type { AdminRentalStatus } from '@/features/admin';
+import type { AdminRentalStatus } from '@/entities/rental';
 describe('RentalActionButtons', () => {
     const defaultProps = {
         status: 'PENDING' as AdminRentalStatus,

@@ -2,6 +2,10 @@
 
 
 
+import type { ProcessReturnData } from '@/entities/rental';
+
+export type { ProcessReturnData };
+
 export interface QuickActionResult {
     success: boolean;
     message: string;
@@ -9,10 +13,6 @@ export interface QuickActionResult {
     updatedSummary?: unknown;
 }
 
-export interface ProcessReturnData {
-    hasDamage?: boolean;
-    notes?: string;
-}
 
 export interface ApproveRentalRequest {
     rentalId: number;

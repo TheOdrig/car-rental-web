@@ -6,18 +6,10 @@ import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/shared/ui/select';
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
 import { FleetStatsCards, FleetTable } from '@/features/manage-fleet';
-import {
-    useFleetStatus,
-    useInvalidateAdmin,
-} from '@/features/admin';
+import { useFleetStatus, useInvalidateAdmin } from '@/features/admin';
 import {
     useFleetList,
     useDeleteCar,

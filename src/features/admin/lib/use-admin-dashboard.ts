@@ -4,13 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminKeys, clientGet, clientPost, type PendingFilters, type Schemas } from '@/shared/api';
 import { carKeys } from '@/entities/car';
 import { showToast } from '@/shared/lib';
-import type {
-    DailySummary,
-    FleetStatus,
-    PendingItem,
-    RevenueAnalytics,
-    AdminAlert,
-} from '@/features/admin';
+import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAlert } from '@/features/admin';
 import type { PageResponse } from '@/shared/types';
 import type { AlertVariant } from '../model/types';
 

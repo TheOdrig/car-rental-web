@@ -4,7 +4,8 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { DamageStatusBadge, DamageSeverityBadge } from '@/features/admin';
+import { DamageStatusBadge } from '@/entities/damage';
+import { DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
 import { useVehicleDamages } from '@/entities/damage';
 

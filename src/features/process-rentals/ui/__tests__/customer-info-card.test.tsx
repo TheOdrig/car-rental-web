@@ -1,7 +1,7 @@
 'use client';
 import { describe, it, expect } from 'vitest';
 import { screen } from '@testing-library/react';
-import { CustomerInfoCard } from '@/features/admin';
+import { CustomerInfoCard } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
 import type { RentalCustomerInfo } from '@/entities/rental';
 describe('CustomerInfoCard', () => {

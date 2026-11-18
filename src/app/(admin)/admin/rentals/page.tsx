@@ -6,21 +6,10 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/shared/ui/select';
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
 import { PendingRentalsTable } from '@/features/process-rentals';
-import {
-    usePendingApprovals,
-    usePendingPickups,
-    usePendingReturns,
-    useOverdueRentals,
-    useInvalidateAdmin,
-} from '@/features/admin';
+import { usePendingApprovals, usePendingPickups, usePendingReturns, useOverdueRentals, useInvalidateAdmin } from '@/features/admin';
 import {
     useApproveRental,
     useRejectRental,
