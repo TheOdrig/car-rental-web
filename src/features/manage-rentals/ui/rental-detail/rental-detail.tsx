@@ -1,12 +1,14 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Edit, Headphones, X } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { cn, safeFormatDateTime, showToast } from '@/shared/lib';
 import { useCancelRental } from '@/entities/rental';
+import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
 import type { Rental } from '@/entities/rental';
 import { RentalTimeline } from '../rental-timeline';
 import { CancelRentalDialog } from './cancel-rental-dialog';
@@ -100,6 +102,18 @@ export function RentalDetail({ rental, className, onCancelSuccess }: RentalDetai
                 </div>
 
                 <div className="space-y-6">
+                    {status !== 'Requested' && (
+                        <RentalPaymentStatus
+                            rentalId={rental.id}
+                            action={(paymentStatus) =>
+                                status === 'Confirmed' && isPayableStatus(paymentStatus) ? (
+                                    <Button asChild className="w-full">
+                                        <Link href={`/rentals/${rental.id}/pay`}>Pay now</Link>
+                                    </Button>
+                                ) : null
+                            }
+                        />
+                    )}
                     <PaymentSummaryCard
                         dailyPrice={dailyPrice}
                         days={days}

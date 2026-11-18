@@ -61,13 +61,6 @@ export function PaymentSummaryCard({ dailyPrice, days, totalPrice, totalSavings,
                     </div>
                 </div>
 
-                <div className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm dark:border-amber-800 dark:bg-amber-950">
-                    <p className="font-medium text-amber-800 dark:text-amber-200">Security Deposit</p>
-                    <p className="text-amber-700 dark:text-amber-300">
-                        {formatPrice(500, currency)} hold will be released after return
-                    </p>
-                </div>
-
                 <Button
                     className="w-full bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600 text-slate-700 dark:text-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700"
                     variant="outline"

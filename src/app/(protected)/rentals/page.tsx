@@ -55,6 +55,9 @@ export default function MyRentalsPage() {
             case 'view':
                 window.location.href = `/rentals/${rental.id}`;
                 break;
+            case 'pay':
+                window.location.href = `/rentals/${rental.id}/pay`;
+                break;
             case 'receipt':
                 showToast.info(`Downloading receipt for rental #${rental.id}`);
                 break;
