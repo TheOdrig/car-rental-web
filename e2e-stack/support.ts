@@ -61,3 +61,14 @@ export async function carAvailableFor(request: APIRequestContext, startDate: str
     expect(body.cars.length, 'a car should be free for the requested dates').toBeGreaterThan(0);
     return body.cars[0].id as number;
 }
+
+export function collectCspViolations(page: Page): string[] {
+    const violations: string[] = [];
+    page.on('console', (message) => {
+        const text = message.text();
+        if (message.type() === 'error' && /content security policy/i.test(text)) {
+            violations.push(text);
+        }
+    });
+    return violations;
+}

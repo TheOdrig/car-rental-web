@@ -3,6 +3,7 @@ import {
     ADMIN_PASSWORD,
     ADMIN_USERNAME,
     carAvailableFor,
+    collectCspViolations,
     isoDate,
     loginViaUi,
     registerViaUi,
@@ -14,12 +15,14 @@ const JSON_HEADERS = { 'content-type': 'application/json' };
 test.describe.serial('booking, admin confirmation and the pay page', () => {
     let customerContext: BrowserContext;
     let customerPage: Page;
+    let cspViolations: string[];
     let adminContext: BrowserContext;
     let adminPage: Page;
 
     test.beforeAll(async ({ browser }) => {
         customerContext = await browser.newContext();
         customerPage = await customerContext.newPage();
+        cspViolations = collectCspViolations(customerPage);
         await registerViaUi(customerPage, uniqueUser());
 
         adminContext = await browser.newContext();
@@ -66,6 +69,7 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
             customerPage.locator('[data-testid^="payment-state-"], form, iframe[name^="__privateStripeFrame"]').first()
         ).toBeVisible();
         await expect(customerPage.getByText('Rental not found')).toHaveCount(0);
+        expect(cspViolations).toEqual([]);
     });
 
     test('a rental that starts after the payment window shows when payment opens', async () => {
