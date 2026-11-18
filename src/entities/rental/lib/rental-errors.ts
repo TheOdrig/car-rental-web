@@ -19,6 +19,10 @@ export const RENTAL_TOO_FAR_AHEAD_MESSAGE = `You can only book up to ${MAX_LEAD_
 export const RENTAL_END_BEFORE_START_MESSAGE = 'The end date must be after the start date.';
 
 export const PAYMENT_FAILED_CODE = 'PAYMENT_FAILED';
+export const RENTAL_CANCEL_NOT_ALLOWED_CODE = 'RENTAL_CANCEL_NOT_ALLOWED';
+
+export const RENTAL_CANCEL_NOT_ALLOWED_MESSAGE =
+    'This rental can no longer be cancelled online. Rentals that are already in use have to be returned instead.';
 
 export const PICKUP_PAYMENT_REQUIRED_MESSAGE =
     'Pickup needs an authorized payment. Ask the customer to pay for this rental first; the payment is captured at pickup.';
@@ -75,6 +79,20 @@ export function getRentalRequestErrorMessage(error: unknown, fallback: string): 
     }
 
     return error instanceof Error ? error.message : fallback;
+}
+
+const CANCEL_FALLBACK_MESSAGE = 'Failed to cancel rental';
+
+export function getRentalCancelErrorMessage(error: unknown): string {
+    if (isRateLimited(error)) {
+        return rateLimitMessage(error.retryAfter);
+    }
+
+    if (isApiError(error) && error.code === RENTAL_CANCEL_NOT_ALLOWED_CODE) {
+        return RENTAL_CANCEL_NOT_ALLOWED_MESSAGE;
+    }
+
+    return error instanceof Error ? error.message : CANCEL_FALLBACK_MESSAGE;
 }
 
 export function getAdminActionErrorMessage(error: unknown): string {

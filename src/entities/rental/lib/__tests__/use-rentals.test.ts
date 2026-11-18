@@ -139,6 +139,17 @@ describe('use-rentals hooks', () => {
             expect(mockClientDelete).toHaveBeenCalledWith('/api/rentals/1');
             expect(mockToast.success).toHaveBeenCalled();
         });
+        it('explains a cancel the API no longer allows', async () => {
+            mockClientDelete.mockRejectedValue(
+                new ApiError({ status: 400, message: 'nope', timestamp: new Date().toISOString(), code: 'RENTAL_CANCEL_NOT_ALLOWED' })
+            );
+            const { result } = renderHook(() => useCancelRental(), {
+                wrapper: createQueryWrapper(),
+            });
+            result.current.mutate(1);
+            await waitFor(() => expect(result.current.isError).toBe(true));
+            expect(mockToast.error).toHaveBeenCalledWith(expect.any(String), expect.stringContaining('can no longer be cancelled'));
+        });
         it('should handle cancel error', async () => {
             mockClientDelete.mockRejectedValue(new Error('Cancel failed'));
             const { result } = renderHook(() => useCancelRental(), {

@@ -3,7 +3,7 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
-import { getRentalRequestErrorMessage } from './rental-errors';
+import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './rental-errors';
 import type { Rental, RentalRequest } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 
@@ -121,7 +121,7 @@ export function useCancelRental() {
             void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(rentalId) });
         },
         onError: (error: Error) => {
-            showToast.error(toastMessages.rental.cancelError, error.message);
+            showToast.error(toastMessages.rental.cancelError, getRentalCancelErrorMessage(error));
         },
     });
 }

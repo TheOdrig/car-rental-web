@@ -8,7 +8,9 @@ import {
     RENTAL_TOO_FAR_AHEAD_MESSAGE,
     RENTAL_TOO_LONG_MESSAGE,
     PICKUP_PAYMENT_REQUIRED_MESSAGE,
+    RENTAL_CANCEL_NOT_ALLOWED_MESSAGE,
     getAdminActionErrorMessage,
+    getRentalCancelErrorMessage,
     getRentalFieldErrors,
     getRentalRequestErrorMessage,
 } from '../rental-errors';
@@ -130,5 +132,22 @@ describe('getAdminActionErrorMessage', () => {
     it('keeps other API messages and falls back for non-errors', () => {
         expect(getAdminActionErrorMessage(apiError(409, 'Invalid state', 'INVALID_RENTAL_STATE'))).toBe('Invalid state');
         expect(getAdminActionErrorMessage(null)).toBe('An unexpected error occurred');
+    });
+});
+
+describe('getRentalCancelErrorMessage', () => {
+    it('explains RENTAL_CANCEL_NOT_ALLOWED', () => {
+        const error = apiError(400, 'Rental cannot be cancelled in its current status', 'RENTAL_CANCEL_NOT_ALLOWED');
+
+        expect(getRentalCancelErrorMessage(error)).toBe(RENTAL_CANCEL_NOT_ALLOWED_MESSAGE);
+    });
+
+    it('keeps the API message for other failures', () => {
+        expect(getRentalCancelErrorMessage(apiError(404, 'Rental not found', 'RENTAL_NOT_FOUND'))).toBe('Rental not found');
+    });
+
+    it('formats rate limits and tolerates non-Error values', () => {
+        expect(getRentalCancelErrorMessage(apiError(429, 'slow', 'RATE_LIMIT_EXCEEDED', { retryAfter: 30 }))).toContain('30');
+        expect(getRentalCancelErrorMessage('boom')).toBe('Failed to cancel rental');
     });
 });
