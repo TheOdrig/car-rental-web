@@ -83,7 +83,8 @@ import type { ImageProps } from 'next/image';
 vi.mock('next/image', () => ({
     __esModule: true,
     default: (props: ImageProps) => {
-        const { fill, src, alt, ...rest } = props;
+        const { fill, src, alt, unoptimized, priority, quality, loader, placeholder, blurDataURL, ...rest } = props;
+        void unoptimized; void priority; void quality; void loader; void placeholder; void blurDataURL;
         return React.createElement('img', {
             src: typeof src === 'string' ? src : '',
             alt: alt || '',

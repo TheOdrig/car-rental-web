@@ -18,8 +18,8 @@ vi.mock('next/image', () => ({
     ),
 }));
 vi.mock('@/shared/ui/dynamic-image', () => ({
-    DynamicImage: ({ src, alt, ...props }: { src: string; alt: string }) => (
-        <img src={src} alt={alt} {...props} />
+    DynamicImage: ({ src, alt, className }: { src: string; alt: string; className?: string }) => (
+        <img src={src} alt={alt} className={className} />
     ),
 }));
 vi.mock('@/entities/car', () => ({
