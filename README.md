@@ -1,11 +1,11 @@
 # 🚗 Car Rental Web
 
-A production-ready frontend for car rental management, built with **Next.js 16.1** and **TypeScript**.
+A frontend for car rental management, built with **Next.js 16.1** and **TypeScript**.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.1-black)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue)](https://www.typescriptlang.org/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38B2AC)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-68%20passing-brightgreen)](/)
+[![Tests](https://img.shields.io/badge/Tests-843%20passed-brightgreen)](/)
 [![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
 
 > **🚀 Live Demo:** [arabakiralama.site](https://arabakiralama.site)
@@ -17,7 +17,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details open>
 <summary><b>🏠 Landing Page</b></summary>
 
-![Landing Page](docs/screenshots/01-landing-page.png)
+![Landing Page](public/readme/01-landing-page.png)
 *Hero section with featured cars and search functionality*
 
 </details>
@@ -25,7 +25,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>🚗 Car Catalog</b></summary>
 
-![Car Catalog](docs/screenshots/02-car-catalog.png)
+![Car Catalog](public/readme/02-car-catalog.png)
 *Advanced filtering with brand, transmission, fuel type, and availability dates*
 
 </details>
@@ -33,7 +33,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>📊 Admin Dashboard</b></summary>
 
-![Admin Dashboard](docs/screenshots/03-admin-dashboard.png)
+![Admin Dashboard](public/readme/03-admin-dashboard.png)
 *Real-time metrics, alerts, and quick actions for fleet management*
 
 </details>
@@ -41,7 +41,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>🔍 Car Detail</b></summary>
 
-![Car Detail](docs/screenshots/04-car-detail.png)
+![Car Detail](public/readme/04-car-detail.png)
 *Interactive availability calendar and comprehensive vehicle specifications*
 
 </details>
@@ -49,7 +49,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>👤 User Dashboard</b></summary>
 
-![User Dashboard](docs/screenshots/05-user-dashboard.png)
+![User Dashboard](public/readme/05-user-dashboard.png)
 *Rental history and status tracking*
 
 </details>
@@ -57,7 +57,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>🛡️ Admin Fleet Management</b></summary>
 
-![Admin Fleet](docs/screenshots/06-admin-fleet.png)
+![Admin Fleet](public/readme/06-admin-fleet.png)
 *Fleet status overview and vehicle management*
 
 </details>
@@ -65,7 +65,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 <details>
 <summary><b>🌙 Dark Mode Support</b></summary>
 
-![Dark Mode](docs/screenshots/07-dark-mode.png)
+![Dark Mode](public/readme/07-dark-mode.png)
 *Admin Fleet Management with dark theme - Seamless theme switching*
 
 </details>
@@ -83,7 +83,7 @@ A production-ready frontend for car rental management, built with **Next.js 16.1
 | **User Dashboard** | Manage rentals, view history, update profile, payment methods |
 | **Admin Dashboard** | Fleet management, rental approvals, revenue analytics, quick actions |
 | **Authentication** | JWT + OAuth2 (Google, GitHub), HTTP-Only cookies, secure sessions |
-| **Payment Integration** | Stripe checkout, payment history, refund management |
+| **Payment Integration** | Payment history and refund views; Stripe checkout is planned (not yet wired to the API) |
 | **Damage Reporting** | Photo upload, assessment workflow, dispute resolution |
 | **Currency Conversion** | Real-time exchange rates, multi-currency support |
 | **Responsive Design** | Mobile-first, dark/light mode, accessibility compliant |
@@ -215,8 +215,8 @@ Client → Next.js API Route → Backend API
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 18+ (LTS recommended)
-- Running [Car Rental API](https://github.com/TheOdrig/car-rental-api) backend
+- Node.js 20 (see `.nvmrc`)
+- Running [Car Rental API](https://github.com/TheOdrig/car-rental) backend
 
 ### Setup
 
@@ -293,7 +293,7 @@ npm run test:coverage
 ```
 
 **Test Coverage:**
-- 68 tests passing (47 unit + 21 architecture)
+- 843 tests passing, 6 skipped (68 test files, including the architecture tests)
 - 80%+ coverage for auth, book-car, manage-rentals
 - FSD boundary verification (0 violations)
 - Property-based tests with fast-check
@@ -356,7 +356,7 @@ src/
 
 ## 🔧 Configuration
 
-See [docs/operations/ENVIRONMENT_VARIABLES.md](docs/operations/ENVIRONMENT_VARIABLES.md) for detailed configuration options including:
+Copy `.env.example` to `.env` and adjust it. Configuration covers:
 - Backend API URLs (browser vs server-side)
 - JWT secret configuration
 - OAuth2 providers (Google, GitHub)
@@ -378,16 +378,15 @@ JWT_SECRET=your-jwt-secret-key-here
 ## 📊 Technical Highlights
 
 - **Feature-Sliced Design** with 5 layers, 9 features, 6 entities, 8 widgets
-- **68% Backend Parity** with Spring Modulith (enforced boundaries, event-driven)
 - **21 Architecture Properties** verified with Vitest + ESLint boundaries
-- **68 Automated Tests** (47 unit + 21 architecture) with 80%+ coverage
+- **843 passing Vitest tests** (68 test files, incl. architecture tests); 6 skipped
 - **Type Safety** with 0 `any` types, 0 `@ts-ignore`
 - **9 ADRs** documenting architectural decisions
 - **API Proxy Pattern** for secure backend communication (HTTP-Only cookies)
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please read the [Contributing Guidelines](CONTRIBUTING.md) before submitting a pull request.
+Contributions are welcome! Please open an issue first for larger changes.
 
 Quick steps:
 1. Fork the repository
@@ -395,24 +394,6 @@ Quick steps:
 3. Run tests (`npm test`)
 4. Commit using [Conventional Commits](https://www.conventionalcommits.org/)
 5. Push and open Pull Request
-
-## 📋 Changelog
-
-See [CHANGELOG.md](CHANGELOG.md) for version history and notable changes.
-
-## 📝 Documentation
-
-### Getting Started
-- **[DEVELOPER_GUIDE.md](DEVELOPER_GUIDE.md)** - Complete development guide
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Contribution guidelines
-- **[CHANGELOG.md](CHANGELOG.md)** - Version history
-
-### Architecture & Design
-- **[docs/architecture/](docs/architecture/)** - FSD guide, diagrams, ADRs
-- **[docs/features/](docs/features/)** - Feature catalog
-- **[docs/testing/](docs/testing/)** - Test strategy
-
-📖 See [docs/](docs/) for complete documentation.
 
 ## 📄 License
 
@@ -426,4 +407,4 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ---
 
-**Backend Repository:** [car-rental-api](https://github.com/TheOdrig/car-rental-api)
+**Backend Repository:** [car-rental-api](https://github.com/TheOdrig/car-rental)
