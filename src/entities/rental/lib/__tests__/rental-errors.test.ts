@@ -24,6 +24,31 @@ function apiError(
     return new ApiError({ status, message, timestamp: new Date().toISOString(), code, ...extra });
 }
 
+describe('getRentalFieldErrors for RENTAL_VALIDATION_FAILED', () => {
+    it('puts a start date violation on the start date field', () => {
+        const error = apiError(400, 'Start date cannot be in the past', 'RENTAL_VALIDATION_FAILED');
+        expect(getRentalFieldErrors(error)).toEqual({ startDate: 'Start date cannot be in the past' });
+    });
+
+    it('puts the lead time violation on the start date field with the friendly text', () => {
+        const error = apiError(400, 'Start date cannot be more than 180 days ahead', 'RENTAL_VALIDATION_FAILED');
+        expect(getRentalFieldErrors(error)).toEqual({ startDate: RENTAL_TOO_FAR_AHEAD_MESSAGE });
+    });
+
+    it('puts length and order violations on the end date field', () => {
+        expect(getRentalFieldErrors(apiError(400, 'Rental cannot be longer than 30 days', 'RENTAL_VALIDATION_FAILED'))).toEqual({
+            endDate: RENTAL_TOO_LONG_MESSAGE,
+        });
+        expect(getRentalFieldErrors(apiError(400, 'End date must be after start date', 'RENTAL_VALIDATION_FAILED'))).toEqual({
+            endDate: RENTAL_END_BEFORE_START_MESSAGE,
+        });
+    });
+
+    it('leaves unrelated messages to the form level error', () => {
+        expect(getRentalFieldErrors(apiError(400, 'Something else', 'RENTAL_VALIDATION_FAILED'))).toEqual({});
+    });
+});
+
 describe('getRentalRequestErrorMessage', () => {
     it('maps VALIDATION_FAILED for the 30 day limit using the field errors', () => {
         const error = apiError(400, 'Validation failed', 'VALIDATION_FAILED', {
@@ -61,6 +86,11 @@ describe('getRentalRequestErrorMessage', () => {
     it('keeps the API message for other validation failures', () => {
         const error = apiError(400, 'Start date cannot be in the past', 'RENTAL_VALIDATION_FAILED');
         expect(getRentalRequestErrorMessage(error, 'x')).toBe('Start date cannot be in the past');
+    });
+
+    it('shows the detail of a RENTAL_VALIDATION_FAILED answer when the configured limit differs', () => {
+        const error = apiError(400, 'Rental cannot be longer than 14 days', 'RENTAL_VALIDATION_FAILED');
+        expect(getRentalRequestErrorMessage(error, 'x')).toBe('Rental cannot be longer than 14 days');
     });
 
     it('does not remap validation messages on other statuses', () => {

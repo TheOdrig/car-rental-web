@@ -56,6 +56,15 @@ export function getRentalFieldErrors(error: unknown): Partial<Record<(typeof REN
         if (first) result[field] = first;
     }
 
+    if (Object.keys(result).length === 0 && isApiError(error) && error.status === 400 && error.code === RENTAL_VALIDATION_FAILED_CODE) {
+        const message = getRentalValidationMessage(error) ?? error.message;
+        if (error.message === RENTAL_MESSAGES.startInPast || error.message.includes(RENTAL_MESSAGES.tooFarAhead)) {
+            result.startDate = message;
+        } else if (error.message.includes(RENTAL_MESSAGES.endBeforeStart) || error.message.includes(RENTAL_MESSAGES.tooLong)) {
+            result.endDate = message;
+        }
+    }
+
     return result;
 }
 
