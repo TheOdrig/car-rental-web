@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 <div
                     className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
                     style={{
-                        backgroundImage: `url('https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1200&q=80')`,
+                        backgroundImage: "url('/images/auth-backdrop.svg')",
                     }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/50 to-primary/30 z-10" />
@@ -29,11 +29,11 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                     </p>
                     <div className="flex items-center gap-6 text-sm font-medium text-gray-300">
                         <div className="flex items-center gap-2">
-                            <span className="text-primary">✓</span>
+                            <span className="text-primary" aria-hidden="true">✓</span>
                             <span>Instant Booking</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-primary">✓</span>
+                            <span className="text-primary" aria-hidden="true">✓</span>
                             <span>Best Price Guarantee</span>
                         </div>
                     </div>

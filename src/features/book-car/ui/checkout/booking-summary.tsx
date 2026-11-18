@@ -55,7 +55,7 @@ export function BookingSummary({
                 <div className="px-6 py-4 flex justify-center bg-gradient-to-b from-white dark:from-slate-900 to-slate-50 dark:to-slate-950">
                     <div className="relative w-full max-w-[280px] aspect-[16/9] group">
                         <DynamicImage
-                            src={car.imageUrl || '/placeholder-car.png'}
+                            src={car.imageUrl || '/images/car-placeholder.svg'}
                             alt={`${car.brand} ${car.model}`}
                             fill
                             className="object-contain drop-shadow-xl transform group-hover:scale-105 transition-transform duration-500"
@@ -127,7 +127,6 @@ export function BookingSummary({
 
                     <div className="h-px bg-border my-4" />
 
-                    {}
                     {isPricingLoading ? (
                         <div className="space-y-2 mb-4">
                             <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-32" />

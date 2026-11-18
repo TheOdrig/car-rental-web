@@ -12,7 +12,7 @@ interface HeroSectionProps {
 
 export function HeroSection({
     className,
-    backgroundImage = 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&q=100&w=1920'
+    backgroundImage = '/images/hero-road.svg'
 }: HeroSectionProps) {
     const [imageError, setImageError] = useState(false);
 
@@ -27,7 +27,7 @@ export function HeroSection({
                 {!imageError ? (
                     <Image
                         src={backgroundImage}
-                        alt="Luxury car on scenic road"
+                        alt=""
                         fill
                         className="object-cover"
                         sizes="100vw"

@@ -2,17 +2,7 @@
 
 import Image, { ImageProps } from 'next/image';
 
-const ALLOWED_HOSTNAMES = [
-    'images.unsplash.com',
-    'plus.unsplash.com',
-    'lh3.googleusercontent.com',
-    'placehold.co',
-    'www.thedrive.com',
-    'www.sixt.com.tr',
-    'www.log.com.tr',
-    'cdn3.focus.bg',
-    'tr.semautomobile.com',
-];
+const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com'];
 
 function isAllowedHostname(src: string): boolean {
     if (!src || typeof src !== 'string') return false;

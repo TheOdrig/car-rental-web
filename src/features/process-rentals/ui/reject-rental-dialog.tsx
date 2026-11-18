@@ -78,7 +78,6 @@ export function RejectRentalDialog({
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    {}
                     <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-5 space-y-4 shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             <Car className="h-10 w-10 text-slate-900 dark:text-white" />
@@ -113,7 +112,6 @@ export function RejectRentalDialog({
                         </div>
                     </div>
 
-                    {}
                     <div className="space-y-3">
                         <Label htmlFor="reject-reason" className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
                             Rejection Reason <span className="text-rose-500">*</span>

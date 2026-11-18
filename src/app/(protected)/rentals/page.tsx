@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { Download } from 'lucide-react';
+import { CalendarDays, Car, Download, Wallet } from 'lucide-react';
 import { logger } from '@/shared/lib';
 import { useMyRentals, useCancelRental } from '@/entities/rental';
 import { Button } from '@/shared/ui/button';
@@ -172,15 +172,18 @@ export default function MyRentalsPage() {
                         {rentalToCancel && (
                             <div className="my-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 space-y-2">
                                 <div className="flex items-center gap-2 text-sm">
-                                    <span className="font-semibold">🚗 Vehicle:</span>
+                                    <Car className="h-4 w-4" aria-hidden="true" />
+                                    <span className="font-semibold">Vehicle:</span>
                                     <span>{rentalToCancel.carSummary?.brand} {rentalToCancel.carSummary?.model}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
-                                    <span className="font-semibold">📅 Dates:</span>
+                                    <CalendarDays className="h-4 w-4" aria-hidden="true" />
+                                    <span className="font-semibold">Dates:</span>
                                     <span>{new Date(rentalToCancel.startDate).toLocaleDateString()} - {new Date(rentalToCancel.endDate).toLocaleDateString()}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
-                                    <span className="font-semibold">💰 Total:</span>
+                                    <Wallet className="h-4 w-4" aria-hidden="true" />
+                                    <span className="font-semibold">Total:</span>
                                     <span>${rentalToCancel.totalPrice}</span>
                                 </div>
                             </div>

@@ -27,7 +27,7 @@ const PROMOTIONAL_DEALS: Deal[] = [
         description: 'Secure your luxury ride at least 30 days in advance and enjoy an automatic 15% discount on your total rental cost.',
         ctaText: 'Browse Cars',
         ctaLink: '/cars',
-        backgroundImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&q=80&w=1200',
+        backgroundImage: '/images/deal-early-booking.svg',
     },
     {
         id: 'long-term-rental',
@@ -36,7 +36,7 @@ const PROMOTIONAL_DEALS: Deal[] = [
         description: 'Planning a longer trip? Get 15% off for rentals over 14 days, or a massive 20% off for 30+ days.',
         ctaText: 'Explore Fleet',
         ctaLink: '/cars',
-        backgroundImage: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&q=80&w=1200',
+        backgroundImage: '/images/deal-long-term.svg',
     },
 ];
 
@@ -72,7 +72,6 @@ export function PromotionalBanners({
                             key={deal.id}
                             className="group relative w-full h-[400px] md:h-[480px] rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500"
                         >
-                            {}
                             <div className="absolute inset-0">
                                 <Image
                                     src={deal.backgroundImage || ''}
@@ -83,7 +82,6 @@ export function PromotionalBanners({
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 group-hover:via-black/60 transition-colors duration-500" />
                             </div>
 
-                            {}
                             <div className="absolute inset-0 p-8 md:p-10 flex flex-col justify-between z-10">
                                 <div className="flex justify-start">
                                     <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-semibold tracking-wide uppercase text-white bg-white/10 backdrop-blur-md border border-white/20 shadow-sm">
