@@ -26,6 +26,7 @@ import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { useAssessDamage } from '@/entities/damage';
 import type { DamageSeverity, DamageCategory } from '@/entities/damage';
+import type { CurrencyType } from '@/shared/types';
 
 const assessmentSchema = z.object({
     repairCostEstimate: z.coerce.number().positive('Repair cost must be greater than 0'),
@@ -44,9 +45,12 @@ interface DamageAssessDialogProps {
         severity?: DamageSeverity;
         category?: DamageCategory;
         repairCostEstimate?: number;
+        currency?: CurrencyType;
         insuranceCoverage?: boolean;
     };
 }
+
+const CURRENCY_OPTIONS: CurrencyType[] = ['TRY', 'USD', 'EUR', 'GBP', 'JPY'];
 
 const SEVERITY_OPTIONS: { value: DamageSeverity; label: string }[] = [
     { value: 'MINOR', label: 'Minor' },
@@ -75,6 +79,7 @@ export function DamageAssessDialog({
     const [severity, setSeverity] = useState<DamageSeverity>(defaultValues?.severity || 'MODERATE');
     const [category, setCategory] = useState<DamageCategory>(defaultValues?.category || 'SCRATCH');
     const [insuranceCoverage, setInsuranceCoverage] = useState(defaultValues?.insuranceCoverage || false);
+    const [currency, setCurrency] = useState<CurrencyType>(defaultValues?.currency ?? 'USD');
 
     const {
         register,
@@ -98,6 +103,7 @@ export function DamageAssessDialog({
                     severity,
                     category,
                     repairCostEstimate: data.repairCostEstimate,
+                    currency,
                     insuranceCoverage,
                     insuranceDeductible: data.insuranceDeductible,
                     assessmentNotes: data.assessmentNotes,
@@ -162,7 +168,23 @@ export function DamageAssessDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="repairCostEstimate" className="text-slate-700 dark:text-slate-300">Repair Cost Estimate ($) *</Label>
+                        <Label className="text-slate-700 dark:text-slate-300">Currency</Label>
+                        <Select value={currency} onValueChange={(value) => setCurrency(value as CurrencyType)}>
+                            <SelectTrigger aria-label="Currency" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {CURRENCY_OPTIONS.map((option) => (
+                                    <SelectItem key={option} value={option}>
+                                        {option}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="repairCostEstimate" className="text-slate-700 dark:text-slate-300">Repair Cost Estimate ({currency}) *</Label>
                         <Input
                             id="repairCostEstimate"
                             type="number"

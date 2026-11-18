@@ -1,80 +1,41 @@
+import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { PageResponse } from '@/shared/types';
 
-export type DamageStatus =
-    | 'REPORTED'
-    | 'UNDER_ASSESSMENT'
-    | 'ASSESSED'
-    | 'CHARGED'
-    | 'DISPUTED'
-    | 'RESOLVED';
+export type DamageStatus = NonNullable<Schemas['DamageReportResponse']['status']>;
 
-export type DamageSeverity =
-    | 'MINOR'
-    | 'MODERATE'
-    | 'MAJOR'
-    | 'TOTAL_LOSS';
+export type DamageSeverity = NonNullable<Schemas['DamageReportResponse']['severity']>;
 
-export type DamageCategory =
-    | 'SCRATCH'
-    | 'DENT'
-    | 'GLASS_DAMAGE'
-    | 'TIRE_DAMAGE'
-    | 'INTERIOR_DAMAGE'
-    | 'MECHANICAL_DAMAGE';
+export type DamageCategory = NonNullable<Schemas['DamageReportResponse']['category']>;
 
-export interface DamagePhoto {
-    id: number;
-    fileName: string;
-    secureUrl: string;
-    fileSize: number;
-    uploadedAt: string;
-}
+export type DamagePhoto = WithRequired<
+    Schemas['DamagePhotoDto'],
+    'id' | 'fileName' | 'secureUrl' | 'fileSize' | 'uploadedAt'
+>;
 
-export interface DamageReport {
-    id: number;
-    rentalId: number;
-    carId: number;
-    carLicensePlate: string;
-    customerName: string;
-    description: string;
-    damageLocation?: string;
-    severity: DamageSeverity;
-    category: DamageCategory;
-    status: DamageStatus;
-    repairCostEstimate?: number;
-    customerLiability?: number;
-    insuranceCoverage?: boolean;
-    reportedAt: string;
-    assessedAt?: string;
-    photos: DamagePhoto[];
-}
+export type DamageReport = Omit<
+    WithRequired<
+        Schemas['DamageReportResponse'],
+        | 'id'
+        | 'rentalId'
+        | 'carId'
+        | 'carLicensePlate'
+        | 'customerName'
+        | 'description'
+        | 'severity'
+        | 'category'
+        | 'status'
+        | 'reportedAt'
+    >,
+    'photos'
+> & { photos: DamagePhoto[] };
 
-export interface DamageReportRequest {
-    description: string;
-    damageLocation?: string;
-    initialSeverity?: DamageSeverity;
-    category?: DamageCategory;
-}
+export type DamageReportRequest = Schemas['DamageReportRequest'];
 
-export interface DamageAssessmentRequest {
-    severity: DamageSeverity;
-    category: DamageCategory;
-    repairCostEstimate: number;
-    insuranceCoverage?: boolean;
-    insuranceDeductible?: number;
-    assessmentNotes?: string;
-}
+export type DamageAssessmentRequest = Schemas['DamageAssessmentRequest'];
 
-export interface DamageDisputeRequest {
-    reason: string;
-    comments?: string;
-}
+export type DamageDisputeRequest = Schemas['DamageDisputeRequest'];
 
-export interface DamageDisputeResolution {
-    adjustedRepairCost: number;
-    adjustedCustomerLiability: number;
-    resolutionNotes: string;
-}
+export type DamageDisputeResolution = Schemas['DamageDisputeResolutionDto'];
 
 export interface DamageSearchFilters {
     startDate?: string;
@@ -85,17 +46,6 @@ export interface DamageSearchFilters {
     carId?: number;
 }
 
-export interface DamageStatistics {
-    totalDamages: number;
-    minorCount: number;
-    moderateCount: number;
-    majorCount: number;
-    totalLossCount: number;
-    totalRepairCost: number;
-    totalCustomerLiability: number;
-    averageRepairCost: number;
-    disputedCount: number;
-    resolvedCount: number;
-}
+export type DamageStatistics = Required<Schemas['DamageStatisticsDto']>;
 
 export type DamageListResponse = PageResponse<DamageReport>;

@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { formatCurrencyWithDecimals } from '@/shared/lib';
 import {
     DamageStatusBadge,
     DamageSeverityBadge,
@@ -152,11 +153,11 @@ export default function DamageDetailPage({ params }: DamageDetailPageProps) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Repair Cost</p>
-                                    <p className="text-xl font-bold">${damage.repairCostEstimate?.toFixed(2)}</p>
+                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? 'USD')}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Customer Liability</p>
-                                    <p className="text-xl font-bold">${damage.customerLiability?.toFixed(2) || '0.00'}</p>
+                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? 'USD')}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Insurance Coverage</p>
@@ -199,6 +200,7 @@ export default function DamageDetailPage({ params }: DamageDetailPageProps) {
                     severity: damage.severity,
                     category: damage.category,
                     repairCostEstimate: damage.repairCostEstimate,
+                    currency: damage.currency,
                     insuranceCoverage: damage.insuranceCoverage,
                 }}
             />

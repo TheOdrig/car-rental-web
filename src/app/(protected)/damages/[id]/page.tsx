@@ -6,6 +6,7 @@ import { ArrowLeft, AlertTriangle, FileWarning } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { formatCurrencyWithDecimals } from '@/shared/lib';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { DamageStatusBadge, DamageSeverityBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
@@ -131,12 +132,12 @@ export default function MyDamageDetailPage({ params }: DamageDetailPageProps) {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Repair Cost</p>
-                                        <p className="text-xl font-bold">${damage.repairCostEstimate?.toFixed(2)}</p>
+                                        <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? 'USD')}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-muted-foreground">Your Liability</p>
                                         <p className="text-xl font-bold text-destructive">
-                                            ${damage.customerLiability?.toFixed(2) || '0.00'}
+                                            {formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? 'USD')}
                                         </p>
                                     </div>
                                     <div>
