@@ -3,18 +3,19 @@
 import React from 'react';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
+import { CURRENCIES } from '@/entities/currency';
 import { cn, formatCurrencyWithDecimals, getCurrencySymbol } from '@/shared/lib';
-import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import type { CarFormData } from '../../model/types';
 
 interface PricingSectionProps {
     data: CarFormData;
     errors: Partial<Record<keyof CarFormData, string>>;
     onUpdate: (field: keyof CarFormData, value: string | number) => void;
-    currency?: string;
 }
 
-export function PricingSection({ data, errors, onUpdate, currency = DEFAULT_CURRENCY }: PricingSectionProps) {
+export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) {
+    const currency = data.currencyType;
     const symbol = getCurrencySymbol(currency);
     const handleNumberChange = (field: keyof CarFormData, value: string) => {
         const numValue = parseFloat(value) || 0;
@@ -23,6 +24,25 @@ export function PricingSection({ data, errors, onUpdate, currency = DEFAULT_CURR
 
     return (
         <div className="space-y-4">
+            <div className="space-y-2">
+                <Label htmlFor="currencyType">Currency</Label>
+                <Select value={currency} onValueChange={(value) => onUpdate('currencyType', value)}>
+                    <SelectTrigger id="currencyType" aria-label="Select currency">
+                        <SelectValue placeholder="Select currency" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {CURRENCIES.map((option) => (
+                            <SelectItem key={option.code} value={option.code}>
+                                {option.code} ({option.symbol})
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground">
+                    Currency of the rates below
+                </p>
+            </div>
+
             <div className="space-y-2">
                 <Label htmlFor="dailyRate">
                     Daily Rate <span className="text-destructive">*</span>

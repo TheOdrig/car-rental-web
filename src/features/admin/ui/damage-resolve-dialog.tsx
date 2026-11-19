@@ -16,7 +16,6 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { useResolveDamage } from '@/entities/damage';
-import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 const resolveSchema = z.object({
     adjustedRepairCost: z.coerce.number().min(0, 'Adjusted repair cost cannot be negative'),
@@ -35,7 +34,7 @@ interface DamageResolveDialogProps {
         repairCostEstimate?: number;
         customerLiability?: number;
     };
-    currency?: string;
+    currency: string;
 }
 
 export function DamageResolveDialog({
@@ -44,7 +43,7 @@ export function DamageResolveDialog({
     onOpenChange,
     onSuccess,
     defaultValues,
-    currency = DEFAULT_CURRENCY,
+    currency,
 }: DamageResolveDialogProps) {
     const resolveDamage = useResolveDamage();
 

@@ -27,6 +27,7 @@ export interface CreateCarRequest {
     dailyRate: number;
     weeklyRate?: number;
     depositAmount?: number;
+    currencyType: CurrencyType;
 }
 
 export interface UpdateCarRequest extends CreateCarRequest {

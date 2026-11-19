@@ -17,6 +17,7 @@ import {
     type CarFormData,
 } from '@/features/manage-fleet';
 import type { VehicleDetailResponse } from '@/entities/car';
+import { mapCurrency } from '@/entities/currency';
 import { toast } from 'sonner';
 
 export function EditCarContent() {
@@ -64,6 +65,7 @@ export function EditCarContent() {
         dailyRate: car.pricing?.dailyRate || 0,
         weeklyRate: car.pricing?.weeklyRate || 0,
         depositAmount: car.pricing?.depositAmount || 0,
+        currencyType: mapCurrency(car.pricing?.currency),
         imageUrl: car.images?.primary || '',
     };
 

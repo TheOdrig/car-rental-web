@@ -12,6 +12,7 @@ import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
 import { DamageSeverityBadge } from '@/entities/damage';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 export function DamageDetailContent({ id }: { id: string }) {
     const damageId = parseInt(id, 10);
@@ -43,7 +44,7 @@ export function DamageDetailContent({ id }: { id: string }) {
     const canResolve = damage.status === 'DISPUTED';
     const liability = damage.customerLiability ?? 0;
     const canCharge = damage.status === 'ASSESSED' && liability > 0;
-    const chargeCurrency = damage.currency ?? 'USD';
+    const chargeCurrency = damage.currency ?? DEFAULT_CURRENCY;
 
     return (
         <div className="space-y-6 p-6">
@@ -151,11 +152,11 @@ export function DamageDetailContent({ id }: { id: string }) {
                             <div className="grid grid-cols-2 gap-4">
                                 <div>
                                     <p className="text-sm text-muted-foreground">Repair Cost</p>
-                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? 'USD')}</p>
+                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? DEFAULT_CURRENCY)}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Customer Liability</p>
-                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? 'USD')}</p>
+                                    <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? DEFAULT_CURRENCY)}</p>
                                 </div>
                                 <div>
                                     <p className="text-sm text-muted-foreground">Insurance Coverage</p>

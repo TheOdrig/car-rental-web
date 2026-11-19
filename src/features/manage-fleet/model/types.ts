@@ -1,3 +1,6 @@
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import type { CurrencyType } from '@/shared/types';
+
 export interface FleetStatistics {
     totalCars: number;
     availableCars: number;
@@ -24,6 +27,7 @@ export interface CarFormData {
     dailyRate: number;
     weeklyRate: number;
     depositAmount: number;
+    currencyType: CurrencyType;
     imageUrl: string;
 }
 
@@ -41,5 +45,6 @@ export const defaultCarFormData: CarFormData = {
     dailyRate: 0,
     weeklyRate: 0,
     depositAmount: 0,
+    currencyType: DEFAULT_CURRENCY,
     imageUrl: '',
 };
