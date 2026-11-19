@@ -7,6 +7,7 @@ import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { useAddAdminNote } from '../../api/users-api';
 import { formatDateTime } from '@/shared/lib';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import type { AdminNote } from '@/entities/user';
 
 interface CustomerNotesCardProps {
@@ -19,20 +20,21 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
     const [isAdding, setIsAdding] = useState(false);
     const [noteText, setNoteText] = useState('');
     const addNote = useAddAdminNote();
+    const singleFlight = useSingleFlight();
 
     const handleSubmit = () => {
         if (!noteText.trim() || noteText.length < 3) return;
 
-        addNote.mutate(
-            { userId: customerId, text: noteText.trim() },
-            {
-                onSuccess: () => {
-                    setNoteText('');
-                    setIsAdding(false);
-                    onNoteAdded?.();
-                },
+        void singleFlight(async () => {
+            try {
+                await addNote.mutateAsync({ userId: customerId, text: noteText.trim() });
+            } catch {
+                return;
             }
-        );
+            setNoteText('');
+            setIsAdding(false);
+            onNoteAdded?.();
+        });
     };
 
     const sortedNotes = [...(notes || [])].sort(

@@ -15,6 +15,7 @@ import {
     carFormFieldErrors,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 export function AddCarContent() {
     const router = useRouter();
@@ -26,6 +27,7 @@ export function AddCarContent() {
         validateForm,
     } = useCarForm();
     const createCar = useCreateCar();
+    const singleFlight = useSingleFlight();
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -35,11 +37,14 @@ export function AddCarContent() {
             return;
         }
 
-        createCar.mutate(formData, {
-            onSuccess: () => {
-                router.push('/admin/fleet');
-            },
-            onError: (error) => setErrors(carFormFieldErrors(error)),
+        void singleFlight(async () => {
+            try {
+                await createCar.mutateAsync(formData);
+            } catch (error) {
+                setErrors(carFormFieldErrors(error));
+                return;
+            }
+            router.push('/admin/fleet');
         });
     };
 

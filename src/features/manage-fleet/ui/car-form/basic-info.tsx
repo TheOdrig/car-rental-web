@@ -12,6 +12,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { cn } from '@/shared/lib';
+import { useFilterOptions } from '@/entities/car';
 import type { CarFormData } from '../../model/types';
 
 function isValidImageUrl(url: string): boolean {
@@ -30,16 +31,13 @@ interface BasicInfoSectionProps {
     onUpdate: (field: keyof CarFormData, value: string | number) => void;
 }
 
-const carBrands = [
-    'Toyota', 'Honda', 'BMW', 'Mercedes-Benz', 'Audi',
-    'Tesla', 'Ford', 'Chevrolet', 'Nissan', 'Hyundai',
-    'Volkswagen', 'Porsche', 'Lexus', 'Mazda', 'Subaru',
-];
-
 const currentYear = new Date().getFullYear();
 const years = Array.from({ length: 30 }, (_, i) => currentYear - i);
 
 export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionProps) {
+    const { data: filterOptions } = useFilterOptions();
+    const brands = filterOptions?.brands ?? [];
+
     return (
         <div className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -47,30 +45,22 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     <Label htmlFor="brand">
                         Brand <span className="text-destructive">*</span>
                     </Label>
-                    <Select
+                    <Input
+                        id="brand"
+                        list="brand-suggestions"
+                        autoComplete="off"
+                        aria-invalid={errors.brand ? true : undefined}
+                        aria-describedby={errors.brand ? 'brand-error' : undefined}
                         value={data.brand}
-                        onValueChange={(value) => onUpdate('brand', value)}
-                    >
-                        <SelectTrigger
-                            id="brand"
-                            aria-invalid={errors.brand ? true : undefined}
-                            aria-describedby={errors.brand ? 'brand-error' : undefined}
-                            className={cn(
-                                'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
-                                errors.brand && 'border-destructive'
-                            )}
-                            aria-label="Select brand"
-                        >
-                            <SelectValue placeholder="Select brand" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {carBrands.map((brand) => (
-                                <SelectItem key={brand} value={brand}>
-                                    {brand}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
+                        onChange={(e) => onUpdate('brand', e.target.value)}
+                        placeholder="e.g., Toyota, Skoda"
+                        className={cn(errors.brand && 'border-destructive')}
+                    />
+                    <datalist id="brand-suggestions">
+                        {brands.map((brand) => (
+                            <option key={brand} value={brand} />
+                        ))}
+                    </datalist>
                     {errors.brand && (
                         <p id="brand-error" role="alert" className="text-sm text-destructive">{errors.brand}</p>
                     )}

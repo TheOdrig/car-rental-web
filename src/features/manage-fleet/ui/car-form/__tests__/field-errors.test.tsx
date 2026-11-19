@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/app/testing/test-utils';
 import { BasicInfoSection } from '../basic-info';
 import { PricingSection } from '../pricing';
 import { focusFirstInvalidField } from '../../../lib/use-car-form';
@@ -37,5 +38,14 @@ describe('car form field errors', () => {
         focusFirstInvalidField({ vin: 'y', licensePlate: 'x' });
 
         expect(screen.getByLabelText(/License Plate/)).toHaveFocus();
+    });
+
+    it('keeps a brand that is not among the suggestions and offers the fleet brands', async () => {
+        const { container } = render(
+            <BasicInfoSection data={{ ...defaultCarFormData, brand: 'Skoda' }} errors={{}} onUpdate={vi.fn()} />
+        );
+
+        expect(screen.getByLabelText(/Brand/)).toHaveValue('Skoda');
+        expect(container.querySelector('datalist#brand-suggestions')).not.toBeNull();
     });
 });

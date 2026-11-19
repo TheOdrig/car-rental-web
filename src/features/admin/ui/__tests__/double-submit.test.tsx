@@ -4,6 +4,7 @@ import { renderWithProviders } from '@/app/testing/test-utils';
 import { showToast } from '@/shared/lib';
 import { DamageChargeDialog } from '../damage-charge-dialog';
 import { BanCustomerDialog } from '@/features/manage-users/ui/customer-detail/ban-customer-dialog';
+import { CustomerNotesCard } from '@/features/manage-users/ui/customer-detail/customer-notes-card';
 
 const clientPost = vi.fn();
 vi.mock('@/shared/api', async (importOriginal) => {
@@ -62,5 +63,19 @@ describe('double submit', () => {
         await waitFor(() => expect(showToast.success).toHaveBeenCalledTimes(1));
         expect(clientPost).toHaveBeenCalledTimes(1);
         expect(showToast.error).not.toHaveBeenCalled();
+    });
+
+    it('saves an admin note once on a double click', async () => {
+        clientPost.mockImplementation(() => slowSuccess({ id: 1 }));
+        renderWithProviders(<CustomerNotesCard customerId={9} notes={[]} />);
+
+        fireEvent.click(screen.getByRole('button', { name: /Add Note/ }));
+        fireEvent.change(screen.getByPlaceholderText(/Enter admin note/), { target: { value: 'Called the customer' } });
+        const button = screen.getByRole('button', { name: /Save Note/ });
+        fireEvent.click(button);
+        fireEvent.click(button);
+
+        await waitFor(() => expect(showToast.success).toHaveBeenCalledTimes(1));
+        expect(clientPost).toHaveBeenCalledTimes(1);
     });
 });

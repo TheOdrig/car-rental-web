@@ -20,6 +20,7 @@ import {
 import type { VehicleDetailResponse } from '@/entities/car';
 import { mapCurrency } from '@/entities/currency';
 import { toast } from 'sonner';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 export function EditCarContent() {
     const router = useRouter();
@@ -88,6 +89,7 @@ interface EditCarFormProps {
 
 function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProps) {
     const router = useRouter();
+    const singleFlight = useSingleFlight();
 
     const {
         formData,
@@ -105,11 +107,14 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
             return;
         }
 
-        updateCar.mutate({ id: carId, ...formData }, {
-            onSuccess: () => {
-                router.push('/admin/fleet');
-            },
-            onError: (error) => setErrors(carFormFieldErrors(error)),
+        void singleFlight(async () => {
+            try {
+                await updateCar.mutateAsync({ id: carId, ...formData });
+            } catch (error) {
+                setErrors(carFormFieldErrors(error));
+                return;
+            }
+            router.push('/admin/fleet');
         });
     };
 
