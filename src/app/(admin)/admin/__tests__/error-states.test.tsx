@@ -109,7 +109,7 @@ describe('admin pages show an error instead of empty data', () => {
         q.useAlerts.mockReturnValue(q.ok([]));
         q.useDashboardSummary.mockReturnValue(q.ok({ pendingApprovals: 1 }));
         q.useFleetStatus.mockReturnValue(q.ok({ rentedCars: 2 }));
-        q.useRevenueData.mockReturnValue(q.ok({ breakdown: { totalRevenue: [] }, monthlyRevenue: [] }));
+        q.useRevenueData.mockReturnValue(q.ok({ breakdownByCurrency: [], monthlyRevenue: [] }));
         q.usePendingApprovals.mockReturnValue(q.ok(page));
         q.usePendingPickups.mockReturnValue(q.ok(page));
         q.usePendingReturns.mockReturnValue(q.ok(page));

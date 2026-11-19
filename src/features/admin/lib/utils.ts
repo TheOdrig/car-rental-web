@@ -46,11 +46,14 @@ function parseYearMonth(value: string): { year: number; monthValue: number } {
 
 export function processRevenueData(
     data: MonthlyRevenue[],
-    period: 'last6months' | 'lastyear' = 'last6months'
+    period: 'last6months' | 'lastyear' = 'last6months',
+    currency?: MonthlyRevenue['currency']
 ): RevenueDataPoint[] {
     if (!data || data.length === 0) return [];
 
-    const sorted = data
+    const scoped = currency ? data.filter((item) => item.currency === currency) : data;
+
+    const sorted = scoped
         .map((item) => ({ item, ...parseYearMonth(item.month) }))
         .sort((a, b) => b.year - a.year || b.monthValue - a.monthValue);
 
@@ -64,6 +67,17 @@ export function processRevenueData(
             revenue: item.revenue,
             isCurrent: index === array.length - 1,
         }));
+}
+
+export function revenueCurrencies(analytics: {
+    breakdownByCurrency?: { currency: MonthlyRevenue['currency'] }[];
+    monthlyRevenue?: MonthlyRevenue[];
+} | undefined): MonthlyRevenue['currency'][] {
+    if (!analytics) return [];
+    const seen = new Set<MonthlyRevenue['currency']>();
+    for (const item of analytics.breakdownByCurrency ?? []) seen.add(item.currency);
+    for (const item of analytics.monthlyRevenue ?? []) seen.add(item.currency);
+    return [...seen].sort();
 }
 
 export function calculateFleetPercentages(data: {

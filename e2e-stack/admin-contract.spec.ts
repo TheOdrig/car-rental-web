@@ -9,6 +9,18 @@ test.describe('admin BFF routes against the real API', () => {
         const summary = await page.request.get('/api/admin/dashboard');
         expect(summary.status()).toBe(200);
 
+        const revenue = await page.request.get('/api/admin/dashboard/revenue');
+        expect(revenue.status()).toBe(200);
+        const revenueBody = await revenue.json();
+        expect(Array.isArray(revenueBody.breakdownByCurrency)).toBe(true);
+        expect(revenueBody.breakdown).toBeUndefined();
+        for (const row of revenueBody.monthlyRevenue) {
+            expect(typeof row.currency).toBe('string');
+        }
+
+        await page.goto('/admin/dashboard');
+        await expect(page.getByText(/Revenue Trends/).first()).toBeVisible();
+
         const alerts = await page.request.get('/api/admin/alerts');
         expect(alerts.status()).toBe(200);
         expect(Array.isArray(await alerts.json())).toBe(true);

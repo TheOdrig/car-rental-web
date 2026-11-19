@@ -9,9 +9,9 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn } from '@/shared/lib';
-import { formatCurrency } from '@/shared/lib';
+import { formatCompactCurrency, formatCurrency } from '@/shared/lib';
 
-import type { RevenueDataPoint, RevenuePeriod } from '@/features/admin';
+import type { RevenueCurrency, RevenueDataPoint, RevenuePeriod } from '@/features/admin';
 
 interface RevenueChartProps {
     data: RevenueDataPoint[];
@@ -20,6 +20,7 @@ interface RevenueChartProps {
     isLoading?: boolean;
     className?: string;
     breakdown?: import('@/features/admin').RevenueBreakdown;
+    currency: RevenueCurrency;
 }
 
 const chartConfig = {
@@ -40,6 +41,7 @@ export function RevenueChart({
     isLoading = false,
     className,
     breakdown,
+    currency,
 }: RevenueChartProps) {
     const [internalPeriod, setInternalPeriod] = useState<RevenuePeriod>(period);
 
@@ -62,6 +64,8 @@ export function RevenueChart({
         }));
     }, [data]);
 
+    const money = (value: number) => formatCurrency(value, currency);
+
     const totalRevenue = useMemo(() => {
         return data.reduce((sum, item) => sum + item.revenue, 0);
     }, [data]);
@@ -75,10 +79,10 @@ export function RevenueChart({
             <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                     <CardTitle className="text-lg font-semibold">
-                        Revenue Trends
+                        Revenue Trends ({currency})
                     </CardTitle>
                     <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                        {formatCurrency(totalRevenue)}
+                        {money(totalRevenue)}
                     </p>
                 </div>
                 <Select
@@ -105,10 +109,10 @@ export function RevenueChart({
                 ) : (
                     <div
                         role="img"
-                        aria-label={`Revenue chart showing ${data.length} months of data. Total revenue: ${formatCurrency(totalRevenue)}`}
+                        aria-label={`Revenue chart in ${currency} showing ${data.length} months of data. Total revenue: ${money(totalRevenue)}`}
                     >
                         <span className="sr-only">
-                            Revenue breakdown by month: {data.map(d => `${d.month}: ${formatCurrency(d.revenue)}`).join(', ')}
+                            Revenue breakdown by month: {data.map(d => `${d.month}: ${money(d.revenue)}`).join(', ')}
                         </span>
                         <ChartContainer config={chartConfig} className="h-[200px] w-full">
                             <BarChart
@@ -131,7 +135,7 @@ export function RevenueChart({
                                     tickLine={false}
                                     axisLine={false}
                                     tickMargin={8}
-                                    tickFormatter={(value) => value >= 1000 ? `$${(value / 1000).toFixed(1)}k` : `$${value}`}
+                                    tickFormatter={(value: number) => formatCompactCurrency(value, currency)}
                                     className="text-xs"
                                     width={55}
                                     domain={[0, (dataMax: number) => dataMax * 2]}
@@ -146,7 +150,7 @@ export function RevenueChart({
                                                         {item.payload.month}
                                                     </span>
                                                     <span className="text-primary font-bold">
-                                                        {formatCurrency(value as number)}
+                                                        {money(value as number)}
                                                     </span>
                                                     {item.payload.isCurrent && (
                                                         <span className="text-xs text-muted-foreground">
@@ -176,7 +180,7 @@ export function RevenueChart({
                             <div className="space-y-1.5">
                                 <div className="flex items-center justify-between text-[13px]">
                                     <span className="text-muted-foreground font-medium">Rentals</span>
-                                    <span className="font-bold">{formatCurrency(breakdown.rentalRevenue)}</span>
+                                    <span className="font-bold">{money(breakdown.rentalRevenue)}</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                     <div
@@ -192,7 +196,7 @@ export function RevenueChart({
                             <div className="space-y-1.5">
                                 <div className="flex items-center justify-between text-[13px]">
                                     <span className="text-muted-foreground font-medium">Penalties</span>
-                                    <span className="font-bold">{formatCurrency(breakdown.penaltyRevenue)}</span>
+                                    <span className="font-bold">{money(breakdown.penaltyRevenue)}</span>
                                 </div>
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                     <div
@@ -214,19 +218,19 @@ export function RevenueChart({
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Recovered</p>
                                     <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
-                                        +{formatCurrency(breakdown.damageRecovered)}
+                                        +{money(breakdown.damageRecovered)}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Repair Costs</p>
                                     <p className="text-sm font-bold text-red-600 dark:text-red-400">
-                                        -{formatCurrency(breakdown.damageRepairCosts)}
+                                        -{money(breakdown.damageRepairCosts)}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Net Impact</p>
                                     <p className={`text-sm font-bold ${breakdown.netDamageImpact >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
-                                        {breakdown.netDamageImpact >= 0 ? '+' : ''}{formatCurrency(breakdown.netDamageImpact)}
+                                        {breakdown.netDamageImpact >= 0 ? '+' : ''}{money(breakdown.netDamageImpact)}
                                     </p>
                                 </div>
                             </div>
@@ -235,7 +239,7 @@ export function RevenueChart({
                         <div className="flex items-center justify-between pt-2 border-t border-dashed">
                             <span className="text-sm font-semibold text-muted-foreground">Net Revenue</span>
                             <span className={`text-lg font-bold ${breakdown.netRevenue >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
-                                {formatCurrency(breakdown.netRevenue)}
+                                {money(breakdown.netRevenue)}
                             </span>
                         </div>
                     </div>

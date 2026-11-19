@@ -6,7 +6,7 @@ import { clientPost } from '@/shared/api';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { Breadcrumb } from '@/widgets/layout';
-import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
+import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
 import { FleetStatusCard } from '@/features/manage-fleet';
 import { PendingRentalsTable } from '@/features/process-rentals';
 import type { RevenuePeriod } from '@/features/admin';
@@ -93,15 +93,23 @@ export function AdminDashboardContent() {
         overdue: { items: returns?.content ?? [], loading: returnsLoading, failed: returnsQuery.isError, retry: () => void returnsQuery.refetch() },
     };
 
-    const chartData = useMemo(() => {
-        if (!revenueAnalytics?.monthlyRevenue) return [];
-        return processRevenueData(revenueAnalytics.monthlyRevenue, revenuePeriod);
-    }, [revenueAnalytics, revenuePeriod]);
+    const currencies = useMemo(() => revenueCurrencies(revenueAnalytics), [revenueAnalytics]);
+
+    const chartsByCurrency = useMemo(
+        () =>
+            currencies.map((currency) => ({
+                currency,
+                data: processRevenueData(revenueAnalytics?.monthlyRevenue ?? [], revenuePeriod, currency),
+                breakdown: revenueAnalytics?.breakdownByCurrency?.find((item) => item.currency === currency),
+            })),
+        [currencies, revenueAnalytics, revenuePeriod]
+    );
 
     const latestRevenue = useMemo(() => {
-        const monthly = revenueAnalytics?.monthlyRevenue;
-        return monthly && monthly.length > 0 ? monthly[monthly.length - 1] : null;
-    }, [revenueAnalytics]);
+        if (currencies.length !== 1) return null;
+        const monthly = (revenueAnalytics?.monthlyRevenue ?? []).filter((item) => item.currency === currencies[0]);
+        return monthly.length > 0 ? monthly[monthly.length - 1] : null;
+    }, [currencies, revenueAnalytics]);
 
     return (
         <ErrorBoundary>
@@ -124,7 +132,7 @@ export function AdminDashboardContent() {
                     />
                 ) : (
                     <DashboardMetricsGrid
-                        totalRevenue={revenueAnalytics?.breakdown.totalRevenue}
+                        revenueByCurrency={revenueAnalytics?.breakdownByCurrency}
                         revenueTrend={
                             latestRevenue
                                 ? {
@@ -150,13 +158,28 @@ export function AdminDashboardContent() {
                                 onRetry={() => void revenueQuery.refetch()}
                             />
                         ) : (
-                            <RevenueChart
-                                data={chartData}
-                                period={revenuePeriod}
-                                onPeriodChange={setRevenuePeriod}
-                                isLoading={revenueLoading}
-                                breakdown={revenueAnalytics?.breakdown}
-                            />
+                            <div className="space-y-6">
+                                {revenueLoading || chartsByCurrency.length === 0 ? (
+                                    <RevenueChart
+                                        data={[]}
+                                        currency="USD"
+                                        period={revenuePeriod}
+                                        onPeriodChange={setRevenuePeriod}
+                                        isLoading={revenueLoading}
+                                    />
+                                ) : (
+                                    chartsByCurrency.map((entry) => (
+                                        <RevenueChart
+                                            key={entry.currency}
+                                            data={entry.data}
+                                            currency={entry.currency}
+                                            period={revenuePeriod}
+                                            onPeriodChange={setRevenuePeriod}
+                                            breakdown={entry.breakdown}
+                                        />
+                                    ))
+                                )}
+                            </div>
                         )}
 
                         {tabSources[activeTab].failed ? (

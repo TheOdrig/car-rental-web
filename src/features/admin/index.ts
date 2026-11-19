@@ -11,6 +11,7 @@ export type {
     DailyRevenue,
     MonthlyRevenue,
     RevenueBreakdown,
+    RevenueCurrency,
     RevenuePeriod,
     RevenueDataPoint,
     RevenueAnalytics,

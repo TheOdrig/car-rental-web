@@ -3,11 +3,12 @@
 import { Card, CardContent } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { DollarSign, Car, Clock, TrendingUp, TrendingDown } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrency } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface MetricsCardProps {
     title: string;
-    value: string | number;
+    value: React.ReactNode;
     icon: React.ReactNode;
     trend?: {
         value: number;
@@ -82,7 +83,7 @@ export function MetricsCardSkeleton() {
 }
 
 interface DashboardMetricsGridProps {
-    totalRevenue?: number;
+    revenueByCurrency?: { currency: string; totalRevenue: number }[];
     revenueTrend?: {
         value: number;
         direction: 'up' | 'down';
@@ -95,7 +96,7 @@ interface DashboardMetricsGridProps {
 }
 
 export function DashboardMetricsGrid({
-    totalRevenue = 0,
+    revenueByCurrency = [],
     revenueTrend,
     activeRentals = 0,
     pendingApprovals = 0,
@@ -112,20 +113,19 @@ export function DashboardMetricsGrid({
         );
     }
 
-    const formatCurrency = (value: number) => {
-        return new Intl.NumberFormat('en-US', {
-            style: 'currency',
-            currency: 'USD',
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-        }).format(value);
-    };
+    const revenueValue = revenueByCurrency.length === 0
+        ? formatCurrency(0, DEFAULT_CURRENCY)
+        : revenueByCurrency.map((entry) => (
+            <span key={entry.currency} className="block">
+                {formatCurrency(entry.totalRevenue, entry.currency)}
+            </span>
+        ));
 
     return (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <MetricsCard
                 title="Total Revenue"
-                value={formatCurrency(totalRevenue)}
+                value={revenueValue}
                 icon={<DollarSign className="h-5 w-5 text-primary" />}
                 trend={revenueTrend}
                 onClick={() => onCardClick?.('revenue')}

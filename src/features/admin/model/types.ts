@@ -78,14 +78,11 @@ export type QuickActionResult = WithRequired<Schemas['QuickActionResultDto'], 's
 
 export type DailyRevenue = Required<Schemas['DailyRevenueDto']>;
 
-export interface MonthlyRevenue {
-    month: string;
-    revenue: number;
-    rentalCount: number;
-    growthPercentage: number;
-}
+export type MonthlyRevenue = Required<Schemas['MonthlyRevenueDto']>;
 
 export type RevenueBreakdown = Required<Schemas['RevenueBreakdownDto']>;
+
+export type RevenueCurrency = RevenueBreakdown['currency'];
 
 export type RevenuePeriod = 'last6months' | 'lastyear';
 
@@ -98,7 +95,7 @@ export interface RevenueDataPoint {
 export interface RevenueAnalytics {
     dailyRevenue: DailyRevenue[];
     monthlyRevenue: MonthlyRevenue[];
-    breakdown: RevenueBreakdown;
+    breakdownByCurrency: RevenueBreakdown[];
     generatedAt: string;
 }
 

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatCurrency, formatDate, formatTime } from '@/shared/lib';
-import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPercentages, processRevenueData, getAlertStyles } from '@/features/admin';
+import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPercentages, processRevenueData, revenueCurrencies, getAlertStyles } from '@/features/admin';
 import { MonthlyRevenue } from '@/features/admin';
 describe('formatCurrency', () => {
     it('should format positive amounts with dollar sign', () => {
@@ -178,14 +178,14 @@ describe('calculateFleetPercentages', () => {
 });
 describe('processRevenueData', () => {
     const mockData: MonthlyRevenue[] = [
-        { month: '2024-06', revenue: 6000, rentalCount: 60, growthPercentage: 0 },
-        { month: '2024-05', revenue: 5000, rentalCount: 50, growthPercentage: 0 },
-        { month: '2024-04', revenue: 4000, rentalCount: 40, growthPercentage: 0 },
-        { month: '2024-03', revenue: 3000, rentalCount: 30, growthPercentage: 0 },
-        { month: '2024-02', revenue: 2000, rentalCount: 20, growthPercentage: 0 },
-        { month: '2024-01', revenue: 1000, rentalCount: 10, growthPercentage: 0 },
-        { month: '2023-12', revenue: 1200, rentalCount: 12, growthPercentage: 0 },
-        { month: '2023-11', revenue: 1100, rentalCount: 11, growthPercentage: 0 },
+        { month: '2024-06', revenue: 6000, currency: 'USD', paymentCount: 60, growthPercentage: 0 },
+        { month: '2024-05', revenue: 5000, currency: 'USD', paymentCount: 50, growthPercentage: 0 },
+        { month: '2024-04', revenue: 4000, currency: 'USD', paymentCount: 40, growthPercentage: 0 },
+        { month: '2024-03', revenue: 3000, currency: 'USD', paymentCount: 30, growthPercentage: 0 },
+        { month: '2024-02', revenue: 2000, currency: 'USD', paymentCount: 20, growthPercentage: 0 },
+        { month: '2024-01', revenue: 1000, currency: 'USD', paymentCount: 10, growthPercentage: 0 },
+        { month: '2023-12', revenue: 1200, currency: 'USD', paymentCount: 12, growthPercentage: 0 },
+        { month: '2023-11', revenue: 1100, currency: 'USD', paymentCount: 11, growthPercentage: 0 },
     ];
     it('should filter for last 6 months by default', () => {
         const result = processRevenueData(mockData);
@@ -216,12 +216,33 @@ describe('processRevenueData', () => {
     });
     it('should handle data spanning multiple years', () => {
         const multiYearData: MonthlyRevenue[] = [
-            { month: '2024-01', revenue: 100, rentalCount: 1, growthPercentage: 0 },
-            { month: '2023-12', revenue: 200, rentalCount: 1, growthPercentage: 0 },
+            { month: '2024-01', revenue: 100, currency: 'USD', paymentCount: 1, growthPercentage: 0 },
+            { month: '2023-12', revenue: 200, currency: 'USD', paymentCount: 1, growthPercentage: 0 },
         ];
         const result = processRevenueData(multiYearData);
         expect(result[0].month).toBe('Dec');
         expect(result[1].month).toBe('Jan');
+    });
+});
+describe('processRevenueData by currency', () => {
+    const mixed: MonthlyRevenue[] = [
+        { month: '2024-02', revenue: 200, currency: 'TRY', paymentCount: 2, growthPercentage: 10 },
+        { month: '2024-02', revenue: 20, currency: 'USD', paymentCount: 1, growthPercentage: 5 },
+        { month: '2024-01', revenue: 100, currency: 'TRY', paymentCount: 1, growthPercentage: 0 },
+        { month: '2024-01', revenue: 10, currency: 'USD', paymentCount: 1, growthPercentage: 0 },
+    ];
+    it('keeps each currency on its own series and never sums them', () => {
+        expect(processRevenueData(mixed, 'last6months', 'TRY').map((p) => p.revenue)).toEqual([100, 200]);
+        expect(processRevenueData(mixed, 'last6months', 'USD').map((p) => p.revenue)).toEqual([10, 20]);
+    });
+    it('lists the currencies of the breakdown and the monthly rows once, sorted', () => {
+        expect(
+            revenueCurrencies({
+                breakdownByCurrency: [{ currency: 'USD' }, { currency: 'TRY' }],
+                monthlyRevenue: [...mixed, { month: '2024-03', revenue: 1, currency: 'EUR', paymentCount: 1, growthPercentage: 0 }],
+            })
+        ).toEqual(['EUR', 'TRY', 'USD']);
+        expect(revenueCurrencies(undefined)).toEqual([]);
     });
 });
 describe('getAlertStyles', () => {

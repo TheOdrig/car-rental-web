@@ -32,6 +32,30 @@ export function formatCurrency(
     }).format(amount);
 }
 
+export function formatCompactCurrency(
+    amount: number,
+    currency: CurrencyType | string = 'USD'
+): string {
+    return new Intl.NumberFormat(getLocaleForCurrency(currency), {
+        style: 'currency',
+        currency,
+        notation: 'compact',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 1,
+    }).format(amount);
+}
+
+export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): string {
+    const part = new Intl.NumberFormat(getLocaleForCurrency(currency), {
+        style: 'currency',
+        currency,
+        currencyDisplay: 'narrowSymbol',
+    })
+        .formatToParts(0)
+        .find((entry) => entry.type === 'currency');
+    return part?.value ?? currency;
+}
+
 export function formatCurrencyWithDecimals(
     amount: number,
     currency: CurrencyType | string = 'USD'
