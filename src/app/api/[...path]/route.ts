@@ -1,7 +1,7 @@
 import { ApiError } from '@/shared/api';
 import { route } from '@/shared/server';
 
-const notFound = route(
+const notFound = route<{ path: string[] }>(
     async () => {
         throw new ApiError(404, 'Resource not found');
     },

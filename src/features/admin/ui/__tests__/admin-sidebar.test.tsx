@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { AdminSidebar } from '../admin-sidebar';
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/admin/dashboard' }));
@@ -32,6 +33,17 @@ describe('AdminSidebar', () => {
 
         expect(screen.getByRole('button', { name: 'Expand sidebar' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Rental Management' })).toBeInTheDocument();
+    });
+
+    it('offers the navigation through a menu button on narrow screens', async () => {
+        const user = userEvent.setup();
+        render(<AdminSidebar username="admin" />);
+
+        await user.click(screen.getByRole('button', { name: 'Open admin menu' }));
+
+        const menu = await screen.findByRole('dialog', { name: 'Admin Panel' });
+        expect(menu).toHaveTextContent('Rental Management');
+        expect(screen.getByRole('navigation', { name: 'Admin mobile navigation' })).toBeInTheDocument();
     });
 
     it('stays expanded on a wide viewport', () => {
