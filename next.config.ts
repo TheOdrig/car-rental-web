@@ -72,6 +72,7 @@ export function buildSecurityHeaders(environment: HeaderEnvironment): Array<{ ke
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  poweredByHeader: false,
   async headers() {
     return [
       {

@@ -112,7 +112,7 @@ With the API running, `npm run test:e2e:stack` starts the web app on port 3100 a
 | `API_URL` | Base URL of the API, default `http://localhost:8082`; required when `NODE_ENV=production` |
 | `JWT_SECRET` | Required, at least 32 characters, the HS256 secret the API signs with |
 | `API_TIMEOUT_MS` | Upstream timeout, default 5000 |
-| `TRUSTED_PROXY_HOPS` | Number of trusted reverse proxies in front of this app, default 0; used to pick the client IP from `X-Forwarded-For` |
+| `TRUSTED_PROXY_HOPS` | Number of trusted reverse proxies in front of this app, default 0; used to pick the client IP from `X-Forwarded-For`; any value above 0 also makes the CSRF origin check honour `X-Forwarded-Host` |
 | `TRUSTED_CLIENT_IP_HEADER` | Optional name of a header your edge sets with the client IP, for example `x-real-ip`; only used when set |
 | `NEXT_PUBLIC_APP_URL` | Public URL of this app |
 | `STRIPE_PUBLISHABLE_KEY` | Optional fallback; must start with `pk_test_` |

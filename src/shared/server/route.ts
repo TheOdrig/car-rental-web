@@ -2,6 +2,7 @@ import 'server-only';
 import { NextResponse, type NextRequest } from 'next/server';
 import { ApiError, isApiError } from '@/shared/api/error';
 import { logger } from '@/shared/lib/logger';
+import { getServerEnv } from './env';
 import { upstreamFetch, type UpstreamOptions } from './upstream';
 import type { UpstreamTarget } from './upstream-endpoints';
 
@@ -17,13 +18,37 @@ const JSON_CONTENT_TYPE = 'application/json';
 const PROBLEM_CONTENT_TYPE = 'application/problem+json';
 const BODY_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 const STATE_CHANGING_METHODS = new Set(['POST', 'PUT', 'PATCH', 'DELETE']);
+const NO_STORE = 'private, no-store';
+
+const PROBLEM_DEFAULTS: Record<number, { title: string; code: string }> = {
+    400: { title: 'Bad Request', code: 'BAD_REQUEST' },
+    401: { title: 'Unauthorized', code: 'AUTHENTICATION_FAILED' },
+    403: { title: 'Forbidden', code: 'ACCESS_DENIED' },
+    404: { title: 'Not Found', code: 'NOT_FOUND' },
+    405: { title: 'Method Not Allowed', code: 'METHOD_NOT_ALLOWED' },
+    409: { title: 'Conflict', code: 'CONFLICT' },
+    415: { title: 'Unsupported Media Type', code: 'UNSUPPORTED_MEDIA_TYPE' },
+    429: { title: 'Too Many Requests', code: 'RATE_LIMITED' },
+    503: { title: 'Service Unavailable', code: 'SERVICE_UNAVAILABLE' },
+};
+const FALLBACK_PROBLEM = { title: 'Internal Server Error', code: 'INTERNAL_SERVER_ERROR' };
 
 function mediaType(value: string | null): string {
     return (value ?? '').split(';')[0].trim().toLowerCase();
 }
 
+function trustsForwardedHost(): boolean {
+    try {
+        return getServerEnv().TRUSTED_PROXY_HOPS > 0;
+    } catch {
+        return false;
+    }
+}
+
 function requestHost(request: NextRequest): string {
-    const forwarded = request.headers.get('x-forwarded-host')?.split(',')[0].trim();
+    const forwarded = trustsForwardedHost()
+        ? request.headers.get('x-forwarded-host')?.split(',')[0].trim()
+        : undefined;
     return (forwarded || request.headers.get('host') || request.nextUrl.host).toLowerCase();
 }
 
@@ -47,9 +72,19 @@ function problemResponse(
     extra: Record<string, unknown> = {},
     headers: Record<string, string> = {}
 ): NextResponse {
+    const defaults = PROBLEM_DEFAULTS[status] ?? FALLBACK_PROBLEM;
+    const defined = Object.fromEntries(Object.entries(extra).filter(([, value]) => value !== undefined));
+
     return NextResponse.json(
-        { status, detail, timestamp: new Date().toISOString(), ...extra },
-        { status, headers: { 'Content-Type': PROBLEM_CONTENT_TYPE, ...headers } }
+        {
+            type: 'about:blank',
+            ...defaults,
+            status,
+            detail,
+            timestamp: new Date().toISOString(),
+            ...defined,
+        },
+        { status, headers: { 'Content-Type': PROBLEM_CONTENT_TYPE, 'Cache-Control': NO_STORE, ...headers } }
     );
 }
 
@@ -123,10 +158,13 @@ export function route<P extends RouteParams = Record<string, never>>(
             const result = await handler(request, params);
 
             if (result instanceof Response) {
+                if (!result.headers.has('Cache-Control')) {
+                    result.headers.set('Cache-Control', NO_STORE);
+                }
                 return result;
             }
 
-            return NextResponse.json(result ?? {});
+            return NextResponse.json(result ?? {}, { headers: { 'Cache-Control': NO_STORE } });
         } catch (error) {
             return errorResponse(error, options);
         }
@@ -134,7 +172,7 @@ export function route<P extends RouteParams = Record<string, never>>(
 }
 
 export function created(data: unknown): NextResponse {
-    return NextResponse.json(data ?? {}, { status: 201 });
+    return NextResponse.json(data ?? {}, { status: 201, headers: { 'Cache-Control': NO_STORE } });
 }
 
 export function parseIdParam(value: string | undefined, label: string): number {
@@ -211,6 +249,8 @@ export function proxy<P extends RouteParams = Record<string, never>>(config: Pro
         const data = await upstreamFetch<unknown>(target, options);
         const payload = config.respond ? config.respond(data) : data;
 
-        return config.status ? NextResponse.json(payload ?? {}, { status: config.status }) : payload;
+        return config.status
+            ? NextResponse.json(payload ?? {}, { status: config.status, headers: { 'Cache-Control': NO_STORE } })
+            : payload;
     }, config);
 }

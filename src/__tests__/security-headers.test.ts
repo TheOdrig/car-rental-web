@@ -71,6 +71,10 @@ describe('security headers', () => {
         expect(valueOf(production, 'Permissions-Policy')).toContain('camera=()');
     });
 
+    it('does not advertise the framework', () => {
+        expect(nextConfig.poweredByHeader).toBe(false);
+    });
+
     it('applies the headers to every route through next.config', async () => {
         const rules = await nextConfig.headers?.();
 

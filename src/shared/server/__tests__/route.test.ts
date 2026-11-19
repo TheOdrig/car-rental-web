@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { NextRequest } from 'next/server';
 
 vi.mock('next/headers', () => ({
@@ -10,6 +10,7 @@ vi.mock('next/headers', () => ({
 }));
 
 import { ApiError } from '@/shared/api/error';
+import { resetServerEnvForTests } from '../env';
 import { parseIdParam, proxy, route } from '../route';
 
 const request = (url = 'http://localhost:3000/api/x', init?: ConstructorParameters<typeof NextRequest>[1]) =>
@@ -83,17 +84,32 @@ describe('route request guards', () => {
         expect(none.status).toBe(200);
     });
 
-    it('compares Origin with the forwarded host behind a proxy', async () => {
-        const response = await ok(
-            request(undefined, {
-                method: 'POST',
-                headers: { ...json, origin: 'https://app.example.com', 'x-forwarded-host': 'app.example.com' },
-                body: '{}',
-            }),
-            context({})
-        );
+    describe('forwarded host', () => {
+        const forwarded = {
+            ...json,
+            origin: 'https://app.example.com',
+            'x-forwarded-host': 'app.example.com',
+        };
 
-        expect(response.status).toBe(200);
+        afterEach(() => {
+            delete process.env.TRUSTED_PROXY_HOPS;
+            resetServerEnvForTests();
+        });
+
+        it('compares Origin with the forwarded host when a trusted proxy is configured', async () => {
+            process.env.TRUSTED_PROXY_HOPS = '1';
+            resetServerEnvForTests();
+
+            const response = await ok(request(undefined, { method: 'POST', headers: forwarded, body: '{}' }), context({}));
+
+            expect(response.status).toBe(200);
+        });
+
+        it('ignores the forwarded host when no trusted proxy is configured', async () => {
+            const response = await ok(request(undefined, { method: 'POST', headers: forwarded, body: '{}' }), context({}));
+
+            expect(response.status).toBe(403);
+        });
     });
 
     it('rejects a state-changing request without Origin when the browser says it is cross-site', async () => {
@@ -132,6 +148,24 @@ describe('route request guards', () => {
 });
 
 describe('route', () => {
+    const ok = route(async () => ({ ok: true }), { errorMessage: 'failed' });
+
+    it('marks every response as uncacheable', async () => {
+        const success = await ok(request(), context({}));
+        const failure = await route(async () => { throw new ApiError(404, 'gone'); }, { errorMessage: 'failed' })(request(), context({}));
+
+        expect(success.headers.get('cache-control')).toBe('private, no-store');
+        expect(failure.headers.get('cache-control')).toBe('private, no-store');
+    });
+
+    it('gives every generated problem a type, title and code', async () => {
+        const bad = await route(async () => { throw new ApiError(400, 'Invalid car ID'); }, { errorMessage: 'failed' })(request(), context({}));
+        const missing = await ok(request(undefined, { method: 'POST' }), context({}));
+
+        expect(await bad.json()).toMatchObject({ type: 'about:blank', title: 'Bad Request', code: 'BAD_REQUEST', status: 400 });
+        expect(await missing.json()).toMatchObject({ type: 'about:blank', title: 'Unsupported Media Type', code: 'UNSUPPORTED_MEDIA_TYPE' });
+    });
+
     it('serialises the handler result', async () => {
         const handler = route(async () => ({ ok: true }), { errorMessage: 'failed' });
         const response = await handler(request(), context({}));

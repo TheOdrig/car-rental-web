@@ -57,8 +57,8 @@ const PROBLEM_CODES: Record<number, { title: string; code: string }> = {
 
 function jsonError(status: number, message: string, clearCookies = false): NextResponse {
     const response = NextResponse.json(
-        { status, detail: message, timestamp: new Date().toISOString(), ...PROBLEM_CODES[status] },
-        { status, headers: { 'Content-Type': 'application/problem+json' } }
+        { type: 'about:blank', status, detail: message, timestamp: new Date().toISOString(), ...PROBLEM_CODES[status] },
+        { status, headers: { 'Content-Type': 'application/problem+json', 'Cache-Control': 'private, no-store' } }
     );
     if (clearCookies) {
         response.cookies.delete(ACCESS_COOKIE);
