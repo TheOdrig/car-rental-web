@@ -24,8 +24,8 @@ export const damageKeys = {
     details: () => [...damageKeys.all, 'detail'] as const,
     detail: (id: number) => [...damageKeys.details(), id] as const,
     statistics: (startDate?: string, endDate?: string) => [...damageKeys.all, 'statistics', { startDate, endDate }] as const,
-    vehicleHistory: (carId: number) => [...damageKeys.all, 'vehicle', carId] as const,
-    customerHistory: (userId: number) => [...damageKeys.all, 'customer', userId] as const,
+    vehicleHistory: (carId: number, page?: number, size?: number) => [...damageKeys.all, 'vehicle', carId, { page, size }] as const,
+    customerHistory: (userId: number, page?: number, size?: number) => [...damageKeys.all, 'customer', userId, { page, size }] as const,
 };
 
 function buildQueryString(params: Record<string, unknown>): string {
@@ -143,10 +143,11 @@ async function deletePhoto(damageId: number, photoId: number): Promise<void> {
     await clientDelete<void>(`/api/admin/damages/${damageId}/photos?photoId=${photoId}`);
 }
 
-export function useDamages(filters?: DamageSearchFilters, page = 0, size = 20) {
+export function useDamages(filters?: DamageSearchFilters, page = 0, size = 20, enabled = true) {
     return useQuery({
         queryKey: damageKeys.list({ ...filters, page, size } as DamageSearchFilters),
         queryFn: () => fetchDamages(filters, page, size),
+        enabled,
         staleTime: 30 * 1000,
     });
 }
@@ -187,7 +188,7 @@ export function useDamageStatistics(startDate?: string, endDate?: string) {
 
 export function useVehicleDamages(carId: number | null | undefined, page = 0, size = 10) {
     return useQuery({
-        queryKey: damageKeys.vehicleHistory(carId!),
+        queryKey: damageKeys.vehicleHistory(carId!, page, size),
         queryFn: () => fetchVehicleDamages(carId!, page, size),
         enabled: !!carId,
         staleTime: 60 * 1000,
@@ -196,7 +197,7 @@ export function useVehicleDamages(carId: number | null | undefined, page = 0, si
 
 export function useCustomerDamages(userId: number | null | undefined, page = 0, size = 10) {
     return useQuery({
-        queryKey: damageKeys.customerHistory(userId!),
+        queryKey: damageKeys.customerHistory(userId!, page, size),
         queryFn: () => fetchCustomerDamages(userId!, page, size),
         enabled: !!userId,
         staleTime: 60 * 1000,

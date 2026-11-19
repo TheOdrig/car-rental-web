@@ -8,9 +8,16 @@ import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/widgets/layout';
 import { DamageTable, DamageFilters } from '@/features/admin';
 import { Pagination } from '@/shared/ui/pagination';
-import { useDamages } from '@/features/manage-damages';
+import { useDamages, useCustomerDamages } from '@/features/manage-damages';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { toast } from 'sonner';
 import type { DamageSearchFilters } from '@/entities/damage';
+
+function parsePositiveInt(value: string | null | undefined): number | undefined {
+    if (!value || !/^[0-9]+$/.test(value)) return undefined;
+    const parsed = Number(value);
+    return parsed > 0 ? parsed : undefined;
+}
 
 function DamagesList() {
     const searchParams = useSearchParams();
@@ -23,9 +30,13 @@ function DamagesList() {
         status: searchParams?.get('status') as DamageSearchFilters['status'] || undefined,
         startDate: searchParams?.get('startDate') || undefined,
         endDate: searchParams?.get('endDate') || undefined,
+        carId: parsePositiveInt(searchParams?.get('carId')),
     };
+    const userId = parsePositiveInt(searchParams?.get('userId'));
 
-    const { data, isLoading, isFetching, refetch } = useDamages(filters, page, 20);
+    const searchQuery = useDamages(filters, page, 20, userId === undefined);
+    const customerQuery = useCustomerDamages(userId, page, 20);
+    const { data, isLoading, isFetching, isError, refetch } = userId !== undefined ? customerQuery : searchQuery;
 
     const handleRefresh = async () => {
         try {
@@ -76,12 +87,33 @@ function DamagesList() {
                 </div>
             </div>
 
-            <DamageFilters />
+            {(userId !== undefined || filters.carId !== undefined) && (
+                <div className="flex items-center justify-between rounded-xl border bg-muted/40 px-4 py-3 text-sm">
+                    <span>
+                        {userId !== undefined
+                            ? `Showing damages for customer #${userId}. Other filters do not apply to this view.`
+                            : `Showing damages for vehicle #${filters.carId}.`}
+                    </span>
+                    <Button variant="link" size="sm" asChild>
+                        <Link href="/admin/damages">Show all damages</Link>
+                    </Button>
+                </div>
+            )}
 
-            <DamageTable
-                damages={data?.content || []}
-                isLoading={isLoading}
-            />
+            {userId === undefined && <DamageFilters />}
+
+            {isError ? (
+                <ErrorMessage
+                    title="Failed to load damage reports"
+                    message="The damage reports could not be loaded. Check your connection and try again."
+                    onRetry={() => void refetch()}
+                />
+            ) : (
+                <DamageTable
+                    damages={data?.content || []}
+                    isLoading={isLoading}
+                />
+            )}
 
             {data && data.totalPages > 1 && (
                 <Pagination
