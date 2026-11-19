@@ -84,6 +84,7 @@ export function PenaltyWaiveDialog({
 
     const waiverAmount = useWatch({ control, name: 'waiverAmount' });
     const exceedsPenalty = !isFullWaiver && (waiverAmount || 0) > originalPenalty;
+    const waiverAmountError = !isFullWaiver && (Boolean(apiErrors.waiverAmount) || exceedsPenalty || Boolean(errors.waiverAmount));
     const remainingPenalty = isFullWaiver
         ? 0
         : originalPenalty - (waiverAmount || 0);
@@ -171,19 +172,21 @@ export function PenaltyWaiveDialog({
                                 min="0.01"
                                 placeholder="Enter amount to waive"
                                 {...register('waiverAmount', { valueAsNumber: true })}
+                                aria-invalid={waiverAmountError ? true : undefined}
+                                aria-describedby={waiverAmountError ? 'waiverAmount-error' : undefined}
                                 className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                             />
                             {apiErrors.waiverAmount && !exceedsPenalty ? (
-                                <p className="text-sm text-red-600 dark:text-red-400" role="alert" data-testid="waiver-amount-api-error">
+                                <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400" role="alert" data-testid="waiver-amount-api-error">
                                     {apiErrors.waiverAmount}
                                 </p>
                             ) : exceedsPenalty ? (
-                                <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                                <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400" role="alert">
                                     The waiver cannot be more than the penalty of {formatCurrency(originalPenalty, currency)}
                                 </p>
                             ) : (
                                 errors.waiverAmount && (
-                                    <p className="text-sm text-red-600 dark:text-red-400">{errors.waiverAmount.message}</p>
+                                    <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400">{errors.waiverAmount.message}</p>
                                 )
                             )}
                         </div>

@@ -388,4 +388,29 @@ describe('LoginForm', () => {
             });
         });
     });
+
+    describe('Focus management', () => {
+        it('moves focus to the first invalid field on an empty submit', async () => {
+            renderWithProviders(<LoginForm />);
+
+            submitForm();
+
+            await waitFor(() => expect(getUsernameInput()).toHaveFocus());
+        });
+
+        it('moves focus to the error message after a failed login', async () => {
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: vi.fn().mockRejectedValue(new Error('Invalid credentials')),
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+            renderWithProviders(<LoginForm />);
+
+            fireEvent.change(getUsernameInput(), { target: { value: 'someone' } });
+            fireEvent.change(getPasswordInput(), { target: { value: 'wrong-password' } });
+            submitForm();
+
+            const alert = await screen.findByRole('alert');
+            await waitFor(() => expect(alert).toHaveFocus());
+        });
+    });
 });

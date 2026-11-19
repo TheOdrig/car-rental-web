@@ -27,7 +27,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
                     </p>
                     <Link
                         href="/rentals"
-                        className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+                        className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors"
                     >
                         My Rentals
                     </Link>

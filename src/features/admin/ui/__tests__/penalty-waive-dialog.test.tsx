@@ -47,6 +47,9 @@ describe('PenaltyWaiveDialog', () => {
 
         expect(screen.getByRole('alert')).toHaveTextContent('The waiver cannot be more than the penalty of $180.00');
         expect(screen.getByRole('button', { name: 'Waive Penalty' })).toBeDisabled();
+        const field = screen.getByLabelText('Waiver Amount');
+        expect(field).toHaveAttribute('aria-invalid', 'true');
+        expect(field).toHaveAttribute('aria-describedby', 'waiverAmount-error');
     });
 
     it('shows the API waiver error on the amount field', async () => {

@@ -11,6 +11,7 @@ import { getFormErrorMessage } from '@/shared/api';
 import { useRegister } from '../lib/use-auth';
 import { cn } from '@/shared/lib';
 import { FormError } from './form-error';
+import { focusFirstInvalid } from '../lib/focus-first-invalid';
 import { PasswordStrengthIndicator } from './password-strength-indicator';
 import { getPasswordMaxError, normalizeEmail, validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
 
@@ -70,7 +71,9 @@ export function RegisterForm({ className }: RegisterFormProps) {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const valid = Object.keys(newErrors).length === 0;
+        if (!valid) focusFirstInvalid(['username', 'email', 'password', 'confirmPassword', 'terms'], newErrors);
+        return valid;
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -107,6 +110,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
     return (
         <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
+                focusOnShow
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
             />
@@ -289,12 +293,22 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 <div className="text-sm">
                     <label htmlFor="terms" className="text-slate-900 dark:text-slate-100">
                         I agree to the{' '}
-                        <Link href="/terms" className="text-primary hover:underline">
-                            Terms of Service
+                        <Link
+                            href="/terms"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-primary hover:underline"
+                        >
+                            Terms of Service<span className="sr-only"> (opens in a new tab)</span>
                         </Link>{' '}
                         and{' '}
-                        <Link href="/privacy" className="text-primary hover:underline">
-                            Privacy Policy
+                        <Link
+                            href="/privacy"
+                            target="_blank"
+                            rel="noopener"
+                            className="text-primary hover:underline"
+                        >
+                            Privacy Policy<span className="sr-only"> (opens in a new tab)</span>
                         </Link>
                     </label>
                     {errors.terms && (

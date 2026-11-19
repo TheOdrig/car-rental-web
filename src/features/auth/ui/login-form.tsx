@@ -11,6 +11,7 @@ import { getFormErrorMessage } from '@/shared/api';
 import { useLogin } from '../lib/use-auth';
 import { cn, getPasswordMaxError, safeRedirectPath } from '@/shared/lib';
 import { FormError } from './form-error';
+import { focusFirstInvalid } from '../lib/focus-first-invalid';
 import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
 import type { ValidationState } from '@/shared/types';
@@ -81,7 +82,9 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
         }
 
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const valid = Object.keys(newErrors).length === 0;
+        if (!valid) focusFirstInvalid(['username', 'password'], newErrors);
+        return valid;
     };
 
     const handleSubmit = async (e: FormEvent) => {
@@ -121,6 +124,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
     return (
         <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
+                focusOnShow
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
             />

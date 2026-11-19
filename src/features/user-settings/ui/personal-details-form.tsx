@@ -131,14 +131,15 @@ export function PersonalDetailsForm({
                             placeholder="+1234567890"
                             {...register('phone')}
                             aria-invalid={!!(errors.phone || fieldErrors?.phone)}
+                            aria-describedby={(errors.phone?.message ?? fieldErrors?.phone) ? 'phone-error phone-hint' : 'phone-hint'}
                             disabled={isSubmitting}
                         />
                         {(errors.phone?.message ?? fieldErrors?.phone) && (
-                            <p className="text-sm text-destructive" role="alert">
+                            <p id="phone-error" className="text-sm text-destructive" role="alert">
                                 {errors.phone?.message ?? fieldErrors?.phone}
                             </p>
                         )}
-                        <p className="text-xs text-muted-foreground">
+                        <p id="phone-hint" className="text-xs text-muted-foreground">
                             Use international format with 7 to 15 digits (e.g., +1234567890)
                         </p>
                     </div>

@@ -341,4 +341,23 @@ describe('RegisterForm email field', () => {
         expect(email).toHaveAttribute('inputmode', 'email');
         expect(email).toHaveAttribute('autocomplete', 'email');
     });
+
+    it('moves focus to the first invalid field on an empty submit', async () => {
+        renderWithProviders(<RegisterForm />);
+
+        fireEvent.submit(screen.getByRole('button', { name: /create account/i }).closest('form')!);
+
+        await waitFor(() => expect(screen.getByPlaceholderText(/johndoe/i)).toHaveFocus());
+    });
+
+    it('opens the legal pages in a new tab with an accessible hint', () => {
+        renderWithProviders(<RegisterForm />);
+
+        for (const name of [/terms of service/i, /privacy policy/i]) {
+            const link = screen.getByRole('link', { name });
+            expect(link).toHaveAttribute('target', '_blank');
+            expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
+            expect(link).toHaveAccessibleName(/opens in a new tab/i);
+        }
+    });
 });

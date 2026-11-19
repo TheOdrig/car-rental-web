@@ -145,7 +145,7 @@ export function BookingSummary({
                         <div className="text-right">
                             {priceBreakdown.originalTotal && priceBreakdown.totalSavings && priceBreakdown.totalSavings > 0 && (
                                 <div className="flex items-center justify-end gap-2 mb-1">
-                                    <span className="text-sm line-through text-slate-400 dark:text-slate-500 tabular-nums">
+                                    <span className="text-sm line-through text-slate-600 dark:text-slate-400 tabular-nums">
                                         {formatSource(priceBreakdown.originalTotal, sourceCurrency)}
                                     </span>
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">

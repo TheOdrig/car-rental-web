@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useRef } from 'react';
 import { AlertCircle, X } from 'lucide-react';
 import { cn } from '@/shared/lib';
 
@@ -8,18 +9,29 @@ interface FormErrorProps {
     message: string;
     onDismiss?: () => void;
     className?: string;
+    focusOnShow?: boolean;
 }
 
-export function FormError({ id, message, onDismiss, className }: FormErrorProps) {
+export function FormError({ id, message, onDismiss, className, focusOnShow = false }: FormErrorProps) {
+    const ref = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (message && focusOnShow) {
+            ref.current?.focus();
+        }
+    }, [message, focusOnShow]);
+
     if (!message) return null;
 
     return (
         <div
+            ref={ref}
+            tabIndex={-1}
             id={id}
             role="alert"
             aria-live="assertive"
             className={cn(
-                'flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700',
+                'flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 'dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-400',
                 className
             )}
