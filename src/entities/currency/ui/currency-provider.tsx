@@ -27,7 +27,20 @@ interface CurrencyContextValue {
     isLoading: boolean;
     convert: (amount: number, from?: CurrencyCode) => number;
     format: (amount: number, from?: CurrencyCode) => string;
+    formatSource: (amount: number, from?: CurrencyCode) => string;
+    isConverted: (from?: CurrencyCode) => boolean;
     refreshRates: () => Promise<void>;
+}
+
+function formatInCurrency(amount: number, code: CurrencyCode): string {
+    const info = getCurrencyByCode(code);
+    if (code === 'JPY') {
+        return `${info.symbol}${Math.round(amount).toLocaleString()}`;
+    }
+    return `${info.symbol}${amount.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    })}`;
 }
 
 const CurrencyContext = createContext<CurrencyContextValue | undefined>(undefined);
@@ -100,21 +113,24 @@ export function CurrencyProvider({
         [rates, currency]
     );
 
+    const isConverted = useCallback(
+        (from: CurrencyCode = 'USD'): boolean => Boolean(rates) && currency !== from,
+        [rates, currency]
+    );
+
+    const formatSource = useCallback(
+        (amount: number, from: CurrencyCode = 'USD'): string => formatInCurrency(amount, from),
+        []
+    );
+
     const format = useCallback(
         (amount: number, from: CurrencyCode = 'USD'): string => {
-            const converted = convert(amount, from);
-            const currencyInfo = getCurrencyByCode(currency);
-
-            if (currency === 'JPY') {
-                return `${currencyInfo.symbol}${Math.round(converted).toLocaleString()}`;
+            if (!rates || currency === from) {
+                return formatInCurrency(amount, from);
             }
-
-            return `${currencyInfo.symbol}${converted.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-            })}`;
+            return `≈ ${formatInCurrency(convert(amount, from), currency)}`;
         },
-        [convert, currency]
+        [rates, convert, currency]
     );
 
     const refreshRates = useCallback(async () => {
@@ -147,9 +163,11 @@ export function CurrencyProvider({
             isLoading,
             convert,
             format,
+            formatSource,
+            isConverted,
             refreshRates,
         }),
-        [currency, setCurrency, rates, isLoading, convert, format, refreshRates]
+        [currency, setCurrency, rates, isLoading, convert, format, formatSource, isConverted, refreshRates]
     );
 
     return (

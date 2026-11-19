@@ -12,7 +12,7 @@ import {
     ExternalLink,
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
-import { safeFormatDate } from '@/shared/lib';
+import { safeFormatDate, formatCurrencyWithDecimals } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
@@ -52,12 +52,7 @@ function getStatusColor(status: RentalStatus): string {
 }
 
 function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
+    return formatCurrencyWithDecimals(price, currency || 'USD');
 }
 
 function ActionButtons({

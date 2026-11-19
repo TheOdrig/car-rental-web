@@ -1,12 +1,8 @@
+import { formatCurrencyWithDecimals } from '@/shared/lib';
 import type { RentalStatus } from '@/entities/rental';
 
 export function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
+    return formatCurrencyWithDecimals(price, currency || 'USD');
 }
 
 export function getStatusColor(status: RentalStatus): string {

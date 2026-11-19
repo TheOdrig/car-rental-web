@@ -36,9 +36,10 @@ export function formatCurrencyWithDecimals(
     amount: number,
     currency: CurrencyType | string = 'USD'
 ): string {
+    const fractionDigits = currency === 'JPY' ? 0 : 2;
     return formatCurrency(amount, currency, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: fractionDigits,
+        maximumFractionDigits: fractionDigits,
     });
 }
 
