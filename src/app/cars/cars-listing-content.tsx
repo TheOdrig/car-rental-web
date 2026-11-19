@@ -38,6 +38,7 @@ export function CarsListingContent() {
     const endDateParam = searchParams?.get('endDate');
     const initialised = useRef(false);
     const skipWrite = useRef(false);
+    const replaceNext = useRef(false);
 
     const isSearchMode = !!(startDateParam && endDateParam);
 
@@ -80,7 +81,10 @@ export function CarsListingContent() {
         const params = new URLSearchParams(urlQuery);
         const next = buildCarListParams({ filters, sortBy, page, viewMode }, params).toString();
         if (next !== params.toString()) {
-            router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+            const target = next ? `${pathname}?${next}` : pathname;
+            const navigate = replaceNext.current ? router.replace : router.push;
+            replaceNext.current = false;
+            navigate(target, { scroll: false });
         }
     }, [filters, sortBy, page, viewMode, urlQuery, pathname, router]);
 
@@ -128,6 +132,14 @@ export function CarsListingContent() {
     const cars: (Car | AvailableCar)[] = isSearchMode
         ? searchQuery.data?.cars ?? []
         : defaultQuery.data?.content ?? [];
+
+    const outOfRange = !isLoading && !error && page > 0 && page >= Math.max(totalPages, 1);
+
+    useEffect(() => {
+        if (!outOfRange) return;
+        replaceNext.current = true;
+        setPage(Math.max(totalPages, 1) - 1);
+    }, [outOfRange, totalPages, setPage]);
 
     const breadcrumbItems = [{ label: 'Cars' }];
 
