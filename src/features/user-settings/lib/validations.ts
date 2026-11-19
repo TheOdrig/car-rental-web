@@ -1,4 +1,14 @@
 import { z } from 'zod';
+import { MAX_PASSWORD_BYTES, MAX_PASSWORD_LENGTH, getPasswordMaxError } from '@/shared/lib/validation';
+
+function maxPassword(schema: z.ZodString) {
+    return schema
+        .max(MAX_PASSWORD_LENGTH, `Password must be at most ${MAX_PASSWORD_LENGTH} characters`)
+        .refine(
+            (val) => getPasswordMaxError(val) === null,
+            `Password must be at most ${MAX_PASSWORD_BYTES} bytes; some characters take more than one`
+        );
+}
 
 const PHONE_REGEX = /^\+?[1-9]\d{1,14}$/;
 
@@ -25,8 +35,8 @@ export type ProfileFormData = z.infer<typeof profileSchema>;
 
 export const passwordChangeSchema = z
     .object({
-        currentPassword: z.string().min(1, 'Current password is required'),
-        newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+        currentPassword: maxPassword(z.string().min(1, 'Current password is required')),
+        newPassword: maxPassword(z.string().min(8, 'Password must be at least 8 characters')),
         confirmPassword: z.string().min(1, 'Please confirm your password'),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {
@@ -44,7 +54,7 @@ export type ForgotPasswordFormData = z.infer<typeof forgotPasswordSchema>;
 
 export const resetPasswordSchema = z
     .object({
-        newPassword: z.string().min(8, 'Password must be at least 8 characters'),
+        newPassword: maxPassword(z.string().min(8, 'Password must be at least 8 characters')),
         confirmPassword: z.string().min(1, 'Please confirm your password'),
     })
     .refine((data) => data.newPassword === data.confirmPassword, {

@@ -96,3 +96,71 @@ describe('rate limit messages on the auth forms', () => {
         expect(screen.queryByText(/registration failed/i)).not.toBeInTheDocument();
     });
 });
+
+describe('email and password handling on the auth forms', () => {
+    const user = userEvent.setup();
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    async function fillRegister(email: string, password: string) {
+        await user.type(screen.getByPlaceholderText(/johndoe/i), 'johndoe');
+        await user.type(screen.getByPlaceholderText('name@example.com'), email);
+        await user.type(screen.getByPlaceholderText(/create a strong password/i), password);
+        await user.type(screen.getByPlaceholderText(/confirm your password/i), password);
+        fireEvent.click(screen.getByRole('checkbox'));
+        fireEvent.submit(screen.getByRole('button', { name: /create account/i }).closest('form')!);
+    }
+
+    it('lowercases and trims the email before registering', async () => {
+        const mutateAsync = vi.fn().mockResolvedValue({});
+        vi.mocked(useRegister).mockReturnValue({ mutateAsync, isPending: false } as unknown as ReturnType<typeof useRegister>);
+
+        renderWithProviders(<RegisterForm />);
+        await fillRegister('John@Example.COM', 'Password123!');
+
+        await waitFor(() => expect(mutateAsync).toHaveBeenCalled());
+        expect(mutateAsync.mock.calls[0][0].email).toBe('john@example.com');
+    });
+
+    it('lowercases the email before requesting a password reset', async () => {
+        const mutateAsync = vi.fn().mockResolvedValue({});
+        vi.mocked(useForgotPassword).mockReturnValue({ mutateAsync, isPending: false } as unknown as ReturnType<typeof useForgotPassword>);
+
+        renderWithProviders(<ForgotPasswordForm />);
+        await user.type(screen.getByPlaceholderText('name@example.com'), 'Jane@Example.com');
+        fireEvent.submit(screen.getByRole('button', { name: /send reset link/i }).closest('form')!);
+
+        await waitFor(() => expect(mutateAsync).toHaveBeenCalledWith({ email: 'jane@example.com' }));
+    });
+
+    it('shows the duplicate-account message on a 409 from register', async () => {
+        const conflict = new ApiError({
+            status: 409,
+            message: 'User already exists with email: john@example.com',
+            timestamp: new Date().toISOString(),
+            code: 'USER_ALREADY_EXISTS',
+        });
+        vi.mocked(useRegister).mockReturnValue({
+            mutateAsync: vi.fn().mockRejectedValue(conflict),
+            isPending: false,
+        } as unknown as ReturnType<typeof useRegister>);
+
+        renderWithProviders(<RegisterForm />);
+        await fillRegister('john@example.com', 'Password123!');
+
+        await waitFor(() => expect(screen.getByText(/account with these details already exists/i)).toBeInTheDocument());
+    });
+
+    it('blocks a register password over 72 characters before calling the API', async () => {
+        const mutateAsync = vi.fn();
+        vi.mocked(useRegister).mockReturnValue({ mutateAsync, isPending: false } as unknown as ReturnType<typeof useRegister>);
+
+        renderWithProviders(<RegisterForm />);
+        await fillRegister('john@example.com', 'Aa1!'.repeat(19));
+
+        await waitFor(() => expect(screen.getAllByText(/at most 72 characters/i).length).toBeGreaterThan(0));
+        expect(mutateAsync).not.toHaveBeenCalled();
+    });
+});

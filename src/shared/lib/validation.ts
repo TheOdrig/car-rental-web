@@ -3,6 +3,24 @@ import type { PasswordStrength } from '@/shared/types/validation';
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const MIN_PASSWORD_LENGTH = 8;
+export const MAX_PASSWORD_LENGTH = 72;
+export const MAX_PASSWORD_BYTES = 72;
+
+const utf8Encoder = new TextEncoder();
+
+export function normalizeEmail(email: string): string {
+  return email.trim().toLowerCase();
+}
+
+export function getPasswordMaxError(password: string): string | null {
+  if (password.length > MAX_PASSWORD_LENGTH) {
+    return `Password must be at most ${MAX_PASSWORD_LENGTH} characters`;
+  }
+  if (utf8Encoder.encode(password).length > MAX_PASSWORD_BYTES) {
+    return `Password must be at most ${MAX_PASSWORD_BYTES} bytes; some characters take more than one`;
+  }
+  return null;
+}
 
 export function validateEmail(email: string): boolean {
   if (!email) {
@@ -15,7 +33,7 @@ export function validatePassword(password: string): boolean {
   if (!password) {
     return false;
   }
-  return password.length >= MIN_PASSWORD_LENGTH;
+  return password.length >= MIN_PASSWORD_LENGTH && getPasswordMaxError(password) === null;
 }
 
 export function validatePasswordMatch(password: string, confirmPassword: string): boolean {
@@ -155,6 +173,7 @@ export const ValidationMessages = {
   password: {
     required: 'Password is required',
     tooShort: `Password must be at least ${MIN_PASSWORD_LENGTH} characters`,
+    tooLong: `Password must be at most ${MAX_PASSWORD_LENGTH} characters`,
     weak: 'Password is too weak',
   },
   confirmPassword: {

@@ -168,3 +168,23 @@ describe('clientFetch refresh handling', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('getFormErrorMessage for duplicate accounts', () => {
+    it('maps a 409 USER_ALREADY_EXISTS without echoing the address', () => {
+        const conflict = new ApiError({
+            status: 409,
+            message: 'User already exists with email: a@b.co',
+            timestamp: '',
+            code: 'USER_ALREADY_EXISTS',
+        });
+
+        const message = getFormErrorMessage(conflict, 'Registration failed');
+        expect(message).toMatch(/already exists/i);
+        expect(message).not.toContain('a@b.co');
+    });
+
+    it('keeps the fallback for other 409 conflicts', () => {
+        const other = new ApiError({ status: 409, message: 'x', timestamp: '', code: 'DATA_CONFLICT' });
+        expect(getFormErrorMessage(other, 'Registration failed')).toBe('Registration failed');
+    });
+});

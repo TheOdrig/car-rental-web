@@ -230,6 +230,27 @@ describe('proxy', () => {
         expect(init.body).toBe(JSON.stringify({ name: 'n' }));
     });
 
+    it('does not forward upstream security headers to the browser', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ id: 1 }), {
+                status: 200,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Security-Policy': "default-src 'none'",
+                    'Strict-Transport-Security': 'max-age=31536000',
+                    'X-Frame-Options': 'DENY',
+                },
+            })
+        );
+        const handler = proxy({ target: () => ({ method: 'GET', path: '/api/things/1' }), errorMessage: 'failed' });
+        const response = await handler(request(), context({}));
+
+        expect(response.headers.get('content-type')).toContain('application/json');
+        expect(response.headers.get('content-security-policy')).toBeNull();
+        expect(response.headers.get('strict-transport-security')).toBeNull();
+        expect(response.headers.get('x-frame-options')).toBeNull();
+    });
+
     it('rejects an invalid json body with 400', async () => {
         const handler = proxy({ target: () => ({ method: 'POST', path: '/api/things' }), errorMessage: 'failed' });
         const response = await handler(request('http://localhost:3000/api/things', { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{' }), context({}));

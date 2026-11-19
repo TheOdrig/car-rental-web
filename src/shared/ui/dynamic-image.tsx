@@ -2,7 +2,7 @@
 
 import Image, { ImageProps } from 'next/image';
 
-const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com'];
+const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'];
 
 function isAllowedHostname(src: string): boolean {
     if (!src || typeof src !== 'string') return false;

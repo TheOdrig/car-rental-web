@@ -9,7 +9,7 @@ import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
 import { getFormErrorMessage } from '@/shared/api';
 import { useLogin } from '../lib/use-auth';
-import { cn, safeRedirectPath } from '@/shared/lib';
+import { cn, getPasswordMaxError, safeRedirectPath } from '@/shared/lib';
 import { FormError } from './form-error';
 import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
@@ -36,7 +36,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
     const isUsernameValid = formData.username.trim().length > 0 &&
         (validateEmail(formData.username) || formData.username.length >= 3);
-    const isPasswordValid = formData.password.length >= 8;
+    const isPasswordValid = formData.password.length >= 8 && getPasswordMaxError(formData.password) === null;
 
     const usernameValidationState: ValidationState = useMemo(() =>
         determineValidationState({
@@ -73,6 +73,11 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
             newErrors.password = 'Password is required';
         } else if (formData.password.length < 8) {
             newErrors.password = 'Password must be at least 8 characters';
+        } else {
+            const maxError = getPasswordMaxError(formData.password);
+            if (maxError) {
+                newErrors.password = maxError;
+            }
         }
 
         setErrors(newErrors);

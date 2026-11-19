@@ -147,13 +147,20 @@ export function rateLimitMessage(retryAfter?: number): string {
 }
 
 export function getFormErrorMessage(error: unknown, fallback: string): string {
-    return isRateLimited(error) ? rateLimitMessage(error.retryAfter) : fallback;
+    if (isRateLimited(error)) {
+        return rateLimitMessage(error.retryAfter);
+    }
+    if (isApiError(error) && error.status === 409 && error.code === 'USER_ALREADY_EXISTS') {
+        return API_ERROR_MESSAGES.USER_ALREADY_EXISTS;
+    }
+    return fallback;
 }
 
 const API_ERROR_MESSAGES: Readonly<Record<string, string>> = {
     PAYLOAD_TOO_LARGE: 'That file is too large. Please choose a smaller file and try again.',
     INVALID_MULTIPART_REQUEST: 'The upload could not be read. Please choose the file again.',
     CONCURRENT_MODIFICATION: 'This record was changed by someone else. Reload the page and try again.',
+    USER_ALREADY_EXISTS: 'An account with these details already exists. Sign in instead, or use a different email or username.',
     DATA_CONFLICT: 'This change conflicts with existing data. Reload the page and try again.',
     INVALID_USER_STATE: "This action is not possible in the user's current state. Reload the page to see the latest status.",
 };

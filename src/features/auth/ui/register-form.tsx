@@ -12,7 +12,7 @@ import { useRegister } from '../lib/use-auth';
 import { cn } from '@/shared/lib';
 import { FormError } from './form-error';
 import { PasswordStrengthIndicator } from './password-strength-indicator';
-import { validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
+import { getPasswordMaxError, normalizeEmail, validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
 
 interface RegisterFormProps {
     className?: string;
@@ -53,6 +53,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
 
         if (!formData.password) {
             newErrors.password = 'Password is required';
+        } else if (getPasswordMaxError(formData.password)) {
+            newErrors.password = getPasswordMaxError(formData.password)!;
         } else if (!validatePassword(formData.password)) {
             newErrors.password = 'Password must be at least 8 characters';
         }
@@ -80,7 +82,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
         try {
             await registerMutation.mutateAsync({
                 username: formData.username,
-                email: formData.email,
+                email: normalizeEmail(formData.email),
                 password: formData.password,
                 firstName: formData.firstName || undefined,
                 lastName: formData.lastName || undefined,
