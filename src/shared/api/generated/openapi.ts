@@ -1521,6 +1521,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/damages/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get my damage report
+         * @description Get one of the current user's damage reports, with its photos
+         */
+        get: operations["getMyDamage"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/damages/{id}/dispute": {
         parameters: {
             query?: never;
@@ -2564,6 +2584,7 @@ export interface components {
             insuranceCoverage?: boolean;
             insuranceDeductible?: number;
             pending?: boolean;
+            photos?: components["schemas"]["DamagePhotoDto"][];
             /** Format: int64 */
             rentalId?: number;
             repairCostEstimate?: number;
@@ -3153,6 +3174,7 @@ export interface components {
             finalPrice?: number;
             /** Format: int64 */
             id?: number;
+            notes?: string;
             originalPrice?: number;
             /** Format: date-time */
             paymentDueBy?: string;
@@ -8329,6 +8351,65 @@ export interface operations {
                 };
             };
             /** @description Photo not found or belongs to another customer */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getMyDamage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Damage ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Damage report retrieved */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DamageReportDto"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Damage report not found */
             404: {
                 headers: {
                     [name: string]: unknown;
