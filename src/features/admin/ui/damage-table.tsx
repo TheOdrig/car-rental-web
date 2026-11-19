@@ -79,7 +79,13 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                 {damage.customerName}
                             </TableCell>
                             <TableCell className="max-w-[200px] truncate text-slate-700 dark:text-slate-300">
-                                {damage.description}
+                                <Link
+                                    href={`/admin/damages/${damage.id}`}
+                                    className="hover:text-primary hover:underline"
+                                    onClick={(e) => e.stopPropagation()}
+                                >
+                                    {damage.description}
+                                </Link>
                             </TableCell>
                             <TableCell>
                                 <DamageSeverityBadge severity={damage.severity} />

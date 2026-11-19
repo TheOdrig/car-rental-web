@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -87,10 +88,10 @@ export function CustomerDamageHistory({ userId, maxItems = 5 }: CustomerDamageHi
                 ) : (
                     <div className="space-y-3">
                         {damages.map((damage) => (
-                            <div
+                            <Link
                                 key={damage.id}
-                                className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 cursor-pointer"
-                                onClick={() => router.push(`/admin/damages/${damage.id}`)}
+                                href={`/admin/damages/${damage.id}`}
+                                className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                                 <div className="flex items-center gap-3">
                                     <div>
@@ -104,7 +105,7 @@ export function CustomerDamageHistory({ userId, maxItems = 5 }: CustomerDamageHi
                                     <DamageSeverityBadge severity={damage.severity} />
                                     <DamageStatusBadge status={damage.status} />
                                 </div>
-                            </div>
+                            </Link>
                         ))}
                     </div>
                 )}

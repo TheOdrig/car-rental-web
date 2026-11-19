@@ -79,9 +79,9 @@ export function Header() {
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" className="relative h-8 w-8 rounded-full hover:bg-transparent dark:hover:bg-transparent focus:ring-0 focus:ring-offset-0">
+                                <Button variant="ghost" size="sm" aria-label="Account menu" className="relative h-8 w-8 rounded-full hover:bg-transparent dark:hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                                        <User className="h-4 w-4 text-slate-600 dark:text-slate-300" />
+                                        <User className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
                                     </span>
                                 </Button>
                             </DropdownMenuTrigger>
