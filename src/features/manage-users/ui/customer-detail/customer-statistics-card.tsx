@@ -73,7 +73,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                 <div className="mt-4" data-testid="spent-by-currency">
                     <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
                         <DollarSign className="h-4 w-4" />
-                        Total Spent by Currency
+                        Net Paid by Currency
                     </p>
                     {statistics.spentByCurrency.length === 0 ? (
                         <p className="text-sm text-muted-foreground">No completed rentals yet.</p>

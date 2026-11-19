@@ -105,7 +105,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         className="p-2"
                     />
                     <StatCard
-                        label="Spent"
+                        label="Net paid"
                         value={formatAmountsByCurrency(customer.stats.spentByCurrency).join(' + ') || '-'}
                         icon={DollarSign}
                         className="p-2"

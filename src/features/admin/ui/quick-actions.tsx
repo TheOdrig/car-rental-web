@@ -11,7 +11,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Car, RotateCcw, CheckCircle, AlertTriangle, User } from 'lucide-react';
-import { isBeforeRentalStart } from '@/entities/rental';
+import { isAfterRentalEnd, isBeforeRentalStart } from '@/entities/rental';
 import type { PendingItem } from '@/features/admin';
 
 interface QuickActionsCardProps {
@@ -218,7 +218,7 @@ export const QuickActionsCard = memo(function QuickActionsCard({
         item: null,
     });
 
-    const startablePickups = pickupItems.filter((item) => !isBeforeRentalStart(item.startDate));
+    const startablePickups = pickupItems.filter((item) => !isBeforeRentalStart(item.startDate) && !isAfterRentalEnd(item.endDate));
 
     const handleOpenDialog = (type: 'pickup' | 'return') => {
         const items = type === 'pickup' ? startablePickups : returnItems;

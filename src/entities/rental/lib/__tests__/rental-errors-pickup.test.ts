@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { ApiError } from '@/shared/api/error';
 import {
     getAdminActionErrorMessage,
+    isAfterRentalEnd,
     isBeforeRentalStart,
     PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE,
     PICKUP_PAYMENT_REQUIRED_MESSAGE,
@@ -40,6 +41,33 @@ describe('getAdminActionErrorMessage pickup payment mapping', () => {
         expect(getAdminActionErrorMessage(apiError(404, 'RENTAL_NOT_FOUND', 'Rental not found with id: 9'))).toBe(
             'Rental not found with id: 9'
         );
+    });
+});
+
+describe('pickup after the rental end date', () => {
+    it('shows the API message for a rental validation failure', () => {
+        const message = 'Pickup is not possible after the rental end date 2026-11-10';
+
+        expect(getAdminActionErrorMessage(apiError(400, 'RENTAL_VALIDATION_FAILED', message))).toBe(message);
+    });
+
+    it('detects an end date that has passed', () => {
+        const now = new Date(2026, 10, 20, 0, 5);
+
+        expect(isAfterRentalEnd('2026-11-19', now)).toBe(true);
+        expect(isAfterRentalEnd('2026-11-19T10:00:00', now)).toBe(true);
+    });
+
+    it('allows pickup up to and including the end date', () => {
+        const now = new Date(2026, 10, 19, 23, 30);
+
+        expect(isAfterRentalEnd('2026-11-19', now)).toBe(false);
+        expect(isAfterRentalEnd('2026-11-25', now)).toBe(false);
+    });
+
+    it('does not block on a missing or unparseable date', () => {
+        expect(isAfterRentalEnd(undefined)).toBe(false);
+        expect(isAfterRentalEnd('later')).toBe(false);
     });
 });
 

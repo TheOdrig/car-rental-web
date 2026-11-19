@@ -42,6 +42,16 @@ export function isBeforeRentalStart(startDate: string | undefined, now: Date = n
     return today < start;
 }
 
+export const PICKUP_AFTER_END_MESSAGE = 'Pickup can no longer be recorded after the rental end date.';
+
+export function isAfterRentalEnd(endDate: string | undefined, now: Date = new Date()): boolean {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(endDate ?? '');
+    if (!match) return false;
+    const end = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return today > end;
+}
+
 const RENTAL_DATE_FIELDS = ['startDate', 'endDate'] as const;
 
 export function getRentalValidationMessage(error: unknown): string | null {
