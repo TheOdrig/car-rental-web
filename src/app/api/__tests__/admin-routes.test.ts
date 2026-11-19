@@ -23,6 +23,7 @@ import { GET as rentalDetail } from '../admin/rentals/[id]/detail/route';
 import { GET as listRentals } from '../admin/rentals/route';
 import { GET as carRentals } from '../admin/cars/[id]/rentals/route';
 import { GET as userRentals } from '../admin/users/[id]/rentals/route';
+import { POST as chargeDamage } from '../admin/damages/[id]/charge/route';
 import { GET as lateReturns } from '../admin/late-returns/route';
 import { GET as listCars } from '../cars/route';
 import { buildRentalDetail } from '../admin/rentals/_lib/rental-detail';
@@ -83,6 +84,52 @@ describe('admin BFF routes', () => {
     it('rejects a malformed alert id before calling the upstream', async () => {
         const response = await acknowledge(
             new NextRequest('http://localhost:3000/api/admin/alerts/x/acknowledge', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+            }),
+            ctx('x')
+        );
+
+        expect(response.status).toBe(400);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('charges a damage report with a POST and no body', async () => {
+        fetchMock.mockResolvedValueOnce(
+            json({ damageId: 4, status: 'CHARGED', charged: true, amount: 90, currency: 'EUR', transactionId: 'tx', message: 'Charged' })
+        );
+
+        const response = await chargeDamage(
+            new NextRequest('http://localhost:3000/api/admin/damages/4/charge', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+            }),
+            ctx('4')
+        );
+
+        expect(response.status).toBe(200);
+        expect(await response.json()).toMatchObject({ charged: true, currency: 'EUR' });
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/damages/4/charge');
+        expect(fetchMock.mock.calls[0][1].method).toBe('POST');
+    });
+
+    it('passes a charge for a report with the wrong status through as a problem response', async () => {
+        fetchMock.mockResolvedValueOnce(json({ status: 400, detail: 'Damage report is not ASSESSED', code: 'INVALID_DAMAGE_STATE' }, 400));
+
+        const response = await chargeDamage(
+            new NextRequest('http://localhost:3000/api/admin/damages/4/charge', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+            }),
+            ctx('4')
+        );
+
+        expect(response.status).toBe(400);
+    });
+
+    it('rejects a malformed damage id before calling the upstream', async () => {
+        const response = await chargeDamage(
+            new NextRequest('http://localhost:3000/api/admin/damages/x/charge', {
                 method: 'POST',
                 headers: { 'content-type': 'application/json' },
             }),

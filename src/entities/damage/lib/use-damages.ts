@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type {
     DamageReport,
@@ -11,6 +11,7 @@ import type {
     DamageAssessmentRequest,
     DamageDisputeRequest,
     DamageDisputeResolution,
+    DamageChargeResult,
     DamageListResponse,
 } from '@/entities/damage';
 
@@ -133,6 +134,10 @@ async function resolveDamage(
     resolution: DamageDisputeResolution
 ): Promise<DamageReport> {
     return clientPost<DamageReport>(`/api/admin/damages/${damageId}/resolve`, resolution);
+}
+
+async function chargeDamage(damageId: number): Promise<DamageChargeResult> {
+    return clientPost<DamageChargeResult>(`/api/admin/damages/${damageId}/charge`);
 }
 
 async function uploadPhotos(damageId: number, formData: FormData): Promise<DamageReport> {
@@ -299,6 +304,27 @@ export function useResolveDamage() {
         },
         onError: (error: Error) => {
             showToast.error('Failed to resolve dispute', error.message);
+        },
+    });
+}
+
+export function useChargeDamage() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (damageId: number) => chargeDamage(damageId),
+        onSuccess: (result) => {
+            if (result.charged) {
+                showToast.success('Customer charged', result.message);
+            } else {
+                showToast.warning('Charge was not completed', result.message);
+            }
+            void queryClient.invalidateQueries({ queryKey: damageKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.revenue() });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.rentals() });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to charge customer', getApiErrorMessage(error));
         },
     });
 }

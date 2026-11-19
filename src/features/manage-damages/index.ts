@@ -11,6 +11,7 @@ export {
     useDeletePhoto,
     useAssessDamage,
     useResolveDamage,
+    useChargeDamage,
     useInvalidateDamages,
     useMyDamages,
     useMyDamageDetail,

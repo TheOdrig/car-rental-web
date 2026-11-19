@@ -37,6 +37,8 @@ export type DamageDisputeRequest = Schemas['DamageDisputeRequest'];
 
 export type DamageDisputeResolution = Schemas['DamageDisputeResolutionDto'];
 
+export type DamageChargeResult = Required<Schemas['DamageChargeResponse']>;
+
 export interface DamageSearchFilters {
     startDate?: string;
     endDate?: string;

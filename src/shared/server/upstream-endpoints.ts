@@ -127,6 +127,7 @@ export const API = {
             byId: endpoint('GET', `${V1}/admin/damages/{id}`),
             assess: endpoint('POST', `${V1}/admin/damages/{id}/assess`),
             resolve: endpoint('POST', `${V1}/admin/damages/{id}/resolve`),
+            charge: endpoint('POST', `${V1}/admin/damages/{id}/charge`),
             uploadPhotos: endpoint('POST', `${V1}/admin/damages/{id}/photos`),
             deletePhoto: endpoint('DELETE', `${V1}/admin/damages/{id}/photos/{photoId}`),
             statistics: endpoint('GET', `${V1}/admin/damages/statistics`),

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Edit2, Camera, CheckCircle, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Edit2, Camera, CheckCircle, AlertTriangle, CreditCard } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
@@ -10,7 +10,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
-import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog } from '@/features/admin';
+import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
 import { DamageSeverityBadge } from '@/entities/damage';
 
 export function DamageDetailContent({ id }: { id: string }) {
@@ -19,6 +19,7 @@ export function DamageDetailContent({ id }: { id: string }) {
 
     const [showAssessDialog, setShowAssessDialog] = useState(false);
     const [showResolveDialog, setShowResolveDialog] = useState(false);
+    const [showChargeDialog, setShowChargeDialog] = useState(false);
 
     const { data: damage, isLoading, refetch } = useDamageDetail(damageId);
 
@@ -40,6 +41,9 @@ export function DamageDetailContent({ id }: { id: string }) {
 
     const canAssess = damage.status === 'REPORTED' || damage.status === 'UNDER_ASSESSMENT';
     const canResolve = damage.status === 'DISPUTED';
+    const liability = damage.customerLiability ?? 0;
+    const canCharge = damage.status === 'ASSESSED' && liability > 0;
+    const chargeCurrency = damage.currency ?? 'USD';
 
     return (
         <div className="space-y-6 p-6">
@@ -68,6 +72,12 @@ export function DamageDetailContent({ id }: { id: string }) {
                         <Button onClick={() => setShowAssessDialog(true)} className="gap-2">
                             <Edit2 className="h-4 w-4" />
                             Assess Damage
+                        </Button>
+                    )}
+                    {canCharge && (
+                        <Button onClick={() => setShowChargeDialog(true)} className="gap-2">
+                            <CreditCard className="h-4 w-4" />
+                            Charge customer
                         </Button>
                     )}
                     {canResolve && (
@@ -193,11 +203,21 @@ export function DamageDetailContent({ id }: { id: string }) {
                 }}
             />
 
+            <DamageChargeDialog
+                damageId={damage.id}
+                amount={liability}
+                currency={chargeCurrency}
+                open={showChargeDialog}
+                onOpenChange={setShowChargeDialog}
+                onSuccess={() => refetch()}
+            />
+
             <DamageResolveDialog
                 damageId={damage.id}
                 open={showResolveDialog}
                 onOpenChange={setShowResolveDialog}
                 onSuccess={() => refetch()}
+                currency={chargeCurrency}
                 defaultValues={{
                     repairCostEstimate: damage.repairCostEstimate,
                     customerLiability: damage.customerLiability,

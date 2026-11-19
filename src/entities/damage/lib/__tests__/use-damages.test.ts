@@ -1,14 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
-import { useDamages, useDamageDetail, useMyDamageDetail, useCreateDamage, useAssessDamage, useDisputeDamage, useResolveDamage, damageKeys } from '../use-damages';
+import { useDamages, useDamageDetail, useMyDamageDetail, useCreateDamage, useAssessDamage, useDisputeDamage, useResolveDamage, useChargeDamage, damageKeys } from '../use-damages';
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
-vi.mock('@/shared/api', () => ({
-    clientGet: vi.fn(),
-    clientPost: vi.fn(),
-    clientDelete: vi.fn(),
-}));
+vi.mock('@/shared/api', async (importOriginal) => {
+    const original = await importOriginal<typeof import('@/shared/api')>();
+    return {
+        ...original,
+        clientGet: vi.fn(),
+        clientPost: vi.fn(),
+        clientDelete: vi.fn(),
+    };
+});
 vi.mock('@/shared/lib', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/lib')>();
     return {
@@ -16,6 +20,7 @@ vi.mock('@/shared/lib', async (importOriginal) => {
         showToast: {
             success: vi.fn(),
             error: vi.fn(),
+            warning: vi.fn(),
         },
     };
 });
@@ -185,4 +190,27 @@ describe('use-damages hooks', () => {
             expect(mockToast.success).toHaveBeenCalledWith('Dispute resolved successfully');
         });
     });
-});
+    describe('useChargeDamage', () => {
+        const charged = { damageId: 4, status: 'CHARGED', charged: true, amount: 90, currency: 'EUR', transactionId: 'tx', message: 'Charged' };
+        it('posts to the charge endpoint and reports a charged card', async () => {
+            mockClientPost.mockResolvedValueOnce(charged);
+            const { result } = renderHook(() => useChargeDamage(), { wrapper: createQueryWrapper() });
+            await result.current.mutateAsync(4);
+            expect(mockClientPost).toHaveBeenCalledWith('/api/admin/damages/4/charge');
+            expect(mockToast.success).toHaveBeenCalledWith('Customer charged', 'Charged');
+        });
+        it('warns with the gateway message when the charge is declined', async () => {
+            mockClientPost.mockResolvedValueOnce({ ...charged, status: 'ASSESSED', charged: false, message: 'Card declined' });
+            const { result } = renderHook(() => useChargeDamage(), { wrapper: createQueryWrapper() });
+            await result.current.mutateAsync(4);
+            expect(mockToast.warning).toHaveBeenCalledWith('Charge was not completed', 'Card declined');
+            expect(mockToast.success).not.toHaveBeenCalled();
+        });
+        it('reports a rejected request as an error', async () => {
+            mockClientPost.mockRejectedValueOnce(new Error('Damage report has no liability'));
+            const { result } = renderHook(() => useChargeDamage(), { wrapper: createQueryWrapper() });
+            await expect(result.current.mutateAsync(4)).rejects.toThrow();
+            expect(mockToast.error).toHaveBeenCalledWith('Failed to charge customer', 'Damage report has no liability');
+        });
+    });
+});
