@@ -3,7 +3,7 @@
 import { Calendar, ExternalLink } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { formatWeekdayDate } from '@/shared/lib';
+import { formatDate } from '@/shared/lib';
 
 interface RentalPeriodCardProps {
     startDate: string;
@@ -25,7 +25,7 @@ function PeriodCell({ label, date, dotClassName, className }: PeriodCellProps) {
                 <div className={`h-1.5 w-1.5 rounded-full ${dotClassName}`} />
                 {label}
             </div>
-            <p className="text-xl font-bold dark:text-white">{formatWeekdayDate(date)}</p>
+            <p className="text-xl font-bold dark:text-white">{formatDate(date)}</p>
         </div>
     );
 }

@@ -8,6 +8,8 @@ export {
     getCurrencyByCode,
     isValidCurrencyCode,
     mapCurrency,
+    describeRateBasis,
+    type RateSource,
 } from './lib/utils';
 
 export { CurrencyProvider, useCurrency } from './ui/currency-provider';

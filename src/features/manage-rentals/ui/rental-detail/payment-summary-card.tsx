@@ -13,7 +13,14 @@ interface PaymentSummaryCardProps {
     currency: string;
 }
 
+export function dailyRateIsRounded(dailyPrice: number, days: number, originalPrice: number | undefined, totalPrice: number, totalSavings = 0): boolean {
+    const reference = originalPrice ?? totalPrice + totalSavings;
+    return Math.abs(dailyPrice * days - reference) >= 0.005;
+}
+
 export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice, totalSavings, currency }: PaymentSummaryCardProps) {
+    const rounded = dailyRateIsRounded(dailyPrice, days, originalPrice, totalPrice, totalSavings);
+
     return (
         <Card>
             <CardHeader>
@@ -26,8 +33,17 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                 <div className="space-y-3">
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Daily rate</span>
-                        <span className="font-medium text-slate-900 dark:text-white">{formatPrice(dailyPrice, currency)}</span>
+                        <span className="font-medium text-slate-900 dark:text-white">
+                            {rounded ? '≈ ' : ''}
+                            {formatPrice(dailyPrice, currency)}
+                        </span>
                     </div>
+                    {rounded && (
+                        <p className="text-xs text-muted-foreground" data-testid="rounded-daily-rate-note">
+                            The daily rate is rounded for display. The subtotal and total use the exact rate, so{' '}
+                            {days} × {formatPrice(dailyPrice, currency)} can differ from the total by a cent or two.
+                        </p>
+                    )}
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Duration</span>
                         <span className="font-medium text-slate-900 dark:text-white">

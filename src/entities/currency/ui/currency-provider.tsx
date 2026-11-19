@@ -19,12 +19,14 @@ import {
     CURRENCY_STORAGE_KEY,
     RATES_CACHE_DURATION,
     getCurrencyByCode,
+    type RateSource,
 } from '@/entities/currency';
 
 interface CurrencyContextValue {
     currency: CurrencyCode;
     setCurrency: (currency: CurrencyCode) => void;
     rates: Record<CurrencyCode, number> | null;
+    rateSource: RateSource | undefined;
     isLoading: boolean;
     convert: (amount: number, from?: CurrencyCode) => number;
     format: (amount: number, from?: CurrencyCode) => string;
@@ -59,6 +61,7 @@ export function CurrencyProvider({
 }: CurrencyProviderProps) {
     const [currency, setCurrencyState] = useState<CurrencyCode>(DEFAULT_CURRENCY);
     const [rates, setRates] = useState<Record<CurrencyCode, number> | null>(initialRates);
+    const [rateSource, setRateSource] = useState<RateSource | undefined>();
     const [isLoading, setIsLoading] = useState(initialIsLoading);
 
     const fetchRates = useCallback(async (force = false) => {
@@ -71,6 +74,7 @@ export function CurrencyProvider({
                     try {
                         const data = JSON.parse(cached);
                         setRates(data.rates);
+                        setRateSource(data.source);
                         setIsLoading(false);
                         return;
                     } catch {
@@ -82,6 +86,7 @@ export function CurrencyProvider({
         try {
             const data = await clientGet<ExchangeRatesResponse>('/api/exchange-rates');
             setRates(data.rates);
+            setRateSource(data.source);
             if (typeof window !== 'undefined') {
                 localStorage.setItem('exchange_rates_cache', JSON.stringify(data));
                 localStorage.setItem('exchange_rates_cache_time', Date.now().toString());
@@ -161,6 +166,7 @@ export function CurrencyProvider({
             currency,
             setCurrency,
             rates,
+            rateSource,
             isLoading,
             convert,
             format,
@@ -168,7 +174,7 @@ export function CurrencyProvider({
             isConverted,
             refreshRates,
         }),
-        [currency, setCurrency, rates, isLoading, convert, format, formatSource, isConverted, refreshRates]
+        [currency, setCurrency, rates, rateSource, isLoading, convert, format, formatSource, isConverted, refreshRates]
     );
 
     return (

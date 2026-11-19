@@ -77,3 +77,14 @@ describe('CurrencyProvider formatting', () => {
         expect(result.current.format(1, 'USD')).toBe('≈ ¥100');
     });
 });
+
+describe('describeRateBasis', () => {
+    it('does not call fallback or cached rates today\'s rate', async () => {
+        const { describeRateBasis } = await import('../lib/utils');
+
+        expect(describeRateBasis('LIVE')).toBe("at today's approximate rate");
+        expect(describeRateBasis(undefined)).toBe("at today's approximate rate");
+        expect(describeRateBasis('CACHED')).toBe('at a recent approximate rate');
+        expect(describeRateBasis('FALLBACK')).toContain('live rates are unavailable');
+    });
+});

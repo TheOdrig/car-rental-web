@@ -33,3 +33,15 @@ export function mapCurrency(currency: string | undefined | null): CurrencyCode {
 
     return 'USD';
 }
+export type RateSource = 'LIVE' | 'CACHED' | 'FALLBACK';
+
+export function describeRateBasis(source: RateSource | undefined): string {
+    switch (source) {
+        case 'FALLBACK':
+            return 'at a fixed reference rate, because live rates are unavailable';
+        case 'CACHED':
+            return 'at a recent approximate rate';
+        default:
+            return "at today's approximate rate";
+    }
+}
