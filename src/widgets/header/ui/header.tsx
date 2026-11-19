@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { Menu, User } from 'lucide-react';
 import { useAuth } from '@/features/auth';
+import { useProfile } from '@/features/user-settings';
+import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
 import {
     DropdownMenu,
@@ -32,6 +34,19 @@ const MobileNav = dynamic(() => import('./mobile-nav').then(mod => mod.MobileNav
     ),
 });
 
+function AccountAvatar() {
+    const { data: profile } = useProfile();
+
+    return (
+        <Avatar className="h-8 w-8 bg-slate-200 dark:bg-slate-700">
+            <AvatarImage src={profile?.avatarUrl} alt="" />
+            <AvatarFallback className="bg-slate-200 dark:bg-slate-700">
+                <User className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
+            </AvatarFallback>
+        </Avatar>
+    );
+}
+
 export function Header() {
     const router = useRouter();
     const { user, isAuthenticated, logout, isLoading, isAdmin } = useAuth();
@@ -44,7 +59,7 @@ export function Header() {
     return (
         <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60">
             <div className="container flex h-16 items-center justify-between">
-                <div className="flex items-center gap-4">
+                <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                     <MobileNav
                         trigger={
                             <Button variant="ghost" size="icon" className="md:hidden">
@@ -53,15 +68,15 @@ export function Header() {
                             </Button>
                         }
                     />
-                    <Link href="/" className="flex items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
+                    <Link href="/" className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
                         <Image
                             src="/images/logo.svg"
                             alt=""
                             width={48}
                             height={48}
-                            className="h-9 w-auto sm:h-12 dark:invert"
+                            className="h-9 w-auto shrink-0 sm:h-12 dark:invert"
                         />
-                        <span>Car Rental</span>
+                        <span className="sr-only min-[400px]:not-sr-only">Car Rental</span>
                     </Link>
                 </div>
 
@@ -71,7 +86,7 @@ export function Header() {
                     </Link>
                 </nav>
 
-                <div className="flex items-center gap-2">
+                <div className="flex shrink-0 items-center gap-1 sm:gap-2">
                     <CurrencySelector />
                     <ThemeToggle />
                     {isLoading ? (
@@ -79,10 +94,8 @@ export function Header() {
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="sm" aria-label="Account menu" className="relative h-8 w-8 rounded-full hover:bg-transparent dark:hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                                    <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors">
-                                        <User className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
-                                    </span>
+                                <Button variant="ghost" size="icon-sm" aria-label="Account menu" className="relative h-8 w-8 shrink-0 rounded-full p-0 hover:bg-transparent dark:hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                    <AccountAvatar />
                                 </Button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent className="w-56 bg-white dark:bg-slate-900 border dark:border-slate-700" align="end" forceMount>

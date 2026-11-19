@@ -251,6 +251,9 @@ test.describe('accessibility of data pages against a stubbed API', () => {
 
         expect(box).not.toBeNull();
         expect(box!.height).toBeLessThan(56);
+        const currency = await page.getByRole('button', { name: /^Currency:/ }).boundingBox();
+        expect(currency).not.toBeNull();
+        expect(box!.x + box!.width).toBeLessThanOrEqual(currency!.x);
         const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
         expect(overflow).toBe(0);
     });

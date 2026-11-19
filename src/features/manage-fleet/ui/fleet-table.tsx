@@ -157,7 +157,7 @@ export const FleetTable = memo(function FleetTable({
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
-                        <Table>
+                        <Table className="stack-table">
                             <TableHeader>
                                 <TableRow className="border-b border-slate-200 dark:border-slate-700">
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Car Details</TableHead>
@@ -209,12 +209,12 @@ export const FleetTable = memo(function FleetTable({
                                                     </div>
                                                 </div>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell data-label="License Plate">
                                                 <code className="font-mono text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
                                                     {car.licensePlate}
                                                 </code>
                                             </TableCell>
-                                            <TableCell>
+                                            <TableCell data-label="Status">
                                                 <div
                                                     className={cn(
                                                         "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium",
@@ -230,10 +230,10 @@ export const FleetTable = memo(function FleetTable({
                                                     {CAR_STATUS_LABELS[car.carStatusType] ?? car.carStatusType}
                                                 </div>
                                             </TableCell>
-                                            <TableCell className="text-sm font-medium">
+                                            <TableCell data-label="Price/Day" className="text-sm font-medium">
                                                 {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}
                                             </TableCell>
-                                            <TableCell className="text-right">
+                                            <TableCell data-wide className="text-right">
                                                 <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 md:focus-within:opacity-100">
                                                     <Button
                                                         variant="ghost"

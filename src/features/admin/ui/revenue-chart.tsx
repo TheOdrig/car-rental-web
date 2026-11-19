@@ -75,9 +75,9 @@ export function RevenueChart({
     }
 
     return (
-        <Card className={cn('', className)}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div>
+        <Card className={cn('min-w-0', className)}>
+            <CardHeader className="flex flex-col items-start justify-between gap-2 pb-2 sm:flex-row sm:items-center">
+                <div className="min-w-0">
                     <CardTitle className="text-lg font-semibold">
                         Revenue Trends ({currency})
                     </CardTitle>

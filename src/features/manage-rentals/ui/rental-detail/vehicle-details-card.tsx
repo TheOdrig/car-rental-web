@@ -16,8 +16,8 @@ export function VehicleDetailsCard({ carSummary }: VehicleDetailsCardProps) {
                 <CardTitle className="text-lg">Vehicle Details</CardTitle>
             </CardHeader>
             <CardContent>
-                <Link href={`/cars/${carSummary?.id}`} className="group flex gap-4">
-                    <div className="relative h-32 w-48 shrink-0 overflow-hidden rounded-lg">
+                <Link href={`/cars/${carSummary?.id}`} className="group flex flex-col gap-4 sm:flex-row">
+                    <div className="relative h-40 w-full shrink-0 sm:h-32 sm:w-48 overflow-hidden rounded-lg">
                         <DynamicImage
                             src={carSummary?.thumbnailUrl ?? '/images/car-placeholder.svg'}
                             alt={`${carSummary?.brand} ${carSummary?.model}`}

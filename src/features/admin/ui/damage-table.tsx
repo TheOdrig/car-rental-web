@@ -50,7 +50,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
 
     return (
         <div className="rounded-md border border-slate-200 dark:border-slate-700">
-            <Table>
+            <Table className="stack-table">
                 <TableHeader>
                     <TableRow className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
                         <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Vehicle</TableHead>
@@ -77,10 +77,10 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                     <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} stacked />
                                 </Link>
                             </TableCell>
-                            <TableCell className="text-slate-700 dark:text-slate-300">
+                            <TableCell data-label="Customer" className="text-slate-700 dark:text-slate-300">
                                 {damage.customerName}
                             </TableCell>
-                            <TableCell className="max-w-[200px] truncate text-slate-700 dark:text-slate-300">
+                            <TableCell data-label="Description" data-wide className="max-w-[200px] truncate text-slate-700 dark:text-slate-300">
                                 <Link
                                     href={`/admin/damages/${damage.id}`}
                                     className="hover:text-primary hover:underline"
@@ -89,13 +89,13 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                     {damage.description}
                                 </Link>
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Severity">
                                 <DamageSeverityBadge severity={damage.severity} />
                             </TableCell>
-                            <TableCell>
+                            <TableCell data-label="Status">
                                 <DamageStatusBadge status={damage.status} />
                             </TableCell>
-                            <TableCell className="text-slate-600 dark:text-slate-400">
+                            <TableCell data-label="Reported" className="text-slate-600 dark:text-slate-400">
                                 {formatDate(damage.reportedAt)}
                             </TableCell>
                         </TableRow>

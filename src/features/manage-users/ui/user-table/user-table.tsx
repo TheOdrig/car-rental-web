@@ -121,7 +121,7 @@ export const UserTable = memo(function UserTable({
                 </CardHeader>
                 <CardContent>
                     <div className="overflow-x-auto">
-                        <Table>
+                        <Table className="stack-table">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>User</TableHead>

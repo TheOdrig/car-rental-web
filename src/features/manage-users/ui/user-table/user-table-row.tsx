@@ -62,7 +62,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     </div>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell data-label="Email">
                 <div className="flex items-center gap-2">
                     <span className="max-w-[16rem] truncate text-sm text-slate-900 dark:text-slate-100">
                         {user.email}
@@ -74,13 +74,13 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     )}
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell data-label="Role">
                 <div className="flex items-center gap-2">
                     <span className={cn('w-2 h-2 rounded-full', role?.dotColor)} aria-hidden="true" />
                     <span className={cn('text-sm font-medium', role?.textColor)}>{role?.label || primaryRole}</span>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell data-label="Status">
                 <div className="flex items-center gap-2">
                     <span className={cn('w-2 h-2 rounded-full', statusConfig?.dotColor)} aria-hidden="true" />
                     <span className={cn('text-sm font-medium', statusConfig?.textColor)}>
@@ -88,10 +88,10 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     </span>
                 </div>
             </TableCell>
-            <TableCell className="text-sm text-muted-foreground" data-testid="user-last-login">
+            <TableCell data-label="Last login" className="text-sm text-muted-foreground" data-testid="user-last-login">
                 {user.lastLoginAt ? formatDateTime(user.lastLoginAt) : NEVER_LOGGED_IN_LABEL}
             </TableCell>
-            <TableCell className="text-right">
+            <TableCell data-wide className="text-right">
                 <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100">
                     <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
                         <a href={`mailto:${user.email}`} aria-label={`Send email to ${displayName}`}>

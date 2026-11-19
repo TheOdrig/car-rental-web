@@ -21,15 +21,15 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
 
     const summary = (
         <>
-            <div className="flex items-start gap-3 flex-1">
-                <div className="p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
+            <div className="flex min-w-0 flex-1 items-start gap-3">
+                <div className="shrink-0 p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
                     <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" aria-hidden="true" />
                 </div>
                 <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium truncate">
+                    <div className="mb-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                        <h2 className="min-w-0 max-w-full truncate text-base font-medium">
                             <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} />
-                        </h3>
+                        </h2>
                         <DamageStatusBadge status={damage.status} />
                     </div>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
@@ -61,13 +61,12 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
                 {href ? (
                     <Link
                         href={href}
-                        aria-label={`Open damage report for ${damage.carLicensePlate}`}
-                        className="flex items-start justify-between gap-4 rounded-md focus-visible:outline-none"
+                        className="flex min-w-0 items-start justify-between gap-4 rounded-md focus-visible:outline-none"
                     >
                         {summary}
                     </Link>
                 ) : (
-                    <div className="flex items-start justify-between gap-4">{summary}</div>
+                    <div className="flex min-w-0 items-start justify-between gap-4">{summary}</div>
                 )}
                 {canDispute && (
                     <div className="mt-3 flex justify-end">

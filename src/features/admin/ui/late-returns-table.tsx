@@ -47,7 +47,7 @@ export function LateReturnsTable({
     return (
         <div className="space-y-4">
             <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
-                <Table>
+                <Table className="stack-table">
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
                             <TableHead className="text-slate-700 dark:text-slate-300">Customer</TableHead>
@@ -75,7 +75,7 @@ export function LateReturnsTable({
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Vehicle" data-wide>
                                     <div>
                                         <div className="font-medium text-slate-900 dark:text-slate-100">
                                             {item.carBrand} {item.carModel}
@@ -85,16 +85,16 @@ export function LateReturnsTable({
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell className="text-slate-700 dark:text-slate-300">
+                                <TableCell data-label="End Date" className="text-slate-700 dark:text-slate-300">
                                     {formatDate(item.endDate)}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Late Time">
                                     <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300">
                                         <Clock className="h-4 w-4" />
                                         {formatLateTime(item.lateHours)}
                                     </div>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Penalty">
                                     <div className="font-medium text-slate-900 dark:text-slate-100">
                                         {formatCurrency(item.penaltyAmount, item.currency)}
                                     </div>
@@ -102,7 +102,7 @@ export function LateReturnsTable({
                                         <span className="text-xs text-green-600 dark:text-green-400">Paid</span>
                                     )}
                                 </TableCell>
-                                <TableCell>
+                                <TableCell data-label="Status">
                                     <LateReturnStatusBadge status={item.status} />
                                 </TableCell>
                             </TableRow>
