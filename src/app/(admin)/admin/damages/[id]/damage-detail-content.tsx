@@ -150,7 +150,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                             <div>
                                 <p className="text-sm text-muted-foreground">Vehicle</p>
                                 <p className="font-medium">
-                                    <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} />
+                                    <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} />
                                 </p>
                             </div>
                             <div>
@@ -283,7 +283,8 @@ export function DamageDetailContent({ id }: { id: string }) {
                     repairCostEstimate: damage.repairCostEstimate,
                     currency: damage.currency,
                     insuranceCoverage: damage.insuranceCoverage,
-                    insuranceDeductible: damage.insuranceCoverage ? damage.customerLiability : undefined,
+                    insuranceDeductible: damage.insuranceDeductible,
+                    assessmentNotes: damage.assessmentNotes,
                 }}
             />
 

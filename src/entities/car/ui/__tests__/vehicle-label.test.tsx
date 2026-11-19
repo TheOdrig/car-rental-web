@@ -1,51 +1,44 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { createTestQueryClient } from '@/app/testing/test-utils';
 import { http, HttpResponse, server, installMockApi } from '@/app/testing/msw';
 import { VehicleLabel } from '../vehicle-label';
 
 installMockApi();
 
-function renderLabel(stacked = false) {
-    return render(
-        <QueryClientProvider client={createTestQueryClient()}>
-            <VehicleLabel carId={7} licensePlate="35 ABC 123" stacked={stacked} />
-        </QueryClientProvider>
-    );
-}
+const summary = { id: 7, brand: 'Toyota', model: 'Corolla', licensePlate: '35 ABC 123' };
 
 describe('VehicleLabel', () => {
-    it('shows the plate first and adds make and model once the car loads', async () => {
-        server.use(
-            http.get('/api/cars/7', () => HttpResponse.json({ car: { id: 7, brand: 'Toyota', model: 'Corolla' } }))
-        );
+    it('shows make, model and plate straight from the summary', () => {
+        render(<VehicleLabel carSummary={summary} licensePlate="35 ABC 123" />);
 
-        renderLabel();
-
-        expect(screen.getByText('35 ABC 123')).toBeInTheDocument();
-        expect(await screen.findByText('Toyota Corolla (35 ABC 123)')).toBeInTheDocument();
+        expect(screen.getByText('Toyota Corolla (35 ABC 123)')).toBeInTheDocument();
     });
 
-    it('stacks the plate under the name when asked to', async () => {
-        server.use(
-            http.get('/api/cars/7', () => HttpResponse.json({ car: { id: 7, brand: 'Audi', model: 'A3' } }))
-        );
+    it('stacks the plate under the name when asked to', () => {
+        render(<VehicleLabel carSummary={{ ...summary, brand: 'Audi', model: 'A3' }} licensePlate="35 ABC 123" stacked />);
 
-        renderLabel(true);
-
-        expect(await screen.findByText('Audi A3')).toBeInTheDocument();
+        expect(screen.getByText('Audi A3')).toBeInTheDocument();
         expect(screen.getByText('35 ABC 123')).toBeInTheDocument();
     });
 
-    it('keeps showing the plate when the car cannot be loaded', async () => {
+    it('falls back to the plate when there is no summary', () => {
+        render(<VehicleLabel licensePlate="35 ABC 123" />);
+
+        expect(screen.getByText('35 ABC 123')).toBeInTheDocument();
+    });
+
+    it('never asks the API for the car', async () => {
+        let carRequests = 0;
         server.use(
-            http.get('/api/cars/7', () => HttpResponse.json({ detail: 'gone' }, { status: 404 }))
+            http.get('/api/cars/7', () => {
+                carRequests += 1;
+                return HttpResponse.json({ car: summary });
+            })
         );
 
-        renderLabel();
-
+        render(<VehicleLabel carSummary={summary} licensePlate="35 ABC 123" />);
         await new Promise((resolve) => setTimeout(resolve, 50));
-        expect(screen.getByText('35 ABC 123')).toBeInTheDocument();
+
+        expect(carRequests).toBe(0);
     });
 });

@@ -28,7 +28,7 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                         <h3 className="font-medium truncate">
-                            <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} />
+                            <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} />
                         </h3>
                         <DamageStatusBadge status={damage.status} />
                     </div>

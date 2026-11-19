@@ -126,7 +126,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Vehicle</p>
                                     <p className="font-medium">
-                                        <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} />
+                                        <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} />
                                     </p>
                                 </div>
                                 <div>

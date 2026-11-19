@@ -6,6 +6,7 @@ export function createMockDamage(overrides?: Partial<DamageReport>): DamageRepor
         rentalId: 10,
         carId: 5,
         carLicensePlate: '34ABC123',
+        carSummary: { id: 5, licensePlate: '34ABC123', brand: 'Renault', model: 'Clio' },
         customerName: 'John Doe',
         description: 'Scratch on the door',
         severity: 'MINOR',

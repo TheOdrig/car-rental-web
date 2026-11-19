@@ -4,16 +4,9 @@ import userEvent from '@testing-library/user-event';
 import { createMockDamage } from '@/entities/damage/lib/testing/factories';
 import { DamageCard } from '../damage-card';
 
-const mockUseCar = vi.hoisted(() => vi.fn(() => ({ data: undefined as { car: { brand: string; model: string } } | undefined })));
-
-vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
-    useCar: mockUseCar,
-}));
-
 describe('DamageCard', () => {
     it('shows the plate and the description of the report', () => {
-        const damage = createMockDamage({ carLicensePlate: '35 ABC 123', description: 'Scratch on the left door' });
+        const damage = createMockDamage({ carLicensePlate: '35 ABC 123', carSummary: undefined, description: 'Scratch on the left door' });
 
         render(<DamageCard damage={damage} />);
 
@@ -21,10 +14,10 @@ describe('DamageCard', () => {
         expect(screen.getByText('Scratch on the left door')).toBeInTheDocument();
     });
 
-    it('names the vehicle by make and model next to the plate once the car is known', () => {
-        mockUseCar.mockReturnValueOnce({ data: { car: { brand: 'Toyota', model: 'Corolla' } } });
+    it('names the vehicle by make and model next to the plate from the report itself', () => {
+        const carSummary = { id: 5, brand: 'Toyota', model: 'Corolla', licensePlate: '35 ABC 123' };
 
-        render(<DamageCard damage={createMockDamage({ carLicensePlate: '35 ABC 123' })} />);
+        render(<DamageCard damage={createMockDamage({ carLicensePlate: '35 ABC 123', carSummary })} />);
 
         expect(screen.getByText('Toyota Corolla (35 ABC 123)')).toBeInTheDocument();
     });

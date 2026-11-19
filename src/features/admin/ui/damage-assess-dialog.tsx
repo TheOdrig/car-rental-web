@@ -84,7 +84,7 @@ export function DamageAssessDialog(props: DamageAssessDialogProps) {
                     <DialogTitle className="text-slate-900 dark:text-white">{mode === 'reassess' ? 'Update Assessment' : 'Assess Damage'}</DialogTitle>
                     <DialogDescription className="text-slate-600 dark:text-slate-400">
                         {mode === 'reassess'
-                            ? 'Saving replaces the current assessment, including its notes.'
+                            ? 'The current assessment, including its notes and deductible, is filled in below.'
                             : 'Evaluate the damage and provide repair cost estimate.'}
                     </DialogDescription>
                 </DialogHeader>

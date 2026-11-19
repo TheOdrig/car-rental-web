@@ -74,7 +74,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                     className="hover:text-primary hover:underline transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} stacked />
+                                    <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} stacked />
                                 </Link>
                             </TableCell>
                             <TableCell className="text-slate-700 dark:text-slate-300">

@@ -99,3 +99,25 @@ describe('damage detail charge action', () => {
         expect(screen.queryByRole('button', { name: 'Charge customer' })).not.toBeInTheDocument();
     });
 });
+
+describe('damage detail assessment update', () => {
+    const user = userEvent.setup();
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('prefills the stored notes and deductible exactly and no longer warns about replacing them', async () => {
+        mockGet.mockResolvedValue(
+            assessed({ insuranceCoverage: true, insuranceDeductible: 75.5, customerLiability: 424.5, assessmentNotes: 'Bumper replaced' })
+        );
+        renderWithProviders(<DamageDetailContent id="1" />);
+
+        await user.click(await screen.findByRole('button', { name: 'Update Assessment' }));
+
+        const dialog = await screen.findByRole('dialog');
+        expect(within(dialog).getByLabelText('Assessment Notes')).toHaveValue('Bumper replaced');
+        expect(within(dialog).getByLabelText(/Insurance Deductible/)).toHaveValue(75.5);
+        expect(within(dialog).queryByText(/replaces the current assessment/)).not.toBeInTheDocument();
+    });
+});
