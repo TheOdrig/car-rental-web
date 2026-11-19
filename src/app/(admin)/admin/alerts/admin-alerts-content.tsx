@@ -14,12 +14,13 @@ import { useAlerts, useDismissAlert, useMarkAllAlertsRead, useInvalidateAdmin } 
 import { AlertVariant } from '@/features/admin';
 import { toast } from 'sonner';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorMessage } from '@/shared/ui/error-message';
 
 export function AdminAlertsContent() {
     const [searchQuery, setSearchQuery] = useState('');
     const [typeFilter, setTypeFilter] = useState<AlertVariant | 'all'>('all');
 
-    const { data: alerts = [], isLoading, isFetching } = useAlerts();
+    const { data: alerts = [], isLoading, isFetching, isError, refetch } = useAlerts();
     const dismissMutation = useDismissAlert();
     const markAllReadMutation = useMarkAllAlertsRead();
     const invalidate = useInvalidateAdmin();
@@ -121,7 +122,13 @@ export function AdminAlertsContent() {
             </div>
 
             <div className="min-h-[400px]">
-                {isLoading ? (
+                {isError ? (
+                    <ErrorMessage
+                        title="Failed to load alerts"
+                        message="The alerts could not be loaded. Check your connection and try again."
+                        onRetry={() => void refetch()}
+                    />
+                ) : isLoading ? (
                     <div className="space-y-4">
                         {[...Array(5)].map((_, i) => (
                             <Skeleton key={i} className="h-24 w-full rounded-xl" />

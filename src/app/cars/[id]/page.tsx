@@ -41,14 +41,14 @@ export default async function CarDetailPage({ params }: PageProps) {
     const [car, calendar] = loaded;
 
     return (
-        <main className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-8">
             <ClientCarDetail
                 car={car}
                 initialCalendar={calendar}
                 actionSlot={<CarBookingCard car={car} />}
             />
             <SimilarCarsSection carId={carId} className="mt-12 pt-12 border-t" />
-        </main>
+        </div>
     );
 }
 

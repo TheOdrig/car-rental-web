@@ -9,6 +9,7 @@ import { Breadcrumb } from '@/widgets/layout';
 import { LateReturnsTable, LateReturnFilters } from '@/features/admin';
 import { useLateReturns } from '@/features/admin';
 import { toast } from 'sonner';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/entities/rental';
 
 function LateReturnsList() {
@@ -24,7 +25,7 @@ function LateReturnsList() {
         sortDirection: searchParams?.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
     };
 
-    const { data, isLoading, isFetching, refetch } = useLateReturns(filters, page, 20);
+    const { data, isLoading, isFetching, isError, refetch } = useLateReturns(filters, page, 20);
 
     const handleRefresh = async () => {
         try {
@@ -77,13 +78,21 @@ function LateReturnsList() {
 
             <LateReturnFilters />
 
-            <LateReturnsTable
-                data={data?.content || []}
-                isLoading={isLoading}
-                page={page}
-                totalPages={data?.totalPages || 0}
-                onPageChange={handlePageChange}
-            />
+            {isError ? (
+                <ErrorMessage
+                    title="Failed to load late returns"
+                    message="The late returns could not be loaded. Check your connection and try again."
+                    onRetry={() => void refetch()}
+                />
+            ) : (
+                <LateReturnsTable
+                    data={data?.content || []}
+                    isLoading={isLoading}
+                    page={page}
+                    totalPages={data?.totalPages || 0}
+                    onPageChange={handlePageChange}
+                />
+            )}
         </div>
     );
 }

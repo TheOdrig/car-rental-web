@@ -18,6 +18,7 @@ import {
 } from '@/features/process-rentals';
 import type { ProcessReturnData } from '@/features/process-rentals';
 import { showToast } from '@/shared/lib';
+import { ErrorMessage } from '@/shared/ui/error-message';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -33,10 +34,14 @@ export function AdminRentalsContent() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
 
-    const { data: approvals, isLoading: approvalsLoading } = usePendingApprovals();
-    const { data: pickups, isLoading: pickupsLoading } = usePendingPickups();
-    const { data: returns, isLoading: returnsLoading } = usePendingReturns();
-    const { data: overdue, isLoading: overdueLoading } = useOverdueRentals();
+    const approvalsQuery = usePendingApprovals();
+    const pickupsQuery = usePendingPickups();
+    const returnsQuery = usePendingReturns();
+    const overdueQuery = useOverdueRentals();
+    const { data: approvals, isLoading: approvalsLoading } = approvalsQuery;
+    const { data: pickups, isLoading: pickupsLoading } = pickupsQuery;
+    const { data: returns, isLoading: returnsLoading } = returnsQuery;
+    const { data: overdue, isLoading: overdueLoading } = overdueQuery;
 
     const approveMutation = useApproveRental();
     const rejectMutation = useRejectRental();
@@ -96,6 +101,15 @@ export function AdminRentalsContent() {
         overdue: overdue?.content.length ?? 0,
     };
 
+    const failed = {
+        approvals: approvalsQuery.isError,
+        pickups: pickupsQuery.isError,
+        returns: returnsQuery.isError,
+        overdue: overdueQuery.isError,
+    };
+    const anyFailed = Object.values(failed).some(Boolean);
+    const countLabel = (hasFailed: boolean, value: number) => (hasFailed ? '?' : value);
+
     const totalPending = counts.approvals + counts.pickups + counts.returns + counts.overdue;
 
     return (
@@ -131,7 +145,7 @@ export function AdminRentalsContent() {
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">Approvals</span>
                             <Badge variant={counts.approvals > 0 ? 'default' : 'secondary'}>
-                                {counts.approvals}
+                                {countLabel(failed.approvals, counts.approvals)}
                             </Badge>
                         </div>
                     </CardContent>
@@ -143,7 +157,7 @@ export function AdminRentalsContent() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">Pickups</span>
-                            <Badge variant="secondary">{counts.pickups}</Badge>
+                            <Badge variant="secondary">{countLabel(failed.pickups, counts.pickups)}</Badge>
                         </div>
                     </CardContent>
                 </Card>
@@ -154,7 +168,7 @@ export function AdminRentalsContent() {
                     <CardContent className="p-4">
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">Returns</span>
-                            <Badge variant="secondary">{counts.returns}</Badge>
+                            <Badge variant="secondary">{countLabel(failed.returns, counts.returns)}</Badge>
                         </div>
                     </CardContent>
                 </Card>
@@ -166,7 +180,7 @@ export function AdminRentalsContent() {
                         <div className="flex items-center justify-between">
                             <span className="text-sm text-muted-foreground">Overdue</span>
                             <Badge variant={counts.overdue > 0 ? 'destructive' : 'secondary'}>
-                                {counts.overdue}
+                                {countLabel(failed.overdue, counts.overdue)}
                             </Badge>
                         </div>
                     </CardContent>
@@ -193,50 +207,82 @@ export function AdminRentalsContent() {
                     </Select>
                 </div>
                 <span className="text-sm text-muted-foreground">
-                    {totalPending} pending items
+                    {anyFailed ? 'Some counts could not be loaded' : `${totalPending} pending items`}
                 </span>
             </div>
 
             <div className="space-y-6">
                 {(statusFilter === 'all' || statusFilter === 'approvals') && (
-                    <PendingRentalsTable
-                        items={approvals?.content ?? []}
-                        type="approvals"
-                        isLoading={approvalsLoading}
-                        onApprove={handleApprove}
-                        onReject={handleReject}
-                        actionInProgress={actionInProgress}
-                    />
+                    failed.approvals ? (
+                        <ErrorMessage
+                            title="Failed to load approvals"
+                            message="This list could not be loaded."
+                            onRetry={() => void approvalsQuery.refetch()}
+                        />
+                    ) : (
+                        <PendingRentalsTable
+                            items={approvals?.content ?? []}
+                            type="approvals"
+                            isLoading={approvalsLoading}
+                            onApprove={handleApprove}
+                            onReject={handleReject}
+                            actionInProgress={actionInProgress}
+                        />
+                    )
                 )}
 
                 {(statusFilter === 'all' || statusFilter === 'pickups') && (
-                    <PendingRentalsTable
-                        items={pickups?.content ?? []}
-                        type="pickups"
-                        isLoading={pickupsLoading}
-                        onPickup={handlePickup}
-                        actionInProgress={actionInProgress}
-                    />
+                    failed.pickups ? (
+                        <ErrorMessage
+                            title="Failed to load pickups"
+                            message="This list could not be loaded."
+                            onRetry={() => void pickupsQuery.refetch()}
+                        />
+                    ) : (
+                        <PendingRentalsTable
+                            items={pickups?.content ?? []}
+                            type="pickups"
+                            isLoading={pickupsLoading}
+                            onPickup={handlePickup}
+                            actionInProgress={actionInProgress}
+                        />
+                    )
                 )}
 
                 {(statusFilter === 'all' || statusFilter === 'returns') && (
-                    <PendingRentalsTable
-                        items={returns?.content ?? []}
-                        type="returns"
-                        isLoading={returnsLoading}
-                        onReturn={handleReturn}
-                        actionInProgress={actionInProgress}
-                    />
+                    failed.returns ? (
+                        <ErrorMessage
+                            title="Failed to load returns"
+                            message="This list could not be loaded."
+                            onRetry={() => void returnsQuery.refetch()}
+                        />
+                    ) : (
+                        <PendingRentalsTable
+                            items={returns?.content ?? []}
+                            type="returns"
+                            isLoading={returnsLoading}
+                            onReturn={handleReturn}
+                            actionInProgress={actionInProgress}
+                        />
+                    )
                 )}
 
                 {(statusFilter === 'all' || statusFilter === 'overdue') && (
-                    <PendingRentalsTable
-                        items={overdue?.content ?? []}
-                        type="overdue"
-                        isLoading={overdueLoading}
-                        onReturn={handleReturn}
-                        actionInProgress={actionInProgress}
-                    />
+                    failed.overdue ? (
+                        <ErrorMessage
+                            title="Failed to load overdue rentals"
+                            message="This list could not be loaded."
+                            onRetry={() => void overdueQuery.refetch()}
+                        />
+                    ) : (
+                        <PendingRentalsTable
+                            items={overdue?.content ?? []}
+                            type="overdue"
+                            isLoading={overdueLoading}
+                            onReturn={handleReturn}
+                            actionInProgress={actionInProgress}
+                        />
+                    )
                 )}
             </div>
         </div>

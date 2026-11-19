@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import {
     Select,
     SelectContent,
@@ -45,7 +46,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
     const [page, setPage] = useState(0);
     const [statusFilter, setStatusFilter] = useState<string>('all');
 
-    const { data, isLoading } = useCustomerRentalHistory(
+    const { data, isLoading, isError, refetch } = useCustomerRentalHistory(
         customerId,
         page,
         statusFilter === 'all' ? undefined : statusFilter as AdminRentalStatus
@@ -77,7 +78,13 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                 </div>
             </CardHeader>
             <CardContent>
-                {isLoading ? (
+                {isError ? (
+                    <ErrorMessage
+                        title="Failed to load rental history"
+                        message="The rental history could not be loaded."
+                        onRetry={() => void refetch()}
+                    />
+                ) : isLoading ? (
                     <div className="space-y-3">
                         {Array.from({ length: 5 }).map((_, i) => (
                             <Skeleton key={i} className="h-12 w-full" />

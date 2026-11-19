@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
 import { safeFormatDate, formatCurrency } from '@/shared/lib';
 import type { AdminRentalStatus } from '@/entities/rental';
@@ -27,7 +28,7 @@ const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destr
 
 export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTableProps) {
     const [page, setPage] = useState(0);
-    const { data, isLoading } = useVehicleRentalHistory(vehicleId, page);
+    const { data, isLoading, isError, refetch } = useVehicleRentalHistory(vehicleId, page);
 
     return (
         <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
@@ -38,7 +39,13 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                {isLoading ? (
+                {isError ? (
+                    <ErrorMessage
+                        title="Failed to load rental history"
+                        message="The rental history could not be loaded."
+                        onRetry={() => void refetch()}
+                    />
+                ) : isLoading ? (
                     <div className="space-y-3">
                         {Array.from({ length: 5 }).map((_, i) => (
                             <Skeleton key={i} className="h-12 w-full" />

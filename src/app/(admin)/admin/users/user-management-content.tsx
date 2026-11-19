@@ -14,6 +14,7 @@ import {
 import { Breadcrumb } from '@/widgets/layout';
 import { UserStatsCards, UserTable, useUserStats, useInvalidateUsers } from '@/features/manage-users';
 import { toast } from 'sonner';
+import { ErrorMessage } from '@/shared/ui/error-message';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
 type UserStatus = 'all' | 'ACTIVE' | 'BANNED';
@@ -23,7 +24,7 @@ export function UserManagementContent() {
     const [roleFilter, setRoleFilter] = useState<UserRole>('all');
     const [statusFilter, setStatusFilter] = useState<UserStatus>('all');
 
-    const { data: stats, isLoading: isLoadingStats } = useUserStats();
+    const { data: stats, isLoading: isLoadingStats, isError: statsFailed, refetch: refetchStats } = useUserStats();
     const invalidateUsers = useInvalidateUsers();
 
     const handleRefresh = async () => {
@@ -75,10 +76,18 @@ export function UserManagementContent() {
                 </Button>
             </div>
 
-            <UserStatsCards
-                data={statsData}
-                isLoading={isLoadingStats}
-            />
+            {statsFailed ? (
+                <ErrorMessage
+                    title="Failed to load user statistics"
+                    message="The user statistics could not be loaded."
+                    onRetry={() => void refetchStats()}
+                />
+            ) : (
+                <UserStatsCards
+                    data={statsData}
+                    isLoading={isLoadingStats}
+                />
+            )}
 
             <div className="flex flex-col sm:flex-row gap-4">
                 <div className="relative flex-1">

@@ -4,12 +4,13 @@ import Link from 'next/link';
 import { Calendar, Car } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { useMyRentals } from '@/entities/rental';
 import { StatsCard } from './stats-card';
 import { RecentRentals } from './recent-rentals';
 
 export function Dashboard() {
-    const { data, isLoading } = useMyRentals({ size: 3 });
+    const { data, isLoading, isError, refetch } = useMyRentals({ size: 3 });
 
     const recentRentals = data?.content ?? [];
     const totalRentals = data?.totalElements ?? 0;
@@ -23,13 +24,24 @@ export function Dashboard() {
                 </p>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
-                <StatsCard
-                    title="Total Rentals"
-                    value={totalRentals}
-                    icon={Calendar}
-                    isLoading={isLoading}
+            {isError && (
+                <ErrorMessage
+                    className="mb-8"
+                    title="Failed to load your rentals"
+                    message="Your rentals could not be loaded."
+                    onRetry={() => void refetch()}
                 />
+            )}
+
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+                {!isError && (
+                    <StatsCard
+                        title="Total Rentals"
+                        value={totalRentals}
+                        icon={Calendar}
+                        isLoading={isLoading}
+                    />
+                )}
 
                 <Card className="md:col-span-2">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -49,11 +61,13 @@ export function Dashboard() {
                 </Card>
             </div>
 
-            <RecentRentals
-                rentals={recentRentals}
-                totalCount={totalRentals}
-                isLoading={isLoading}
-            />
+            {!isError && (
+                <RecentRentals
+                    rentals={recentRentals}
+                    totalCount={totalRentals}
+                    isLoading={isLoading}
+                />
+            )}
         </div>
     );
 }

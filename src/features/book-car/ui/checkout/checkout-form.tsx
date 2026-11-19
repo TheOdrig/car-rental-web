@@ -72,7 +72,7 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
         const end = parseLocalDate(endDate);
         if (!start || !end) return 1;
         return calculateRentalDays(start, end);
-    }, [pricingData?.rentalDays, startDate, endDate]);
+    }, [pricingData, startDate, endDate]);
 
     const appliedDiscounts: DiscountDetail[] = useMemo(() => {
         if (!pricingData?.appliedModifiers) return [];

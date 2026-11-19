@@ -189,7 +189,7 @@ export function CarsListingContent() {
                     </Sheet>
                 </div>
 
-                <main className="flex-1 min-w-0">
+                <div className="flex-1 min-w-0">
                     <ActiveFilters className="mb-4" />
 
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
@@ -238,7 +238,7 @@ export function CarsListingContent() {
                             />
                         </div>
                     )}
-                </main>
+                </div>
             </div>
         </div>
     );

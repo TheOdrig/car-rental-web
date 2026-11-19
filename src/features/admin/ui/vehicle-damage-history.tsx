@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { DamageStatusBadge } from '@/entities/damage';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
@@ -16,7 +17,7 @@ interface VehicleDamageHistoryProps {
 
 export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHistoryProps) {
     const router = useRouter();
-    const { data, isLoading } = useVehicleDamages(carId, 0, maxItems);
+    const { data, isLoading, isError, refetch } = useVehicleDamages(carId, 0, maxItems);
 
     if (isLoading) {
         return (
@@ -33,6 +34,26 @@ export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHisto
                             <Skeleton key={i} className="h-16" />
                         ))}
                     </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    if (isError) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                        <AlertTriangle className="h-5 w-5" />
+                        Damage History
+                    </CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <ErrorMessage
+                        title="Failed to load damage history"
+                        message="The damage reports could not be loaded."
+                        onRetry={() => void refetch()}
+                    />
                 </CardContent>
             </Card>
         );

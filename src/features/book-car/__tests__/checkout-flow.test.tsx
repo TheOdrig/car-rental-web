@@ -250,7 +250,6 @@ describe('Checkout Flow Integration', () => {
 
     describe('Submitting the request', () => {
         it('should send only the fields the API accepts and go to the success page', async () => {
-            const user = userEvent.setup();
             const queryClient = new QueryClient({
                 defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
             });
@@ -286,7 +285,6 @@ describe('Checkout Flow Integration', () => {
         });
 
         it('should not submit twice on a double click', async () => {
-            const user = userEvent.setup();
             mockPost.mockImplementation(() => new Promise(() => undefined));
             renderWithProviders(<CheckoutForm {...defaultProps} />);
 
@@ -298,7 +296,6 @@ describe('Checkout Flow Integration', () => {
         });
 
         it('should stay disabled after success while navigation is pending', async () => {
-            const user = userEvent.setup();
             renderWithProviders(<CheckoutForm {...defaultProps} />);
 
             submitRequest();
@@ -309,7 +306,6 @@ describe('Checkout Flow Integration', () => {
         });
 
         it('should show the error and allow another try when the request fails', async () => {
-            const user = userEvent.setup();
             mockPost.mockRejectedValueOnce(new Error('Server exploded'));
             renderWithProviders(<CheckoutForm {...defaultProps} />);
 
