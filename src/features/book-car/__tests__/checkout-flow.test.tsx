@@ -20,7 +20,7 @@ const mockCar = vi.hoisted(() => ({
         transmissionType: 'Automatic',
         fuelType: 'Petrol',
         seats: 5,
-        carStatusType: 'Available',
+        carStatusType: 'AVAILABLE',
     } as Record<string, unknown>,
 }));
 const mockPricing = vi.hoisted(() => ({
@@ -65,6 +65,7 @@ vi.mock('@/shared/api', async () => {
     };
 });
 vi.mock('@/entities/car', () => ({
+    isAvailable: (car: { carStatusType?: string }) => car.carStatusType === 'AVAILABLE',
     getCarUnavailableMessage: () => 'This car is in maintenance and cannot be booked right now.',
     useCar: vi.fn(() => ({
         data: { car: mockCar.value },
@@ -121,7 +122,7 @@ describe('Checkout Flow Integration', () => {
             productionYear: 2023,
             transmissionType: 'Automatic',
             fuelType: 'Petrol',
-            carStatusType: 'Available',
+            carStatusType: 'AVAILABLE',
             seats: 5,
         };
         mockPricing.value = {
@@ -300,12 +301,12 @@ describe('Checkout Flow Integration', () => {
         });
 
         it('should block the request for a car in maintenance', () => {
-            mockCar.value = { ...mockCar.value, carStatusType: 'Maintenance' };
+            mockCar.value = { ...mockCar.value, carStatusType: 'MAINTENANCE' };
             renderWithProviders(<CheckoutForm {...defaultProps} />);
 
             expect(screen.getByRole('alert')).toHaveTextContent(/in maintenance/i);
             expect(screen.getByRole('button', { name: /request rental/i })).toBeDisabled();
-            mockCar.value = { ...mockCar.value, carStatusType: 'Available' };
+            mockCar.value = { ...mockCar.value, carStatusType: 'AVAILABLE' };
         });
 
         it('should stay disabled after success while navigation is pending', async () => {

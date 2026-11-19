@@ -55,7 +55,7 @@ describe('pickup after the rental end date', () => {
         const now = new Date(2026, 10, 20, 0, 5);
 
         expect(isAfterRentalEnd('2026-11-19', now)).toBe(true);
-        expect(isAfterRentalEnd('2026-11-19T10:00:00', now)).toBe(true);
+        expect(isAfterRentalEnd('2026-11-19T10:00:00Z', now)).toBe(true);
     });
 
     it('allows pickup up to and including the end date', () => {
@@ -89,7 +89,7 @@ describe('pickup before the rental start date', () => {
         const now = new Date(2026, 10, 19, 23, 30);
 
         expect(isBeforeRentalStart('2026-11-20', now)).toBe(true);
-        expect(isBeforeRentalStart('2026-11-20T10:00:00', now)).toBe(true);
+        expect(isBeforeRentalStart('2026-11-20T10:00:00Z', now)).toBe(true);
     });
 
     it('allows pickup on and after the start date', () => {

@@ -1,4 +1,5 @@
-import type { Car, CarSummary, CarStatus } from '@/entities/car';
+import type { Car, CarSummary } from '@/entities/car';
+import { CAR_STATUS } from '../../model/status-labels';
 import type { CurrencyType } from '@/shared/types';
 
 let carIdCounter = 1;
@@ -13,7 +14,7 @@ export function createMockCar(overrides?: Partial<Car>): Car {
         productionYear: 2023,
         price: 50,
         currencyType: 'USD' as CurrencyType,
-        carStatusType: 'Available' as CarStatus,
+        carStatusType: CAR_STATUS.AVAILABLE,
         fuelType: 'GASOLINE',
         transmissionType: 'AUTOMATIC',
         color: 'Silver',

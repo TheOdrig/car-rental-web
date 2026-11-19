@@ -94,6 +94,10 @@ export const API = {
     admin: {
         alerts: endpoint('GET', `${V1}/admin/alerts`),
         acknowledgeAlert: endpoint('POST', `${V1}/admin/alerts/{id}/acknowledge`),
+        cars: {
+            search: endpoint('GET', `${V1}/admin/cars`),
+            byId: endpoint('GET', `${V1}/admin/cars/{id}`),
+        },
         carRentals: endpoint('GET', `${V1}/admin/cars/{id}/rentals`),
         dashboard: {
             summary: endpoint('GET', `${V1}/admin/dashboard/summary`),

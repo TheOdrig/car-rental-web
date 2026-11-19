@@ -9,6 +9,7 @@ import {
 import { format, addMonths, subMonths, startOfMonth, parse } from 'date-fns';
 import { cn, formatDate, formatNumber } from '@/shared/lib';
 import { friendlyUnavailableReason, getCarUnavailableMessage } from '../lib/status-messages';
+import { AVAILABILITY_STATUS_LABELS, CAR_STATUS, DAY_AVAILABILITY } from '../model/status-labels';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -42,7 +43,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
         { icon: Calendar, label: 'Year', value: car.productionYear },
     ].filter(spec => spec.value);
 
-    const isAvailable = car.carStatusType === 'Available';
+    const isAvailable = car.carStatusType === CAR_STATUS.AVAILABLE;
 
     return (
         <div className={cn('grid gap-6 lg:grid-cols-2 lg:items-start', className)}>
@@ -263,7 +264,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                     {calendar ? (
                         calendar.days.map((day: DayAvailability, index: number) => {
                             const past = day.date < todayKey;
-                            const label = past ? 'Past' : day.status === 'Available' ? 'Available' : 'Booked';
+                            const label = past ? 'Past' : AVAILABILITY_STATUS_LABELS[day.status];
                             return (
                                 <div
                                     key={index}
@@ -271,7 +272,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                                         'aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs transition-colors',
                                         past
                                             ? 'bg-muted text-muted-foreground/60'
-                                            : day.status === 'Available'
+                                            : day.status === DAY_AVAILABILITY.AVAILABLE
                                                 ? 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20'
                                                 : 'bg-red-500/10 text-red-700 dark:text-red-400'
                                     )}

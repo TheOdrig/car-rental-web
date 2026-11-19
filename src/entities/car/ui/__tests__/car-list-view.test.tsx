@@ -18,7 +18,7 @@ const mockCar: Car = {
     thumbnailUrl: 'https://example.com/car-thumb.jpg',
     price: 75,
     currencyType: 'USD',
-    carStatusType: 'Available',
+    carStatusType: 'AVAILABLE',
     rating: 4.5,
 };
 const mockCars: Car[] = [

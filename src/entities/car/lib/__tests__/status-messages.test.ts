@@ -8,6 +8,12 @@ describe('car status messages', () => {
         expect(getCarUnavailableMessage('Inspection')).toMatch(/inspected/i);
     });
 
+    it('understands the status codes sent by the API', () => {
+        expect(getCarUnavailableMessage('MAINTENANCE')).toMatch(/maintenance/i);
+        expect(getCarUnavailableMessage('DAMAGED')).toMatch(/repaired/i);
+        expect(friendlyUnavailableReason('INSPECTION')).toMatch(/inspected/i);
+    });
+
     it('falls back to a generic sentence for unknown or missing statuses', () => {
         expect(getCarUnavailableMessage('Teleported')).toBe('This car is not available for booking right now.');
         expect(getCarUnavailableMessage(undefined)).toBe('This car is not available for booking right now.');

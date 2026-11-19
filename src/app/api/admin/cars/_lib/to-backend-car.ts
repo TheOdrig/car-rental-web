@@ -46,7 +46,6 @@ const CAR_REQUEST_FIELDS = [
     'seats',
     'thumbnailUrl',
     'transmissionType',
-    'vinNumber',
 ] as const;
 
 const VIN_LENGTH = 17;
@@ -120,7 +119,7 @@ export function toBackendCar(body: CarFormBody): Record<string, unknown> {
 }
 
 export function carCreateRequest(body: CarFormBody): Record<string, unknown> {
-    return { ...toBackendCar(body), carStatusType: 'Available' };
+    return { ...toBackendCar(body), carStatusType: 'AVAILABLE' };
 }
 
 export function carUpdateRequest(current: Record<string, unknown>, body: CarFormBody): Record<string, unknown> {

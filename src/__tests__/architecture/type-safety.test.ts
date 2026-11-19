@@ -8,9 +8,11 @@ import {
 } from './helpers/ast-parser';
 
 const CONTRACT_STATUS_LITERAL_FILES = [
+  'src/entities/car/model/status-labels.ts',
   'src/entities/payment/model/rental-payment.ts',
   'src/entities/payment/ui/payment-status-badge.tsx',
   'src/entities/rental/lib/admin-status.ts',
+  'src/entities/rental/model/types.ts',
   'src/features/manage-rentals/ui/rental-detail/rental-detail.tsx',
   'src/features/manage-users/ui/customer-detail/customer-rental-history-table.tsx',
   'src/features/manage-users/ui/customer-detail/customer-verification-card.tsx',

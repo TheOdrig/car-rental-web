@@ -47,7 +47,7 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
         });
         expect(created.status()).toBe(201);
         const rental = await created.json();
-        expect(rental.status).toBe('Requested');
+        expect(rental.status).toBe('REQUESTED');
 
         await customerPage.goto('/rentals');
         await expect(customerPage.getByText(/requested/i).first()).toBeVisible();
@@ -63,7 +63,7 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
 
         await expect
             .poll(async () => (await (await customerPage.request.get(`/api/rentals/${rental.id}`)).json()).status)
-            .toBe('Confirmed');
+            .toBe('CONFIRMED');
 
         await customerPage.goto(`/rentals/${rental.id}/pay`);
         await expect(customerPage).toHaveURL(new RegExp(`/rentals/${rental.id}/pay$`));

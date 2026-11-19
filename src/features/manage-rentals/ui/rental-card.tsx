@@ -14,8 +14,8 @@ import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import type { Rental, RentalStatus, ActionButton } from '@/entities/rental';
-import { getActionButtons, getStatusBadgeVariant } from '@/entities/rental';
+import type { Rental, ActionButton } from '@/entities/rental';
+import { getActionButtons, getStatusBadgeVariant, RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
 
 interface RentalCardProps {
     rental: Rental;
@@ -33,15 +33,15 @@ interface RentalCardSkeletonProps {
 
 function getStatusColor(status: RentalStatus): string {
     switch (status) {
-        case 'Confirmed':
+        case RentalStatus.CONFIRMED:
             return 'bg-green-500/10 text-green-600 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-700';
-        case 'In Use':
+        case RentalStatus.IN_USE:
             return 'bg-blue-500/10 text-blue-600 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-700';
-        case 'Requested':
+        case RentalStatus.REQUESTED:
             return 'bg-amber-500/10 text-amber-600 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-700';
-        case 'Returned':
+        case RentalStatus.RETURNED:
             return 'bg-slate-500/10 text-slate-600 border-slate-200 dark:bg-slate-500/20 dark:text-slate-400 dark:border-slate-600';
-        case 'Cancelled':
+        case RentalStatus.CANCELLED:
             return 'bg-red-500/10 text-red-600 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-700';
         default:
             return '';
@@ -99,8 +99,8 @@ export const RentalCard = memo(function RentalCard({
     onAction,
 }: RentalCardProps) {
     const { carSummary, startDate, endDate, days, totalPrice, currency, status, id } = rental;
-    const isActive = status === 'In Use';
-    const isCompleted = status === 'Returned';
+    const isActive = status === RentalStatus.IN_USE;
+    const isCompleted = status === RentalStatus.RETURNED;
     const actions = showActions ? getActionButtons(status, { startDate }) : [];
 
     const referenceId = formatRentalReference(id);
@@ -147,7 +147,7 @@ export const RentalCard = memo(function RentalCard({
                                         e.stopPropagation();
                                     }}
                                 >
-                                    {status}
+                                    {RENTAL_STATUS_LABELS[status]}
                                 </Badge>
                             </div>
 
@@ -163,7 +163,7 @@ export const RentalCard = memo(function RentalCard({
                                 </div>
                             </div>
 
-                            {status === 'Cancelled' && rental.cancellationReason && (
+                            {status === RentalStatus.CANCELLED && rental.cancellationReason && (
                                 <p className="mb-3 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
                                     Cancelled: {rental.cancellationReason}
                                 </p>
@@ -224,7 +224,7 @@ export const RentalCard = memo(function RentalCard({
                             <span>{formatDate(endDate)}</span>
                         </div>
 
-                        {status === 'Cancelled' && rental.cancellationReason && (
+                        {status === RentalStatus.CANCELLED && rental.cancellationReason && (
                             <p className="mb-2 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
                                 Cancelled: {rental.cancellationReason}
                             </p>
@@ -251,7 +251,7 @@ export const RentalCard = memo(function RentalCard({
                             e.stopPropagation();
                         }}
                     >
-                        {status}
+                        {RENTAL_STATUS_LABELS[status]}
                     </Badge>
                 </div>
             </CardContent>

@@ -1,8 +1,8 @@
 import type { Schemas, WithRequired } from '@/shared/api/contract';
 
-type CarSchemas = Pick<Schemas, 'CarResponse' | 'CarSummaryResponse' | 'AvailableCarDto' | 'SimilarCarDto'>;
+type CarSchemas = Pick<Schemas, 'PublicCarResponse' | 'CarResponse' | 'CarSummaryResponse' | 'AvailableCarDto' | 'SimilarCarDto'>;
 
-export type CarStatus = NonNullable<CarSchemas['CarResponse']['carStatusType']>;
+export type CarStatus = NonNullable<CarSchemas['PublicCarResponse']['carStatusType']>;
 
 export type CarSummary = WithRequired<CarSchemas['CarSummaryResponse'], 'id' | 'licensePlate' | 'brand' | 'model'>;
 
@@ -16,10 +16,9 @@ export enum TransmissionType {
     MANUAL = 'MANUAL',
     AUTOMATIC = 'AUTOMATIC',
 }
-export type Car = WithRequired<
-    CarSchemas['CarResponse'],
-    'id' | 'licensePlate' | 'brand' | 'model' | 'productionYear' | 'price' | 'currencyType' | 'carStatusType'
->;
+type CarRequiredFields = 'id' | 'licensePlate' | 'brand' | 'model' | 'productionYear' | 'price' | 'currencyType' | 'carStatusType';
+export type Car = WithRequired<CarSchemas['PublicCarResponse'], CarRequiredFields>;
+export type AdminCar = WithRequired<CarSchemas['CarResponse'], CarRequiredFields>;
 export type AvailableCar = WithRequired<
     CarSchemas['AvailableCarDto'],
     'id' | 'brand' | 'model' | 'productionYear' | 'dailyRate' | 'totalPrice' | 'currency'

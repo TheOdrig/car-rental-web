@@ -46,7 +46,7 @@ export async function firstAvailableCarId(request: APIRequestContext): Promise<n
     expect(response.ok()).toBe(true);
     const body = await response.json();
     expect(Array.isArray(body.content)).toBe(true);
-    const car = body.content.find((entry: { carStatusType?: string }) => entry.carStatusType === 'Available');
+    const car = body.content.find((entry: { carStatusType?: string }) => entry.carStatusType === 'AVAILABLE');
     expect(car, 'the dev seed should contain an available car').toBeTruthy();
     return car.id as number;
 }

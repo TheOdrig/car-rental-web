@@ -19,7 +19,7 @@ describe('ApproveRentalDialog', () => {
         startDate: '2025-12-01T10:00:00Z',
         endDate: '2025-12-05T10:00:00Z',
         totalAmount: 480,
-        status: 'Requested',
+        status: 'REQUESTED',
         createdAt: '2025-11-25T14:00:00Z'
     };
     it('should render detailed vehicle and customer information', () => {

@@ -7,7 +7,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { cn, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
-import { getPaymentOpensOn, isPaymentWindowOpen, useCancelRental } from '@/entities/rental';
+import { getPaymentOpensOn, isPaymentWindowOpen, RENTAL_STATUS_LABELS, RentalStatus, useCancelRental } from '@/entities/rental';
 import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
 import type { Rental } from '@/entities/rental';
 import { RentalTimeline } from '../rental-timeline';
@@ -31,7 +31,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
     const cancelMutation = useCancelRental();
 
     const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status } = rental;
-    const canCancel = status === 'Requested';
+    const canCancel = status === RentalStatus.REQUESTED;
 
     const handleCancel = async () => {
         try {
@@ -49,7 +49,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                 <div>
                     <div className="mb-2 flex items-center gap-3">
                         <h1 className="text-2xl font-bold">Rental {formatRentalReference(rental.id)}</h1>
-                        <Badge className={cn('border', getStatusColor(status))}>{status}</Badge>
+                        <Badge className={cn('border', getStatusColor(status))}>{RENTAL_STATUS_LABELS[status]}</Badge>
                     </div>
                     <p className="text-muted-foreground">Booked on {formatDateTime(rental.createTime)}</p>
                 </div>
@@ -77,11 +77,11 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                 </div>
 
                 <div className="space-y-6">
-                    {status !== 'Requested' && (
+                    {status !== RentalStatus.REQUESTED && (
                         <RentalPaymentStatus
                             rentalId={rental.id}
                             action={(paymentStatus) => {
-                                if (status !== 'Confirmed' || !isPayableStatus(paymentStatus)) return null;
+                                if (status !== RentalStatus.CONFIRMED || !isPayableStatus(paymentStatus)) return null;
                                 if (!isPaymentWindowOpen(startDate)) {
                                     const opensOn = getPaymentOpensOn(startDate);
                                     return (

@@ -26,6 +26,9 @@ import { GET as userRentals } from '../admin/users/[id]/rentals/route';
 import { POST as chargeDamage } from '../admin/damages/[id]/charge/route';
 import { GET as lateReturns } from '../admin/late-returns/route';
 import { GET as listCars } from '../cars/route';
+import { GET as searchFleet } from '../admin/cars/route';
+import { GET as fleetCar } from '../admin/cars/[id]/route';
+import { POST as changeCarStatus } from '../admin/cars/[id]/status/route';
 import { buildRentalDetail } from '../admin/rentals/_lib/rental-detail';
 
 const fetchMock = vi.fn();
@@ -178,7 +181,7 @@ describe('admin BFF routes', () => {
         );
 
         expect(response.status).toBe(200);
-        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/cars/9/rentals?page=1&size=10&status=Returned');
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/cars/9/rentals?page=1&size=10&status=RETURNED');
     });
 
     it('maps the customer rental history status filter to the API vocabulary', async () => {
@@ -189,18 +192,59 @@ describe('admin BFF routes', () => {
             ctx('4')
         );
 
-        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/users/4/rentals?status=In+Use');
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/users/4/rentals?status=IN_USE');
     });
 
-    it('normalises late return status labels', async () => {
+    it('passes late return status codes through', async () => {
         fetchMock.mockResolvedValueOnce(
-            json({ content: [{ rentalId: 1, status: 'Severely Late' }, { rentalId: 2, status: 'On Time' }], page: 0 })
+            json({ content: [{ rentalId: 1, status: 'SEVERELY_LATE' }, { rentalId: 2, status: 'ON_TIME' }], page: 0 })
         );
 
         const response = await lateReturns(new NextRequest('http://localhost:3000/api/admin/late-returns'), noParams);
         const body = await response.json();
 
         expect(body.content.map((item: { status: string }) => item.status)).toEqual(['SEVERELY_LATE', 'ON_TIME']);
+    });
+
+    it('searches the fleet on the admin endpoint with server-side filters and paging', async () => {
+        fetchMock.mockResolvedValueOnce(json({ content: [{ id: 1, vinNumber: 'V' }], page: 1, size: 25, totalElements: 30, totalPages: 2 }));
+
+        const response = await searchFleet(
+            new NextRequest('http://localhost:3000/api/admin/cars?search=egea&status=MAINTENANCE&brand=fiat&page=1&size=25'),
+            noParams
+        );
+
+        expect(response.status).toBe(200);
+        expect(upstreamUrls()[0]).toBe(
+            'http://localhost:8082/api/v1/admin/cars?search=egea&status=MAINTENANCE&brand=fiat&page=1&size=25'
+        );
+    });
+
+    it('reads a single fleet car from the admin endpoint so the VIN is included', async () => {
+        fetchMock.mockResolvedValueOnce(json({ id: 9, vinNumber: '1HGBH41JXMN109186' }));
+
+        const response = await fleetCar(new NextRequest('http://localhost:3000/api/admin/cars/9'), ctx('9'));
+
+        expect(await response.json()).toEqual({ id: 9, vinNumber: '1HGBH41JXMN109186' });
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/cars/9');
+    });
+
+    it('sends the car status as an upper-case code and rejects an unknown one', async () => {
+        fetchMock.mockResolvedValueOnce(json({ id: 9 }));
+        const request = (status: string) =>
+            new NextRequest('http://localhost:3000/api/admin/cars/9/status', {
+                method: 'POST',
+                headers: { 'content-type': 'application/json' },
+                body: JSON.stringify({ status }),
+            });
+
+        const ok = await changeCarStatus(request('maintenance'), ctx('9'));
+        const bad = await changeCarStatus(request('Flying'), ctx('9'));
+
+        expect(ok.status).toBe(200);
+        expect(JSON.parse(fetchMock.mock.calls[0][1].body).carStatusType).toBe('MAINTENANCE');
+        expect(bad.status).toBe(400);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 
     it('passes the upstream PageResponse through unchanged', async () => {
@@ -222,7 +266,7 @@ describe('admin BFF routes', () => {
     describe('GET /api/admin/rentals/{id}/detail', () => {
         const rental = {
             id: 7,
-            status: 'Confirmed',
+            status: 'CONFIRMED',
             startDate: '2026-12-01',
             endDate: '2026-12-04',
             days: 3,
@@ -268,7 +312,7 @@ describe('admin BFF routes', () => {
                     return json({ content: [{ id: 1, rentalId: 7 }, { id: 2, rentalId: 99 }] });
                 }
                 if (path === '/api/v1/admin/late-returns') {
-                    return json({ content: [{ rentalId: 7, penaltyAmount: 50, status: 'Late' }] });
+                    return json({ content: [{ rentalId: 7, penaltyAmount: 50, status: 'LATE' }] });
                 }
                 return json({ status: 404, detail: 'x', code: 'ENDPOINT_NOT_FOUND' }, 404);
             });
@@ -330,7 +374,7 @@ describe('admin BFF routes', () => {
     });
 
     it('builds a detail view with sensible defaults', () => {
-        const detail = buildRentalDetail({ rental: { id: 1, status: 'Returned', returnNotes: 'clean' } });
+        const detail = buildRentalDetail({ rental: { id: 1, status: 'RETURNED', returnNotes: 'clean' } });
 
         expect(detail.status).toBe('COMPLETED');
         expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'returned']);

@@ -104,12 +104,12 @@ describe('CarCard', () => {
     });
     describe('Status Badge', () => {
         it('should show status badge when showStatus is true', () => {
-            const car = createMockCar({ carStatusType: 'Available' });
+            const car = createMockCar({ carStatusType: 'AVAILABLE' });
             renderWithProviders(<CarCard car={car} showStatus={true} />);
             expect(screen.getByText('Available')).toBeInTheDocument();
         });
         it('should not show status badge when showStatus is false', () => {
-            const car = createMockCar({ carStatusType: 'Available' });
+            const car = createMockCar({ carStatusType: 'AVAILABLE' });
             renderWithProviders(<CarCard car={car} showStatus={false} />);
             expect(screen.queryByText('Available')).not.toBeInTheDocument();
         });

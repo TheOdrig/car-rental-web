@@ -496,7 +496,7 @@
             "type" : "string"
           },
           "carStatusType" : {
-            "enum" : [ "Available", "Maintenance", "Damaged", "Inspection" ],
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
             "type" : "string"
           },
           "color" : {
@@ -637,7 +637,7 @@
             "type" : "string"
           },
           "carStatusType" : {
-            "enum" : [ "Available", "Maintenance", "Damaged", "Inspection" ],
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
             "type" : "string"
           },
           "color" : {
@@ -803,7 +803,7 @@
         "description" : "Status update data",
         "properties" : {
           "carStatusType" : {
-            "enum" : [ "Available", "Maintenance", "Damaged", "Inspection" ],
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
             "type" : "string"
           },
           "notes" : {
@@ -869,7 +869,7 @@
             "type" : "string"
           },
           "source" : {
-            "enum" : [ "Live", "Cached", "Fallback" ],
+            "enum" : [ "LIVE", "CACHED", "FALLBACK" ],
             "type" : "string"
           },
           "targetCurrency" : {
@@ -895,6 +895,24 @@
           }
         },
         "required" : [ "amount", "fromCurrency", "toCurrency" ],
+        "type" : "object"
+      },
+      "CurrencyPenaltyTotals" : {
+        "properties" : {
+          "collectedPenaltyAmount" : {
+            "type" : "number"
+          },
+          "currency" : {
+            "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
+            "type" : "string"
+          },
+          "pendingPenaltyAmount" : {
+            "type" : "number"
+          },
+          "totalPenaltyAmount" : {
+            "type" : "number"
+          }
+        },
         "type" : "object"
       },
       "DailyRevenueDto" : {
@@ -1309,6 +1327,16 @@
           "description" : {
             "type" : "string"
           },
+          "disputeComments" : {
+            "type" : "string"
+          },
+          "disputeReason" : {
+            "type" : "string"
+          },
+          "disputedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
           "id" : {
             "format" : "int64",
             "type" : "integer"
@@ -1316,11 +1344,17 @@
           "insuranceCoverage" : {
             "type" : "boolean"
           },
+          "originalLiability" : {
+            "type" : "number"
+          },
           "photos" : {
             "items" : {
               "$ref" : "#/components/schemas/DamagePhotoDto"
             },
             "type" : "array"
+          },
+          "refundAmount" : {
+            "type" : "number"
           },
           "rentalId" : {
             "format" : "int64",
@@ -1330,6 +1364,13 @@
             "type" : "number"
           },
           "reportedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "resolutionNotes" : {
+            "type" : "string"
+          },
+          "resolvedAt" : {
             "format" : "date-time",
             "type" : "string"
           },
@@ -1395,7 +1436,7 @@
             "type" : "integer"
           },
           "status" : {
-            "enum" : [ "Available", "Unavailable" ],
+            "enum" : [ "AVAILABLE", "UNAVAILABLE" ],
             "type" : "string"
           }
         },
@@ -1420,7 +1461,7 @@
             "type" : "boolean"
           },
           "source" : {
-            "enum" : [ "Live", "Cached", "Fallback" ],
+            "enum" : [ "LIVE", "CACHED", "FALLBACK" ],
             "type" : "string"
           },
           "timestamp" : {
@@ -1451,7 +1492,7 @@
             "type" : "object"
           },
           "source" : {
-            "enum" : [ "Live", "Cached", "Fallback" ],
+            "enum" : [ "LIVE", "CACHED", "FALLBACK" ],
             "type" : "string"
           },
           "timestamp" : {
@@ -1603,7 +1644,7 @@
             "type" : "integer"
           },
           "status" : {
-            "enum" : [ "On Time", "Grace Period", "Late", "Severely Late" ],
+            "enum" : [ "ON_TIME", "GRACE_PERIOD", "LATE", "SEVERELY_LATE" ],
             "type" : "string"
           }
         },
@@ -1615,15 +1656,15 @@
             "format" : "double",
             "type" : "number"
           },
-          "collectedPenaltyAmount" : {
-            "type" : "number"
-          },
           "lateReturnPercentage" : {
             "format" : "double",
             "type" : "number"
           },
-          "pendingPenaltyAmount" : {
-            "type" : "number"
+          "penaltiesByCurrency" : {
+            "items" : {
+              "$ref" : "#/components/schemas/CurrencyPenaltyTotals"
+            },
+            "type" : "array"
           },
           "severelyLateCount" : {
             "format" : "int32",
@@ -1632,9 +1673,6 @@
           "totalLateReturns" : {
             "format" : "int32",
             "type" : "integer"
-          },
-          "totalPenaltyAmount" : {
-            "type" : "number"
           }
         },
         "type" : "object"
@@ -1883,6 +1921,33 @@
         },
         "type" : "object"
       },
+      "PageResponsePublicCarResponse" : {
+        "properties" : {
+          "content" : {
+            "items" : {
+              "$ref" : "#/components/schemas/PublicCarResponse"
+            },
+            "type" : "array"
+          },
+          "page" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "size" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "totalElements" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "totalPages" : {
+            "format" : "int32",
+            "type" : "integer"
+          }
+        },
+        "type" : "object"
+      },
       "PageResponseRentalResponse" : {
         "properties" : {
           "content" : {
@@ -1982,6 +2047,7 @@
             "type" : "integer"
           },
           "status" : {
+            "enum" : [ "PENDING", "AUTHORIZED", "CAPTURED", "FAILED", "REFUNDED", "CANCELLED" ],
             "type" : "string"
           }
         },
@@ -2062,6 +2128,10 @@
           },
           "createdAt" : {
             "format" : "date-time",
+            "type" : "string"
+          },
+          "currency" : {
+            "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
             "type" : "string"
           },
           "customerEmail" : {
@@ -2170,7 +2240,7 @@
         "properties" : {
           "code" : {
             "description" : "Stable machine readable error code",
-            "enum" : [ "ACCESS_DENIED", "ALERT_NOT_FOUND", "AUTHENTICATION_FAILED", "BAD_REQUEST", "CAR_ALREADY_EXISTS", "CAR_DATES_UNAVAILABLE", "CAR_NOT_AVAILABLE", "CAR_NOT_FOUND", "CAR_VALIDATION_FAILED", "CONCURRENT_MODIFICATION", "CONSTRAINT_VIOLATION", "DAMAGE_ASSESSMENT_ERROR", "DAMAGE_DISPUTE_ERROR", "DAMAGE_REPORT_ERROR", "DATA_CONFLICT", "EMAIL_SEND_FAILED", "ENDPOINT_NOT_FOUND", "FILE_UPLOAD_ERROR", "INTERNAL_SERVER_ERROR", "INVALID_JSON", "INVALID_MULTIPART_REQUEST", "INVALID_PARAMETER_TYPE", "INVALID_PASSWORD", "INVALID_PAYMENT_STATE", "INVALID_RENTAL_STATE", "INVALID_STATUS_TRANSITION", "INVALID_TOKEN", "INVALID_USER_STATE", "METHOD_NOT_ALLOWED", "MISSING_PARAMETER", "NOT_ACCEPTABLE", "OAUTH2_ACCOUNT_ALREADY_LINKED", "OAUTH2_AUTHENTICATION_FAILED", "OAUTH2_AUTHORIZATION_DENIED", "OAUTH2_EMAIL_REQUIRED", "OAUTH2_INVALID_STATE", "OAUTH2_INVALID_TOKEN", "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED", "OAUTH2_PROVIDER_NOT_SUPPORTED", "OAUTH2_PROVIDER_UNAVAILABLE", "OAUTH2_SOCIAL_LOGIN_REQUIRED", "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED", "PAYLOAD_TOO_LARGE", "PAYMENT_FAILED", "PAYMENT_NOT_AUTHORIZED", "PAYMENT_NOT_FOUND", "PAYMENT_WINDOW_NOT_OPEN", "PENALTY_WAIVER_ERROR", "RATE_LIMIT_EXCEEDED", "RECONCILIATION_ERROR", "RENTAL_CANCEL_NOT_ALLOWED", "RENTAL_NOT_FOUND", "RENTAL_VALIDATION_FAILED", "STRIPE_INTEGRATION_ERROR", "TOKEN_EXPIRED", "UNSUPPORTED_MEDIA_TYPE", "USER_ALREADY_EXISTS", "USER_NOT_FOUND", "VALIDATION_FAILED", "WEBHOOK_PAYLOAD_TOO_LARGE", "WEBHOOK_PROCESSING_FAILED", "WEBHOOK_SIGNATURE_INVALID", "WEBHOOK_SIGNATURE_MISSING" ],
+            "enum" : [ "ACCESS_DENIED", "ACCOUNT_BANNED", "ALERT_NOT_FOUND", "AUTHENTICATION_FAILED", "BAD_REQUEST", "CAR_ALREADY_EXISTS", "CAR_DATES_UNAVAILABLE", "CAR_NOT_AVAILABLE", "CAR_NOT_FOUND", "CAR_VALIDATION_FAILED", "CONCURRENT_MODIFICATION", "CONSTRAINT_VIOLATION", "DAMAGE_ASSESSMENT_ERROR", "DAMAGE_DISPUTE_ERROR", "DAMAGE_REPORT_ERROR", "DATA_CONFLICT", "EMAIL_SEND_FAILED", "ENDPOINT_NOT_FOUND", "FILE_UPLOAD_ERROR", "INTERNAL_SERVER_ERROR", "INVALID_JSON", "INVALID_MULTIPART_REQUEST", "INVALID_PARAMETER", "INVALID_PARAMETER_TYPE", "INVALID_PASSWORD", "INVALID_PAYMENT_STATE", "INVALID_RENTAL_STATE", "INVALID_STATUS_TRANSITION", "INVALID_TOKEN", "INVALID_USER_STATE", "METHOD_NOT_ALLOWED", "MISSING_PARAMETER", "NOT_ACCEPTABLE", "OAUTH2_ACCOUNT_ALREADY_LINKED", "OAUTH2_AUTHENTICATION_FAILED", "OAUTH2_AUTHORIZATION_DENIED", "OAUTH2_EMAIL_REQUIRED", "OAUTH2_INVALID_STATE", "OAUTH2_INVALID_TOKEN", "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED", "OAUTH2_PROVIDER_NOT_SUPPORTED", "OAUTH2_PROVIDER_UNAVAILABLE", "OAUTH2_SOCIAL_LOGIN_REQUIRED", "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED", "PAYLOAD_TOO_LARGE", "PAYMENT_FAILED", "PAYMENT_NOT_AUTHORIZED", "PAYMENT_NOT_FOUND", "PAYMENT_WINDOW_NOT_OPEN", "PENALTY_WAIVER_ERROR", "RATE_LIMIT_EXCEEDED", "RECONCILIATION_ERROR", "RENTAL_CANCEL_NOT_ALLOWED", "RENTAL_NOT_FOUND", "RENTAL_VALIDATION_FAILED", "STRIPE_INTEGRATION_ERROR", "TOKEN_EXPIRED", "UNSUPPORTED_MEDIA_TYPE", "USER_ALREADY_EXISTS", "USER_NOT_FOUND", "VALIDATION_FAILED", "WEBHOOK_PAYLOAD_TOO_LARGE", "WEBHOOK_PROCESSING_FAILED", "WEBHOOK_SIGNATURE_INVALID", "WEBHOOK_SIGNATURE_MISSING" ],
             "type" : "string"
           },
           "detail" : {
@@ -2239,6 +2309,142 @@
           }
         },
         "required" : [ "firstName", "lastName" ],
+        "type" : "object"
+      },
+      "PublicCarResponse" : {
+        "properties" : {
+          "age" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "bodyType" : {
+            "type" : "string"
+          },
+          "brand" : {
+            "type" : "string"
+          },
+          "carStatusType" : {
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
+            "type" : "string"
+          },
+          "color" : {
+            "type" : "string"
+          },
+          "convertedPrice" : {
+            "type" : "number"
+          },
+          "createTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "currencyType" : {
+            "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
+            "type" : "string"
+          },
+          "displayCurrency" : {
+            "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
+            "type" : "string"
+          },
+          "displayName" : {
+            "type" : "string"
+          },
+          "doors" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "engineDisplacement" : {
+            "type" : "number"
+          },
+          "engineType" : {
+            "type" : "string"
+          },
+          "exchangeRate" : {
+            "type" : "number"
+          },
+          "formattedPrice" : {
+            "type" : "string"
+          },
+          "formattedPriceWithSeparators" : {
+            "type" : "string"
+          },
+          "fuelType" : {
+            "type" : "string"
+          },
+          "fullName" : {
+            "type" : "string"
+          },
+          "id" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "imageUrl" : {
+            "type" : "string"
+          },
+          "inspectionExpiryDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "insuranceExpiryDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "kilometer" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
+          "lastServiceDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "licensePlate" : {
+            "type" : "string"
+          },
+          "model" : {
+            "type" : "string"
+          },
+          "nextServiceDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "price" : {
+            "type" : "number"
+          },
+          "productionYear" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "rateSource" : {
+            "type" : "string"
+          },
+          "rating" : {
+            "type" : "number"
+          },
+          "registrationDate" : {
+            "format" : "date",
+            "type" : "string"
+          },
+          "seats" : {
+            "format" : "int32",
+            "type" : "integer"
+          },
+          "thumbnailUrl" : {
+            "type" : "string"
+          },
+          "transmissionType" : {
+            "type" : "string"
+          },
+          "updateTime" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "version" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        },
         "type" : "object"
       },
       "QuickActionResultDto" : {
@@ -2441,7 +2647,7 @@
             "type" : "string"
           },
           "status" : {
-            "enum" : [ "Requested", "Confirmed", "In Use", "Returned", "Cancelled" ],
+            "enum" : [ "REQUESTED", "CONFIRMED", "IN_USE", "RETURNED", "CANCELLED" ],
             "type" : "string"
           },
           "totalPrice" : {
@@ -2737,6 +2943,9 @@
           "email" : {
             "type" : "string"
           },
+          "fullName" : {
+            "type" : "string"
+          },
           "id" : {
             "format" : "int64",
             "type" : "integer"
@@ -2939,6 +3148,202 @@
         "tags" : [ "Admin Alerts" ]
       }
     },
+    "/api/v1/admin/cars" : {
+      "get" : {
+        "description" : "Server-side search, status and brand filters, paging and sorting over all non-deleted cars, including the VIN",
+        "operationId" : "searchFleet",
+        "parameters" : [ {
+          "description" : "Free text matched against license plate, brand and model",
+          "in" : "query",
+          "name" : "search",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Exact brand, case-insensitive",
+          "in" : "query",
+          "name" : "brand",
+          "required" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        }, {
+          "description" : "Car status filter",
+          "in" : "query",
+          "name" : "status",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Zero-based page index (0..N)",
+          "in" : "query",
+          "name" : "page",
+          "required" : false,
+          "schema" : {
+            "default" : 0,
+            "minimum" : 0,
+            "type" : "integer"
+          }
+        }, {
+          "description" : "The size of the page to be returned",
+          "in" : "query",
+          "name" : "size",
+          "required" : false,
+          "schema" : {
+            "default" : 20,
+            "maximum" : 100,
+            "minimum" : 1,
+            "type" : "integer"
+          }
+        }, {
+          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
+          "in" : "query",
+          "name" : "sort",
+          "required" : false,
+          "schema" : {
+            "items" : {
+              "type" : "string"
+            },
+            "type" : "array"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                }
+              }
+            },
+            "description" : "Fleet page"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Invalid paging, sort or filter parameters"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Authentication required"
+          },
+          "403" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Access denied - Admin role required"
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Unexpected error"
+          }
+        },
+        "summary" : "Search the fleet",
+        "tags" : [ "Admin Cars" ]
+      }
+    },
+    "/api/v1/admin/cars/{id}" : {
+      "get" : {
+        "operationId" : "getCar",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "format" : "int64",
+            "type" : "integer"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CarResponse"
+                }
+              }
+            },
+            "description" : "Car found"
+          },
+          "400" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Invalid request"
+          },
+          "401" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Authentication required"
+          },
+          "403" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Access denied - Admin role required"
+          },
+          "404" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Car not found"
+          },
+          "500" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Unexpected error"
+          }
+        },
+        "summary" : "Get a car including the VIN",
+        "tags" : [ "Admin Cars" ]
+      }
+    },
     "/api/v1/admin/cars/{id}/rentals" : {
       "get" : {
         "description" : "Returns paginated rental history for a specific car",
@@ -2958,7 +3363,7 @@
           "name" : "status",
           "required" : false,
           "schema" : {
-            "enum" : [ "Requested", "Confirmed", "In Use", "Returned", "Cancelled" ],
+            "enum" : [ "REQUESTED", "CONFIRMED", "IN_USE", "RETURNED", "CANCELLED" ],
             "type" : "string"
           }
         }, {
@@ -2978,6 +3383,7 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -3135,6 +3541,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -3180,6 +3596,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -3336,6 +3753,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -3516,6 +3934,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -3752,6 +4171,16 @@
             },
             "description" : "Damage report not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -3839,6 +4268,16 @@
               }
             },
             "description" : "Damage report not found"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -4195,6 +4634,16 @@
             },
             "description" : "Damage report not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -4360,20 +4809,9 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "default" : [ "createTime,ASC" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -4453,20 +4891,9 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "default" : [ "endDate,ASC" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -4546,20 +4973,9 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "default" : [ "startDate,ASC" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -4639,20 +5055,9 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "default" : [ "endDate,ASC" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -4876,19 +5281,9 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -5100,6 +5495,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -5188,6 +5593,16 @@
               }
             },
             "description" : "Rental not found"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -5279,6 +5694,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -5367,6 +5792,16 @@
               }
             },
             "description" : "Rental not found"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -5541,6 +5976,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -5601,20 +6046,9 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
-          }
-        }, {
-          "description" : "Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported.",
-          "in" : "query",
-          "name" : "sort",
-          "required" : false,
-          "schema" : {
-            "default" : [ "createTime,DESC" ],
-            "items" : {
-              "type" : "string"
-            },
-            "type" : "array"
           }
         } ],
         "responses" : {
@@ -5881,6 +6315,16 @@
             },
             "description" : "User not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -6052,6 +6496,16 @@
             },
             "description" : "User not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -6086,7 +6540,7 @@
           "name" : "status",
           "required" : false,
           "schema" : {
-            "enum" : [ "Requested", "Confirmed", "In Use", "Returned", "Cancelled" ],
+            "enum" : [ "REQUESTED", "CONFIRMED", "IN_USE", "RETURNED", "CANCELLED" ],
             "type" : "string"
           }
         }, {
@@ -6106,6 +6560,7 @@
           "required" : false,
           "schema" : {
             "default" : 10,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -6265,6 +6720,16 @@
             },
             "description" : "User not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -6317,6 +6782,16 @@
               }
             },
             "description" : "Invalid request"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "429" : {
             "content" : {
@@ -6390,6 +6865,16 @@
             },
             "description" : "Invalid request"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "429" : {
             "content" : {
               "application/problem+json" : {
@@ -6455,6 +6940,16 @@
             },
             "description" : "Invalid request"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -6505,6 +7000,16 @@
               }
             },
             "description" : "Invalid request"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "429" : {
             "content" : {
@@ -6577,6 +7082,16 @@
               }
             },
             "description" : "Invalid request"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "429" : {
             "content" : {
@@ -6653,6 +7168,16 @@
             },
             "description" : "Invalid request"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "429" : {
             "content" : {
               "application/problem+json" : {
@@ -6711,6 +7236,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -6740,7 +7266,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -6835,6 +7361,16 @@
             },
             "description" : "Car already exists"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -6871,6 +7407,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -6901,7 +7438,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -6967,6 +7504,37 @@
               }
             },
             "description" : "Invalid search criteria or date range"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
+          "429" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Rate limit exceeded; retry after the number of seconds in the Retry-After header",
+            "headers" : {
+              "Retry-After" : {
+                "description" : "Seconds to wait before the next attempt",
+                "required" : true,
+                "schema" : {
+                  "format" : "int64",
+                  "minimum" : 1,
+                  "type" : "integer"
+                }
+              }
+            }
           },
           "500" : {
             "content" : {
@@ -7219,6 +7787,16 @@
             },
             "description" : "Car not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -7309,6 +7887,16 @@
             },
             "description" : "Car not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -7373,7 +7961,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/CarResponse"
+                  "$ref" : "#/components/schemas/PublicCarResponse"
                 }
               }
             },
@@ -7502,7 +8090,7 @@
           "name" : "carStatusType",
           "required" : false,
           "schema" : {
-            "enum" : [ "Available", "Maintenance", "Damaged", "Inspection" ],
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
             "type" : "string"
           }
         }, {
@@ -7635,7 +8223,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -7696,6 +8284,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -7716,7 +8305,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -7808,7 +8397,7 @@
           "name" : "status",
           "required" : false,
           "schema" : {
-            "enum" : [ "Available", "Maintenance", "Damaged", "Inspection" ],
+            "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
             "type" : "string"
           }
         }, {
@@ -7840,7 +8429,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -7893,6 +8482,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -7913,7 +8503,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -7982,6 +8572,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -8002,7 +8593,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -8063,6 +8654,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -8083,7 +8675,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/PageResponseCarResponse"
+                  "$ref" : "#/components/schemas/PageResponsePublicCarResponse"
                 }
               }
             },
@@ -8376,6 +8968,16 @@
             },
             "description" : "Authentication required"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -8490,7 +9092,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/CarResponse"
+                  "$ref" : "#/components/schemas/PublicCarResponse"
                 }
               }
             },
@@ -8604,6 +9206,16 @@
               }
             },
             "description" : "Car not found"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -8846,6 +9458,27 @@
             },
             "description" : "Car not found"
           },
+          "429" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "Rate limit exceeded; retry after the number of seconds in the Retry-After header",
+            "headers" : {
+              "Retry-After" : {
+                "description" : "Seconds to wait before the next attempt",
+                "required" : true,
+                "schema" : {
+                  "format" : "int64",
+                  "minimum" : 1,
+                  "type" : "integer"
+                }
+              }
+            }
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -8956,6 +9589,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -9062,16 +9696,6 @@
             },
             "description" : "Authentication required"
           },
-          "403" : {
-            "content" : {
-              "application/problem+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemDetail"
-                }
-              }
-            },
-            "description" : "Photo belongs to another customer"
-          },
           "404" : {
             "content" : {
               "application/problem+json" : {
@@ -9080,7 +9704,7 @@
                 }
               }
             },
-            "description" : "Photo not found"
+            "description" : "Photo not found or belongs to another customer"
           },
           "500" : {
             "content" : {
@@ -9152,16 +9776,6 @@
             },
             "description" : "Authentication required"
           },
-          "403" : {
-            "content" : {
-              "application/problem+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemDetail"
-                }
-              }
-            },
-            "description" : "Not owner of rental"
-          },
           "404" : {
             "content" : {
               "application/problem+json" : {
@@ -9170,7 +9784,17 @@
                 }
               }
             },
-            "description" : "Damage report not found"
+            "description" : "Damage report not found or not owned by the caller"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -9251,6 +9875,16 @@
               }
             },
             "description" : "Invalid request"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -9806,6 +10440,16 @@
             },
             "description" : "Authentication required"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -9941,6 +10585,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -10042,6 +10687,7 @@
           "required" : false,
           "schema" : {
             "default" : 20,
+            "maximum" : 100,
             "minimum" : 1,
             "type" : "integer"
           }
@@ -10197,6 +10843,16 @@
             },
             "description" : "Dates overlap an existing rental (CAR_DATES_UNAVAILABLE)"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "429" : {
             "content" : {
               "application/problem+json" : {
@@ -10287,16 +10943,6 @@
             },
             "description" : "Authentication required"
           },
-          "403" : {
-            "content" : {
-              "application/problem+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemDetail"
-                }
-              }
-            },
-            "description" : "Access denied"
-          },
           "404" : {
             "content" : {
               "application/problem+json" : {
@@ -10305,7 +10951,7 @@
                 }
               }
             },
-            "description" : "Rental not found"
+            "description" : "Rental not found or not owned by the caller"
           },
           "500" : {
             "content" : {
@@ -10376,16 +11022,6 @@
             },
             "description" : "Authentication required"
           },
-          "403" : {
-            "content" : {
-              "application/problem+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemDetail"
-                }
-              }
-            },
-            "description" : "Access denied"
-          },
           "404" : {
             "content" : {
               "application/problem+json" : {
@@ -10394,7 +11030,17 @@
                 }
               }
             },
-            "description" : "Rental not found"
+            "description" : "Rental not found or not owned by the caller"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -10495,6 +11141,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -10584,6 +11240,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -10644,16 +11310,6 @@
             },
             "description" : "Authentication required"
           },
-          "403" : {
-            "content" : {
-              "application/problem+json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/ProblemDetail"
-                }
-              }
-            },
-            "description" : "Access denied"
-          },
           "404" : {
             "content" : {
               "application/problem+json" : {
@@ -10662,7 +11318,7 @@
                 }
               }
             },
-            "description" : "Rental or payment not found"
+            "description" : "Rental not found, not owned by the caller or without a payment"
           },
           "500" : {
             "content" : {
@@ -10732,7 +11388,7 @@
                 }
               }
             },
-            "description" : "Not the rental owner"
+            "description" : "Access denied"
           },
           "404" : {
             "content" : {
@@ -10742,7 +11398,7 @@
                 }
               }
             },
-            "description" : "Rental or payment not found"
+            "description" : "Rental not found or not owned by the caller"
           },
           "409" : {
             "content" : {
@@ -10864,6 +11520,16 @@
             },
             "description" : "Rental not found"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -10952,6 +11618,16 @@
               }
             },
             "description" : "Rental not found"
+          },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
           },
           "500" : {
             "content" : {
@@ -11126,6 +11802,16 @@
             },
             "description" : "Authentication required"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -11230,6 +11916,16 @@
             },
             "description" : "Authentication required"
           },
+          "413" : {
+            "content" : {
+              "application/problem+json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE)"
+          },
           "500" : {
             "content" : {
               "application/problem+json" : {
@@ -11320,6 +12016,9 @@
   }, {
     "description" : "Currency conversion and exchange rate operations",
     "name" : "Currency"
+  }, {
+    "description" : "Fleet management reads for administrators",
+    "name" : "Admin Cars"
   }, {
     "description" : "User avatar management APIs",
     "name" : "Avatar Management"

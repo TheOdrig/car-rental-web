@@ -4,6 +4,8 @@ import { useMemo } from 'react';
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { getSortParams } from './utils';
+import { getCarUnavailableMessage } from './status-messages';
+import { DAY_AVAILABILITY } from '../model/status-labels';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 
@@ -153,9 +155,9 @@ export function useBookedDates(id: number | null | undefined, months: readonly s
         for (const result of results) {
             const calendar = result.data;
             if (!calendar) continue;
-            if (calendar.carBlocked) blocked = calendar.blockReason ?? 'This car is currently unavailable';
+            if (calendar.carBlocked) blocked = getCarUnavailableMessage(calendar.blockReason);
             for (const day of calendar.days) {
-                if (day.status !== 'Available') booked.add(day.date);
+                if (day.status !== DAY_AVAILABILITY.AVAILABLE) booked.add(day.date);
             }
         }
         return { booked, blockedReason: blocked };

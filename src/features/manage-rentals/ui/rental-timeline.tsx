@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { cn, formatDate } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
-import type { RentalStatus } from '@/entities/rental';
+import { RentalStatus } from '@/entities/rental';
 
 interface RentalTimelineProps {
     status: RentalStatus;
@@ -61,21 +61,21 @@ const REQUESTED_FIRST_STEP = {
 };
 
 function getStepText(step: TimelineStep, status: RentalStatus): { label: string; description: string } {
-    if (step.id === 1 && status === 'Requested') return REQUESTED_FIRST_STEP;
+    if (step.id === 1 && status === RentalStatus.REQUESTED) return REQUESTED_FIRST_STEP;
     return { label: step.label, description: step.description };
 }
 
 function getStepFromStatus(status: RentalStatus): number {
     switch (status) {
-        case 'Requested':
+        case RentalStatus.REQUESTED:
             return 1;
-        case 'Confirmed':
+        case RentalStatus.CONFIRMED:
             return 1;
-        case 'In Use':
+        case RentalStatus.IN_USE:
             return 3;
-        case 'Returned':
+        case RentalStatus.RETURNED:
             return 4;
-        case 'Cancelled':
+        case RentalStatus.CANCELLED:
             return -1;
         default:
             return 0;
@@ -202,7 +202,7 @@ export const RentalTimeline = memo(function RentalTimeline({
 }: RentalTimelineProps) {
     const currentStep = getStepFromStatus(status);
 
-    if (status === 'Cancelled') {
+    if (status === RentalStatus.CANCELLED) {
         return (
             <div className={cn('space-y-4', className)}>
                 <div className="flex items-center gap-3 rounded-lg border border-destructive/20 bg-destructive/10 p-4">

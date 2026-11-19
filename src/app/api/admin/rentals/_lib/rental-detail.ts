@@ -1,7 +1,6 @@
 import type { Schemas } from '@/shared/api';
 import { ownValue } from '@/shared/lib/utils';
 import { toAdminRentalStatus, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
-import { toLateReturnStatus } from '../../_lib/late-return-status';
 
 type Rental = Schemas['RentalResponse'];
 type Customer = Schemas['AdminUserDetailResponse'];
@@ -20,10 +19,10 @@ export interface RentalDetailSources {
 }
 
 const STATUS_EVENTS: Record<string, { type: TimelineEventType; title: string; note: (rental: Rental) => string | undefined }> = {
-    Confirmed: { type: 'approved', title: 'Rental confirmed', note: (rental) => rental.approvalNotes },
-    'In Use': { type: 'picked_up', title: 'Vehicle picked up', note: (rental) => rental.pickupNotes },
-    Returned: { type: 'returned', title: 'Vehicle returned', note: (rental) => rental.returnNotes },
-    Cancelled: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => rental.cancellationReason },
+    CONFIRMED: { type: 'approved', title: 'Rental confirmed', note: (rental) => rental.approvalNotes },
+    IN_USE: { type: 'picked_up', title: 'Vehicle picked up', note: (rental) => rental.pickupNotes },
+    RETURNED: { type: 'returned', title: 'Vehicle returned', note: (rental) => rental.returnNotes },
+    CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => rental.cancellationReason },
 };
 
 function timeline(rental: Rental): RentalDetailResponse['timeline'] {
@@ -116,6 +115,6 @@ export function buildRentalDetail({
             cancellation: rental.cancellationReason,
         },
         penaltyAmount: lateReturn?.penaltyAmount,
-        lateReturnStatus: toLateReturnStatus(lateReturn?.status),
+        lateReturnStatus: lateReturn?.status,
     };
 }

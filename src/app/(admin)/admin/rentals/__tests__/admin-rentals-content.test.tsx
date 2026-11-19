@@ -31,8 +31,8 @@ function pending(count: number, total: number) {
             startDate: '2026-12-01',
             endDate: '2026-12-03',
             totalAmount: 100,
-            status: 'Requested',
-            createdAt: '2026-11-18T10:00:00',
+            status: 'REQUESTED',
+            createdAt: '2026-11-18T10:00:00Z',
         })),
         page: 0,
         size: 50,
@@ -50,7 +50,7 @@ function rentals() {
                 endDate: '2026-12-04',
                 totalPrice: 172.33,
                 currency: 'EUR',
-                status: 'Returned',
+                status: 'RETURNED',
                 userSummary: { id: 31, username: 'qaadm1', email: 'qa@example.com' },
                 carSummary: { id: 2, brand: 'Toyota', model: 'Yaris', licensePlate: '34QA22' },
             },
@@ -60,7 +60,7 @@ function rentals() {
                 endDate: '2026-12-12',
                 totalPrice: 24525,
                 currency: 'JPY',
-                status: 'Cancelled',
+                status: 'CANCELLED',
                 userSummary: { id: 31, username: 'qaadm1', email: 'qa@example.com' },
                 carSummary: { id: 3, brand: 'Honda', model: 'Fit', licensePlate: '34QA23' },
             },
@@ -101,6 +101,45 @@ describe('AdminRentalsContent', () => {
         expect(screen.getByText('€172.33')).toBeInTheDocument();
         expect(screen.getByText('¥24,525')).toBeInTheDocument();
         expect(clientGet).toHaveBeenCalledWith(expect.stringContaining('/api/admin/rentals?page=0&size=20&sort=createTime%2Cdesc'));
+    });
+
+    it('shows the web label for each status code in the All Rentals view', async () => {
+        renderWithProviders(<AdminRentalsContent />);
+
+        await userEvent.setup().click(await screen.findByRole('tab', { name: 'All Rentals' }));
+
+        await screen.findByText('CR-000006');
+        expect(screen.getByText('Returned')).toBeInTheDocument();
+        expect(screen.getByText('Cancelled')).toBeInTheDocument();
+        expect(screen.queryByText('RETURNED')).not.toBeInTheDocument();
+    });
+
+    it('filters the current page by status without asking the API', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<AdminRentalsContent />);
+
+        await user.click(await screen.findByRole('tab', { name: 'All Rentals' }));
+        await screen.findByText('CR-000006');
+        await user.click(screen.getByRole('combobox', { name: 'Filter this page by status' }));
+        await user.click(await screen.findByRole('option', { name: 'Cancelled' }));
+
+        expect(screen.queryByText('CR-000006')).not.toBeInTheDocument();
+        expect(screen.getByText('CR-000007')).toBeInTheDocument();
+        expect(clientGet).not.toHaveBeenCalledWith(expect.stringContaining('status='));
+    });
+
+    it('sends the status code to the customer rentals endpoint', async () => {
+        query = 'userId=31';
+        const user = userEvent.setup();
+        renderWithProviders(<AdminRentalsContent />);
+
+        await screen.findByText('CR-000006');
+        await user.click(screen.getByRole('combobox', { name: 'Filter by status' }));
+        await user.click(await screen.findByRole('option', { name: 'In use' }));
+
+        await waitFor(() =>
+            expect(clientGet).toHaveBeenCalledWith(expect.stringContaining('/api/admin/users/31/rentals?page=0&size=20&status=IN_USE'))
+        );
     });
 
     it('applies the userId filter through the customer rentals endpoint', async () => {

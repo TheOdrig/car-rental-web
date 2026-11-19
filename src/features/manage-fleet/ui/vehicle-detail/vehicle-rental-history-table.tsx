@@ -10,7 +10,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import type { AdminRentalStatus } from '@/entities/rental';
+import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus } from '@/entities/rental';
 
 interface VehicleRentalHistoryTableProps {
     vehicleId: number;
@@ -100,7 +100,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                             </td>
                                             <td className="py-3 px-2">
                                                 <Badge variant={statusVariants[rental.status as AdminRentalStatus] || 'outline'}>
-                                                    {rental.status}
+                                                    {ADMIN_RENTAL_STATUS_LABELS[rental.status as AdminRentalStatus] ?? rental.status}
                                                 </Badge>
                                             </td>
                                         </tr>

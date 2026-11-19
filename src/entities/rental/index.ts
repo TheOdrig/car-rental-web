@@ -1,6 +1,9 @@
 export {
     type Rental,
     RentalStatus,
+    RENTAL_STATUS_LABELS,
+    ADMIN_RENTAL_STATUS_LABELS,
+    LATE_RETURN_STATUS_LABELS,
     type RentalRequest,
     type PickupRequest,
     type ReturnRequest,

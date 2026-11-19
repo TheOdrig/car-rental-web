@@ -2,7 +2,7 @@ import { API, created, proxy, readJson, route, upstream } from '@/shared/server'
 import { carCreateRequest, type CarFormBody } from './_lib/to-backend-car';
 
 export const GET = proxy({
-    target: () => API.cars.list.resolve(),
+    target: () => API.admin.cars.search.resolve(),
     forwardQuery: true,
     errorMessage: 'Failed to fetch cars',
 });

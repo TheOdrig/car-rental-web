@@ -1,9 +1,9 @@
-import { Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
+import { LATE_RETURN_STATUS_LABELS, Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
 import { addCalendarDays, parseLocalDate } from './rental-rules';
 
 export const isActive = (rental: Rental): boolean => {
-    return rental.status === RentalStatus.ACTIVE;
+    return rental.status === RentalStatus.IN_USE;
 };
 
 export const canCancel = (rental: Rental): boolean => {
@@ -32,13 +32,7 @@ export function getLateReturnStatusColor(status: LateReturnStatus): string {
 }
 
 export function getLateReturnStatusLabel(status: LateReturnStatus): string {
-    const labels: Record<LateReturnStatus, string> = {
-        ON_TIME: 'On Time',
-        GRACE_PERIOD: 'Grace Period',
-        LATE: 'Late',
-        SEVERELY_LATE: 'Severely Late',
-    };
-    return labels[status];
+    return LATE_RETURN_STATUS_LABELS[status];
 }
 
 export function formatLateTime(lateHours: number): string {
@@ -58,11 +52,11 @@ export function getRentalsByTab(rentals: Rental[], tab: RentalTab): Rental[] {
         case 'all':
             return rentals;
         case 'active':
-            return rentals.filter((r) => r.status === RentalStatus.ACTIVE);
+            return rentals.filter((r) => r.status === RentalStatus.IN_USE);
         case 'upcoming':
             return rentals.filter((r) => isUpcomingRental(r, today));
         case 'completed':
-            return rentals.filter((r) => r.status === RentalStatus.COMPLETED);
+            return rentals.filter((r) => r.status === RentalStatus.RETURNED);
         case 'cancelled':
             return rentals.filter((r) => r.status === RentalStatus.CANCELLED);
         default:
@@ -76,9 +70,9 @@ export function calculateTabCounts(rentals: Rental[]): RentalTabCounts {
 
     return {
         all: rentals.length,
-        active: rentals.filter((r) => r.status === RentalStatus.ACTIVE).length,
+        active: rentals.filter((r) => r.status === RentalStatus.IN_USE).length,
         upcoming: rentals.filter((r) => isUpcomingRental(r, today)).length,
-        completed: rentals.filter((r) => r.status === RentalStatus.COMPLETED).length,
+        completed: rentals.filter((r) => r.status === RentalStatus.RETURNED).length,
         cancelled: rentals.filter((r) => r.status === RentalStatus.CANCELLED).length,
     };
 }
@@ -86,19 +80,19 @@ export function calculateTabCounts(rentals: Rental[]): RentalTabCounts {
 export function calculateRentalStats(rentals: Rental[]): RentalStats {
     return {
         totalRentals: rentals.length,
-        activeTrips: rentals.filter((r) => r.status === RentalStatus.ACTIVE).length,
+        activeTrips: rentals.filter((r) => r.status === RentalStatus.IN_USE).length,
     };
 }
 
 const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
-    [RentalStatus.ACTIVE]: [
+    [RentalStatus.IN_USE]: [
         { label: 'View Details', action: 'view', variant: 'default' },
     ],
     [RentalStatus.CONFIRMED]: [
         { label: 'View Details', action: 'view', variant: 'ghost' },
         { label: 'Pay Now', action: 'pay', variant: 'default' },
     ],
-    [RentalStatus.COMPLETED]: [
+    [RentalStatus.RETURNED]: [
         { label: 'Book Again', action: 'book-again', variant: 'default' },
     ],
     [RentalStatus.REQUESTED]: [
@@ -163,11 +157,11 @@ export function getStatusBadgeVariant(
     status: RentalStatus
 ): 'default' | 'secondary' | 'destructive' | 'outline' {
     switch (status) {
-        case RentalStatus.ACTIVE:
+        case RentalStatus.IN_USE:
             return 'default';
         case RentalStatus.CONFIRMED:
             return 'secondary';
-        case RentalStatus.COMPLETED:
+        case RentalStatus.RETURNED:
             return 'outline';
         case RentalStatus.REQUESTED:
             return 'secondary';

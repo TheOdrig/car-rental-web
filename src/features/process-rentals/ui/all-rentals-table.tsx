@@ -7,7 +7,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import type { Rental } from '@/entities/rental';
+import { RENTAL_STATUS_LABELS, type Rental } from '@/entities/rental';
 
 interface AllRentalsTableProps {
     rentals: Rental[];
@@ -81,7 +81,7 @@ export function AllRentalsTable({
                                             {formatAmount(rental.totalPrice, rental.currency)}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="secondary">{rental.status}</Badge>
+                                            <Badge variant="secondary">{RENTAL_STATUS_LABELS[rental.status] ?? rental.status}</Badge>
                                         </TableCell>
                                     </TableRow>
                                 ))}

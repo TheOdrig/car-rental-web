@@ -44,6 +44,43 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/cars": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Search the fleet
+         * @description Server-side search, status and brand filters, paging and sorting over all non-deleted cars, including the VIN
+         */
+        get: operations["searchFleet"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/admin/cars/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get a car including the VIN */
+        get: operations["getCar"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/cars/{id}/rentals": {
         parameters: {
             query?: never;
@@ -2215,7 +2252,7 @@ export interface components {
             bodyType?: string;
             brand: string;
             /** @enum {string} */
-            carStatusType: "Available" | "Maintenance" | "Damaged" | "Inspection";
+            carStatusType: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
             color?: string;
             /** @enum {string} */
             currencyType: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
@@ -2256,7 +2293,7 @@ export interface components {
             bodyType?: string;
             brand?: string;
             /** @enum {string} */
-            carStatusType?: "Available" | "Maintenance" | "Damaged" | "Inspection";
+            carStatusType?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
             color?: string;
             convertedPrice?: number;
             /** Format: date-time */
@@ -2326,7 +2363,7 @@ export interface components {
         /** @description Status update data */
         CarStatusUpdateRequest: {
             /** @enum {string} */
-            carStatusType: "Available" | "Maintenance" | "Damaged" | "Inspection";
+            carStatusType: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
             notes?: string;
             reason?: string;
         };
@@ -2351,7 +2388,7 @@ export interface components {
             /** Format: date-time */
             rateTimestamp?: string;
             /** @enum {string} */
-            source?: "Live" | "Cached" | "Fallback";
+            source?: "LIVE" | "CACHED" | "FALLBACK";
             /** @enum {string} */
             targetCurrency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
         };
@@ -2361,6 +2398,13 @@ export interface components {
             fromCurrency: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             /** @enum {string} */
             toCurrency: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+        };
+        CurrencyPenaltyTotals: {
+            collectedPenaltyAmount?: number;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            pendingPenaltyAmount?: number;
+            totalPenaltyAmount?: number;
         };
         DailyRevenueDto: {
             /** @enum {string} */
@@ -2529,15 +2573,24 @@ export interface components {
             customerName?: string;
             damageLocation?: string;
             description?: string;
+            disputeComments?: string;
+            disputeReason?: string;
+            /** Format: date-time */
+            disputedAt?: string;
             /** Format: int64 */
             id?: number;
             insuranceCoverage?: boolean;
+            originalLiability?: number;
             photos?: components["schemas"]["DamagePhotoDto"][];
+            refundAmount?: number;
             /** Format: int64 */
             rentalId?: number;
             repairCostEstimate?: number;
             /** Format: date-time */
             reportedAt?: string;
+            resolutionNotes?: string;
+            /** Format: date-time */
+            resolvedAt?: string;
             /** @enum {string} */
             severity?: "MINOR" | "MODERATE" | "MAJOR" | "TOTAL_LOSS";
             /** @enum {string} */
@@ -2567,7 +2620,7 @@ export interface components {
             /** Format: int64 */
             rentalId?: number;
             /** @enum {string} */
-            status?: "Available" | "Unavailable";
+            status?: "AVAILABLE" | "UNAVAILABLE";
         };
         ExchangeRate: {
             fallback?: boolean;
@@ -2577,7 +2630,7 @@ export interface components {
             rate?: number;
             sameCurrency?: boolean;
             /** @enum {string} */
-            source?: "Live" | "Cached" | "Fallback";
+            source?: "LIVE" | "CACHED" | "FALLBACK";
             /** Format: date-time */
             timestamp?: string;
             /** @enum {string} */
@@ -2592,7 +2645,7 @@ export interface components {
                 [key: string]: number;
             };
             /** @enum {string} */
-            source?: "Live" | "Cached" | "Fallback";
+            source?: "LIVE" | "CACHED" | "FALLBACK";
             /** Format: date-time */
             timestamp?: string;
         };
@@ -2652,20 +2705,18 @@ export interface components {
             /** Format: int64 */
             rentalId?: number;
             /** @enum {string} */
-            status?: "On Time" | "Grace Period" | "Late" | "Severely Late";
+            status?: "ON_TIME" | "GRACE_PERIOD" | "LATE" | "SEVERELY_LATE";
         };
         LateReturnStatisticsDto: {
             /** Format: double */
             averageLateHours?: number;
-            collectedPenaltyAmount?: number;
             /** Format: double */
             lateReturnPercentage?: number;
-            pendingPenaltyAmount?: number;
+            penaltiesByCurrency?: components["schemas"]["CurrencyPenaltyTotals"][];
             /** Format: int32 */
             severelyLateCount?: number;
             /** Format: int32 */
             totalLateReturns?: number;
-            totalPenaltyAmount?: number;
         };
         LinkAccountResponse: {
             linkedAt?: string;
@@ -2762,6 +2813,17 @@ export interface components {
             /** Format: int32 */
             totalPages?: number;
         };
+        PageResponsePublicCarResponse: {
+            content?: components["schemas"]["PublicCarResponse"][];
+            /** Format: int32 */
+            page?: number;
+            /** Format: int32 */
+            size?: number;
+            /** Format: int64 */
+            totalElements?: number;
+            /** Format: int32 */
+            totalPages?: number;
+        };
         PageResponseRentalResponse: {
             content?: components["schemas"]["RentalResponse"][];
             /** Format: int32 */
@@ -2800,7 +2862,8 @@ export interface components {
             refundedAmount?: number;
             /** Format: int64 */
             rentalId?: number;
-            status?: string;
+            /** @enum {string} */
+            status?: "PENDING" | "AUTHORIZED" | "CAPTURED" | "FAILED" | "REFUNDED" | "CANCELLED";
         };
         /** @description Waiver request data */
         PenaltyWaiverRequest: {
@@ -2832,6 +2895,8 @@ export interface components {
             carModel?: string;
             /** Format: date-time */
             createdAt?: string;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             customerEmail?: string;
             /** Format: int64 */
             customerId?: number;
@@ -2877,7 +2942,7 @@ export interface components {
              * @description Stable machine readable error code
              * @enum {string}
              */
-            code: "ACCESS_DENIED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "BAD_REQUEST" | "CAR_ALREADY_EXISTS" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_VALIDATION_FAILED" | "CONCURRENT_MODIFICATION" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "DATA_CONFLICT" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_MULTIPART_REQUEST" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "INVALID_USER_STATE" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OAUTH2_ACCOUNT_ALREADY_LINKED" | "OAUTH2_AUTHENTICATION_FAILED" | "OAUTH2_AUTHORIZATION_DENIED" | "OAUTH2_EMAIL_REQUIRED" | "OAUTH2_INVALID_STATE" | "OAUTH2_INVALID_TOKEN" | "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED" | "OAUTH2_PROVIDER_NOT_SUPPORTED" | "OAUTH2_PROVIDER_UNAVAILABLE" | "OAUTH2_SOCIAL_LOGIN_REQUIRED" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYLOAD_TOO_LARGE" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
+            code: "ACCESS_DENIED" | "ACCOUNT_BANNED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "BAD_REQUEST" | "CAR_ALREADY_EXISTS" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_VALIDATION_FAILED" | "CONCURRENT_MODIFICATION" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "DATA_CONFLICT" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_MULTIPART_REQUEST" | "INVALID_PARAMETER" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "INVALID_USER_STATE" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OAUTH2_ACCOUNT_ALREADY_LINKED" | "OAUTH2_AUTHENTICATION_FAILED" | "OAUTH2_AUTHORIZATION_DENIED" | "OAUTH2_EMAIL_REQUIRED" | "OAUTH2_INVALID_STATE" | "OAUTH2_INVALID_TOKEN" | "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED" | "OAUTH2_PROVIDER_NOT_SUPPORTED" | "OAUTH2_PROVIDER_UNAVAILABLE" | "OAUTH2_SOCIAL_LOGIN_REQUIRED" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYLOAD_TOO_LARGE" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
             /** @description Explanation specific to this occurrence */
             detail: string;
             /** @description Error specific extra data */
@@ -2915,6 +2980,63 @@ export interface components {
             firstName: string;
             lastName: string;
             phone?: string;
+        };
+        PublicCarResponse: {
+            /** Format: int32 */
+            age?: number;
+            bodyType?: string;
+            brand?: string;
+            /** @enum {string} */
+            carStatusType?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
+            color?: string;
+            convertedPrice?: number;
+            /** Format: date-time */
+            createTime?: string;
+            /** @enum {string} */
+            currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** @enum {string} */
+            displayCurrency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            displayName?: string;
+            /** Format: int32 */
+            doors?: number;
+            engineDisplacement?: number;
+            engineType?: string;
+            exchangeRate?: number;
+            formattedPrice?: string;
+            formattedPriceWithSeparators?: string;
+            fuelType?: string;
+            fullName?: string;
+            /** Format: int64 */
+            id?: number;
+            imageUrl?: string;
+            /** Format: date */
+            inspectionExpiryDate?: string;
+            /** Format: date */
+            insuranceExpiryDate?: string;
+            /** Format: int64 */
+            kilometer?: number;
+            /** Format: date */
+            lastServiceDate?: string;
+            licensePlate?: string;
+            model?: string;
+            /** Format: date */
+            nextServiceDate?: string;
+            notes?: string;
+            price?: number;
+            /** Format: int32 */
+            productionYear?: number;
+            rateSource?: string;
+            rating?: number;
+            /** Format: date */
+            registrationDate?: string;
+            /** Format: int32 */
+            seats?: number;
+            thumbnailUrl?: string;
+            transmissionType?: string;
+            /** Format: date-time */
+            updateTime?: string;
+            /** Format: int64 */
+            version?: number;
         };
         QuickActionResultDto: {
             message?: string;
@@ -3003,7 +3125,7 @@ export interface components {
             /** Format: date */
             startDate?: string;
             /** @enum {string} */
-            status?: "Requested" | "Confirmed" | "In Use" | "Returned" | "Cancelled";
+            status?: "REQUESTED" | "CONFIRMED" | "IN_USE" | "RETURNED" | "CANCELLED";
             totalPrice?: number;
             totalSavings?: number;
             /** Format: date-time */
@@ -3111,6 +3233,7 @@ export interface components {
         };
         UserSummaryResponse: {
             email?: string;
+            fullName?: string;
             /** Format: int64 */
             id?: number;
             username?: string;
@@ -3257,11 +3380,147 @@ export interface operations {
             };
         };
     };
+    searchFleet: {
+        parameters: {
+            query?: {
+                /** @description Free text matched against license plate, brand and model */
+                search?: string;
+                /** @description Exact brand, case-insensitive */
+                brand?: string;
+                /** @description Car status filter */
+                status?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
+                /** @description Zero-based page index (0..N) */
+                page?: number;
+                /** @description The size of the page to be returned */
+                size?: number;
+                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
+                sort?: string[];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Fleet page */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                };
+            };
+            /** @description Invalid paging, sort or filter parameters */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied - Admin role required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    getCar: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Car found */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CarResponse"];
+                };
+            };
+            /** @description Invalid request */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied - Admin role required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Car not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
     getCarRentals: {
         parameters: {
             query?: {
                 /** @description Filter by rental status */
-                status?: "Requested" | "Confirmed" | "In Use" | "Returned" | "Cancelled";
+                status?: "REQUESTED" | "CONFIRMED" | "IN_USE" | "RETURNED" | "CANCELLED";
                 /** @description Zero-based page index (0..N) */
                 page?: number;
                 /** @description The size of the page to be returned */
@@ -3388,6 +3647,15 @@ export interface operations {
             };
             /** @description Rental not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3821,6 +4089,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -3886,6 +4163,15 @@ export interface operations {
             };
             /** @description Damage report not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4176,6 +4462,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -4302,8 +4597,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -4365,8 +4658,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -4428,8 +4719,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -4491,8 +4780,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -4658,8 +4945,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -4836,6 +5121,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -4901,6 +5195,15 @@ export interface operations {
             };
             /** @description Rental not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4980,6 +5283,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5045,6 +5357,15 @@ export interface operations {
             };
             /** @description Rental not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5192,6 +5513,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5216,8 +5546,6 @@ export interface operations {
                 page?: number;
                 /** @description The size of the page to be returned */
                 size?: number;
-                /** @description Sorting criteria in the format: property,(asc|desc). Default sort order is ascending. Multiple sort criteria are supported. */
-                sort?: string[];
             };
             header?: never;
             path?: never;
@@ -5450,6 +5778,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5590,6 +5927,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5605,7 +5951,7 @@ export interface operations {
         parameters: {
             query?: {
                 /** @description Filter by rental status */
-                status?: "Requested" | "Confirmed" | "In Use" | "Returned" | "Cancelled";
+                status?: "REQUESTED" | "CONFIRMED" | "IN_USE" | "RETURNED" | "CANCELLED";
                 /** @description Zero-based page index (0..N) */
                 page?: number;
                 /** @description The size of the page to be returned */
@@ -5741,6 +6087,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5778,6 +6133,15 @@ export interface operations {
             };
             /** @description Invalid request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5838,6 +6202,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
             429: {
                 headers: {
@@ -5889,6 +6262,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -5924,6 +6306,15 @@ export interface operations {
             };
             /** @description Invalid request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5977,6 +6368,15 @@ export interface operations {
             };
             /** @description Invalid request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -6039,6 +6439,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
             429: {
                 headers: {
@@ -6085,7 +6494,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid pagination parameters or currency */
@@ -6166,6 +6575,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -6201,7 +6619,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid pagination parameters, sort field, or currency */
@@ -6249,6 +6667,26 @@ export interface operations {
             /** @description Invalid search criteria or date range */
             400: {
                 headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
                     [name: string]: unknown;
                 };
                 content: {
@@ -6463,6 +6901,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -6535,6 +6982,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -6593,7 +7049,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CarResponse"];
+                    "application/json": components["schemas"]["PublicCarResponse"];
                 };
             };
             /** @description Invalid license plate */
@@ -6645,7 +7101,7 @@ export interface operations {
                 minPrice?: number;
                 maxPrice?: number;
                 currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
-                carStatusType?: "Available" | "Maintenance" | "Damaged" | "Inspection";
+                carStatusType?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
                 engineType?: string;
                 fuelType?: string;
                 transmissionType?: string;
@@ -6673,7 +7129,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid search parameters */
@@ -6721,7 +7177,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid brand or pagination parameters */
@@ -6767,7 +7223,7 @@ export interface operations {
                 /** @description Maximum price */
                 maxPrice?: number;
                 /** @description Status */
-                status?: "Available" | "Maintenance" | "Damaged" | "Inspection";
+                status?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
                 /** @description Page number, zero based */
                 page?: number;
                 /** @description Page size */
@@ -6785,7 +7241,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid search criteria */
@@ -6830,7 +7286,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid pagination parameters */
@@ -6879,7 +7335,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid price range or pagination parameters */
@@ -6927,7 +7383,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["PageResponseCarResponse"];
+                    "application/json": components["schemas"]["PageResponsePublicCarResponse"];
                 };
             };
             /** @description Invalid status or pagination parameters */
@@ -7185,6 +7641,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -7217,7 +7682,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CarResponse"];
+                    "application/json": components["schemas"]["PublicCarResponse"];
                 };
             };
             /** @description Invalid car ID or currency */
@@ -7303,6 +7768,15 @@ export interface operations {
             };
             /** @description Car not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7563,6 +8037,17 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
+            429: {
+                headers: {
+                    /** @description Seconds to wait before the next attempt */
+                    "Retry-After": number;
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -7733,16 +8218,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Photo belongs to another customer */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Photo not found */
+            /** @description Photo not found or belongs to another customer */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -7805,8 +8281,8 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Not owner of rental */
-            403: {
+            /** @description Damage report not found or not owned by the caller */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7814,8 +8290,8 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Damage report not found */
-            404: {
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -7887,6 +8363,15 @@ export interface operations {
             };
             /** @description Invalid request */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8345,6 +8830,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -8626,6 +9120,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Rate limit exceeded; retry after the number of seconds in the Retry-After header */
             429: {
                 headers: {
@@ -8690,16 +9193,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Access denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Rental not found */
+            /** @description Rental not found or not owned by the caller */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -8762,8 +9256,8 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Access denied */
-            403: {
+            /** @description Rental not found or not owned by the caller */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8771,8 +9265,8 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Rental not found */
-            404: {
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8861,6 +9355,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -8933,6 +9436,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -8983,16 +9495,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Access denied */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/problem+json": components["schemas"]["ProblemDetail"];
-                };
-            };
-            /** @description Rental or payment not found */
+            /** @description Rental not found, not owned by the caller or without a payment */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -9051,7 +9554,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Not the rental owner */
+            /** @description Access denied */
             403: {
                 headers: {
                     [name: string]: unknown;
@@ -9060,7 +9563,7 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
-            /** @description Rental or payment not found */
+            /** @description Rental not found or not owned by the caller */
             404: {
                 headers: {
                     [name: string]: unknown;
@@ -9161,6 +9664,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -9226,6 +9738,15 @@ export interface operations {
             };
             /** @description Rental not found */
             404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -9378,6 +9899,15 @@ export interface operations {
                     "application/problem+json": components["schemas"]["ProblemDetail"];
                 };
             };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
             /** @description Unexpected error */
             500: {
                 headers: {
@@ -9460,6 +9990,15 @@ export interface operations {
             };
             /** @description Authentication required */
             401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
+            413: {
                 headers: {
                     [name: string]: unknown;
                 };

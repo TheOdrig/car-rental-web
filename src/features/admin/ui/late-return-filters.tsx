@@ -12,13 +12,11 @@ import {
 } from '@/shared/ui/select';
 import { Input } from '@/shared/ui/input';
 import { X } from 'lucide-react';
-import type { LateReturnStatus } from '@/entities/rental';
+import { LATE_RETURN_STATUS_LABELS, type LateReturnStatus } from '@/entities/rental';
 
-const STATUS_OPTIONS: { value: LateReturnStatus; label: string }[] = [
-    { value: 'GRACE_PERIOD', label: 'Grace Period' },
-    { value: 'LATE', label: 'Late' },
-    { value: 'SEVERELY_LATE', label: 'Severely Late' },
-];
+const STATUS_OPTIONS: { value: LateReturnStatus; label: string }[] = (
+    ['GRACE_PERIOD', 'LATE', 'SEVERELY_LATE'] as const
+).map((value) => ({ value, label: LATE_RETURN_STATUS_LABELS[value] }));
 
 const SORT_BY_OPTIONS = [
     { value: 'endDate', label: 'End Date' },

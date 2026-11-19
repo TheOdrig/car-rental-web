@@ -1,22 +1,22 @@
 import { ownValue } from '@/shared/lib/utils';
-import type { AdminRentalStatus } from '../model/types';
+import { RentalStatus, type AdminRentalStatus } from '../model/types';
 
-const API_TO_ADMIN: Record<string, AdminRentalStatus> = {
-    Requested: 'PENDING',
-    Confirmed: 'CONFIRMED',
-    'In Use': 'ACTIVE',
-    Returned: 'COMPLETED',
-    Cancelled: 'CANCELLED',
+const API_TO_ADMIN: Record<RentalStatus, AdminRentalStatus> = {
+    [RentalStatus.REQUESTED]: 'PENDING',
+    [RentalStatus.CONFIRMED]: 'CONFIRMED',
+    [RentalStatus.IN_USE]: 'ACTIVE',
+    [RentalStatus.RETURNED]: 'COMPLETED',
+    [RentalStatus.CANCELLED]: 'CANCELLED',
 };
 
-const ADMIN_TO_API: Record<AdminRentalStatus, string> = {
-    PENDING: 'Requested',
-    CONFIRMED: 'Confirmed',
-    ACTIVE: 'In Use',
-    OVERDUE: 'In Use',
-    COMPLETED: 'Returned',
-    CANCELLED: 'Cancelled',
-    REJECTED: 'Cancelled',
+const ADMIN_TO_API: Record<AdminRentalStatus, RentalStatus> = {
+    PENDING: RentalStatus.REQUESTED,
+    CONFIRMED: RentalStatus.CONFIRMED,
+    ACTIVE: RentalStatus.IN_USE,
+    OVERDUE: RentalStatus.IN_USE,
+    COMPLETED: RentalStatus.RETURNED,
+    CANCELLED: RentalStatus.CANCELLED,
+    REJECTED: RentalStatus.CANCELLED,
 };
 
 export function toAdminRentalStatus(status: string | undefined): AdminRentalStatus {

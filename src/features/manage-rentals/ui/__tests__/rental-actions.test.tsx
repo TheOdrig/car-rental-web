@@ -36,7 +36,7 @@ describe('RentalActions', () => {
         it('should render View Details for In Use status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental(RentalStatus.ACTIVE)}
+                    rental={createMockRental(RentalStatus.IN_USE)}
                     onAction={mockOnAction}
                 />
             );
@@ -54,7 +54,7 @@ describe('RentalActions', () => {
         it('should render only Book Again for Returned status', () => {
             render(
                 <RentalActions
-                    rental={createMockRental(RentalStatus.COMPLETED)}
+                    rental={createMockRental(RentalStatus.RETURNED)}
                     onAction={mockOnAction}
                 />
             );
@@ -84,7 +84,7 @@ describe('RentalActions', () => {
             render(
                 <RentalActions
                     rental={createMockRental(RentalStatus.CANCELLED)}
-                    status={RentalStatus.ACTIVE}
+                    status={RentalStatus.IN_USE}
                     onAction={mockOnAction}
                 />
             );
@@ -94,14 +94,14 @@ describe('RentalActions', () => {
     describe('button click handlers', () => {
         it('should call onAction with correct action and rental', async () => {
             const user = userEvent.setup();
-            const rental = createMockRental(RentalStatus.ACTIVE);
+            const rental = createMockRental(RentalStatus.IN_USE);
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
             await user.click(screen.getByRole('button', { name: /view details/i }));
             expect(mockOnAction).toHaveBeenCalledWith('view', rental);
         });
         it('should call onAction for each button click', async () => {
             const user = userEvent.setup();
-            const rental = createMockRental(RentalStatus.COMPLETED);
+            const rental = createMockRental(RentalStatus.RETURNED);
             render(<RentalActions rental={rental} onAction={mockOnAction} />);
             await user.click(screen.getByRole('button', { name: /book again/i }));
             expect(mockOnAction).toHaveBeenCalledWith('book-again', rental);
@@ -109,7 +109,7 @@ describe('RentalActions', () => {
         it('should prevent event propagation', async () => {
             const user = userEvent.setup();
             const containerClick = vi.fn();
-            const rental = createMockRental(RentalStatus.ACTIVE);
+            const rental = createMockRental(RentalStatus.IN_USE);
             render(
                 <div onClick={containerClick}>
                     <RentalActions rental={rental} onAction={mockOnAction} />
@@ -126,7 +126,7 @@ describe('RentalActions', () => {
             const asyncAction = vi.fn(
                 (): Promise<void> => new Promise((resolve) => { finish = resolve; })
             );
-            const rental = createMockRental(RentalStatus.ACTIVE);
+            const rental = createMockRental(RentalStatus.IN_USE);
             render(<RentalActions rental={rental} onAction={asyncAction} />);
             const button = screen.getByRole('button', { name: /view details/i });
             await user.click(button);
@@ -142,7 +142,7 @@ describe('RentalActions', () => {
             const asyncAction = vi.fn(
                 (): Promise<void> => new Promise((resolve) => { finish = resolve; })
             );
-            const rental = createMockRental(RentalStatus.ACTIVE);
+            const rental = createMockRental(RentalStatus.IN_USE);
             render(<RentalActions rental={rental} onAction={asyncAction} />);
             await user.click(screen.getByRole('button', { name: /view details/i }));
             expect(screen.getByRole('button', { name: /view details/i })).toBeDisabled();
@@ -154,7 +154,7 @@ describe('RentalActions', () => {
         it('should re-enable button after action completes', async () => {
             const user = userEvent.setup();
             const asyncAction = vi.fn(() => Promise.resolve());
-            const rental = createMockRental(RentalStatus.ACTIVE);
+            const rental = createMockRental(RentalStatus.IN_USE);
             render(<RentalActions rental={rental} onAction={asyncAction} />);
             await user.click(screen.getByRole('button', { name: /view details/i }));
             await waitFor(() => {
@@ -166,7 +166,7 @@ describe('RentalActions', () => {
         it('should apply horizontal layout by default', () => {
             render(
                 <RentalActions
-                    rental={createMockRental(RentalStatus.ACTIVE)}
+                    rental={createMockRental(RentalStatus.IN_USE)}
                     onAction={mockOnAction}
                 />
             );
@@ -176,7 +176,7 @@ describe('RentalActions', () => {
         it('should apply vertical layout when specified', () => {
             render(
                 <RentalActions
-                    rental={createMockRental(RentalStatus.ACTIVE)}
+                    rental={createMockRental(RentalStatus.IN_USE)}
                     onAction={mockOnAction}
                     orientation="vertical"
                 />
@@ -189,7 +189,7 @@ describe('RentalActions', () => {
         it('should have role group with aria-label', () => {
             render(
                 <RentalActions
-                    rental={createMockRental(RentalStatus.ACTIVE)}
+                    rental={createMockRental(RentalStatus.IN_USE)}
                     onAction={mockOnAction}
                 />
             );

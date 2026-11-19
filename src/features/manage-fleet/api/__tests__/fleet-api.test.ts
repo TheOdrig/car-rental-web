@@ -87,7 +87,7 @@ describe('vehicle detail', () => {
             model: 'QA-TRY',
             productionYear: 2022,
             licensePlate: '34QA22',
-            carStatusType: 'Maintenance',
+            carStatusType: 'MAINTENANCE',
             price: 1500.5,
             currencyType: 'TRY',
             imageUrl: 'https://cdn.example.com/a.jpg',
@@ -101,7 +101,7 @@ describe('vehicle detail', () => {
         expect(result.current.data).toMatchObject({
             brand: 'Toyota',
             year: 2022,
-            status: 'Maintenance',
+            status: 'MAINTENANCE',
             pricing: { dailyRate: 1500.5, currency: 'TRY' },
         });
         expect(result.current.data?.pricing).not.toHaveProperty('weeklyRate');

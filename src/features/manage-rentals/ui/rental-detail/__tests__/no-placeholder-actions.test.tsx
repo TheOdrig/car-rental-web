@@ -16,7 +16,7 @@ describe('rental detail actions', () => {
         expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
     });
 
-    it.each([RentalStatus.ACTIVE, RentalStatus.COMPLETED])('hides the customer cancel button for a %s rental', (status) => {
+    it.each([RentalStatus.IN_USE, RentalStatus.RETURNED])('hides the customer cancel button for a %s rental', (status) => {
         renderWithProviders(<RentalDetail rental={createMockRental({ status })} />);
 
         expect(screen.queryByRole('button', { name: /cancel/i })).not.toBeInTheDocument();

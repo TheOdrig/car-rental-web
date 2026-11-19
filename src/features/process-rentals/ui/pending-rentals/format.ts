@@ -1,4 +1,5 @@
 import { ownValue } from '@/shared/lib/utils';
+import { RENTAL_STATUS_LABELS } from '@/entities/rental';
 
 export type PendingRentalsType = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -12,17 +13,17 @@ interface StatusDisplay {
 
 const STATUS_CONFIG: Record<string, StatusDisplay> = {
     REQUESTED: {
-        label: 'Requested',
+        label: RENTAL_STATUS_LABELS.REQUESTED,
         variant: 'secondary',
         className: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-200 dark:border-sky-800',
     },
     CONFIRMED: {
-        label: 'Confirmed',
+        label: RENTAL_STATUS_LABELS.CONFIRMED,
         variant: 'default',
         className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
     },
     IN_USE: {
-        label: 'In Use',
+        label: RENTAL_STATUS_LABELS.IN_USE,
         variant: 'secondary',
         className: 'bg-violet-500 hover:bg-violet-600 text-white',
     },
@@ -32,12 +33,12 @@ const STATUS_CONFIG: Record<string, StatusDisplay> = {
         className: 'bg-rose-500 hover:bg-rose-600 text-white',
     },
     CANCELLED: {
-        label: 'Cancelled',
+        label: RENTAL_STATUS_LABELS.CANCELLED,
         variant: 'outline',
         className: 'text-slate-500 border-slate-200 dark:border-slate-800',
     },
     RETURNED: {
-        label: 'Returned',
+        label: RENTAL_STATUS_LABELS.RETURNED,
         variant: 'default',
         className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
     },

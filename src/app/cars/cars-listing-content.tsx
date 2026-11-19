@@ -26,6 +26,7 @@ import {
 } from '@/widgets/car-filters';
 import { Breadcrumb } from '@/widgets/layout';
 import { useCars, useCarSearchResults, getSortParams, parseCarListParams, buildCarListParams } from '@/entities/car';
+import { getApiErrorMessage } from '@/shared/api';
 import { useFilterStore } from '@/widgets/car-filters';
 import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/entities/car';
 
@@ -131,7 +132,7 @@ export function CarsListingContent() {
     const breadcrumbItems = [{ label: 'Cars' }];
 
     if (error) {
-        const errorMessage = error.message;
+        const errorMessage = getApiErrorMessage(error);
         return (
             <div className="container mx-auto px-4 py-8">
                 <Breadcrumb items={breadcrumbItems} className="mb-6" />

@@ -203,6 +203,32 @@ describe('LoginForm', () => {
         });
     });
 
+    describe('Banned account', () => {
+        it('should show the suspended message instead of invalid credentials', async () => {
+            const banned = new ApiError({
+                status: 403,
+                message: 'Account is banned',
+                timestamp: new Date().toISOString(),
+                code: 'ACCOUNT_BANNED',
+            });
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: vi.fn().mockRejectedValue(banned),
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm />);
+
+            await user.type(getUsernameInput(), 'testuser');
+            await user.type(getPasswordInput(), 'password123');
+            submitForm();
+
+            await waitFor(() => {
+                expect(screen.getByText(/account has been suspended/i)).toBeInTheDocument();
+            });
+            expect(screen.queryByText(/invalid credentials/i)).not.toBeInTheDocument();
+        });
+    });
+
     describe('Successful Login', () => {
         it('should call login API with form data', async () => {
             const mockMutateAsync = vi.fn().mockResolvedValue({});

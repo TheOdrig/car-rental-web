@@ -38,21 +38,21 @@ describe('RentalTimeline', () => {
             expect(screen.queryByText('Your reservation is confirmed')).not.toBeInTheDocument();
         });
         it('should show first step as completed for In Use status', () => {
-            render(<RentalTimeline status={RentalStatus.ACTIVE} />);
+            render(<RentalTimeline status={RentalStatus.IN_USE} />);
             const steps = screen.getAllByRole('listitem');
             expect(steps[0]).toHaveTextContent('Booking Confirmed');
         });
         it('should show third step as current for In Use status', () => {
-            render(<RentalTimeline status={RentalStatus.ACTIVE} />);
+            render(<RentalTimeline status={RentalStatus.IN_USE} />);
             const currentStep = screen.getByRole('listitem', { current: 'step' });
             expect(currentStep).toHaveTextContent('Rental Active');
         });
         it('should show all steps as completed for Returned status', () => {
-            render(<RentalTimeline status={RentalStatus.COMPLETED} />);
+            render(<RentalTimeline status={RentalStatus.RETURNED} />);
             const currentStep = screen.getByRole('listitem', { current: 'step' });
             expect(currentStep).toHaveTextContent('Return & Complete');
         });
-        it.each([RentalStatus.REQUESTED, RentalStatus.CONFIRMED, RentalStatus.ACTIVE, RentalStatus.COMPLETED])(
+        it.each([RentalStatus.REQUESTED, RentalStatus.CONFIRMED, RentalStatus.IN_USE, RentalStatus.RETURNED])(
             'should render timeline for %s status',
             (status) => {
                 render(<RentalTimeline status={status} />);
@@ -94,20 +94,20 @@ describe('RentalTimeline', () => {
         it('should show return date for active rental', () => {
             render(
                 <RentalTimeline
-                    status={RentalStatus.ACTIVE}
+                    status={RentalStatus.IN_USE}
                     endDate="2025-01-20"
                 />
             );
             expect(screen.getByText(/Returns Jan 20, 2025/)).toBeInTheDocument();
         });
         it('should show completion message for returned rental', () => {
-            render(<RentalTimeline status={RentalStatus.COMPLETED} />);
+            render(<RentalTimeline status={RentalStatus.RETURNED} />);
             expect(screen.getByText('Thank you for choosing us!')).toBeInTheDocument();
         });
     });
     describe('visual indicators', () => {
         it('should apply completed styling for past steps', () => {
-            render(<RentalTimeline status={RentalStatus.ACTIVE} />);
+            render(<RentalTimeline status={RentalStatus.IN_USE} />);
             const bookingStep = screen.getByText('Booking Confirmed');
             expect(bookingStep).toHaveClass('text-green-600');
         });

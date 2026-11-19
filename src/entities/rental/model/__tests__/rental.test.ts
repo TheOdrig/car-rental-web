@@ -10,13 +10,13 @@ const mockRental: Rental = {
 const activeRental: Rental = {
   ...mockRental,
   id: 2,
-  status: RentalStatus.ACTIVE,
+  status: RentalStatus.IN_USE,
   startDate: '2023-12-01T10:00:00Z',
 };
 const completedRental: Rental = {
   ...mockRental,
   id: 3,
-  status: RentalStatus.COMPLETED,
+  status: RentalStatus.RETURNED,
 };
 describe('Rental Entity', () => {
   describe('Utils', () => {

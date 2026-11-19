@@ -10,6 +10,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 import { type Car, type AvailableCar } from '@/entities/car';
+import { CAR_STATUS, carStatusLabel } from '../model/status-labels';
 
 interface CarCardProps {
     car: Car | AvailableCar;
@@ -27,11 +28,11 @@ interface CarCardSkeletonProps {
 
 function getStatusBadgeVariant(status: string): 'default' | 'secondary' | 'destructive' | 'outline' {
     switch (status) {
-        case 'Available':
+        case CAR_STATUS.AVAILABLE:
             return 'default';
-        case 'Maintenance':
+        case CAR_STATUS.MAINTENANCE:
             return 'secondary';
-        case 'Damaged':
+        case CAR_STATUS.DAMAGED:
             return 'destructive';
         default:
             return 'outline';
@@ -91,7 +92,7 @@ export const CarCard = memo(function CarCard({
                         variant={getStatusBadgeVariant(status)}
                         className="absolute top-3 right-3"
                     >
-                        {status}
+                        {carStatusLabel(status)}
                     </Badge>
                 )}
 

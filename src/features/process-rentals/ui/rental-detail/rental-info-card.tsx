@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency, formatDateTime, formatDate, formatRentalReference } from '@/shared/lib';
-import type { AdminRentalStatus, RentalPricing } from '@/entities/rental';
+import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus, type RentalPricing } from '@/entities/rental';
 
 interface RentalInfoCardProps {
     rentalId: number;
@@ -29,16 +29,6 @@ const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destr
     CANCELLED: 'destructive',
     REJECTED: 'destructive',
     OVERDUE: 'destructive',
-};
-
-const statusLabels: Record<AdminRentalStatus, string> = {
-    PENDING: 'Pending Approval',
-    CONFIRMED: 'Confirmed',
-    ACTIVE: 'In Progress',
-    COMPLETED: 'Completed',
-    CANCELLED: 'Cancelled',
-    REJECTED: 'Rejected',
-    OVERDUE: 'Overdue',
 };
 
 export function RentalInfoCard({
@@ -77,7 +67,7 @@ export function RentalInfoCard({
 
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
-                    <Badge variant={statusVariants[status]}>{statusLabels[status]}</Badge>
+                    <Badge variant={statusVariants[status]}>{ADMIN_RENTAL_STATUS_LABELS[status]}</Badge>
                 </div>
 
                 <div className="flex items-center justify-between">

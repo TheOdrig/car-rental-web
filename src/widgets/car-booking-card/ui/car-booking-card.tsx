@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useAuth } from '@/features/auth';
 import { RentalForm } from '@/features/manage-rentals';
-import { getCarUnavailableMessage, type Car } from '@/entities/car';
+import { getCarUnavailableMessage, isAvailable, type Car } from '@/entities/car';
 
 interface CarBookingCardProps {
     car: Car;
@@ -23,7 +23,7 @@ export function CarBookingCard({ car }: CarBookingCardProps) {
     const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
     const showAuthLoading = !mounted || isAuthLoading;
-    const unavailable = car.carStatusType !== 'Available';
+    const unavailable = !isAvailable(car);
 
     return (
         <Card>

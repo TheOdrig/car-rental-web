@@ -129,6 +129,10 @@ export async function parseErrorResponse(response: Response): Promise<IApiError>
     }
 }
 
+export function isNotFoundError(error: unknown): error is ApiError {
+    return isApiError(error) && error.status === 404;
+}
+
 export function isRateLimited(error: unknown): error is ApiError {
     return isApiError(error) && error.status === 429;
 }
@@ -153,11 +157,16 @@ export function getFormErrorMessage(error: unknown, fallback: string): string {
     if (isApiError(error) && error.status === 409 && error.code === 'USER_ALREADY_EXISTS') {
         return API_ERROR_MESSAGES.USER_ALREADY_EXISTS;
     }
+    if (isApiError(error) && error.code === 'ACCOUNT_BANNED') {
+        return API_ERROR_MESSAGES.ACCOUNT_BANNED;
+    }
     return fallback;
 }
 
 const API_ERROR_MESSAGES: Readonly<Record<string, string>> = {
-    PAYLOAD_TOO_LARGE: 'That file is too large. Please choose a smaller file and try again.',
+    PAYLOAD_TOO_LARGE: 'That request is too large. Please reduce its size or choose a smaller file and try again.',
+    INVALID_PARAMETER: 'Some of the values sent were not valid. Please check your input and try again.',
+    ACCOUNT_BANNED: 'This account has been suspended. Please contact support if you think this is a mistake.',
     INVALID_MULTIPART_REQUEST: 'The upload could not be read. Please choose the file again.',
     CONCURRENT_MODIFICATION: 'This record was changed by someone else. Reload the page and try again.',
     USER_ALREADY_EXISTS: 'An account with these details already exists. Sign in instead, or use a different email or username.',

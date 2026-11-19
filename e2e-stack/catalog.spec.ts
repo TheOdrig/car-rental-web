@@ -60,6 +60,6 @@ test.describe('catalog against the real API', () => {
         const days = (await calendar.json()).days;
         expect(Array.isArray(days)).toBe(true);
         expect(days.length).toBeGreaterThan(0);
-        expect(days[0]).toMatchObject({ status: expect.stringMatching(/Available|Unavailable/) });
+        expect(days[0]).toMatchObject({ status: expect.stringMatching(/^(AVAILABLE|UNAVAILABLE)$/) });
     });
 });

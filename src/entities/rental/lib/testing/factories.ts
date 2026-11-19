@@ -20,7 +20,7 @@ export function createMockRental(overrides?: Partial<Rental>): Rental {
         dailyPrice: 50,
         totalPrice: 150,
         currency: 'USD' as CurrencyType,
-        status: 'Requested' as RentalStatus,
+        status: 'REQUESTED' as RentalStatus,
         createTime: new Date().toISOString(),
         updateTime: new Date().toISOString(),
         ...overrides,

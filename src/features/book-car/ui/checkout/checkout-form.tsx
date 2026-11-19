@@ -4,7 +4,7 @@ import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { getCarUnavailableMessage, useCar, usePricingPreview } from '@/entities/car';
+import { getCarUnavailableMessage, isAvailable, useCar, usePricingPreview } from '@/entities/car';
 import { parseLocalDate } from '@/entities/rental';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
@@ -135,7 +135,7 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
     }
 
     const isSubmitting = booking.isPending || booking.isSuccess;
-    const unavailableMessage = car.carStatusType === 'Available' ? null : getCarUnavailableMessage(car.carStatusType);
+    const unavailableMessage = isAvailable(car) ? null : getCarUnavailableMessage(car.carStatusType);
 
     return (
         <form onSubmit={onSubmit}>

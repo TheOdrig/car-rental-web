@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import { ownValue } from '@/shared/lib/utils';
-import { toLateReturnStatus } from '@/app/api/admin/_lib/late-return-status';
 import { toAdminRentalStatus, toApiRentalStatus } from '@/entities/rental/lib/admin-status';
 import { getStatusDisplay } from '@/features/process-rentals/ui/pending-rentals/format';
 
@@ -23,7 +22,6 @@ describe('ownValue', () => {
 
 describe('status lookups with inherited keys', () => {
     it.each(inherited)('%s is not a known status', (key) => {
-        expect(toLateReturnStatus(key)).toBeUndefined();
         expect(toAdminRentalStatus(key)).toBe('PENDING');
         expect(toApiRentalStatus(key)).toBe(key);
         expect(getStatusDisplay(key).label).toBe(key);

@@ -1,10 +1,10 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
-import { carKeys, type Car, type VehicleDetailResponse } from '@/entities/car';
+import { carKeys, type AdminCar, type VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
@@ -59,7 +59,7 @@ export type PaginatedResponse<T> = PageResponse<T>;
 
 
 
-async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<Car>> {
+async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<AdminCar>> {
     const params = new URLSearchParams();
 
     if (filters?.status && filters.status !== 'all') {
@@ -81,11 +81,11 @@ async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<Car>
     const queryString = params.toString();
     const url = queryString ? `/api/admin/cars?${queryString}` : '/api/admin/cars';
 
-    return clientGet<PageResponse<Car>>(url);
+    return clientGet<PageResponse<AdminCar>>(url);
 }
 
-async function fetchFleetCar(id: number): Promise<Car> {
-    return clientGet<Car>(`/api/admin/cars/${id}`);
+async function fetchFleetCar(id: number): Promise<AdminCar> {
+    return clientGet<AdminCar>(`/api/admin/cars/${id}`);
 }
 
 async function createCar(data: CreateCarRequest): Promise<CarResponse> {
@@ -104,15 +104,15 @@ async function restoreCar(carId: number): Promise<void> {
     return clientPost<void>(`/api/admin/cars/${carId}/restore`);
 }
 
-async function changeCarStatus(params: { id: number; status: string; reason?: string }): Promise<Car> {
-    return clientPost<Car>(`/api/admin/cars/${params.id}/status`, {
+async function changeCarStatus(params: { id: number; status: string; reason?: string }): Promise<AdminCar> {
+    return clientPost<AdminCar>(`/api/admin/cars/${params.id}/status`, {
         status: params.status,
         reason: params.reason
     });
 }
 
 async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
-    const response = await clientGet<Car>(`/api/admin/cars/${id}`);
+    const response = await clientGet<AdminCar>(`/api/admin/cars/${id}`);
 
     return {
         id: response.id,
@@ -193,6 +193,7 @@ export function useFleetList(filters?: FleetFilters) {
     return useQuery({
         queryKey: fleetKeys.list(filters),
         queryFn: () => fetchFleetList(filters),
+        placeholderData: keepPreviousData,
         staleTime: 2 * 60 * 1000,
     });
 }

@@ -16,7 +16,7 @@ vi.mock('@/entities/rental', async () => {
     };
 });
 
-function rental(id: number, status: RentalStatus = RentalStatus.COMPLETED): Rental {
+function rental(id: number, status: RentalStatus = RentalStatus.RETURNED): Rental {
     return {
         id,
         startDate: '2024-03-01',
@@ -36,7 +36,7 @@ describe('MyRentalsContent', () => {
     it('computes tabs over every rental and pages the list client side', async () => {
         const rentals = [
             ...Array.from({ length: 24 }, (_, i) => rental(i + 1)),
-            rental(100, RentalStatus.ACTIVE),
+            rental(100, RentalStatus.IN_USE),
         ];
         mockUseAllMyRentals.mockReturnValue({ data: rentals, isLoading: false, isError: false, refetch: vi.fn() });
 

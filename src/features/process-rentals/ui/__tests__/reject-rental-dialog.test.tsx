@@ -18,7 +18,7 @@ describe('RejectRentalDialog', () => {
         startDate: '2025-12-24T10:00:00Z',
         endDate: '2025-12-26T10:00:00Z',
         totalAmount: 1200,
-        status: 'Requested',
+        status: 'REQUESTED',
         createdAt: '2025-12-20T09:00:00Z'
     };
     it('should render rejection warning and summary', () => {

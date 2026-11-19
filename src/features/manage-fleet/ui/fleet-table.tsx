@@ -41,41 +41,36 @@ import {
 } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn, formatCurrencyWithDecimals } from '@/shared/lib';
-import type { Car as CarType, CarStatus } from '@/entities/car';
+import { CAR_STATUSES, CAR_STATUS_LABELS, type AdminCar as CarType, type CarStatus } from '@/entities/car';
+import { Pagination } from '@/shared/ui/pagination';
 
-const statusConfig: Record<CarStatus, { label: string; dotColor: string; textColor: string }> = {
-    Available: {
-        label: 'Available',
+const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
+    AVAILABLE: {
         dotColor: 'bg-emerald-500',
         textColor: 'text-emerald-700 dark:text-emerald-400',
     },
-    Maintenance: {
-        label: 'Maintenance',
+    MAINTENANCE: {
         dotColor: 'bg-orange-500',
         textColor: 'text-orange-700 dark:text-orange-400',
     },
-    Damaged: {
-        label: 'Damaged',
+    DAMAGED: {
         dotColor: 'bg-rose-500',
         textColor: 'text-rose-700 dark:text-rose-400',
     },
-    Inspection: {
-        label: 'Inspection',
+    INSPECTION: {
         dotColor: 'bg-cyan-500',
         textColor: 'text-cyan-700 dark:text-cyan-400',
     },
 };
 
-const statusOptions: { value: CarStatus; label: string }[] = [
-    { value: 'Available', label: 'Available' },
-    { value: 'Maintenance', label: 'Maintenance' },
-    { value: 'Damaged', label: 'Damaged' },
-    { value: 'Inspection', label: 'Inspection' },
-];
+const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_STATUS_LABELS[value] }));
 
 interface FleetTableProps {
     cars: CarType[];
     totalCars: number;
+    page?: number;
+    totalPages?: number;
+    onPageChange?: (page: number) => void;
     isLoading?: boolean;
     className?: string;
     onDeleteCar: (carId: number) => void;
@@ -87,6 +82,9 @@ interface FleetTableProps {
 export const FleetTable = memo(function FleetTable({
     cars,
     totalCars,
+    page = 0,
+    totalPages = 1,
+    onPageChange,
     isLoading = false,
     className,
     onDeleteCar,
@@ -216,7 +214,7 @@ export const FleetTable = memo(function FleetTable({
                                                         "w-2 h-2 rounded-full mr-2",
                                                         statusConfig[car.carStatusType]?.dotColor
                                                     )} />
-                                                    {statusConfig[car.carStatusType]?.label || car.carStatusType}
+                                                    {CAR_STATUS_LABELS[car.carStatusType] ?? car.carStatusType}
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-sm font-medium">
@@ -288,6 +286,9 @@ export const FleetTable = memo(function FleetTable({
                         <p className="text-sm text-muted-foreground">
                             Showing {cars.length} of {totalCars} vehicles
                         </p>
+                        {onPageChange && (
+                            <Pagination currentPage={page} totalPages={totalPages} onPageChange={onPageChange} scrollToTop={false} />
+                        )}
                     </div>
                 </CardContent>
             </Card>

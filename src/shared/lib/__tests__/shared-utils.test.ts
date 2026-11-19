@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { cn } from '@/shared/lib';
 import { showToast, toastMessages } from '@/shared/lib';
 import { formatDate, formatDateTime } from '@/shared/lib';
@@ -68,6 +68,23 @@ describe('Utils', () => {
             });
             it('should return N/A for invalid inputs', () => {
                 expect(formatDateTime('')).toBe('N/A');
+            });
+            describe('in a non-UTC zone', () => {
+                const original = process.env.TZ;
+                beforeEach(() => {
+                    process.env.TZ = 'America/Los_Angeles';
+                });
+                afterEach(() => {
+                    if (original === undefined) delete process.env.TZ;
+                    else process.env.TZ = original;
+                });
+                it('shows a Z instant in the local zone', () => {
+                    expect(formatDateTime('2026-11-19T02:30:00.123456Z')).toBe('Nov 18, 2026, 6:30 PM');
+                    expect(formatDate('2026-11-19T02:30:00Z')).toBe('Nov 18, 2026');
+                });
+                it('keeps a date-only value on its calendar day', () => {
+                    expect(formatDate('2026-11-19')).toBe('Nov 19, 2026');
+                });
             });
         });
     });

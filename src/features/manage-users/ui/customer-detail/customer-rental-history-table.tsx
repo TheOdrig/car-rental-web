@@ -17,7 +17,7 @@ import {
 } from '@/shared/ui/select';
 import { useCustomerRentalHistory } from '../../api/users-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import type { AdminRentalStatus } from '@/entities/rental';
+import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus } from '@/entities/rental';
 
 interface CustomerRentalHistoryTableProps {
     customerId: number;
@@ -144,7 +144,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                                             </td>
                                             <td className="py-3 px-2">
                                                 <Badge variant={statusVariants[rental.status]}>
-                                                    {rental.status}
+                                                    {ADMIN_RENTAL_STATUS_LABELS[rental.status] ?? rental.status}
                                                 </Badge>
                                             </td>
                                         </tr>

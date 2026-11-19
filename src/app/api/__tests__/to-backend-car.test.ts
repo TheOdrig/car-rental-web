@@ -59,10 +59,10 @@ describe('toBackendCar image and VIN', () => {
 
 describe('car create and update requests', () => {
     it('creates a car as available', () => {
-        expect(carCreateRequest(base).carStatusType).toBe('Available');
+        expect(carCreateRequest(base).carStatusType).toBe('AVAILABLE');
     });
 
-    it('keeps status, kilometer, rating and VIN of the current car when editing', () => {
+    it('keeps status, kilometer and rating of the current car and leaves the VIN to the API when editing', () => {
         const current = {
             id: 4,
             brand: 'Fiat',
@@ -71,7 +71,7 @@ describe('car create and update requests', () => {
             productionYear: 2022,
             price: 1000,
             currencyType: 'TRY',
-            carStatusType: 'Maintenance',
+            carStatusType: 'MAINTENANCE',
             kilometer: 42000,
             rating: 3.5,
             vinNumber: '1HGBH41JXMN109186',
@@ -83,20 +83,20 @@ describe('car create and update requests', () => {
         const request = carUpdateRequest(current, { ...base, dailyRate: 1200, currencyType: 'TRY' });
 
         expect(request).toMatchObject({
-            carStatusType: 'Maintenance',
+            carStatusType: 'MAINTENANCE',
             kilometer: 42000,
             rating: 3.5,
-            vinNumber: '1HGBH41JXMN109186',
             imageUrl: 'https://cdn.example.com/egea.jpg',
             price: 1200,
         });
+        expect(request).not.toHaveProperty('vinNumber');
         expect(request).not.toHaveProperty('id');
         expect(request).not.toHaveProperty('createTime');
     });
 
     it('lets the form override the stored image and VIN', () => {
         const request = carUpdateRequest(
-            { carStatusType: 'Available', imageUrl: 'https://a.example/x.jpg', vinNumber: '1HGBH41JXMN109186' },
+            { carStatusType: 'AVAILABLE', imageUrl: 'https://a.example/x.jpg', vinNumber: '1HGBH41JXMN109186' },
             { ...base, imageUrl: 'https://b.example/y.jpg', vin: '2HGBH41JXMN109187' }
         );
 

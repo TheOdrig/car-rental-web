@@ -2,6 +2,7 @@ export {
     FuelType,
     TransmissionType,
     type Car,
+    type AdminCar,
     type CarStatus,
     type CarSummary,
     type PricingRequest,
@@ -24,6 +25,12 @@ export {
     type VehicleCurrentStatus,
     type VehicleDetailResponse,
 } from './model/types';
+export {
+    CAR_STATUS_LABELS,
+    CAR_STATUSES,
+    AVAILABILITY_STATUS_LABELS,
+    carStatusLabel,
+} from './model/status-labels';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
 export { useFilterOptions, filterOptionsKeys, uniqueOptions, type FilterOptions } from './lib/use-filter-options';
 export { getCarUnavailableMessage, friendlyUnavailableReason } from './lib/status-messages';

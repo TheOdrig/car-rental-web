@@ -75,7 +75,6 @@ export function formatDailyPrice(
 }
 
 const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
-const HAS_ZONE = /(Z|[+-]\d{2}:?\d{2})$/i;
 
 export type DateInput = string | Date | null | undefined;
 
@@ -88,12 +87,7 @@ export function parseApiDate(value: DateInput): Date | null {
     if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
     const text = value.trim();
     if (!text) return null;
-    const normalized = DATE_ONLY.test(text)
-        ? `${text}T00:00:00Z`
-        : HAS_ZONE.test(text)
-          ? text
-          : `${text}Z`;
-    const parsed = new Date(normalized);
+    const parsed = new Date(DATE_ONLY.test(text) ? `${text}T00:00:00Z` : text);
     return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 

@@ -6,17 +6,17 @@ import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency } from '@/shared/lib';
 import type { VehicleDetailResponse } from '@/entities/car';
-import type { CarStatus } from '@/entities/car';
+import { carStatusLabel, type CarStatus } from '@/entities/car';
 
 interface VehicleDetailInfoCardProps {
     vehicle: VehicleDetailResponse;
 }
 
 const statusColors: Record<CarStatus, string> = {
-    Available: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    Maintenance: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
-    Damaged: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    Inspection: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
+    AVAILABLE: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
+    MAINTENANCE: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
+    DAMAGED: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
+    INSPECTION: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
 };
 
 export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
@@ -42,14 +42,14 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
                     <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                        {vehicle.status}
+                        {carStatusLabel(vehicle.status)}
                     </Badge>
                 </div>
 
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                    <h4 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
+                    <h2 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
                         {vehicle.brand} {vehicle.model} ({vehicle.year})
-                    </h4>
+                    </h2>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center gap-2">
                             <Hash className="h-4 w-4 text-slate-400" />

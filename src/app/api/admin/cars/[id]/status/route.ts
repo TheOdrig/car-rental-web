@@ -1,4 +1,5 @@
 import { ApiError } from '@/shared/api';
+import { CAR_STATUSES, type CarStatus } from '@/entities/car';
 import { API, parseIdParam, readJson, route, upstream } from '@/shared/server';
 
 interface StatusBody {
@@ -16,7 +17,10 @@ export const POST = route<{ id: string }>(
             throw new ApiError(400, 'status is required');
         }
 
-        const carStatusType = body.status.charAt(0).toUpperCase() + body.status.slice(1).toLowerCase();
+        const carStatusType = body.status.toUpperCase();
+        if (!CAR_STATUSES.includes(carStatusType as CarStatus)) {
+            throw new ApiError(400, 'Unknown car status');
+        }
 
         return upstream.patch(
             API.cars.updateStatus.resolve({ id: carId }),

@@ -17,7 +17,7 @@ function pendingItem(rentalId: number, startDate: string): PendingItem {
         endDate: '2099-01-10',
         totalAmount: 100,
         status: 'CONFIRMED',
-        createdAt: '2026-01-01T00:00:00',
+        createdAt: '2026-01-01T00:00:00Z',
     } as PendingItem;
 }
 

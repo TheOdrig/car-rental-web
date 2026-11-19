@@ -7,6 +7,8 @@ import { formatRentalReference } from '@/shared/lib';
 import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
 import { Breadcrumb } from '@/shared/ui';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { ErrorMessage } from '@/shared/ui/error-message';
+import { isNotFoundError } from '@/shared/api';
 
 function BreadcrumbLoader() {
     return (
@@ -24,7 +26,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const router = useRouter();
     const rentalId = parseInt(id, 10);
 
-    const { data: rental, isLoading, error } = useRental(rentalId);
+    const { data: rental, isLoading, error, refetch } = useRental(rentalId);
     const { data: profile } = useProfile();
     const driverName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
 
@@ -41,7 +43,23 @@ export function RentalDetailContent({ id }: { id: string }) {
         );
     }
 
-    if (error || !rental) {
+    if (isNotFoundError(error)) {
+        notFound();
+    }
+
+    if (error) {
+        return (
+            <div className="container py-8">
+                <ErrorMessage
+                    title="Failed to load the rental"
+                    message="Please check your connection and try again."
+                    onRetry={() => void refetch()}
+                />
+            </div>
+        );
+    }
+
+    if (!rental) {
         notFound();
     }
 

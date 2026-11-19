@@ -18,7 +18,7 @@ describe('ProcessPickupDialog', () => {
         startDate: '2025-12-10T09:00:00Z',
         endDate: '2025-12-15T09:00:00Z',
         totalAmount: 750,
-        status: 'Confirmed',
+        status: 'CONFIRMED',
         createdAt: '2025-12-01T08:00:00Z'
     };
     it('should render pickup summary and checklist', () => {

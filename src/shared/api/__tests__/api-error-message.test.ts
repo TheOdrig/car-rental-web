@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ApiError, getApiErrorMessage } from '@/shared/api';
+import { ApiError, getApiErrorMessage, getFormErrorMessage, isNotFoundError } from '@/shared/api';
 
 function problem(status: number, code: string | undefined, message = 'raw api wording', retryAfter?: number) {
     return new ApiError({ status, message, timestamp: new Date().toISOString(), code, retryAfter });
@@ -9,6 +9,27 @@ describe('getApiErrorMessage', () => {
     it('explains an upload that is too large by code and by status', () => {
         expect(getApiErrorMessage(problem(413, 'PAYLOAD_TOO_LARGE'))).toMatch(/too large/i);
         expect(getApiErrorMessage(problem(413, undefined))).toMatch(/too large/i);
+    });
+
+    it('explains an oversized JSON request without echoing the API wording', () => {
+        const message = getApiErrorMessage(problem(413, 'PAYLOAD_TOO_LARGE', 'JSON body exceeds 1 MiB'));
+
+        expect(message).toMatch(/too large/i);
+        expect(message).not.toContain('1 MiB');
+    });
+
+    it('asks for a corrected input on an invalid parameter', () => {
+        const message = getApiErrorMessage(problem(400, 'INVALID_PARAMETER', 'size must be between 1 and 100'));
+
+        expect(message).toMatch(/not valid/i);
+        expect(message).not.toContain('between 1 and 100');
+    });
+
+    it('says the account is suspended on a banned login', () => {
+        const message = getApiErrorMessage(problem(403, 'ACCOUNT_BANNED', 'Account is banned'));
+
+        expect(message).toMatch(/suspended/i);
+        expect(getFormErrorMessage(problem(403, 'ACCOUNT_BANNED'), 'Invalid credentials')).toMatch(/suspended/i);
     });
 
     it('explains an unreadable multipart upload', () => {
@@ -58,5 +79,13 @@ describe('getApiErrorMessage field problems', () => {
         });
 
         expect(getApiErrorMessage(error)).toBe('imageUrl: Image URL format is invalid; vinNumber: VIN must be 17 characters');
+    });
+});
+
+describe('isNotFoundError', () => {
+    it('is true only for a 404 problem', () => {
+        expect(isNotFoundError(problem(404, 'RENTAL_NOT_FOUND'))).toBe(true);
+        expect(isNotFoundError(problem(403, 'ACCESS_DENIED'))).toBe(false);
+        expect(isNotFoundError(new Error('x'))).toBe(false);
     });
 });

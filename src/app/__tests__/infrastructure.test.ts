@@ -15,7 +15,7 @@ describe('Test Infrastructure', () => {
             expect(car.id).toBe(1);
             expect(car.brand).toBe('Toyota');
             expect(car.model).toBe('Corolla');
-            expect(car.carStatusType).toBe('Available');
+            expect(car.carStatusType).toBe('AVAILABLE');
         });
 
         it('should create mock car with overrides', () => {

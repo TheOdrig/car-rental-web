@@ -33,10 +33,10 @@ describe('Rental Utils', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date('2025-01-01'));
             mockRentals = [
-                createMockRental({ id: 1, status: RentalStatus.ACTIVE }),
+                createMockRental({ id: 1, status: RentalStatus.IN_USE }),
                 createMockRental({ id: 2, status: RentalStatus.CONFIRMED, startDate: '2025-01-10' }),
                 createMockRental({ id: 3, status: RentalStatus.CONFIRMED, startDate: '2024-12-20' }),
-                createMockRental({ id: 4, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 4, status: RentalStatus.RETURNED }),
                 createMockRental({ id: 5, status: RentalStatus.CANCELLED }),
                 createMockRental({ id: 6, status: RentalStatus.REQUESTED }),
             ];
@@ -51,7 +51,7 @@ describe('Rental Utils', () => {
         it('should return only active rentals for "active" tab', () => {
             const result = getRentalsByTab(mockRentals, 'active');
             expect(result).toHaveLength(1);
-            expect(result[0].status).toBe(RentalStatus.ACTIVE);
+            expect(result[0].status).toBe(RentalStatus.IN_USE);
         });
         it('should return requested and confirmed rentals that have not started for the "upcoming" tab', () => {
             const result = getRentalsByTab(mockRentals, 'upcoming');
@@ -65,7 +65,7 @@ describe('Rental Utils', () => {
         it('should return only completed rentals for "completed" tab', () => {
             const result = getRentalsByTab(mockRentals, 'completed');
             expect(result).toHaveLength(1);
-            expect(result[0].status).toBe(RentalStatus.COMPLETED);
+            expect(result[0].status).toBe(RentalStatus.RETURNED);
         });
         it('should return only cancelled rentals for "cancelled" tab', () => {
             const result = getRentalsByTab(mockRentals, 'cancelled');
@@ -87,13 +87,13 @@ describe('Rental Utils', () => {
             vi.useFakeTimers();
             vi.setSystemTime(new Date('2025-01-01'));
             mockRentals = [
-                createMockRental({ id: 1, status: RentalStatus.ACTIVE }),
-                createMockRental({ id: 2, status: RentalStatus.ACTIVE }),
+                createMockRental({ id: 1, status: RentalStatus.IN_USE }),
+                createMockRental({ id: 2, status: RentalStatus.IN_USE }),
                 createMockRental({ id: 3, status: RentalStatus.CONFIRMED, startDate: '2025-01-10' }),
                 createMockRental({ id: 4, status: RentalStatus.CONFIRMED, startDate: '2024-12-20' }),
-                createMockRental({ id: 5, status: RentalStatus.COMPLETED }),
-                createMockRental({ id: 6, status: RentalStatus.COMPLETED }),
-                createMockRental({ id: 7, status: RentalStatus.COMPLETED }),
+                createMockRental({ id: 5, status: RentalStatus.RETURNED }),
+                createMockRental({ id: 6, status: RentalStatus.RETURNED }),
+                createMockRental({ id: 7, status: RentalStatus.RETURNED }),
                 createMockRental({ id: 8, status: RentalStatus.CANCELLED }),
             ];
         });
@@ -129,9 +129,9 @@ describe('Rental Utils', () => {
     describe('calculateRentalStats', () => {
         it('should calculate correct stats', () => {
             const rentals = [
-                createMockRental({ status: RentalStatus.ACTIVE }),
-                createMockRental({ status: RentalStatus.ACTIVE }),
-                createMockRental({ status: RentalStatus.COMPLETED }),
+                createMockRental({ status: RentalStatus.IN_USE }),
+                createMockRental({ status: RentalStatus.IN_USE }),
+                createMockRental({ status: RentalStatus.RETURNED }),
                 createMockRental({ status: RentalStatus.CONFIRMED }),
             ];
             const stats = calculateRentalStats(rentals);
@@ -146,7 +146,7 @@ describe('Rental Utils', () => {
     });
     describe('getActionButtons', () => {
         it('should return correct buttons for "In Use" status', () => {
-            const buttons = getActionButtons(RentalStatus.ACTIVE);
+            const buttons = getActionButtons(RentalStatus.IN_USE);
             expect(buttons).toHaveLength(1);
             expect(buttons[0].label).toBe('View Details');
             expect(buttons[0].action).toBe('view');
@@ -168,7 +168,7 @@ describe('Rental Utils', () => {
             expect(open[1].disabled).toBeUndefined();
         });
         it('should return correct buttons for "Returned" status', () => {
-            const buttons = getActionButtons(RentalStatus.COMPLETED);
+            const buttons = getActionButtons(RentalStatus.RETURNED);
             expect(buttons).toHaveLength(1);
             expect(buttons[0].label).toBe('Book Again');
         });
@@ -237,7 +237,7 @@ describe('Rental Utils', () => {
         });
         it('should return false for non-confirmed rental even with future date', () => {
             const rental = createMockRental({
-                status: RentalStatus.ACTIVE,
+                status: RentalStatus.IN_USE,
                 startDate: '2025-01-10',
             });
             expect(isUpcomingRental(rental)).toBe(false);
@@ -259,13 +259,13 @@ describe('Rental Utils', () => {
     });
     describe('getStatusBadgeVariant', () => {
         it('should return "default" for "In Use"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.ACTIVE)).toBe('default');
+            expect(getStatusBadgeVariant(RentalStatus.IN_USE)).toBe('default');
         });
         it('should return "secondary" for "Confirmed"', () => {
             expect(getStatusBadgeVariant(RentalStatus.CONFIRMED)).toBe('secondary');
         });
         it('should return "outline" for "Returned"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.COMPLETED)).toBe('outline');
+            expect(getStatusBadgeVariant(RentalStatus.RETURNED)).toBe('outline');
         });
         it('should return "secondary" for "Requested"', () => {
             expect(getStatusBadgeVariant(RentalStatus.REQUESTED)).toBe('secondary');

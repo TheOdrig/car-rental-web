@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete } from '@/shared/api';
+import { clientGet, clientPost, clientDelete, isNotFoundError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './rental-errors';
 import type { Rental, RentalRequest } from '@/entities/rental';
@@ -87,6 +87,7 @@ export function useRental(id: number | null | undefined) {
         queryFn: () => fetchRental(id!),
         enabled: !!id,
         staleTime: 2 * 60 * 1000,
+        retry: (failureCount, error) => !isNotFoundError(error) && failureCount < 1,
     });
 }
 

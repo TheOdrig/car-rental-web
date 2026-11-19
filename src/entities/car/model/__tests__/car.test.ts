@@ -10,7 +10,7 @@ const mockCar: Car = {
     color: 'White',
     price: 100,
     currencyType: 'USD',
-    carStatusType: 'Available',
+    carStatusType: 'AVAILABLE',
     imageUrl: 'tesla.jpg',
     fuelType: FuelType.ELECTRIC,
     transmissionType: TransmissionType.AUTOMATIC,
@@ -18,7 +18,7 @@ const mockCar: Car = {
 const maintenanceCar: Car = {
     ...mockCar,
     id: 2,
-    carStatusType: 'Maintenance',
+    carStatusType: 'MAINTENANCE',
 };
 describe('Car Entity', () => {
     describe('Utils', () => {

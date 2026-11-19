@@ -1,8 +1,9 @@
 import { Car, SortOption } from '../model/types';
+import { CAR_STATUS } from '../model/status-labels';
 import { formatCurrency } from '@/shared/lib';
 
 export const isAvailable = (car: Car): boolean => {
-    return car.carStatusType === 'Available';
+    return car.carStatusType === CAR_STATUS.AVAILABLE;
 };
 
 export const getCarTitle = (car: Car): string => {

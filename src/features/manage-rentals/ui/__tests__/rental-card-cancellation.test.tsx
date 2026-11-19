@@ -10,7 +10,7 @@ const EXPIRED_REASON = 'Request expired without approval';
 describe('RentalCard cancellation reason', () => {
     it.each(['default', 'detailed'] as const)('shows the reason of a cancelled rental in the %s variant', (variant) => {
         const rental = createMockRental({
-            status: 'Cancelled' as RentalStatus,
+            status: 'CANCELLED' as RentalStatus,
             cancellationReason: EXPIRED_REASON,
         });
 
@@ -21,7 +21,7 @@ describe('RentalCard cancellation reason', () => {
 
     it('hides the reason when the rental is not cancelled', () => {
         const rental = createMockRental({
-            status: 'Confirmed' as RentalStatus,
+            status: 'CONFIRMED' as RentalStatus,
             cancellationReason: EXPIRED_REASON,
         });
 
@@ -31,7 +31,7 @@ describe('RentalCard cancellation reason', () => {
     });
 
     it('hides the line when a cancelled rental has no reason', () => {
-        const rental = createMockRental({ status: 'Cancelled' as RentalStatus });
+        const rental = createMockRental({ status: 'CANCELLED' as RentalStatus });
 
         renderWithProviders(<RentalCard rental={rental} />);
 

@@ -8,17 +8,17 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { CopyButton } from '@/shared/ui/copy-button';
 import type { RentalVehicleInfo } from '@/entities/rental';
-import type { CarStatus } from '@/entities/car';
+import { carStatusLabel, type CarStatus } from '@/entities/car';
 
 interface VehicleInfoCardProps {
     vehicle: RentalVehicleInfo;
 }
 
 const statusColors: Record<CarStatus, string> = {
-    Available: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    Maintenance: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
-    Damaged: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    Inspection: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
+    AVAILABLE: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
+    MAINTENANCE: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
+    DAMAGED: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
+    INSPECTION: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
 };
 
 export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
@@ -63,7 +63,7 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                             <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                 <span>Fleet status</span>
                                 <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                                    {vehicle.status}
+                                    {carStatusLabel(vehicle.status)}
                                 </Badge>
                             </div>
                         )}

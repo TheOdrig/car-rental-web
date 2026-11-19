@@ -18,7 +18,7 @@ describe('ProcessReturnDialog', () => {
         startDate: '2025-12-15T12:00:00Z',
         endDate: '2025-12-20T12:00:00Z',
         totalAmount: 600,
-        status: 'In Use',
+        status: 'IN_USE',
         createdAt: '2025-12-10T11:00:00Z'
     };
     it('should render return details and vehicle info', () => {
