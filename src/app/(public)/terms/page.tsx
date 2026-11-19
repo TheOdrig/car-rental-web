@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { pageMetadata } from '@/shared/lib';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
     title: 'Terms of Service',
     description: 'Terms of service for the Car Rental portfolio demo.',
-};
+    path: '/terms',
+});
 
 export default function TermsPage() {
     return (

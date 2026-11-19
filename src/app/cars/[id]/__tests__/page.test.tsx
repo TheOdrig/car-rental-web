@@ -74,11 +74,11 @@ describe('car detail page', () => {
 
     it('titles the metadata by outcome', async () => {
         getCar.mockRejectedValueOnce(problem(404));
-        expect(await generateMetadata(props('5'))).toEqual({ title: 'Car Not Found' });
+        expect(await generateMetadata(props('5'))).toMatchObject({ title: 'Car Not Found', robots: { index: false } });
 
         getCar.mockRejectedValueOnce(problem(500));
-        expect(await generateMetadata(props('5'))).toEqual({ title: 'Car' });
+        expect(await generateMetadata(props('5'))).toMatchObject({ title: 'Car', robots: { index: false } });
 
-        expect(await generateMetadata(props('abc'))).toEqual({ title: 'Car Not Found' });
+        expect(await generateMetadata(props('abc'))).toMatchObject({ title: 'Car Not Found', robots: { index: false } });
     });
 });

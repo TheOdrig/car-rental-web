@@ -1,5 +1,8 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { DamageDetailContent } from './damage-detail-content';
+
+export const metadata: Metadata = { title: 'Admin Damage Report' };
 
 interface PageProps {
     params: Promise<{ id: string }>;

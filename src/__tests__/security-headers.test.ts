@@ -71,6 +71,18 @@ describe('security headers', () => {
         expect(valueOf(production, 'Permissions-Policy')).toContain('camera=()');
     });
 
+    it('redirects the bare section roots to their landing pages', async () => {
+        const rules = await nextConfig.redirects?.();
+
+        expect(rules).toEqual(
+            expect.arrayContaining([
+                expect.objectContaining({ source: '/settings', destination: '/settings/profile' }),
+                expect.objectContaining({ source: '/dashboard', destination: '/rentals' }),
+                expect.objectContaining({ source: '/admin', destination: '/admin/dashboard' }),
+            ])
+        );
+    });
+
     it('does not advertise the framework', () => {
         expect(nextConfig.poweredByHeader).toBe(false);
     });

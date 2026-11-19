@@ -73,6 +73,13 @@ export function buildSecurityHeaders(environment: HeaderEnvironment): Array<{ ke
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
+  async redirects() {
+    return [
+      { source: "/settings", destination: "/settings/profile", permanent: false },
+      { source: "/dashboard", destination: "/rentals", permanent: false },
+      { source: "/admin", destination: "/admin/dashboard", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {

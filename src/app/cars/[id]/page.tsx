@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { isApiError } from '@/shared/api';
+import { pageMetadata } from '@/shared/lib';
 import { SimilarCarsSection } from '@/entities/car';
 import { getCar, getCarCalendar } from '@/entities/car/api/cached-fetchers';
 import { CarBookingCard } from '@/widgets/car-booking-card';
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     const carId = parseCarId(id);
 
     if (carId === null) {
-        return { title: 'Car Not Found' };
+        return { title: 'Car Not Found', robots: { index: false, follow: false } };
     }
 
     let car;
@@ -65,11 +66,16 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     try {
         car = await getCar(carId);
     } catch (error) {
-        return { title: isApiError(error) && error.status === 404 ? 'Car Not Found' : 'Car' };
+        return {
+            title: isApiError(error) && error.status === 404 ? 'Car Not Found' : 'Car',
+            robots: { index: false, follow: false },
+        };
     }
 
-    return {
+    return pageMetadata({
         title: `${car.brand} ${car.model} ${car.productionYear}`,
         description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
-    };
+        path: `/cars/${carId}`,
+        image: car.imageUrl ?? car.thumbnailUrl ?? undefined,
+    });
 }

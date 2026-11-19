@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 const PRIVATE_PATHS = [
     '/admin',
+    '/dashboard',
     '/api',
     '/rentals',
     '/damages',
@@ -20,6 +21,6 @@ export default function robots(): MetadataRoute.Robots {
 
     return {
         rules: [{ userAgent: '*', allow: '/', disallow: PRIVATE_PATHS }],
-        host: base,
+        sitemap: `${base}/sitemap.xml`,
     };
 }

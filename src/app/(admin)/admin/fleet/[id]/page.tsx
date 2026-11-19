@@ -1,5 +1,8 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { VehicleDetailContent } from './vehicle-detail-content';
+
+export const metadata: Metadata = { title: 'Vehicle Details' };
 
 interface PageProps {
     params: Promise<{ id: string }>;

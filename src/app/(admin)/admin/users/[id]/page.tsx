@@ -1,5 +1,8 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { CustomerDetailContent } from './customer-detail-content';
+
+export const metadata: Metadata = { title: 'Customer Details' };
 
 interface PageProps {
     params: Promise<{ id: string }>;
