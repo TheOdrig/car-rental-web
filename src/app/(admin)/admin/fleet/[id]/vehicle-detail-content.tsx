@@ -124,7 +124,7 @@ export function VehicleDetailContent({ id }: { id: string }) {
                         onValueChange={(value) => handleStatusChange(value as CarStatus)}
                         disabled={updateStatus.isPending}
                     >
-                        <SelectTrigger className="w-[160px]">
+                        <SelectTrigger aria-label="Change vehicle status" className="w-[160px]">
                             <SelectValue placeholder="Change Status" />
                         </SelectTrigger>
                         <SelectContent>

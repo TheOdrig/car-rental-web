@@ -135,6 +135,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
             >
                 <Input
                     id="username"
+                    autoComplete="username"
                     name="username"
                     type="text"
                     placeholder="name@example.com"
@@ -160,6 +161,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
                 <div className="relative">
                     <Input
                         id="password"
+                        autoComplete="current-password"
                         name="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Enter your password"

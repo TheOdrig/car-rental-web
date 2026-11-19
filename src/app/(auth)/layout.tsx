@@ -26,9 +26,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                     <div className="mb-6">
                         <p className="text-xl font-bold tracking-wide">Car Rental</p>
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
+                    <p className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                         Experience the freedom of the open road.
-                    </h1>
+                    </p>
                     <p className="text-lg text-gray-200 leading-relaxed mb-8">
                         Check live availability, see the full price breakdown before you request, and pay once your rental is approved.
                     </p>

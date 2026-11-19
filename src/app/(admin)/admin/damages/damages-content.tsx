@@ -75,8 +75,9 @@ function DamagesList() {
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isFetching}
+                        aria-label="Refresh damage reports"
                     >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                     </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link href="/admin/damages/statistics">

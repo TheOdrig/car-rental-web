@@ -78,7 +78,7 @@ export function DamageFilters() {
                 value={searchParams?.get('severity') || 'all'}
                 onValueChange={(value) => updateFilter('severity', value)}
             >
-                <SelectTrigger className={`w-[140px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Filter by severity" className={`w-[140px] ${triggerClassName}`}>
                     <SelectValue placeholder="Severity" />
                 </SelectTrigger>
                 <SelectContent>
@@ -95,7 +95,7 @@ export function DamageFilters() {
                 value={searchParams?.get('category') || 'all'}
                 onValueChange={(value) => updateFilter('category', value)}
             >
-                <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Filter by category" className={`w-[160px] ${triggerClassName}`}>
                     <SelectValue placeholder="Category" />
                 </SelectTrigger>
                 <SelectContent>
@@ -112,7 +112,7 @@ export function DamageFilters() {
                 value={searchParams?.get('status') || 'all'}
                 onValueChange={(value) => updateFilter('status', value)}
             >
-                <SelectTrigger className={`w-[160px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Filter by status" className={`w-[160px] ${triggerClassName}`}>
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>

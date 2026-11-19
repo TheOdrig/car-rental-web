@@ -63,7 +63,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                     <div className="flex items-center gap-2">
                         <Filter className="h-4 w-4 text-slate-400" />
                         <Select value={statusFilter} onValueChange={(value) => { setStatusFilter(value); setPage(0); }}>
-                            <SelectTrigger className="w-[150px]">
+                            <SelectTrigger aria-label="Filter rentals by status" className="w-[150px]">
                                 <SelectValue placeholder="Filter by status" />
                             </SelectTrigger>
                             <SelectContent>

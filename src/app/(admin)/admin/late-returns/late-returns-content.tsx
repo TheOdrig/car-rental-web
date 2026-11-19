@@ -64,8 +64,9 @@ function LateReturnsList() {
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isFetching}
+                        aria-label="Refresh late returns"
                     >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                     </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link href="/admin/late-returns/statistics">

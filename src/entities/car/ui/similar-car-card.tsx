@@ -27,7 +27,7 @@ export const SimilarCarCard = memo(function SimilarCarCard({
     return (
         <Link
             href={`/cars/${car.id}`}
-            className={cn('block focus-visible:outline-none', className)}
+            className={cn('block rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2', className)}
         >
             <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg focus-within:ring-2 focus-within:ring-primary">
                 <div className="relative aspect-[16/10] overflow-hidden">

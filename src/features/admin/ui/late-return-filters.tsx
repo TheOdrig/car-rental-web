@@ -70,7 +70,7 @@ export function LateReturnFilters() {
                 value={searchParams?.get('status') || 'all'}
                 onValueChange={(value) => updateFilter('status', value)}
             >
-                <SelectTrigger className={`w-[150px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Filter by status" className={`w-[150px] ${triggerClassName}`}>
                     <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,7 +103,7 @@ export function LateReturnFilters() {
                 value={searchParams?.get('sortBy') || 'endDate'}
                 onValueChange={(value) => updateFilter('sortBy', value)}
             >
-                <SelectTrigger className={`w-[150px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Sort by" className={`w-[150px] ${triggerClassName}`}>
                     <SelectValue placeholder="Sort By" />
                 </SelectTrigger>
                 <SelectContent>
@@ -119,7 +119,7 @@ export function LateReturnFilters() {
                 value={searchParams?.get('sortDirection') || 'DESC'}
                 onValueChange={(value) => updateFilter('sortDirection', value)}
             >
-                <SelectTrigger className={`w-[140px] ${triggerClassName}`}>
+                <SelectTrigger aria-label="Sort direction" className={`w-[140px] ${triggerClassName}`}>
                     <SelectValue placeholder="Direction" />
                 </SelectTrigger>
                 <SelectContent>

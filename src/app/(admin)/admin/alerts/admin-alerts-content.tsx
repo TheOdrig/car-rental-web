@@ -108,7 +108,7 @@ export function AdminAlertsContent() {
                         value={typeFilter}
                         onValueChange={(value) => setTypeFilter(value as AlertVariant | 'all')}
                     >
-                        <SelectTrigger className="w-full md:w-[180px]">
+                        <SelectTrigger aria-label="Filter by category" className="w-full md:w-[180px]">
                             <SelectValue placeholder="All Categories" />
                         </SelectTrigger>
                         <SelectContent>

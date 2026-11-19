@@ -145,8 +145,9 @@ export function AdminRentalsContent() {
                     variant="ghost"
                     size="icon"
                     onClick={handleRefresh}
+                    aria-label="Refresh rentals"
                 >
-                    <RefreshCw className="h-4 w-4" />
+                    <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 </Button>
             </div>
 
@@ -262,7 +263,7 @@ export function AdminRentalsContent() {
                         value={statusFilter}
                         onValueChange={(value) => setStatusFilter(value as StatusFilter)}
                     >
-                        <SelectTrigger className="w-48 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100">
+                        <SelectTrigger aria-label="Filter rentals by status" className="w-48 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

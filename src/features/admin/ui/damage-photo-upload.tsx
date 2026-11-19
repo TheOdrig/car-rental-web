@@ -102,8 +102,9 @@ export function DamagePhotoUpload({
                                     size="icon"
                                     className="absolute top-2 right-2 h-7 w-7 opacity-0 group-hover:opacity-100 transition-opacity"
                                     onClick={() => setDeletePhotoId(photo.id)}
+                                    aria-label="Delete photo"
                                 >
-                                    <X className="h-4 w-4" />
+                                    <X className="h-4 w-4" aria-hidden="true" />
                                 </Button>
                             </div>
                         </CardContent>

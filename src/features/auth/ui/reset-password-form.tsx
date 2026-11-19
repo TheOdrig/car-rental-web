@@ -106,6 +106,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                     <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         id="newPassword"
+                        autoComplete="new-password"
                         name="newPassword"
                         type={showNewPassword ? 'text' : 'password'}
                         placeholder="Enter new password"
@@ -121,7 +122,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        tabIndex={-1}
+                        aria-label={showNewPassword ? 'Hide password' : 'Show password'}
                     >
                         {showNewPassword ? (
                             <EyeOff className="h-5 w-5" />
@@ -141,6 +142,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                     <Lock className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         id="confirmPassword"
+                        autoComplete="new-password"
                         name="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm new password"
@@ -156,7 +158,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        tabIndex={-1}
+                        aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                     >
                         {showConfirmPassword ? (
                             <EyeOff className="h-5 w-5" />

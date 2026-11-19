@@ -159,7 +159,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                     <div className="relative">
                         <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400 z-10" />
                         <Select value={vehicleType} onValueChange={setVehicleType}>
-                            <SelectTrigger className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                            <SelectTrigger aria-label="Vehicle type" className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>

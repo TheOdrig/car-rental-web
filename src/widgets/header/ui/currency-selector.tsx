@@ -24,12 +24,12 @@ export function CurrencySelector() {
                     size="sm"
                     disabled={isLoading}
                     className="h-9 gap-1 px-2 dark:hover:bg-transparent dark:hover:text-white"
-                    aria-label="Select currency"
+                    aria-label={`Currency: ${currentCurrency.code}`}
                 >
-                    <span className="text-base" aria-hidden="true">
-                        {currentCurrency.flag}
+                    <span className="min-w-5 text-center text-sm font-semibold" aria-hidden="true">
+                        {currentCurrency.symbol}
                     </span>
-                    <span className="hidden sm:inline text-sm font-medium">
+                    <span className="hidden sm:inline text-sm font-medium" aria-hidden="true">
                         {currentCurrency.code}
                     </span>
                     <ChevronDown className="h-3.5 w-3.5 opacity-50" />
@@ -46,10 +46,8 @@ export function CurrencySelector() {
                         )}
                     >
                         <div className="flex items-center gap-2">
-                            <span className="text-base" aria-hidden="true">
-                                {curr.flag}
-                            </span>
-                            <span className="text-sm">{curr.name}</span>
+                            <span className="text-sm font-medium">{curr.code}</span>
+                            <span className="text-sm text-slate-600 dark:text-slate-400">{curr.name}</span>
                         </div>
                         <span className="text-sm text-slate-500 dark:text-slate-400">
                             {curr.symbol}

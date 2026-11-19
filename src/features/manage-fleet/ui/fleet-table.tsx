@@ -332,7 +332,7 @@ export const FleetTable = memo(function FleetTable({
                                 value={newStatus ?? ''}
                                 onValueChange={(v) => setNewStatus(v as CarStatus)}
                             >
-                                <SelectTrigger className="w-full mt-4">
+                                <SelectTrigger aria-label="New status" className="w-full mt-4">
                                     <SelectValue placeholder="Select new status" />
                                 </SelectTrigger>
                                 <SelectContent>

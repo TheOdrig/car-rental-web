@@ -105,7 +105,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
     };
 
     return (
-        <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
+        <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
@@ -119,6 +119,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 >
                     <Input
                         id="firstName"
+                        autoComplete="given-name"
                         name="firstName"
                         type="text"
                         placeholder="John"
@@ -136,6 +137,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 >
                     <Input
                         id="lastName"
+                        autoComplete="family-name"
                         name="lastName"
                         type="text"
                         placeholder="Doe"
@@ -156,6 +158,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             >
                 <Input
                     id="username"
+                    autoComplete="username"
                     name="username"
                     type="text"
                     placeholder="e.g. johndoe"
@@ -178,6 +181,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             >
                 <Input
                     id="email"
+                    autoComplete="email"
                     name="email"
                     type="email"
                     placeholder="name@example.com"
@@ -202,6 +206,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 <div className="relative">
                     <Input
                         id="password"
+                        autoComplete="new-password"
                         name="password"
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Create a strong password"
@@ -238,6 +243,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 <div className="relative">
                     <Input
                         id="confirmPassword"
+                        autoComplete="new-password"
                         name="confirmPassword"
                         type={showConfirmPassword ? 'text' : 'password'}
                         placeholder="Confirm your password"

@@ -136,7 +136,7 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
                                 value={severity}
                                 onValueChange={(value) => setSeverity(value as DamageSeverity)}
                             >
-                                <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
+                                <SelectTrigger aria-label="Initial severity" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
                                     <SelectValue placeholder="Select severity" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -155,7 +155,7 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
                                 value={category}
                                 onValueChange={(value) => setCategory(value as DamageCategory)}
                             >
-                                <SelectTrigger className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
+                                <SelectTrigger aria-label="Damage category" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>

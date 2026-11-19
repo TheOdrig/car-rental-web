@@ -142,7 +142,7 @@ export function DamageAssessDialog({
                                 value={severity}
                                 onValueChange={(value) => setSeverity(value as DamageSeverity)}
                             >
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
+                                <SelectTrigger aria-label="Severity" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">
@@ -161,7 +161,7 @@ export function DamageAssessDialog({
                                 value={category}
                                 onValueChange={(value) => setCategory(value as DamageCategory)}
                             >
-                                <SelectTrigger className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
+                                <SelectTrigger aria-label="Damage category" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
                                     <SelectValue />
                                 </SelectTrigger>
                                 <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">

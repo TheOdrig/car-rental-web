@@ -1,11 +1,11 @@
 import type { Currency, CurrencyCode } from '../model/types';
 
 export const CURRENCIES: Currency[] = [
-    { code: 'USD', name: 'US Dollar', symbol: '$', flag: '🇺🇸', decimals: 2 },
-    { code: 'EUR', name: 'Euro', symbol: '€', flag: '🇪🇺', decimals: 2 },
-    { code: 'GBP', name: 'British Pound', symbol: '£', flag: '🇬🇧', decimals: 2 },
-    { code: 'TRY', name: 'Turkish Lira', symbol: '₺', flag: '🇹🇷', decimals: 2 },
-    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', flag: '🇯🇵', decimals: 0 },
+    { code: 'USD', name: 'US Dollar', symbol: '$', decimals: 2 },
+    { code: 'EUR', name: 'Euro', symbol: '€', decimals: 2 },
+    { code: 'GBP', name: 'British Pound', symbol: '£', decimals: 2 },
+    { code: 'TRY', name: 'Turkish Lira', symbol: '₺', decimals: 2 },
+    { code: 'JPY', name: 'Japanese Yen', symbol: '¥', decimals: 0 },
 ];
 
 export const DEFAULT_CURRENCY: CurrencyCode = 'USD';

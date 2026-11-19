@@ -81,7 +81,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
+        <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
@@ -93,6 +93,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                     <Mail className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted-foreground" />
                     <Input
                         id="email"
+                        autoComplete="email"
                         name="email"
                         type="email"
                         placeholder="name@example.com"

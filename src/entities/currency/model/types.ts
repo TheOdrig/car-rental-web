@@ -6,7 +6,6 @@ export interface Currency {
     code: CurrencyCode;
     name: string;
     symbol: string;
-    flag: string;
     decimals: number;
 }
 

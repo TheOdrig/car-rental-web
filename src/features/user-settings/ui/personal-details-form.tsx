@@ -50,7 +50,7 @@ export function PersonalDetailsForm({
     };
 
     return (
-        <form
+        <form noValidate
             onSubmit={handleSubmit(handleFormSubmit)}
             className={cn('space-y-6', className)}
         >
@@ -64,6 +64,7 @@ export function PersonalDetailsForm({
                             <Label htmlFor="firstName">First Name</Label>
                             <Input
                                 id="firstName"
+                                autoComplete="given-name"
                                 {...register('firstName')}
                                 aria-invalid={!!errors.firstName}
                                 disabled={isSubmitting}
@@ -78,6 +79,7 @@ export function PersonalDetailsForm({
                             <Label htmlFor="lastName">Last Name</Label>
                             <Input
                                 id="lastName"
+                                autoComplete="family-name"
                                 {...register('lastName')}
                                 aria-invalid={!!errors.lastName}
                                 disabled={isSubmitting}
@@ -95,6 +97,7 @@ export function PersonalDetailsForm({
                         <div className="flex items-center gap-2">
                             <Input
                                 id="email"
+                                autoComplete="email"
                                 type="email"
                                 value={email || ''}
                                 disabled
