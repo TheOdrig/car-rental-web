@@ -31,6 +31,7 @@ export {
     renewAccessToken,
     upstream,
     upstreamFetch,
+    upstreamResponse,
     type AuthResponse,
     type RefreshOutcome,
     type UpstreamOptions,

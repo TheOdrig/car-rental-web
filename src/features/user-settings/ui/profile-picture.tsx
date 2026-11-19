@@ -3,19 +3,13 @@
 import { useRef, useCallback, type ChangeEvent } from 'react';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Camera, Trash2, Loader2 } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, toFileProxyUrl } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { validateAvatarFile } from '@/features/user-settings';
 import { showToast } from '@/shared/lib';
 
 function normalizeAvatarUrl(url: string | null | undefined): string | null {
-    if (!url) return null;
-
-    if (url.startsWith('http://') || url.startsWith('https://')) {
-        return url;
-    }
-
-    return url.startsWith('/') ? url : `/${url}`;
+    return toFileProxyUrl(url) ?? null;
 }
 
 interface ProfilePictureProps {

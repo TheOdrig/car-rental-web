@@ -1,6 +1,7 @@
 'use client';
 
 import Image, { ImageProps } from 'next/image';
+import { toFileProxyUrl } from '@/shared/lib/file-url';
 
 const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'];
 
@@ -15,12 +16,13 @@ function isAllowedHostname(src: string): boolean {
 }
 
 export function DynamicImage({ src, alt, ...props }: ImageProps) {
-    const srcString = typeof src === 'string' ? src : '';
+    const proxied = typeof src === 'string' ? (toFileProxyUrl(src) ?? src) : src;
+    const srcString = typeof proxied === 'string' ? proxied : '';
     const shouldOptimize = isAllowedHostname(srcString);
 
     return (
         <Image
-            src={src}
+            src={proxied}
             alt={alt}
             unoptimized={!shouldOptimize}
             {...props}

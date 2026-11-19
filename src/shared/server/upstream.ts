@@ -219,7 +219,7 @@ function buildRequestInit(options: UpstreamOptions, token: string | undefined): 
 
 export type UpstreamPath<M extends ServerRequestOptions['method'] = ServerRequestOptions['method']> = string | UpstreamTarget<NonNullable<M>>;
 
-export async function upstreamFetch<T>(target: UpstreamPath, rawOptions: UpstreamOptions = {}): Promise<T> {
+export async function upstreamResponse(target: UpstreamPath, rawOptions: UpstreamOptions = {}): Promise<Response> {
     const path = typeof target === 'string' ? target : target.path;
     const options = typeof target === 'string' ? rawOptions : { ...rawOptions, method: target.method };
     const url = buildUpstreamUrl(path, options.params);
@@ -242,6 +242,12 @@ export async function upstreamFetch<T>(target: UpstreamPath, rawOptions: Upstrea
     if (!response.ok) {
         throw new ApiError(await parseErrorResponse(response));
     }
+
+    return response;
+}
+
+export async function upstreamFetch<T>(target: UpstreamPath, rawOptions: UpstreamOptions = {}): Promise<T> {
+    const response = await upstreamResponse(target, rawOptions);
 
     if (response.status === 204) {
         return undefined as T;

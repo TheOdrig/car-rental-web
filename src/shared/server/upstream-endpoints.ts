@@ -84,6 +84,10 @@ export const API = {
         me: endpoint('GET', `${V1}/damages/me`),
         dispute: endpoint('POST', `${V1}/damages/{id}/dispute`),
     },
+    files: {
+        avatar: endpoint('GET', `${V1}/files/avatars/{filename}`),
+        damagePhoto: endpoint('GET', `${V1}/files/damage-photos/{filename}`),
+    },
     users: {
         profile: endpoint('GET', `${V1}/users/me/profile`),
         updateProfile: endpoint('PUT', `${V1}/users/me/profile`),

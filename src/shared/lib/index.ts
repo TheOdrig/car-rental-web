@@ -7,3 +7,4 @@ export * from './validation';
 export * from './safe-redirect';
 
 export * from './seo';
+export * from './file-url';
