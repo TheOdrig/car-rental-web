@@ -114,18 +114,19 @@ describe('AdminRentalsContent', () => {
         expect(screen.queryByText('RETURNED')).not.toBeInTheDocument();
     });
 
-    it('filters the current page by status without asking the API', async () => {
+    it('sends the chosen status to the server and resets to the first page', async () => {
         const user = userEvent.setup();
         renderWithProviders(<AdminRentalsContent />);
 
         await user.click(await screen.findByRole('tab', { name: 'All Rentals' }));
         await screen.findByText('CR-000006');
-        await user.click(screen.getByRole('combobox', { name: 'Filter this page by status' }));
+        await user.click(screen.getByRole('combobox', { name: 'Filter by status' }));
         await user.click(await screen.findByRole('option', { name: 'Cancelled' }));
 
-        expect(screen.queryByText('CR-000006')).not.toBeInTheDocument();
-        expect(screen.getByText('CR-000007')).toBeInTheDocument();
-        expect(clientGet).not.toHaveBeenCalledWith(expect.stringContaining('status='));
+        await waitFor(() =>
+            expect(clientGet).toHaveBeenCalledWith('/api/admin/rentals?page=0&size=20&sort=createTime%2Cdesc&status=CANCELLED')
+        );
+        expect(screen.getByText('CR-000006')).toBeInTheDocument();
     });
 
     it('sends the status code to the customer rentals endpoint', async () => {

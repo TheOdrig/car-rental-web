@@ -152,6 +152,7 @@ async function fetchAdminRentals(params: AdminRentalsParams): Promise<PageRespon
     const query = new URLSearchParams({ page: String(params.page), size: String(ADMIN_RENTALS_PAGE_SIZE) });
     if (params.userId === undefined) {
         query.set('sort', 'createTime,desc');
+        if (params.status) query.set('status', params.status);
         return clientGet<PageResponse<Rental>>(`/api/admin/rentals?${query.toString()}`);
     }
     if (params.status) query.set('status', params.status);

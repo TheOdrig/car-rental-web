@@ -165,6 +165,14 @@ describe('admin BFF routes', () => {
         expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/rentals/admin?page=0&size=5');
     });
 
+    it('forwards the status filter of the admin rental list', async () => {
+        fetchMock.mockResolvedValueOnce(json({ content: [], page: 0, size: 20, totalElements: 0, totalPages: 0 }));
+
+        await listRentals(new NextRequest('http://localhost:3000/api/admin/rentals?page=0&size=20&status=IN_USE&status=CONFIRMED'), noParams);
+
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/rentals/admin?page=0&size=20&status=IN_USE&status=CONFIRMED');
+    });
+
     it('no longer exposes the admin rental list on the public /api/rentals path', async () => {
         const publicRentals = await import('../rentals/route');
 

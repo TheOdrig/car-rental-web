@@ -50,7 +50,7 @@ export function AdminRentalsContent() {
     const [view, setView] = useState<View>(userId !== undefined ? 'all-rentals' : 'pending');
     const [rentalsPage, setRentalsPage] = useState(0);
     const [rentalStatus, setRentalStatus] = useState<string>(ALL_STATUSES);
-    const serverStatus = userId !== undefined && rentalStatus !== ALL_STATUSES ? (rentalStatus as RentalStatus) : undefined;
+    const serverStatus = rentalStatus !== ALL_STATUSES ? (rentalStatus as RentalStatus) : undefined;
     const allRentals = useAdminRentals({ page: rentalsPage, userId, status: serverStatus });
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
@@ -180,7 +180,7 @@ export function AdminRentalsContent() {
                                 setRentalsPage(0);
                             }}
                         >
-                            <SelectTrigger className="w-48" aria-label={userId !== undefined ? 'Filter by status' : 'Filter this page by status'}>
+                            <SelectTrigger className="w-48" aria-label="Filter by status">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -191,7 +191,6 @@ export function AdminRentalsContent() {
                                 ))}
                             </SelectContent>
                         </Select>
-                        {userId === undefined && <span className="text-sm text-muted-foreground">Filters the rentals on this page</span>}
                         {userId !== undefined && (
                             <Button variant="ghost" size="sm" asChild>
                                 <Link href="/admin/rentals">Show all customers</Link>
@@ -206,7 +205,7 @@ export function AdminRentalsContent() {
                         />
                     ) : (
                         <AllRentalsTable
-                            rentals={(allRentals.data?.content ?? []).filter((rental) => serverStatus !== undefined || rentalStatus === ALL_STATUSES || rental.status === rentalStatus)}
+                            rentals={allRentals.data?.content ?? []}
                             isLoading={allRentals.isLoading}
                             page={rentalsPage}
                             totalPages={allRentals.data?.totalPages ?? 0}
