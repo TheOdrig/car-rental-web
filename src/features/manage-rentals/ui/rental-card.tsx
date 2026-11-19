@@ -113,7 +113,6 @@ export const RentalCard = memo(function RentalCard({
                 className={cn(
                     'group overflow-hidden transition-all duration-300 hover:shadow-lg',
                     isActive && 'border-l-4 border-l-primary shadow-md',
-                    isCompleted && 'opacity-90',
                     onClick && 'cursor-pointer',
                     className
                 )}

@@ -271,7 +271,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                                     className={cn(
                                         'aspect-square rounded-md flex items-center justify-center text-[10px] sm:text-xs transition-colors',
                                         past
-                                            ? 'bg-muted text-muted-foreground/60'
+                                            ? 'bg-muted text-muted-foreground'
                                             : day.status === DAY_AVAILABILITY.AVAILABLE
                                                 ? 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20'
                                                 : 'bg-red-500/10 text-red-700 dark:text-red-400'

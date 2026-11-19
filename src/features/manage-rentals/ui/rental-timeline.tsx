@@ -100,7 +100,7 @@ function StepIndicator({ step, currentStep, isLast }: StepIndicatorProps) {
                     'flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all',
                     isCompleted && 'border-green-500 bg-green-500 text-white',
                     isCurrent && 'border-primary bg-primary/10 text-primary',
-                    isPending && 'border-muted bg-muted text-muted-foreground opacity-50'
+                    isPending && 'border-muted bg-muted text-muted-foreground'
                 )}
             >
                 {isCompleted ? (
@@ -164,7 +164,7 @@ function StepContent({
     const details = getStepDetails();
 
     return (
-        <div className={cn('min-w-0 flex-1 pb-8', isPending && 'opacity-50')}>
+        <div className="min-w-0 flex-1 pb-8">
             <p
                 className={cn(
                     'font-medium',

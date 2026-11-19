@@ -38,7 +38,7 @@ function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps 
                     style={{ width: `${percentage}%` }}
                 />
             </div>
-            <p className="text-[10px] font-bold text-muted-foreground text-right tabular-nums opacity-70">
+            <p className="text-[10px] font-bold text-muted-foreground text-right tabular-nums">
                 {percentage}%
             </p>
         </div>

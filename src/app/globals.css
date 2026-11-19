@@ -2,6 +2,23 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+@theme {
+    --color-amber-600: #944b00;
+    --color-green-600: #006e29;
+    --color-emerald-600: #006d48;
+    --color-sky-600: #00639d;
+    --color-red-600: #b60009;
+    --color-orange-600: #a93200;
+    --color-blue-600: #1251db;
+    --color-purple-600: #860edc;
+    --color-yellow-600: #835500;
+    --color-rose-600: #b60031;
+    --color-cyan-600: #00677b;
+    --color-teal-600: #006b5f;
+    --color-violet-600: #7040c9;
+    --color-indigo-600: #4f4dcf;
+}
+
 @theme inline {
     --font-sans: "Inter", "Geist", ui-sans-serif, system-ui, sans-serif;
     --font-mono: "Geist Mono", ui-monospace, monospace;
@@ -64,10 +81,10 @@
     --secondary: hsl(210 16% 93%);
     --secondary-foreground: hsl(222.2 47.4% 11.2%);
     --muted: hsl(210 16% 93%);
-    --muted-foreground: hsl(215.4 16.3% 46.9%);
+    --muted-foreground: hsl(215.4 16.3% 42%);
     --accent: hsl(210 16% 93%);
     --accent-foreground: hsl(222.2 47.4% 11.2%);
-    --destructive: hsl(354 70% 54%);
+    --destructive: hsl(354 70% 48%);
     --destructive-foreground: hsl(210 40% 98%);
     --border: hsl(214.3 31.8% 91.4%);
     --input: hsl(214.3 31.8% 91.4%);
@@ -98,7 +115,7 @@
     --card-foreground: hsl(210 40% 98%);
     --popover: hsl(222.2 84% 6%);
     --popover-foreground: hsl(210 40% 98%);
-    --primary: hsl(226 80% 65%);
+    --primary: hsl(226 80% 68%);
     --primary-foreground: hsl(222.2 47.4% 11.2%);
     --secondary: hsl(217.2 32.6% 17.5%);
     --secondary-foreground: hsl(210 40% 98%);
