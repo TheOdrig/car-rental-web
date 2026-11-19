@@ -182,12 +182,13 @@ export const FleetTable = memo(function FleetTable({
                                         <TableRow key={car.id} className="group">
                                             <TableCell>
                                                 <div className="flex items-center gap-3">
-                                                    {car.imageUrl ? (
+                                                    {car.thumbnailUrl || car.imageUrl ? (
                                                         <DynamicImage
-                                                            src={car.imageUrl}
+                                                            src={(car.thumbnailUrl || car.imageUrl)!}
                                                             alt={`${car.brand} ${car.model}`}
                                                             width={64}
                                                             height={40}
+                                                            sizes="64px"
                                                             className="h-10 w-16 rounded-lg object-cover border bg-muted"
                                                         />
                                                     ) : (

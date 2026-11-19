@@ -16,7 +16,7 @@ import {
     useChangeCarStatus,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
-import { CAR_STATUSES, CAR_STATUS_LABELS, type CarStatus } from '@/entities/car';
+import { CAR_STATUSES, CAR_STATUS_LABELS, useFilterOptions, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
 
 type StatusFilter = 'all' | CarStatus;
@@ -31,6 +31,7 @@ export function FleetManagementContent() {
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
+    const { data: filterOptions } = useFilterOptions();
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
     const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useFleetList({
         status: statusFilter !== 'all' ? statusFilter : undefined,
@@ -49,6 +50,9 @@ export function FleetManagementContent() {
     }, [searchQuery]);
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
+    const brandOptions = brandFilter !== 'all' && !filterOptions?.brands.includes(brandFilter)
+        ? [brandFilter, ...(filterOptions?.brands ?? [])]
+        : (filterOptions?.brands ?? []);
 
     const deleteCarMutation = useDeleteCar();
     const updateStatusMutation = useChangeCarStatus();
@@ -155,7 +159,7 @@ export function FleetManagementContent() {
                         setPage(0);
                     }}>
                         <SelectTrigger
-                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[160px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by status"
                         >
                             <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
@@ -178,17 +182,18 @@ export function FleetManagementContent() {
                         }}
                     >
                         <SelectTrigger
-                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[160px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by brand"
                         >
                             <SelectValue placeholder="Brand" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Brands</SelectItem>
-                            <SelectItem value="toyota">Toyota</SelectItem>
-                            <SelectItem value="bmw">BMW</SelectItem>
-                            <SelectItem value="mercedes">Mercedes</SelectItem>
-                            <SelectItem value="tesla">Tesla</SelectItem>
+                            {brandOptions.map((brand) => (
+                                <SelectItem key={brand} value={brand}>
+                                    {brand}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
