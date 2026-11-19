@@ -24,6 +24,7 @@ import {
 } from '@/features/process-rentals';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
 import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
+import { formatRentalReference } from '@/shared/lib';
 
 export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
@@ -67,7 +68,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     items={[
                         { label: 'Dashboard', href: '/admin/dashboard' },
                         { label: 'Rentals', href: '/admin/rentals' },
-                        { label: `Rental #${rentalId}` },
+                        { label: formatRentalReference(rentalId) },
                     ]}
                 />
                 <DetailPageError
@@ -84,7 +85,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const rentalWithPenalty = rental;
 
     const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
-    const referenceNumber = `CR-${String(rentalId).padStart(6, '0')}`;
+    const referenceNumber = formatRentalReference(rentalId);
 
     const handleApprove = () => {
         approveRental.mutate({ rentalId }, {

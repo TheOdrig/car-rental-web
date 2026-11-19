@@ -19,7 +19,7 @@ import {
     Car,
     CheckCircle2
 } from 'lucide-react';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDate } from '@/shared/lib';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import type { PendingItem } from '@/entities/rental';
 
@@ -140,7 +140,7 @@ export function ApproveRentalDialog({
                                     Pick-up
                                 </p>
                                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    {safeFormatDate(item.startDate, 'MMM dd, yyyy')}
+                                    {formatDate(item.startDate)}
                                 </div>
                             </div>
                             <div className="space-y-1.5">
@@ -149,7 +149,7 @@ export function ApproveRentalDialog({
                                     Return
                                 </p>
                                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    {safeFormatDate(item.endDate, 'MMM dd, yyyy')}
+                                    {formatDate(item.endDate)}
                                 </div>
                             </div>
                             <div className="space-y-1.5">

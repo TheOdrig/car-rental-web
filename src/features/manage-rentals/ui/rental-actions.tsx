@@ -31,7 +31,7 @@ export const RentalActions = memo(function RentalActions({
     const [loadingStates, setLoadingStates] = useState<ActionButtonStates>({});
 
     const effectiveStatus = status ?? rental.status;
-    const actions = getActionButtons(effectiveStatus);
+    const actions = getActionButtons(effectiveStatus, { startDate: rental.startDate });
 
     const handleAction = useCallback(
         async (action: ActionButton) => {
@@ -70,7 +70,8 @@ export const RentalActions = memo(function RentalActions({
                         key={action.action}
                         variant={action.variant}
                         size={size}
-                        disabled={isLoading}
+                        disabled={isLoading || action.disabled}
+                        title={action.hint}
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();

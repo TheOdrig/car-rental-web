@@ -28,10 +28,12 @@ const FILTER_LABELS: Record<FilterKey, string> = {
     carStatusType: 'Status',
 };
 
+const WHOLE_UNITS = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
+
 function formatFilterValue(key: FilterKey, value: string | number | undefined): string {
     if (value === undefined || value === null) return '';
 
-    if (key === 'minPrice' || key === 'maxPrice') return formatCurrency(Number(value), DEFAULT_CURRENCY);
+    if (key === 'minPrice' || key === 'maxPrice') return formatCurrency(Number(value), DEFAULT_CURRENCY, WHOLE_UNITS);
 
     if (key === 'minSeats') {
         return `${value}+`;

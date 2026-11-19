@@ -2,11 +2,10 @@
 
 import { AlertTriangle, AlertCircle, Info, CheckCircle2, X, ExternalLink
 } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, formatRelativeTime } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { getAlertStyles } from '../lib/utils';
-import { safeFormatDistanceToNow } from '@/shared/lib';
 import type { AdminAlert } from '@/features/admin';
 import type { LucideIcon } from 'lucide-react';
 
@@ -70,7 +69,7 @@ export function AlertsPanel({
 
                                 <div className="flex items-center justify-between mt-3">
                                     <span className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
-                                        {safeFormatDistanceToNow(alert.timestamp, { addSuffix: true })}
+                                        {formatRelativeTime(alert.timestamp, { addSuffix: true })}
                                     </span>
 
                                     {alert.actions && alert.actions.length > 0 && (

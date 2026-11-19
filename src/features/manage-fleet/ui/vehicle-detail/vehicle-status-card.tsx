@@ -3,7 +3,7 @@
 import { Activity, Clock, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDateTime } from '@/shared/lib';
 import type { VehicleCurrentStatus } from '@/entities/car';
 import type { CarStatus } from '@/entities/car';
 
@@ -50,7 +50,7 @@ export function VehicleStatusCard({ currentStatus }: VehicleStatusCardProps) {
                         <Clock className="h-4 w-4 text-slate-400" />
                         <span className="text-slate-500 dark:text-slate-400">Last changed:</span>
                         <span className="text-slate-900 dark:text-slate-100">
-                            {safeFormatDate(currentStatus.lastChangedAt, 'datetime')}
+                            {formatDateTime(currentStatus.lastChangedAt)}
                         </span>
                     </div>
 

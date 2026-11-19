@@ -9,7 +9,7 @@ import {
     CheckSquare,
     XCircle,
 } from 'lucide-react';
-import { cn, safeFormatDate } from '@/shared/lib';
+import { cn, formatDate } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import type { RentalStatus } from '@/entities/rental';
 
@@ -55,10 +55,20 @@ const TIMELINE_STEPS: TimelineStep[] = [
     },
 ];
 
+const REQUESTED_FIRST_STEP = {
+    label: 'Request Submitted',
+    description: 'Waiting for approval from our team',
+};
+
+function getStepText(step: TimelineStep, status: RentalStatus): { label: string; description: string } {
+    if (step.id === 1 && status === 'Requested') return REQUESTED_FIRST_STEP;
+    return { label: step.label, description: step.description };
+}
+
 function getStepFromStatus(status: RentalStatus): number {
     switch (status) {
         case 'Requested':
-            return 0;
+            return 1;
         case 'Confirmed':
             return 1;
         case 'In Use':
@@ -114,6 +124,7 @@ function StepIndicator({ step, currentStep, isLast }: StepIndicatorProps) {
 
 interface StepContentProps {
     step: TimelineStep;
+    status: RentalStatus;
     currentStep: number;
     startDate?: string;
     endDate?: string;
@@ -122,6 +133,7 @@ interface StepContentProps {
 
 function StepContent({
     step,
+    status,
     currentStep,
     startDate,
     endDate,
@@ -130,17 +142,18 @@ function StepContent({
     const isCompleted = step.id < currentStep;
     const isCurrent = step.id === currentStep;
     const isPending = step.id > currentStep;
+    const text = getStepText(step, status);
 
     const getStepDetails = () => {
         if (!isCurrent) return null;
 
         switch (step.id) {
             case 1:
-                return startDate ? `Starts ${safeFormatDate(startDate)}` : null;
+                return startDate ? `Starts ${formatDate(startDate)}` : null;
             case 2:
                 return pickupLocation ?? null;
             case 3:
-                return endDate ? `Returns ${safeFormatDate(endDate)}` : null;
+                return endDate ? `Returns ${formatDate(endDate)}` : null;
             case 4:
                 return 'Thank you for choosing us!';
             default:
@@ -160,9 +173,9 @@ function StepContent({
                     isPending && 'text-muted-foreground'
                 )}
             >
-                {step.label}
+                {text.label}
             </p>
-            <p className="text-sm text-muted-foreground">{step.description}</p>
+            <p className="text-sm text-muted-foreground">{text.description}</p>
 
             {isCurrent && details && (
                 <Card className="mt-3 border-primary/20 bg-primary/5">
@@ -221,6 +234,7 @@ export const RentalTimeline = memo(function RentalTimeline({
                     />
                     <StepContent
                         step={step}
+                        status={status}
                         currentStep={currentStep}
                         startDate={startDate}
                         endDate={endDate}

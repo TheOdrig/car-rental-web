@@ -4,7 +4,7 @@ import { FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
-import { safeFormatDate, formatCurrency } from '@/shared/lib';
+import { formatCurrency, formatDateTime, formatDate, formatRentalReference } from '@/shared/lib';
 import type { AdminRentalStatus, RentalPricing } from '@/entities/rental';
 
 interface RentalInfoCardProps {
@@ -54,7 +54,7 @@ export function RentalInfoCard({
     notes,
     cancellationReason,
 }: RentalInfoCardProps) {
-    const referenceNumber = `CR-${String(rentalId).padStart(6, '0')}`;
+    const referenceNumber = formatRentalReference(rentalId);
 
     return (
         <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
@@ -91,7 +91,7 @@ export function RentalInfoCard({
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Created</span>
                     <span className="text-sm text-slate-900 dark:text-slate-100">
-                        {safeFormatDate(createdAt, 'datetime')}
+                        {formatDateTime(createdAt)}
                     </span>
                 </div>
 
@@ -100,13 +100,13 @@ export function RentalInfoCard({
                         <div>
                             <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Start Date</span>
                             <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(startDate)}
+                                {formatDate(startDate)}
                             </span>
                         </div>
                         <div>
                             <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">End Date</span>
                             <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(endDate)}
+                                {formatDate(endDate)}
                             </span>
                         </div>
                     </div>

@@ -31,8 +31,8 @@ describe('dashboard revenue by currency', () => {
             />
         );
 
-        expect(screen.getByText(/₺8\.800/)).toBeInTheDocument();
-        expect(screen.getByText('$250')).toBeInTheDocument();
+        expect(screen.getByText(/₺8,800\.00/)).toBeInTheDocument();
+        expect(screen.getByText('$250.00')).toBeInTheDocument();
         expect(screen.queryByText(/9\.050|9,050/)).not.toBeInTheDocument();
     });
 
@@ -49,9 +49,9 @@ describe('dashboard revenue by currency', () => {
         );
 
         expect(screen.getByText('Revenue Trends (EUR)')).toBeInTheDocument();
-        expect(screen.getByText('€3,500')).toBeInTheDocument();
-        expect(screen.getByText('€3,000')).toBeInTheDocument();
-        expect(screen.getByText('€3,400')).toBeInTheDocument();
+        expect(screen.getByText('€3,500.00')).toBeInTheDocument();
+        expect(screen.getByText('€3,000.00')).toBeInTheDocument();
+        expect(screen.getByText('€3,400.00')).toBeInTheDocument();
         expect(screen.queryByText(/\$/)).not.toBeInTheDocument();
     });
 });

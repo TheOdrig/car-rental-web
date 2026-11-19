@@ -17,7 +17,7 @@ interface PriceRangeSliderProps {
     className?: string;
 }
 
-const defaultFormatPrice = (value: number) => formatCurrency(value, DEFAULT_CURRENCY);
+const defaultFormatPrice = (value: number) => formatCurrency(value, DEFAULT_CURRENCY, { minimumFractionDigits: 0, maximumFractionDigits: 0 });
 
 export function PriceRangeSlider({
     min = 0,

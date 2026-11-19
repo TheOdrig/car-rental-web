@@ -52,7 +52,7 @@ describe('Rental Entity', () => {
     });
     describe('getFormattedTotal', () => {
       it('should format price correctly', () => {
-        expect(getFormattedTotal(mockRental)).toBe('$200');
+        expect(getFormattedTotal(mockRental)).toBe('$200.00');
       });
     });
   });

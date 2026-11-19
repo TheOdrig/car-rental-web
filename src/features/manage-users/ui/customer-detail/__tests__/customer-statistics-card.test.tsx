@@ -33,7 +33,7 @@ describe('CustomerStatisticsCard', () => {
         const block = screen.getByTestId('spent-by-currency');
         expect(block.textContent).toContain('TRY (2 rentals)');
         expect(block.textContent).toContain('USD (1 rental)');
-        expect(block.textContent).toContain('4.500,00');
+        expect(block.textContent).toContain('₺4,500.00');
         expect(block.textContent).toContain('$120.00');
     });
 

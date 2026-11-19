@@ -8,11 +8,8 @@ import {
     Car,
     Clock,
     ArrowRight,
-    MapPin,
-    ExternalLink,
 } from 'lucide-react';
-import { cn } from '@/shared/lib';
-import { safeFormatDate, formatCurrencyWithDecimals } from '@/shared/lib';
+import { cn, formatDate, formatCurrency, formatRentalReference } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
@@ -52,7 +49,7 @@ function getStatusColor(status: RentalStatus): string {
 }
 
 function formatPrice(price: number, currency: string): string {
-    return formatCurrencyWithDecimals(price, currency || 'USD');
+    return formatCurrency(price, currency || 'USD');
 }
 
 function ActionButtons({
@@ -66,23 +63,29 @@ function ActionButtons({
 }) {
     if (actions.length === 0) return null;
 
+    const hint = actions.find((action) => action.disabled && action.hint)?.hint;
+
     return (
-        <div className="flex items-center gap-2">
-            {actions.map((action) => (
-                <Button
-                    key={action.action}
-                    variant={action.variant}
-                    size="sm"
-                    className="cursor-pointer"
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        onAction?.(action.action, rental);
-                    }}
-                >
-                    {action.label}
-                </Button>
-            ))}
+        <div className="flex flex-col items-end gap-1">
+            <div className="flex items-center gap-2">
+                {actions.map((action) => (
+                    <Button
+                        key={action.action}
+                        variant={action.variant}
+                        size="sm"
+                        className="cursor-pointer"
+                        disabled={action.disabled}
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            onAction?.(action.action, rental);
+                        }}
+                    >
+                        {action.label}
+                    </Button>
+                ))}
+            </div>
+            {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
         </div>
     );
 }
@@ -98,9 +101,9 @@ export const RentalCard = memo(function RentalCard({
     const { carSummary, startDate, endDate, days, totalPrice, currency, status, id } = rental;
     const isActive = status === 'In Use';
     const isCompleted = status === 'Returned';
-    const actions = showActions ? getActionButtons(status) : [];
+    const actions = showActions ? getActionButtons(status, { startDate }) : [];
 
-    const referenceId = `R-${id.toString().padStart(4, '0')}`;
+    const referenceId = formatRentalReference(id);
 
     if (variant === 'detailed') {
         const cardContent = (
@@ -151,29 +154,12 @@ export const RentalCard = memo(function RentalCard({
                             <div className="mb-4 grid gap-2 text-sm">
                                 <div className="flex items-center gap-2 text-muted-foreground">
                                     <Calendar className="h-4 w-4 shrink-0" />
-                                    <span>{safeFormatDate(startDate)}</span>
+                                    <span>{formatDate(startDate)}</span>
                                     <ArrowRight className="h-3 w-3" />
-                                    <span>{safeFormatDate(endDate)}</span>
+                                    <span>{formatDate(endDate)}</span>
                                     <Badge variant="outline" className="ml-1 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
                                         {days} {days === 1 ? 'day' : 'days'}
                                     </Badge>
-                                </div>
-
-                                <div className="flex items-center justify-between gap-2">
-                                    <div className="flex items-center gap-2 text-muted-foreground">
-                                        <MapPin className="h-4 w-4 shrink-0" />
-                                        <span>San Francisco Airport</span>
-                                    </div>
-                                    <button
-                                        className="flex items-center gap-1 text-xs text-primary hover:underline"
-                                        onClick={(e) => {
-                                            e.preventDefault();
-                                            e.stopPropagation();
-                                        }}
-                                    >
-                                        Get Directions
-                                        <ExternalLink className="h-3 w-3" />
-                                    </button>
                                 </div>
                             </div>
 
@@ -184,14 +170,9 @@ export const RentalCard = memo(function RentalCard({
                             )}
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
-                                <div className="flex items-center gap-2">
-                                    <span className="text-xl font-bold text-slate-900 dark:text-white">
-                                        {formatPrice(totalPrice, currency || 'USD')}
-                                    </span>
-                                    <Badge variant="outline" className="text-xs bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-200 dark:border-green-800">
-                                        Paid
-                                    </Badge>
-                                </div>
+                                <span className="text-xl font-bold text-slate-900 dark:text-white">
+                                    {formatPrice(totalPrice, currency || 'USD')}
+                                </span>
                                 <ActionButtons
                                     actions={actions}
                                     rental={rental}
@@ -238,9 +219,9 @@ export const RentalCard = memo(function RentalCard({
 
                         <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
                             <Calendar className="h-4 w-4 shrink-0" />
-                            <span>{safeFormatDate(startDate)}</span>
+                            <span>{formatDate(startDate)}</span>
                             <ArrowRight className="h-3 w-3" />
-                            <span>{safeFormatDate(endDate)}</span>
+                            <span>{formatDate(endDate)}</span>
                         </div>
 
                         {status === 'Cancelled' && rental.cancellationReason && (

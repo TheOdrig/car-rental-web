@@ -3,13 +3,13 @@
 import { CheckCircle, Calendar, Clock, Mail, FileText, Printer, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useRental } from '@/entities/rental';
 
 function formatBookingReference(ref: string): string {
     const numericId = parseInt(ref, 10);
     if (!isNaN(numericId)) {
-        return `CR-${numericId.toString().padStart(6, '0')}`;
+        return formatRentalReference(numericId);
     }
     return ref.toUpperCase();
 }
@@ -73,7 +73,7 @@ export function BookingSuccess({
                                     <div>
                                         <p className="text-sm text-slate-600 dark:text-slate-400">Rental Period</p>
                                         <p className="font-medium text-slate-900 dark:text-slate-100">
-                                            {safeFormatDate(startDate)} - {safeFormatDate(endDate)}
+                                            {formatDate(startDate)} - {formatDate(endDate)}
                                         </p>
                                     </div>
                                 </div>

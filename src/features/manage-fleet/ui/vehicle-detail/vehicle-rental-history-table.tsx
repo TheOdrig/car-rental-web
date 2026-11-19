@@ -9,7 +9,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
-import { safeFormatDate, formatCurrency } from '@/shared/lib';
+import { formatCurrency, formatDate, formatRentalReference } from '@/shared/lib';
 import type { AdminRentalStatus } from '@/entities/rental';
 
 interface VehicleRentalHistoryTableProps {
@@ -78,7 +78,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                                     href={`/admin/rentals/${rental.id}`}
                                                     className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
                                                 >
-                                                    CR-{String(rental.id).padStart(6, '0')}
+                                                    {formatRentalReference(rental.id)}
                                                 </Link>
                                             </td>
                                             <td className="py-3 px-2">
@@ -90,7 +90,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                                 </Link>
                                             </td>
                                             <td className="py-3 px-2 text-slate-600 dark:text-slate-400">
-                                                {safeFormatDate(rental.startDate)} - {safeFormatDate(rental.endDate)}
+                                                {formatDate(rental.startDate)} - {formatDate(rental.endDate)}
                                             </td>
                                             <td className="py-3 px-2 text-slate-600 dark:text-slate-400">
                                                 {rental.duration} days

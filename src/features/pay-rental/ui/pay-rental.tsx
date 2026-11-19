@@ -9,7 +9,7 @@ import { AlertCircle, CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { isApiError } from '@/shared/api';
-import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
 import { rentalKeys } from '@/entities/rental';
 import {
     isPaymentSecured,
@@ -45,7 +45,7 @@ function Shell({ rentalId, children }: { rentalId: number; children: ReactNode }
             <DemoNotice />
             <Card>
                 <CardHeader>
-                    <CardTitle>Pay for rental #{rentalId}</CardTitle>
+                    <CardTitle>Pay for rental {formatRentalReference(rentalId)}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">{children}</CardContent>
             </Card>

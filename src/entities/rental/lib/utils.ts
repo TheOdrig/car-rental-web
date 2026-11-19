@@ -1,6 +1,6 @@
 import { Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
-import { parseLocalDate } from './rental-rules';
+import { addCalendarDays, parseLocalDate } from './rental-rules';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.ACTIVE;
@@ -18,7 +18,7 @@ export const getFormattedRentalPeriod = (rental: Rental): string => {
 };
 
 export const getFormattedTotal = (rental: Rental): string => {
-    return formatCurrency(rental.totalPrice);
+    return formatCurrency(rental.totalPrice, rental.currency ?? 'USD');
 };
 
 export function getLateReturnStatusColor(status: LateReturnStatus): string {
@@ -60,12 +60,7 @@ export function getRentalsByTab(rentals: Rental[], tab: RentalTab): Rental[] {
         case 'active':
             return rentals.filter((r) => r.status === RentalStatus.ACTIVE);
         case 'upcoming':
-            return rentals.filter((r) => {
-                if (r.status !== RentalStatus.CONFIRMED) return false;
-                const startDate = parseLocalDate(r.startDate) ?? new Date(r.startDate);
-                startDate.setHours(0, 0, 0, 0);
-                return startDate > today;
-            });
+            return rentals.filter((r) => isUpcomingRental(r, today));
         case 'completed':
             return rentals.filter((r) => r.status === RentalStatus.COMPLETED);
         case 'cancelled':
@@ -82,12 +77,7 @@ export function calculateTabCounts(rentals: Rental[]): RentalTabCounts {
     return {
         all: rentals.length,
         active: rentals.filter((r) => r.status === RentalStatus.ACTIVE).length,
-        upcoming: rentals.filter((r) => {
-            if (r.status !== RentalStatus.CONFIRMED) return false;
-            const startDate = parseLocalDate(r.startDate) ?? new Date(r.startDate);
-            startDate.setHours(0, 0, 0, 0);
-            return startDate > today;
-        }).length,
+        upcoming: rentals.filter((r) => isUpcomingRental(r, today)).length,
         completed: rentals.filter((r) => r.status === RentalStatus.COMPLETED).length,
         cancelled: rentals.filter((r) => r.status === RentalStatus.CANCELLED).length,
     };
@@ -118,8 +108,19 @@ const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
     [RentalStatus.CANCELLED]: [],
 };
 
-export function getActionButtons(status: RentalStatus): ActionButton[] {
-    return ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
+export function getActionButtons(
+    status: RentalStatus,
+    options: { startDate?: string; now?: Date } = {}
+): ActionButton[] {
+    const buttons = ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
+    if (status !== RentalStatus.CONFIRMED || !options.startDate) return buttons;
+    if (isPaymentWindowOpen(options.startDate, options.now)) return buttons;
+    const opensOn = getPaymentOpensOn(options.startDate);
+    return buttons.map((button) =>
+        button.action === 'pay'
+            ? { ...button, disabled: true, hint: opensOn ? `Payment opens on ${formatDate(opensOn)}` : undefined }
+            : button
+    );
 }
 
 export const RENTAL_TABS: { value: RentalTab; label: string }[] = [
@@ -135,13 +136,27 @@ export function getTabLabel(tab: RentalTab): string {
     return found?.label || 'All';
 }
 
-export function isUpcomingRental(rental: Rental): boolean {
-    if (rental.status !== RentalStatus.CONFIRMED) return false;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+export function isUpcomingRental(rental: Rental, now: Date = new Date()): boolean {
+    if (rental.status !== RentalStatus.CONFIRMED && rental.status !== RentalStatus.REQUESTED) return false;
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startDate = parseLocalDate(rental.startDate) ?? new Date(rental.startDate);
     startDate.setHours(0, 0, 0, 0);
-    return startDate > today;
+    return startDate >= today;
+}
+
+export const PAYMENT_WINDOW_DAYS = 5;
+
+export function getPaymentOpensOn(startDate: string): Date | null {
+    const start = parseLocalDate(startDate);
+    if (!start) return null;
+    return addCalendarDays(start, -PAYMENT_WINDOW_DAYS);
+}
+
+export function isPaymentWindowOpen(startDate: string, now: Date = new Date()): boolean {
+    const opensOn = getPaymentOpensOn(startDate);
+    if (!opensOn) return true;
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return today >= opensOn;
 }
 
 export function getStatusBadgeVariant(

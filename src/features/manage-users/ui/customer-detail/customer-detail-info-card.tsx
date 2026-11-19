@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { CopyButton } from '@/shared/ui/copy-button';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDateTime, formatDate } from '@/shared/lib';
 import type { CustomerDetailResponse, Role } from '@/entities/user';
 
 interface CustomerDetailInfoCardProps {
@@ -100,7 +100,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                         <div>
                             <span className="text-xs text-slate-500 dark:text-slate-400 block">Registered</span>
                             <span className="text-sm text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(customer.registrationDate)}
+                                {formatDate(customer.registrationDate)}
                             </span>
                         </div>
                     </div>
@@ -110,7 +110,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                             <div>
                                 <span className="text-xs text-slate-500 dark:text-slate-400 block">Last Login</span>
                                 <span className="text-sm text-slate-900 dark:text-slate-100">
-                                    {safeFormatDate(customer.lastLoginDate, 'datetime')}
+                                    {formatDateTime(customer.lastLoginDate)}
                                 </span>
                             </div>
                         </div>

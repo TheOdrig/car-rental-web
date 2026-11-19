@@ -48,7 +48,7 @@ describe('CarListItem', () => {
     });
     it('should render car price with currency', () => {
         render(<CarListItem car={mockCar} />);
-        expect(screen.getByText('$75')).toBeInTheDocument();
+        expect(screen.getByText('$75.00')).toBeInTheDocument();
         expect(screen.getByText('/day')).toBeInTheDocument();
     });
     it('should render car specifications', () => {

@@ -30,6 +30,13 @@ describe('RentalTimeline', () => {
             const currentStep = screen.getByRole('listitem', { current: 'step' });
             expect(currentStep).toHaveTextContent('Booking Confirmed');
         });
+        it('should word the first step as a pending request for Requested status', () => {
+            render(<RentalTimeline status={RentalStatus.REQUESTED} />);
+            const currentStep = screen.getByRole('listitem', { current: 'step' });
+            expect(currentStep).toHaveTextContent('Request Submitted');
+            expect(screen.queryByText('Booking Confirmed')).not.toBeInTheDocument();
+            expect(screen.queryByText('Your reservation is confirmed')).not.toBeInTheDocument();
+        });
         it('should show first step as completed for In Use status', () => {
             render(<RentalTimeline status={RentalStatus.ACTIVE} />);
             const steps = screen.getAllByRole('listitem');

@@ -32,10 +32,10 @@ describe('RentalForm', () => {
         expect(screen.getByText(/payment comes after approval/i)).toBeInTheDocument();
     });
 
-    it('shows the daily rate in the car currency with the matching locale', () => {
+    it('shows the daily rate in the car currency as an en-US amount', () => {
         render(<RentalForm car={car} />);
 
-        expect(screen.getByText(/1\.500,00/)).toBeInTheDocument();
+        expect(screen.getByText(/₺1,500\.00/)).toBeInTheDocument();
     });
 
     it('does not navigate when no dates were chosen', async () => {

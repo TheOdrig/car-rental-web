@@ -37,7 +37,7 @@ describe('Car Entity', () => {
         });
         describe('getFormattedPrice', () => {
             it('should format price correctly', () => {
-                expect(getFormattedPrice(mockCar)).toBe('$100');
+                expect(getFormattedPrice(mockCar)).toBe('$100.00');
             });
         });
     });

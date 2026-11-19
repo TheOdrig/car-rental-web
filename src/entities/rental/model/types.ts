@@ -78,6 +78,8 @@ export interface ActionButton {
     action: string;
     variant: 'default' | 'outline' | 'ghost' | 'destructive';
     icon?: string;
+    disabled?: boolean;
+    hint?: string;
 }
 
 

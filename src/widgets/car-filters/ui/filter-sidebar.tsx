@@ -105,7 +105,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         step={10}
                         defaultValue={[filters.minPrice ?? 0, filters.maxPrice ?? 500]}
                         onValueCommit={handlePriceRangeCommit}
-                        formatPrice={(v) => formatCurrency(v, DEFAULT_CURRENCY)}
+                        formatPrice={(v) => formatCurrency(v, DEFAULT_CURRENCY, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     />
                 </FilterSection>
 

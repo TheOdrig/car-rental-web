@@ -8,7 +8,7 @@ vi.mock('@/shared/lib', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/lib')>();
     return {
         ...original,
-        safeFormatDistanceToNow: vi.fn(() => '2 minutes ago'),
+        formatRelativeTime: vi.fn(() => '2 minutes ago'),
     };
 });
 describe('AlertsPanel', () => {

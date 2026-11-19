@@ -4,19 +4,19 @@ import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPerc
 import { MonthlyRevenue } from '@/features/admin';
 describe('formatCurrency', () => {
     it('should format positive amounts with dollar sign', () => {
-        expect(formatCurrency(1000)).toBe('$1,000');
+        expect(formatCurrency(1000)).toBe('$1,000.00');
     });
     it('should format large amounts with commas', () => {
-        expect(formatCurrency(1234567)).toBe('$1,234,567');
+        expect(formatCurrency(1234567)).toBe('$1,234,567.00');
     });
     it('should format zero correctly', () => {
-        expect(formatCurrency(0)).toBe('$0');
+        expect(formatCurrency(0)).toBe('$0.00');
     });
-    it('should format amounts without decimal places', () => {
-        expect(formatCurrency(99.99)).toBe('$100');
+    it('should keep two decimal places', () => {
+        expect(formatCurrency(99.99)).toBe('$99.99');
     });
     it('should handle negative amounts', () => {
-        expect(formatCurrency(-500)).toBe('-$500');
+        expect(formatCurrency(-500)).toBe('-$500.00');
     });
 });
 describe('formatTrend', () => {
@@ -63,8 +63,8 @@ describe('formatTime', () => {
         expect(result).toMatch(/2:15 PM/i);
     });
     it('should handle ISO string input', () => {
-        const result = formatTime('2024-01-01T16:45:00');
-        expect(result).toMatch(/4:45 PM/i);
+        const result = formatTime('2024-01-01T16:45:00Z');
+        expect(result).toMatch(/\d{1,2}:45\s(AM|PM)/i);
     });
     it('should format midnight correctly', () => {
         const date = new Date('2024-01-01T00:00:00');

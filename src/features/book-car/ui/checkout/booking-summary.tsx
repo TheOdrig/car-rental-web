@@ -3,7 +3,7 @@
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Lock, ArrowRight, Phone, Headphones, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { safeFormatDate } from '@/shared/lib';
+import { formatWeekdayDate } from '@/shared/lib';
 import { useCurrency } from '@/entities/currency';
 import { mapCurrency } from '@/entities/currency';
 import type { PriceBreakdown } from '@/features/book-car';
@@ -70,7 +70,7 @@ export function BookingSummary({
                                 Start date
                             </p>
                             <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(startDate, 'EEE, MMM d, yyyy')}
+                                {formatWeekdayDate(startDate)}
                             </p>
                         </div>
                     </div>
@@ -84,7 +84,7 @@ export function BookingSummary({
                                 End date
                             </p>
                             <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                {safeFormatDate(endDate, 'EEE, MMM d, yyyy')}
+                                {formatWeekdayDate(endDate)}
                             </p>
                         </div>
                     </div>

@@ -13,7 +13,7 @@ import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ChevronLeft, ChevronRight, Clock, AlertTriangle } from 'lucide-react';
 import { LateReturnStatusBadge, formatLateTime, type LateReturnReport } from '@/entities/rental';
-import { formatCurrency, safeFormatDate } from '@/shared/lib';
+import { formatCurrency, formatDate } from '@/shared/lib';
 
 interface LateReturnsTableProps {
     data: LateReturnReport[];
@@ -86,7 +86,7 @@ export function LateReturnsTable({
                                     </div>
                                 </TableCell>
                                 <TableCell className="text-slate-700 dark:text-slate-300">
-                                    {safeFormatDate(item.endDate)}
+                                    {formatDate(item.endDate)}
                                 </TableCell>
                                 <TableCell>
                                     <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300">

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { cn } from '@/shared/lib';
 import { showToast, toastMessages } from '@/shared/lib';
-import { safeFormatDate, safeFormatDateTime } from '@/shared/lib';
+import { formatDate, formatDateTime } from '@/shared/lib';
 vi.mock('sonner', () => ({
     toast: {
         success: vi.fn(),
@@ -47,27 +47,27 @@ describe('Utils', () => {
     });
     describe('Date Formatting', () => {
         const testDate = '2024-01-15T12:00:00Z';
-        describe('safeFormatDate', () => {
+        describe('formatDate', () => {
             it('should format a valid date string', () => {
-                expect(safeFormatDate(testDate)).toBe('Jan 15, 2024');
+                expect(formatDate(testDate)).toBe('Jan 15, 2024');
             });
-            it('should format with custom format string', () => {
-                expect(safeFormatDate(testDate, 'yyyy-MM-dd')).toBe('2024-01-15');
+            it('should not shift a date-only value across time zones', () => {
+                expect(formatDate('2024-01-15')).toBe('Jan 15, 2024');
             });
             it('should return N/A for null/undefined', () => {
-                expect(safeFormatDate(null)).toBe('N/A');
-                expect(safeFormatDate(undefined)).toBe('N/A');
+                expect(formatDate(null)).toBe('N/A');
+                expect(formatDate(undefined)).toBe('N/A');
             });
             it('should return N/A for invalid date string', () => {
-                expect(safeFormatDate('invalid-date')).toBe('N/A');
+                expect(formatDate('invalid-date')).toBe('N/A');
             });
         });
-        describe('safeFormatDateTime', () => {
+        describe('formatDateTime', () => {
             it('should format a valid date string with time', () => {
-                expect(safeFormatDateTime(testDate)).toContain('Jan 15, 2024 at');
+                expect(formatDateTime(testDate)).toMatch(/^Jan 1[5-6], 2024, \d{1,2}:\d{2}\s(AM|PM)$/);
             });
             it('should return N/A for invalid inputs', () => {
-                expect(safeFormatDateTime('')).toBe('N/A');
+                expect(formatDateTime('')).toBe('N/A');
             });
         });
     });

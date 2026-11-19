@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Badge } from '@/shared/ui/badge';
 import { History, RefreshCw, CheckCircle } from 'lucide-react';
-import { formatCurrency } from '@/shared/lib';
-import { safeFormatDate } from '@/shared/lib';
+import { formatCurrency, formatDateTime } from '@/shared/lib';
 
 interface PenaltyHistorySectionProps {
     rentalId: number;
@@ -48,7 +47,7 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
                     >
                         <div className="flex items-start justify-between mb-2">
                             <div className="text-sm text-slate-500 dark:text-slate-400">
-                                {safeFormatDate(waiver.waivedAt, 'MMM d, yyyy h:mm a')}
+                                {formatDateTime(waiver.waivedAt)}
                             </div>
                             {waiver.remainingPenalty === 0 && (
                                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border-0">

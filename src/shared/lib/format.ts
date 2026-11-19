@@ -1,5 +1,8 @@
-import { format, isValid, parseISO, formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow } from 'date-fns';
 import type { CurrencyType } from '@/shared/types';
+
+const LOCALE = 'en-US';
+const MISSING = 'N/A';
 
 export interface FormatCurrencyOptions {
     minimumFractionDigits?: number;
@@ -7,38 +10,42 @@ export interface FormatCurrencyOptions {
     showSymbol?: boolean;
 }
 
-function getLocaleForCurrency(currency: CurrencyType | string): string {
-    return currency === 'TRY' ? 'tr-TR' : 'en-US';
-}
-
 export function formatCurrency(
     amount: number,
     currency: CurrencyType | string = 'USD',
     options: FormatCurrencyOptions = {}
 ): string {
-    const {
-        minimumFractionDigits = 0,
-        maximumFractionDigits = 0,
-        showSymbol = true,
-    } = options;
+    const { minimumFractionDigits, maximumFractionDigits, showSymbol = true } = options;
 
-    const locale = getLocaleForCurrency(currency);
-
-    return new Intl.NumberFormat(locale, {
+    return new Intl.NumberFormat(LOCALE, {
         style: showSymbol ? 'currency' : 'decimal',
         currency: showSymbol ? currency : undefined,
+        currencyDisplay: showSymbol ? 'narrowSymbol' : undefined,
         minimumFractionDigits,
         maximumFractionDigits,
     }).format(amount);
+}
+
+export function formatCurrencyWithDecimals(
+    amount: number,
+    currency: CurrencyType | string = 'USD'
+): string {
+    return formatCurrency(amount, currency);
+}
+
+export function formatAmount(amount: number, currency?: CurrencyType | string | null): string {
+    if (currency) return formatCurrency(amount, currency);
+    return new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 2 }).format(amount);
 }
 
 export function formatCompactCurrency(
     amount: number,
     currency: CurrencyType | string = 'USD'
 ): string {
-    return new Intl.NumberFormat(getLocaleForCurrency(currency), {
+    return new Intl.NumberFormat(LOCALE, {
         style: 'currency',
         currency,
+        currencyDisplay: 'narrowSymbol',
         notation: 'compact',
         minimumFractionDigits: 0,
         maximumFractionDigits: 1,
@@ -46,7 +53,7 @@ export function formatCompactCurrency(
 }
 
 export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): string {
-    const part = new Intl.NumberFormat(getLocaleForCurrency(currency), {
+    const part = new Intl.NumberFormat(LOCALE, {
         style: 'currency',
         currency,
         currencyDisplay: 'narrowSymbol',
@@ -56,17 +63,6 @@ export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): stri
     return part?.value ?? currency;
 }
 
-export function formatCurrencyWithDecimals(
-    amount: number,
-    currency: CurrencyType | string = 'USD'
-): string {
-    const fractionDigits = currency === 'JPY' ? 0 : 2;
-    return formatCurrency(amount, currency, {
-        minimumFractionDigits: fractionDigits,
-        maximumFractionDigits: fractionDigits,
-    });
-}
-
 export function formatDailyPrice(
     amount: number,
     currency: CurrencyType | string = 'USD'
@@ -74,48 +70,77 @@ export function formatDailyPrice(
     return `${formatCurrency(amount, currency)}/day`;
 }
 
-export function safeFormatDate(
-    date: string | Date | null | undefined,
-    formatStr: string = 'MMM d, yyyy'
-): string {
-    if (!date) return 'N/A';
+const DATE_ONLY = /^\d{4}-\d{2}-\d{2}$/;
+const HAS_ZONE = /(Z|[+-]\d{2}:?\d{2})$/i;
 
-    const d = typeof date === 'string' ? parseISO(date) : date;
+export type DateInput = string | Date | null | undefined;
 
-    if (!isValid(d)) return 'N/A';
-
-    return format(d, formatStr);
+export function isDateOnly(value: DateInput): boolean {
+    return typeof value === 'string' && DATE_ONLY.test(value.trim());
 }
 
-export function safeFormatDateTime(
-    date: string | Date | null | undefined
-): string {
-    return safeFormatDate(date, "MMM d, yyyy 'at' h:mm a");
+export function parseApiDate(value: DateInput): Date | null {
+    if (!value) return null;
+    if (value instanceof Date) return Number.isNaN(value.getTime()) ? null : value;
+    const text = value.trim();
+    if (!text) return null;
+    const normalized = DATE_ONLY.test(text)
+        ? `${text}T00:00:00Z`
+        : HAS_ZONE.test(text)
+          ? text
+          : `${text}Z`;
+    const parsed = new Date(normalized);
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
 }
 
-export function safeFormatDistanceToNow(
-    date: string | Date | null | undefined,
+function format(value: DateInput, options: Intl.DateTimeFormatOptions): string {
+    const parsed = parseApiDate(value);
+    if (!parsed) return MISSING;
+    const timeZone = isDateOnly(value) ? 'UTC' : undefined;
+    return new Intl.DateTimeFormat(LOCALE, { ...options, timeZone }).format(parsed);
+}
+
+export function formatDate(value: DateInput): string {
+    return format(value, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+export function formatShortDate(value: DateInput): string {
+    return format(value, { month: 'short', day: 'numeric' });
+}
+
+export function formatWeekdayDate(value: DateInput): string {
+    return format(value, { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+export function formatTime(value: DateInput): string {
+    return format(value, { hour: 'numeric', minute: '2-digit', hour12: true });
+}
+
+export function formatDateTime(value: DateInput): string {
+    return format(value, {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+    });
+}
+
+export function formatRelativeTime(
+    value: DateInput,
     options?: { addSuffix?: boolean }
 ): string {
-    if (!date) return 'N/A';
-
-    const d = typeof date === 'string' ? parseISO(date) : date;
-
-    if (!isValid(d)) return 'N/A';
-
-    return formatDistanceToNow(d, options);
+    const parsed = parseApiDate(value);
+    if (!parsed) return MISSING;
+    return formatDistanceToNow(parsed, options);
 }
 
-export function formatDate(date: Date | string | null | undefined): string {
-    return safeFormatDate(date, 'MMM d, yyyy');
+export function formatRentalReference(id: number | string | null | undefined): string {
+    if (id === null || id === undefined || id === '') return MISSING;
+    return `CR-${String(id).padStart(6, '0')}`;
 }
 
-export function formatTime(date: Date | string | null | undefined): string {
-    if (!date) return 'N/A';
-    const d = typeof date === 'string' ? parseISO(date) : date;
-    if (!isValid(d)) return 'N/A';
-    return format(d, 'h:mm a');
-}
 export interface CurrencyAmount {
     currency?: string;
     totalSpent?: number;
@@ -124,5 +149,5 @@ export interface CurrencyAmount {
 export function formatAmountsByCurrency(entries: readonly CurrencyAmount[] | undefined): string[] {
     return (entries ?? [])
         .filter((entry): entry is CurrencyAmount & { currency: string } => Boolean(entry.currency))
-        .map((entry) => formatCurrencyWithDecimals(entry.totalSpent ?? 0, entry.currency));
+        .map((entry) => formatCurrency(entry.totalSpent ?? 0, entry.currency));
 }

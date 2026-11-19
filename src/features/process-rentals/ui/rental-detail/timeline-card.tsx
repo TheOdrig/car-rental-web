@@ -2,7 +2,7 @@
 
 import { Clock, CheckCircle2, XCircle, AlertCircle, Car, CalendarCheck } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDateTime } from '@/shared/lib';
 import { cn } from '@/shared/lib';
 import type { TimelineEvent, TimelineEventType } from '@/entities/rental';
 import type { LucideIcon } from 'lucide-react';
@@ -81,7 +81,7 @@ export function TimelineCard({ events }: TimelineCardProps) {
                                                 {label}
                                             </span>
                                             <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                                                {safeFormatDate(event.timestamp, 'datetime')}
+                                                {formatDateTime(event.timestamp)}
                                             </span>
                                         </div>
 

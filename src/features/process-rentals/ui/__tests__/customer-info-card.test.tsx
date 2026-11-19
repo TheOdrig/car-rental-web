@@ -50,7 +50,7 @@ describe('CustomerInfoCard', () => {
     });
     it('should render spending per currency without summing', () => {
         renderWithProviders(<CustomerInfoCard customer={mockCustomer} />);
-        expect(screen.getByText('₺4.500,00 + $120.00')).toBeInTheDocument();
+        expect(screen.getByText('₺4,500.00 + $120.00')).toBeInTheDocument();
     });
     it('should render link to customer detail page', () => {
         renderWithProviders(<CustomerInfoCard customer={mockCustomer} />);

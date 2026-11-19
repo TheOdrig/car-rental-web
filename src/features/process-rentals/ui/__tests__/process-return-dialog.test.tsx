@@ -33,7 +33,7 @@ describe('ProcessReturnDialog', () => {
         expect(screen.getByText('Alice Cooper')).toBeInTheDocument();
         expect(screen.getByText('Audi A4')).toBeInTheDocument();
         expect(screen.getByText('AUD-9999')).toBeInTheDocument();
-        expect(screen.getByText('Rental #303')).toBeInTheDocument();
+        expect(screen.getByText('CR-000303')).toBeInTheDocument();
     });
     it('should call onConfirm with notes when confirming return', async () => {
         const onConfirm = vi.fn();

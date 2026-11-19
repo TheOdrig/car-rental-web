@@ -1,4 +1,3 @@
-import { isValid } from 'date-fns';
 import type { MonthlyRevenue, RevenueDataPoint } from '../model/types';
 
 export function formatTrend(value: number): string {
@@ -15,26 +14,6 @@ export function validatePickupForm(data: {
 
 export function validateRejectForm(reason: string): boolean {
     return reason.trim().length > 0;
-}
-
-export function formatTime(date: Date | string): string {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    if (!isValid(d)) return 'N/A';
-    return d.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    });
-}
-
-export function formatDate(date: Date | string): string {
-    const d = typeof date === 'string' ? new Date(date) : date;
-    if (!isValid(d)) return 'N/A';
-    return d.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        year: 'numeric',
-    });
 }
 
 const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];

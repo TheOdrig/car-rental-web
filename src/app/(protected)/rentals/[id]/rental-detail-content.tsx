@@ -2,6 +2,8 @@
 
 import { useRouter, notFound } from 'next/navigation';
 import { useRental } from '@/entities/rental';
+import { useProfile } from '@/features/user-settings';
+import { formatRentalReference } from '@/shared/lib';
 import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
 import { Breadcrumb } from '@/shared/ui';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -23,6 +25,8 @@ export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
 
     const { data: rental, isLoading, error } = useRental(rentalId);
+    const { data: profile } = useProfile();
+    const driverName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
 
     const handleCancelSuccess = () => {
         router.push('/rentals');
@@ -46,11 +50,11 @@ export function RentalDetailContent({ id }: { id: string }) {
             <Breadcrumb
                 items={[
                     { label: 'Rentals', href: '/rentals' },
-                    { label: `Order #${rental.id}` },
+                    { label: `Rental ${formatRentalReference(rental.id)}` },
                 ]}
                 className="mb-6"
             />
-            <RentalDetail rental={rental} onCancelSuccess={handleCancelSuccess} />
+            <RentalDetail rental={rental} driverName={driverName || undefined} onCancelSuccess={handleCancelSuccess} />
         </div>
     );
 }

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { useAddAdminNote } from '../../api/users-api';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDateTime } from '@/shared/lib';
 import type { AdminNote } from '@/entities/user';
 
 interface CustomerNotesCardProps {
@@ -111,7 +111,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                                     </div>
                                     <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
                                         <Clock className="h-3 w-3" />
-                                        {safeFormatDate(note.createdAt, 'datetime')}
+                                        {formatDateTime(note.createdAt)}
                                     </div>
                                 </div>
                                 <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">

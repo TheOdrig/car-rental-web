@@ -5,7 +5,7 @@ import { Car, User } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { TableCell, TableRow } from '@/shared/ui/table';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDate, formatRentalReference } from '@/shared/lib';
 import type { PendingItem } from '@/entities/rental';
 import { formatCurrency, getStatusDisplay, type PendingRentalsType } from './format';
 import { PendingRentalAction, type PendingAction } from './pending-rental-action';
@@ -67,15 +67,15 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                             href={`/admin/rentals/${item.rentalId}`}
                             className="block text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
                         >
-                            {item.licensePlate} • CR-{String(item.rentalId).padStart(4, '0')}
+                            {item.licensePlate} • {formatRentalReference(item.rentalId)}
                         </Link>
                     </div>
                 </div>
             </TableCell>
             <TableCell>
                 <div className="whitespace-nowrap text-sm">
-                    <p>{safeFormatDate(item.startDate)}</p>
-                    <p className="text-muted-foreground">to {safeFormatDate(item.endDate)}</p>
+                    <p>{formatDate(item.startDate)}</p>
+                    <p className="text-muted-foreground">to {formatDate(item.endDate)}</p>
                 </div>
             </TableCell>
             <TableCell className="font-medium">{formatCurrency(item.totalAmount)}</TableCell>

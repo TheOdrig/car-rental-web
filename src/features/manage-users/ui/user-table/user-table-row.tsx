@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { TableCell, TableRow } from '@/shared/ui/table';
-import { cn, safeFormatDate } from '@/shared/lib';
+import { cn, formatDate } from '@/shared/lib';
 import type { User } from '../../model/types';
 import {
     ROLE_CONFIG,
@@ -57,7 +57,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                         >
                             {displayName}
                         </Link>
-                        <p className="text-xs text-muted-foreground">Joined {safeFormatDate(user.createdAt)}</p>
+                        <p className="text-xs text-muted-foreground">Joined {formatDate(user.createdAt)}</p>
                     </div>
                 </div>
             </TableCell>

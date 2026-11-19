@@ -15,6 +15,7 @@ import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
 import { Car, AlertCircle } from 'lucide-react';
 import type { PendingItem } from '@/entities/rental';
+import { formatRentalReference } from '@/shared/lib';
 
 interface ProcessReturnDialogProps {
     open: boolean;
@@ -91,7 +92,7 @@ export function ProcessReturnDialog({
                                     {item.customerName}
                                 </p>
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    Rental #{item.rentalId}
+                                    {formatRentalReference(item.rentalId)}
                                 </p>
                             </div>
                         </div>

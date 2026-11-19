@@ -6,9 +6,16 @@ import type { Rental } from '@/entities/rental';
 
 interface DriverDetailsCardProps {
     userSummary: Rental['userSummary'];
+    fullName?: string;
 }
 
-export function DriverDetailsCard({ userSummary }: DriverDetailsCardProps) {
+export function DriverDetailsCard({ userSummary, fullName }: DriverDetailsCardProps) {
+    const email = userSummary?.email;
+    const username = userSummary?.username;
+    const name = fullName || (username && username !== email ? username : undefined);
+
+    if (!name && !email) return null;
+
     return (
         <Card>
             <CardHeader>
@@ -18,19 +25,19 @@ export function DriverDetailsCard({ userSummary }: DriverDetailsCardProps) {
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="min-w-0">
-                        <p className="mb-1 text-sm text-muted-foreground">Full Name</p>
-                        <p className="break-words font-medium">{userSummary?.username}</p>
-                    </div>
-                    <div>
-                        <p className="mb-1 text-sm text-muted-foreground">License Number</p>
-                        <p className="font-medium">••••••1234</p>
-                    </div>
-                    <div className="min-w-0">
-                        <p className="mb-1 text-sm text-muted-foreground">Contact</p>
-                        <p className="break-all font-medium">{userSummary?.email}</p>
-                    </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                    {name && (
+                        <div className="min-w-0">
+                            <p className="mb-1 text-sm text-muted-foreground">Full name</p>
+                            <p className="break-words font-medium">{name}</p>
+                        </div>
+                    )}
+                    {email && (
+                        <div className="min-w-0">
+                            <p className="mb-1 text-sm text-muted-foreground">Contact</p>
+                            <p className="break-all font-medium">{email}</p>
+                        </div>
+                    )}
                 </div>
             </CardContent>
         </Card>

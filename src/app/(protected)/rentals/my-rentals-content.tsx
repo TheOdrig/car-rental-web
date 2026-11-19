@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { CalendarDays, Car, Wallet } from 'lucide-react';
-import { logger, safeFormatDate, formatCurrencyWithDecimals } from '@/shared/lib';
+import { logger, formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import { useAllMyRentals, useCancelRental } from '@/entities/rental';
 import { Pagination } from '@/shared/ui/pagination';
 import { ErrorMessage } from '@/shared/ui/error-message';
@@ -189,7 +189,7 @@ export function MyRentalsContent() {
                                 <div className="flex items-center gap-2 text-sm">
                                     <CalendarDays className="h-4 w-4" aria-hidden="true" />
                                     <span className="font-semibold">Dates:</span>
-                                    <span>{safeFormatDate(rentalToCancel.startDate)} - {safeFormatDate(rentalToCancel.endDate)}</span>
+                                    <span>{formatDate(rentalToCancel.startDate)} - {formatDate(rentalToCancel.endDate)}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
                                     <Wallet className="h-4 w-4" aria-hidden="true" />

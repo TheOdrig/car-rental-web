@@ -53,11 +53,9 @@ describe('Rental Utils', () => {
             expect(result).toHaveLength(1);
             expect(result[0].status).toBe(RentalStatus.ACTIVE);
         });
-        it('should return only upcoming rentals for "upcoming" tab', () => {
+        it('should return requested and confirmed rentals that have not started for the "upcoming" tab', () => {
             const result = getRentalsByTab(mockRentals, 'upcoming');
-            expect(result).toHaveLength(1);
-            expect(result[0].id).toBe(2);
-            expect(result[0].status).toBe(RentalStatus.CONFIRMED);
+            expect(result.map((r) => r.id)).toEqual([2, 6]);
         });
         it('should not include past confirmed rentals in "upcoming" tab', () => {
             const result = getRentalsByTab(mockRentals, 'upcoming');
@@ -161,6 +159,14 @@ describe('Rental Utils', () => {
             expect(buttons[1].label).toBe('Pay Now');
             expect(buttons[1].action).toBe('pay');
         });
+        it('should disable Pay Now until the payment window opens', () => {
+            const now = new Date(2025, 0, 1);
+            const early = getActionButtons(RentalStatus.CONFIRMED, { startDate: '2025-01-20', now });
+            expect(early[1].disabled).toBe(true);
+            expect(early[1].hint).toBe('Payment opens on Jan 15, 2025');
+            const open = getActionButtons(RentalStatus.CONFIRMED, { startDate: '2025-01-06', now });
+            expect(open[1].disabled).toBeUndefined();
+        });
         it('should return correct buttons for "Returned" status', () => {
             const buttons = getActionButtons(RentalStatus.COMPLETED);
             expect(buttons).toHaveLength(1);
@@ -236,12 +242,19 @@ describe('Rental Utils', () => {
             });
             expect(isUpcomingRental(rental)).toBe(false);
         });
-        it('should return false for confirmed rental starting today', () => {
+        it('should return true for confirmed rental starting today', () => {
             const rental = createMockRental({
                 status: RentalStatus.CONFIRMED,
                 startDate: '2025-01-01',
             });
-            expect(isUpcomingRental(rental)).toBe(false);
+            expect(isUpcomingRental(rental)).toBe(true);
+        });
+        it('should return true for requested rental with future start date', () => {
+            const rental = createMockRental({
+                status: RentalStatus.REQUESTED,
+                startDate: '2025-01-10',
+            });
+            expect(isUpcomingRental(rental)).toBe(true);
         });
     });
     describe('getStatusBadgeVariant', () => {

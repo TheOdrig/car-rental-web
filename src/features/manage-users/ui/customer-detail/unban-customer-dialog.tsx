@@ -14,7 +14,7 @@ import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
 import { useUnbanUser } from '../../api/users-api';
-import { safeFormatDate } from '@/shared/lib';
+import { formatDateTime } from '@/shared/lib';
 import type { CustomerAccountStatus } from '@/entities/user';
 
 interface UnbanCustomerDialogProps {
@@ -79,7 +79,7 @@ export function UnbanCustomerDialog({
                         {accountStatus.bannedAt && (
                             <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
                                 <Clock className="h-4 w-4" />
-                                <span>Banned on: {safeFormatDate(accountStatus.bannedAt, 'datetime')}</span>
+                                <span>Banned on: {formatDateTime(accountStatus.bannedAt)}</span>
                             </div>
                         )}
                     </div>

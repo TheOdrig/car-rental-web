@@ -38,10 +38,10 @@ describe('rental date-only handling west of UTC', () => {
         expect(calculateTabCounts([rental]).upcoming).toBe(1);
     });
 
-    it('does not treat a rental starting today as upcoming', () => {
+    it('treats a rental starting today as upcoming', () => {
         const rental = confirmedStarting('2024-03-04');
 
-        expect(isUpcomingRental(rental)).toBe(false);
-        expect(calculateTabCounts([rental]).upcoming).toBe(0);
+        expect(isUpcomingRental(rental)).toBe(true);
+        expect(calculateTabCounts([rental]).upcoming).toBe(1);
     });
 });
