@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { DashboardMetricsGrid, RevenueChart } from '@/features/admin';
+import { DashboardMetricsGrid } from '@/features/admin';
+import { RevenueChart } from '../revenue-chart';
 import type { RevenueBreakdown } from '@/features/admin';
 
 function breakdown(overrides: Partial<RevenueBreakdown>): RevenueBreakdown {

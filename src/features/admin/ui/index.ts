@@ -2,7 +2,8 @@ export { AdminSidebar } from './admin-sidebar';
 export { MetricsCard, MetricsCardSkeleton, DashboardMetricsGrid } from './metrics-card';
 export { DashboardHeader } from './dashboard-header';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';
-export { RevenueChart, RevenueChartSkeleton } from './revenue-chart';
+export { RevenueChart } from './revenue-chart-lazy';
+export { RevenueChartSkeleton } from './revenue-chart-skeleton';
 export { AlertsPanel } from './alerts-panel';
 
 export { DamageTable } from './damage-table';

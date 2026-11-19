@@ -7,7 +7,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { Skeleton } from '@/shared/ui/skeleton';
+import { RevenueChartSkeleton } from './revenue-chart-skeleton';
 import { cn } from '@/shared/lib';
 import { formatCompactCurrency, formatCurrency } from '@/shared/lib';
 
@@ -244,35 +244,6 @@ export function RevenueChart({
                         </div>
                     </div>
                 )}
-            </CardContent>
-        </Card>
-    );
-}
-
-interface RevenueChartSkeletonProps {
-    className?: string;
-}
-
-export function RevenueChartSkeleton({ className }: RevenueChartSkeletonProps) {
-    return (
-        <Card className={cn('', className)}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-                <div className="space-y-2">
-                    <Skeleton className="h-5 w-32" />
-                    <Skeleton className="h-8 w-24" />
-                </div>
-                <Skeleton className="h-9 w-[140px]" />
-            </CardHeader>
-            <CardContent>
-                <div className="h-[200px] flex items-end gap-2 pt-4">
-                    {[40, 70, 55, 85, 60, 75].map((height, i) => (
-                        <Skeleton
-                            key={i}
-                            className="flex-1"
-                            style={{ height: `${height}%` }}
-                        />
-                    ))}
-                </div>
             </CardContent>
         </Card>
     );
