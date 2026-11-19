@@ -68,6 +68,14 @@ function payment(status: string, overrides: Record<string, unknown> = {}) {
     };
 }
 
+function rentalFixture(overrides: Record<string, unknown> = {}) {
+    return { id: 7, status: 'CONFIRMED', paymentOpensOn: '2020-01-01', ...overrides };
+}
+
+function serveRental(overrides: Record<string, unknown> = {}) {
+    clientGet.mockImplementation(async (url: string) => (url === '/api/rentals/7' ? rentalFixture(overrides) : undefined));
+}
+
 function renderPay(props: Partial<React.ComponentProps<typeof PayRental>> = {}) {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     return render(
@@ -84,11 +92,34 @@ async function submitPayment() {
 describe('PayRental', () => {
     beforeEach(() => {
         clientGet.mockReset();
+        serveRental();
         clientPost.mockReset();
         confirmPayment.mockReset();
         loadStripe.mockReset();
         routerReplace.mockReset();
         loadStripe.mockResolvedValue({});
+    });
+
+    it('does not create a payment intent while the payment window is closed', async () => {
+        serveRental({ paymentOpensOn: '2999-12-01' });
+
+        renderPay();
+
+        expect(await screen.findByTestId('payment-state-window-not-open')).toHaveTextContent(
+            'Payment opens on Dec 1, 2999.'
+        );
+        expect(clientPost).not.toHaveBeenCalled();
+        expect(document.querySelector('h1')).toHaveTextContent('Pay for rental CR-000007');
+    });
+
+    it('waits for the rental before creating a payment intent', async () => {
+        clientPost.mockResolvedValue(intent());
+
+        renderPay();
+
+        expect(clientPost).not.toHaveBeenCalled();
+        await screen.findByTestId('payment-state-ready');
+        expect(clientPost).toHaveBeenCalledTimes(1);
     });
 
     it('shows the loading state while the intent is created', () => {
@@ -200,7 +231,8 @@ describe('PayRental', () => {
         clientPost.mockResolvedValue(intent());
         confirmPayment.mockResolvedValue({ paymentIntent: { status: 'requires_capture' } });
         let release: (value: unknown) => void = () => {};
-        clientGet.mockReturnValue(new Promise((resolve) => (release = resolve)));
+        const pending = new Promise((resolve) => (release = resolve));
+        clientGet.mockImplementation(async (url: string) => (url === '/api/rentals/7' ? rentalFixture() : pending));
 
         renderPay();
         await submitPayment();
@@ -361,7 +393,10 @@ describe('PayRental', () => {
     it('maps a polling error to a blocked state', async () => {
         clientPost.mockResolvedValue(intent());
         confirmPayment.mockResolvedValue({ paymentIntent: { status: 'processing' } });
-        clientGet.mockRejectedValue(new ApiError(403, 'Forbidden'));
+        clientGet.mockImplementation(async (url: string) => {
+            if (url === '/api/rentals/7') return rentalFixture();
+            throw new ApiError(403, 'Forbidden');
+        });
 
         renderPay();
         await submitPayment();

@@ -7,10 +7,10 @@ import { useQueryClient } from '@tanstack/react-query';
 import { Elements } from '@stripe/react-stripe-js';
 import { AlertCircle, CheckCircle2, Loader2, ShieldAlert } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { Card, CardContent, CardHeader } from '@/shared/ui/card';
 import { isApiError } from '@/shared/api';
 import { formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
-import { rentalKeys } from '@/entities/rental';
+import { isPaymentWindowOpen, rentalKeys, useRental } from '@/entities/rental';
 import {
     isPaymentSecured,
     paymentKeys,
@@ -21,6 +21,7 @@ import {
 import {
     CONFIG_MISSING_BLOCK,
     describePaymentError,
+    describePaymentWindow,
     type PaymentBlock,
 } from '../lib/payment-errors';
 import { getStripe, resolvePublishableKey } from '../lib/stripe-client';
@@ -45,7 +46,7 @@ function Shell({ rentalId, demo = false, children }: { rentalId: number; demo?: 
             {demo && <DemoNotice />}
             <Card>
                 <CardHeader>
-                    <CardTitle role="heading" aria-level={1}>Pay for rental {formatRentalReference(rentalId)}</CardTitle>
+                    <h1 className="leading-none font-semibold">Pay for rental {formatRentalReference(rentalId)}</h1>
                 </CardHeader>
                 <CardContent className="space-y-4">{children}</CardContent>
             </Card>
@@ -221,7 +222,11 @@ export function PayRental({
     );
 
     const processing = phase === 'processing';
-    const intentQuery = usePaymentIntent(rentalId, attempt, !processing && failure === null);
+    const rentalQuery = useRental(rentalId);
+    const paymentOpensOn = rentalQuery.data?.paymentOpensOn;
+    const windowClosed = Boolean(paymentOpensOn) && !isPaymentWindowOpen(paymentOpensOn!);
+    const intentEnabled = !processing && failure === null && !rentalQuery.isPending && !windowClosed;
+    const intentQuery = usePaymentIntent(rentalId, attempt, intentEnabled);
     const paymentQuery = useRentalPayment(rentalId, { poll: processing, enabled: processing, runKey: pollRun });
 
     useEffect(() => {
@@ -287,6 +292,10 @@ export function PayRental({
             return <BlockedView rentalId={rentalId} block={describePaymentError(paymentQuery.error)} />;
         }
         return <ProcessingView rentalId={rentalId} timedOut={paymentQuery.timedOut} onCheckAgain={checkAgain} />;
+    }
+
+    if (windowClosed) {
+        return <BlockedView rentalId={rentalId} block={describePaymentWindow(paymentOpensOn)} />;
     }
 
     if (intentQuery.isPending) {

@@ -43,7 +43,7 @@ describe('describePaymentError', () => {
                 details: { paymentOpensOn: '2026-12-01' },
             });
 
-            expect(describePaymentError(error).message).toBe('Payment opens on December 1, 2026.');
+            expect(describePaymentError(error).message).toBe('Payment opens on Dec 1, 2026.');
         });
 
         it('falls back to the generic message without a usable date', () => {

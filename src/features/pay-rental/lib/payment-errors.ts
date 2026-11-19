@@ -1,5 +1,5 @@
-import { format, parseISO } from 'date-fns';
 import { detailString, isApiError } from '@/shared/api';
+import { formatDate, parseApiDate } from '@/shared/lib/format';
 
 export type PaymentBlockKind = 'signin' | 'window-not-open' | 'forbidden' | 'not-confirmed' | 'settled' | 'not-found' | 'unavailable';
 
@@ -53,14 +53,17 @@ function paymentOpensOn(error: unknown): string | undefined {
     const value = detailString(error, 'paymentOpensOn');
     if (!value) return undefined;
 
-    const date = parseISO(value);
-    return Number.isNaN(date.getTime()) ? undefined : format(date, 'MMMM d, yyyy');
+    return parseApiDate(value) ? formatDate(value) : undefined;
+}
+
+export function describePaymentWindow(opensOn: string | undefined): PaymentBlock {
+    const label = opensOn && parseApiDate(opensOn) ? formatDate(opensOn) : undefined;
+
+    return label ? { ...BLOCKS['window-not-open'], message: `Payment opens on ${label}.` } : BLOCKS['window-not-open'];
 }
 
 function windowNotOpen(error: unknown): PaymentBlock {
-    const opensOn = paymentOpensOn(error);
-
-    return opensOn ? { ...BLOCKS['window-not-open'], message: `Payment opens on ${opensOn}.` } : BLOCKS['window-not-open'];
+    return describePaymentWindow(paymentOpensOn(error));
 }
 
 export function describePaymentError(error: unknown): PaymentBlock {
