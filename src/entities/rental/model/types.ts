@@ -103,11 +103,11 @@ export interface ActionButton {
 export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'REJECTED' | 'OVERDUE';
 
 export const ADMIN_RENTAL_STATUS_LABELS: Record<AdminRentalStatus, string> = {
-    PENDING: 'Pending Approval',
-    CONFIRMED: 'Confirmed',
-    ACTIVE: 'In Progress',
-    COMPLETED: 'Completed',
-    CANCELLED: 'Cancelled',
+    PENDING: RENTAL_STATUS_LABELS[RentalStatus.REQUESTED],
+    CONFIRMED: RENTAL_STATUS_LABELS[RentalStatus.CONFIRMED],
+    ACTIVE: RENTAL_STATUS_LABELS[RentalStatus.IN_USE],
+    COMPLETED: RENTAL_STATUS_LABELS[RentalStatus.RETURNED],
+    CANCELLED: RENTAL_STATUS_LABELS[RentalStatus.CANCELLED],
     REJECTED: 'Rejected',
     OVERDUE: 'Overdue',
 };
@@ -165,6 +165,7 @@ export interface RentalPricing {
     finalTotal: number;
     currency: string;
     exchangeRate?: number;
+    appliedAdjustments?: string[];
 }
 
 export interface RentalPaymentInfo {
@@ -202,6 +203,7 @@ export interface RentalDetailResponse {
         discounts: number;
         finalTotal: number;
         currency: CurrencyType;
+        appliedAdjustments?: string[];
     };
     customer: {
         id: number;

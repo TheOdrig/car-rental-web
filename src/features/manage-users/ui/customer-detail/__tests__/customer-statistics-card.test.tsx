@@ -67,4 +67,12 @@ describe('CustomerStatisticsCard', () => {
 
         expect(screen.getByText('No assessed damage costs.')).toBeTruthy();
     });
+
+    it('shows the average duration only when there is one', () => {
+        const { rerender } = render(<CustomerStatisticsCard statistics={base} />);
+        expect(screen.getByText('Avg. Duration')).toBeTruthy();
+
+        rerender(<CustomerStatisticsCard statistics={{ ...base, averageRentalDuration: 0 }} />);
+        expect(screen.queryByText('Avg. Duration')).toBeNull();
+    });
 });

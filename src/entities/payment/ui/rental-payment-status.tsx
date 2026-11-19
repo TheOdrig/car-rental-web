@@ -47,7 +47,7 @@ export function RentalPaymentStatus({
                     </p>
                 )}
 
-                {(!enabled || !isLoading) && missing && <p className="text-sm text-muted-foreground">{emptyMessage}</p>}
+                {(!enabled || !isLoading) && missing && !data && <p className="text-sm text-muted-foreground">{emptyMessage}</p>}
 
                 {data && (
                     <div className="space-y-2 text-sm">

@@ -113,7 +113,10 @@ export function useProcessEarlyReturn() {
         mutationFn: processEarlyReturn,
         onSuccess: () => {
             showToast.success('Early return recorded', 'Unused days are refunded to the customer.');
-            void queryClient.invalidateQueries({ queryKey: processKeys.all });
+            void queryClient.invalidateQueries({
+                queryKey: processKeys.all,
+                predicate: (query) => query.queryKey[1] !== 'early-return-preview',
+            });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });

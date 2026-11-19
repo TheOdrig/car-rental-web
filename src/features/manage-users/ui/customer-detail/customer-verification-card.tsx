@@ -1,26 +1,14 @@
 'use client';
 
-import { ShieldCheck, ShieldAlert, ShieldQuestion, FileText } from 'lucide-react';
+import { ShieldCheck, ShieldAlert } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
-import type { CustomerVerification, DocumentVerificationStatus } from '@/entities/user';
+import type { CustomerVerification } from '@/entities/user';
 
 interface CustomerVerificationCardProps {
     verification: CustomerVerification;
     customerId: number;
 }
-
-const docStatusColors: Record<DocumentVerificationStatus, string> = {
-    YES: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    NO: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    PENDING: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
-};
-
-const docStatusLabels: Record<DocumentVerificationStatus, string> = {
-    YES: 'Verified',
-    NO: 'Not Verified',
-    PENDING: 'Pending Review',
-};
 
 export function CustomerVerificationCard({ verification }: CustomerVerificationCardProps) {
     return (
@@ -32,7 +20,7 @@ export function CustomerVerificationCard({ verification }: CustomerVerificationC
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid grid-cols-2 gap-4">
                     <div className="text-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
                         {verification.emailVerified ? (
                             <ShieldCheck className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
@@ -68,38 +56,7 @@ export function CustomerVerificationCard({ verification }: CustomerVerificationC
                             {verification.phoneVerified ? 'Verified' : 'Not Verified'}
                         </Badge>
                     </div>
-
-                    <div className="text-center p-3 rounded-lg bg-slate-50 dark:bg-slate-800/50">
-                        {verification.documentsVerified === 'YES' ? (
-                            <ShieldCheck className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
-                        ) : verification.documentsVerified === 'PENDING' ? (
-                            <ShieldQuestion className="h-8 w-8 text-amber-500 mx-auto mb-2" />
-                        ) : (
-                            <ShieldAlert className="h-8 w-8 text-red-500 mx-auto mb-2" />
-                        )}
-                        <span className="text-xs font-medium text-slate-600 dark:text-slate-400 block">Documents</span>
-                        <Badge
-                            variant="outline"
-                            className={`${docStatusColors[verification.documentsVerified]} mt-1`}
-                        >
-                            {docStatusLabels[verification.documentsVerified]}
-                        </Badge>
-                    </div>
                 </div>
-
-                {verification.documentTypes.length > 0 && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-2">Uploaded Documents</span>
-                        <div className="flex flex-wrap gap-2">
-                            {verification.documentTypes.map((docType) => (
-                                <Badge key={docType} variant="secondary" className="gap-1">
-                                    <FileText className="h-3 w-3" />
-                                    {docType}
-                                </Badge>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </CardContent>
         </Card>
     );

@@ -35,11 +35,11 @@ const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destr
 
 const statusFilterOptions = [
     { value: 'all', label: 'All Statuses' },
-    { value: 'COMPLETED', label: 'Completed' },
-    { value: 'ACTIVE', label: 'Active' },
-    { value: 'CANCELLED', label: 'Cancelled' },
-    { value: 'PENDING', label: 'Pending' },
-    { value: 'OVERDUE', label: 'Overdue' },
+    { value: 'COMPLETED', label: ADMIN_RENTAL_STATUS_LABELS.COMPLETED },
+    { value: 'ACTIVE', label: ADMIN_RENTAL_STATUS_LABELS.ACTIVE },
+    { value: 'CANCELLED', label: ADMIN_RENTAL_STATUS_LABELS.CANCELLED },
+    { value: 'PENDING', label: ADMIN_RENTAL_STATUS_LABELS.PENDING },
+    { value: 'OVERDUE', label: ADMIN_RENTAL_STATUS_LABELS.OVERDUE },
 ];
 
 export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistoryTableProps) {

@@ -3,6 +3,7 @@ import { ApiError } from '@/shared/api/error';
 import {
     getAdminActionErrorMessage,
     isAfterRentalEnd,
+    isBeforeRentalEnd,
     isBeforeRentalStart,
     PICKUP_PAYMENT_CAPTURE_FAILED_MESSAGE,
     PICKUP_PAYMENT_REQUIRED_MESSAGE,
@@ -63,6 +64,15 @@ describe('pickup after the rental end date', () => {
 
         expect(isAfterRentalEnd('2026-11-19', now)).toBe(false);
         expect(isAfterRentalEnd('2026-11-25', now)).toBe(false);
+    });
+
+    it('detects a return recorded before the end date', () => {
+        const now = new Date(2026, 10, 19, 12, 0);
+
+        expect(isBeforeRentalEnd('2026-11-22', now)).toBe(true);
+        expect(isBeforeRentalEnd('2026-11-19', now)).toBe(false);
+        expect(isBeforeRentalEnd('2026-11-18', now)).toBe(false);
+        expect(isBeforeRentalEnd(undefined, now)).toBe(false);
     });
 
     it('does not block on a missing or unparseable date', () => {

@@ -53,6 +53,14 @@ export function isAfterRentalEnd(endDate: string | undefined, now: Date = new Da
     return today > end;
 }
 
+export function isBeforeRentalEnd(endDate: string | undefined, now: Date = new Date()): boolean {
+    const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(endDate ?? '');
+    if (!match) return false;
+    const end = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return today < end;
+}
+
 const RENTAL_DATE_FIELDS = ['startDate', 'endDate'] as const;
 
 export function getRentalValidationMessage(error: unknown): string | null {

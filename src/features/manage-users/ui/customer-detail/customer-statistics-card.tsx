@@ -45,12 +45,14 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                         icon={Car}
                         className="p-3"
                     />
-                    <StatCard
-                        label="Avg. Duration"
-                        value={`${statistics.averageRentalDuration.toFixed(1)} days`}
-                        icon={Clock}
-                        className="p-3"
-                    />
+                    {statistics.averageRentalDuration > 0 && (
+                        <StatCard
+                            label="Avg. Duration"
+                            value={`${statistics.averageRentalDuration.toFixed(1)} days`}
+                            icon={Clock}
+                            className="p-3"
+                        />
+                    )}
                     <StatCard
                         label="Damage Reports"
                         value={statistics.totalDamageReports}

@@ -84,10 +84,10 @@ export function AdminDashboardContent() {
     };
 
     const tabSources = {
-        approvals: { items: approvals?.content ?? [], loading: approvalsLoading, failed: approvalsQuery.isError, retry: () => void approvalsQuery.refetch() },
-        pickups: { items: pickups?.content ?? [], loading: pickupsLoading, failed: pickupsQuery.isError, retry: () => void pickupsQuery.refetch() },
-        returns: { items: returns?.content ?? [], loading: returnsLoading, failed: returnsQuery.isError, retry: () => void returnsQuery.refetch() },
-        overdue: { items: returns?.content ?? [], loading: returnsLoading, failed: returnsQuery.isError, retry: () => void returnsQuery.refetch() },
+        approvals: { items: approvals?.content ?? [], total: approvals?.totalElements, loading: approvalsLoading, failed: approvalsQuery.isError, retry: () => void approvalsQuery.refetch() },
+        pickups: { items: pickups?.content ?? [], total: pickups?.totalElements, loading: pickupsLoading, failed: pickupsQuery.isError, retry: () => void pickupsQuery.refetch() },
+        returns: { items: returns?.content ?? [], total: returns?.totalElements, loading: returnsLoading, failed: returnsQuery.isError, retry: () => void returnsQuery.refetch() },
+        overdue: { items: returns?.content ?? [], total: returns?.totalElements, loading: returnsLoading, failed: returnsQuery.isError, retry: () => void returnsQuery.refetch() },
     };
 
     const currencies = useMemo(() => revenueCurrencies(revenueAnalytics), [revenueAnalytics]);
@@ -146,8 +146,8 @@ export function AdminDashboardContent() {
                     />
                 )}
 
-                <div className="grid gap-6 lg:grid-cols-3">
-                    <div className="lg:col-span-2 space-y-6">
+                <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+                    <div className="min-w-0 lg:col-span-2 space-y-6">
                         {revenueQuery.isError ? (
                             <ErrorMessage
                                 title="Failed to load revenue"
@@ -179,7 +179,7 @@ export function AdminDashboardContent() {
                             </div>
                         )}
                     </div>
-                    <div className="space-y-6">
+                    <div className="min-w-0 space-y-6">
                         <QuickActionsCard
                             pickupItems={pickups?.content ?? []}
                             returnItems={returns?.content ?? []}
@@ -208,6 +208,8 @@ export function AdminDashboardContent() {
                 ) : (
                     <PendingRentalsTable
                         items={tabSources[activeTab].items}
+                        total={tabSources[activeTab].total}
+                        viewAllHref="/admin/rentals"
                         type={activeTab}
                         isLoading={tabSources[activeTab].loading}
                         onApprove={actions.approve}

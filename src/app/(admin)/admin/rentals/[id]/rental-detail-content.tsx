@@ -29,8 +29,8 @@ import {
 } from '@/features/process-rentals';
 import { fieldErrorMessages } from '@/shared/api';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
-import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
-import { formatRentalReference } from '@/shared/lib';
+import { isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
+import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 const CONFIRM_COPY = {
@@ -74,7 +74,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const singleFlight = useSingleFlight();
     const [confirming, setConfirming] = useState<'approve' | 'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
-    const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn');
+    const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn' && rental?.status === 'ACTIVE');
     const paymentExpected = !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED';
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
@@ -337,6 +337,20 @@ export function RentalDetailContent({ id }: { id: string }) {
                 onConfirm={runConfirmed}
             >
                 {confirming === 'earlyReturn' && <EarlyReturnPreviewPanel query={earlyReturnPreview} />}
+                {confirming === 'return' && isBeforeRentalEnd(rental.endDate) && (
+                    <div
+                        role="note"
+                        data-testid="early-return-warning"
+                        className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+                    >
+                        <p>
+                            This rental runs until {formatDate(rental.endDate)}. A normal return keeps the full price. To refund the unused days, use Return Early instead.
+                        </p>
+                        <Button type="button" variant="outline" size="sm" onClick={() => setConfirming('earlyReturn')}>
+                            Use Return Early
+                        </Button>
+                    </div>
+                )}
                 {confirming === 'cancel' && (
                     <CancelReasonField
                         value={cancelReason}

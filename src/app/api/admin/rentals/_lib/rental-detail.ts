@@ -86,6 +86,7 @@ export function buildRentalDetail({
             discounts: rental.totalSavings ?? 0,
             finalTotal: total,
             currency: rental.currency ?? 'USD',
+            appliedAdjustments: (rental.appliedDiscounts ?? []).filter((entry) => !/^no /i.test(entry.trim())),
         },
         customer: {
             id: customer?.id ?? user?.id ?? 0,

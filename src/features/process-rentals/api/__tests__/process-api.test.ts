@@ -197,6 +197,24 @@ describe('early return', () => {
         expect(mockClientPost).toHaveBeenCalledWith('/api/admin/rentals/7/early-return', undefined);
     });
 
+    it('does not reload the preview once the early return went through', async () => {
+        mockGet.mockResolvedValue({ rentalId: 7, amount: 40, currency: 'USD', unusedDays: 1 });
+        mockClientPost.mockResolvedValueOnce({ success: true, message: 'ok' });
+        const { useEarlyReturnPreview, useProcessEarlyReturn } = await import('../process-api');
+        const { result } = renderHook(
+            () => ({ preview: useEarlyReturnPreview(7, true), early: useProcessEarlyReturn() }),
+            { wrapper: createQueryWrapper() }
+        );
+        await waitFor(() => expect(result.current.preview.data).toBeDefined());
+        const loads = mockGet.mock.calls.length;
+
+        result.current.early.mutate({ rentalId: 7 });
+        await waitFor(() => expect(mockToast.success).toHaveBeenCalled());
+        await new Promise((resolve) => setTimeout(resolve, 50));
+
+        expect(mockGet.mock.calls.length).toBe(loads);
+    });
+
     it('shows the failure toast with the API message', async () => {
         mockClientPost.mockRejectedValueOnce(new ApiError({ status: 400, message: 'Not in use', timestamp: new Date().toISOString() }));
         const { useProcessEarlyReturn } = await import('../process-api');

@@ -33,7 +33,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Daily Rate</span>
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Avg. Daily Rate</span>
                         <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
                             {formatCurrency(pricing.dailyRate, pricing.currency)}
                         </span>
@@ -54,6 +54,14 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                         </span>
                     </div>
 
+                    {(pricing.appliedAdjustments?.length ?? 0) > 0 && (
+                        <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-400" data-testid="applied-adjustments">
+                            {pricing.appliedAdjustments?.map((entry) => (
+                                <li key={entry}>{entry}</li>
+                            ))}
+                        </ul>
+                    )}
+
                     {pricing.discounts > 0 && (
                         <div className="flex justify-between items-center">
                             <span className="text-sm text-emerald-600 dark:text-emerald-400">Discount</span>
@@ -64,7 +72,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                     )}
 
                     <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Base Total</span>
+                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Rental Total</span>
                         <span className="font-semibold text-slate-900 dark:text-slate-100">
                             {formatCurrency(pricing.finalTotal, pricing.currency)}
                         </span>

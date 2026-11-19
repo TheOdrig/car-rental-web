@@ -17,7 +17,9 @@ describe('rental status codes and labels', () => {
         expect(RENTAL_STATUS_LABELS[RentalStatus.IN_USE]).toBe('In use');
         expect(RENTAL_STATUS_LABELS[RentalStatus.RETURNED]).toBe('Returned');
         expect(LATE_RETURN_STATUS_LABELS.SEVERELY_LATE).toBe('Severely late');
-        expect(ADMIN_RENTAL_STATUS_LABELS.ACTIVE).toBe('In Progress');
+        expect(ADMIN_RENTAL_STATUS_LABELS.ACTIVE).toBe('In use');
+        expect(ADMIN_RENTAL_STATUS_LABELS.COMPLETED).toBe('Returned');
+        expect(ADMIN_RENTAL_STATUS_LABELS.PENDING).toBe('Requested');
     });
 
     it('maps between the API codes and the admin vocabulary', () => {

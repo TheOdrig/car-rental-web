@@ -11,6 +11,7 @@ vi.mock('@/shared/api', async (importOriginal) => {
 });
 
 import { RentalPaymentStatus } from '../rental-payment-status';
+import { paymentKeys } from '../../lib/use-rental-payment';
 
 function renderStatus(action?: Parameters<typeof RentalPaymentStatus>[0]['action']) {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
@@ -101,5 +102,27 @@ describe('RentalPaymentStatus when no payment can exist yet', () => {
 
         expect(clientGet).not.toHaveBeenCalled();
         expect(screen.getByText('No payment has been started for this rental yet.')).toBeInTheDocument();
+    });
+});
+
+describe('RentalPaymentStatus after a cancellation', () => {
+    it('shows the cancelled payment instead of claiming that none was started', () => {
+        clientGet.mockReset();
+        const client = new QueryClient();
+        client.setQueryData(paymentKeys.byRental(3), {
+            paymentId: 1,
+            rentalId: 3,
+            status: 'CANCELLED',
+            amount: 90,
+            currency: 'USD',
+        });
+        render(
+            <QueryClientProvider client={client}>
+                <RentalPaymentStatus rentalId={3} enabled={false} />
+            </QueryClientProvider>
+        );
+
+        expect(screen.getByText('Cancelled')).toBeInTheDocument();
+        expect(screen.queryByText('No payment has been started for this rental yet.')).not.toBeInTheDocument();
     });
 });

@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { RefreshCw, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
@@ -43,16 +43,43 @@ const statusOptions: { value: StatusFilter; label: string }[] = [
     { value: 'overdue', label: 'Overdue' },
 ];
 
+const QUEUE_FILTERS: StatusFilter[] = ['approvals', 'pickups', 'returns', 'overdue'];
+
 export function AdminRentalsContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
     const userIdParam = searchParams?.get('userId');
     const userId = userIdParam && /^[0-9]+$/.test(userIdParam) ? Number(userIdParam) : undefined;
-    const [view, setView] = useState<View>(userId !== undefined ? 'all-rentals' : 'pending');
-    const [rentalsPage, setRentalsPage] = useState(0);
-    const [rentalStatus, setRentalStatus] = useState<string>(ALL_STATUSES);
+    const statusParam = searchParams?.get('status') ?? '';
+    const queueParam = searchParams?.get('queue') ?? '';
+    const pageParam = Number.parseInt(searchParams?.get('page') ?? '', 10);
+    const [view, setView] = useState<View>(
+        userId !== undefined || searchParams?.get('view') === 'all' ? 'all-rentals' : 'pending'
+    );
+    const [rentalsPage, setRentalsPage] = useState(Number.isFinite(pageParam) && pageParam > 1 ? pageParam - 1 : 0);
+    const [rentalStatus, setRentalStatus] = useState<string>(
+        (Object.values(RentalStatus) as string[]).includes(statusParam) ? statusParam : ALL_STATUSES
+    );
     const serverStatus = rentalStatus !== ALL_STATUSES ? (rentalStatus as RentalStatus) : undefined;
     const allRentals = useAdminRentals({ page: rentalsPage, userId, status: serverStatus });
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+    const [statusFilter, setStatusFilter] = useState<StatusFilter>(
+        (QUEUE_FILTERS as string[]).includes(queueParam) ? (queueParam as StatusFilter) : 'all'
+    );
+    const currentQuery = searchParams?.toString() ?? '';
+
+    useEffect(() => {
+        const params = new URLSearchParams();
+        if (userId !== undefined) params.set('userId', String(userId));
+        if (view === 'all-rentals' && userId === undefined) params.set('view', 'all');
+        if (view === 'all-rentals' && rentalStatus !== ALL_STATUSES) params.set('status', rentalStatus);
+        if (view === 'all-rentals' && rentalsPage > 0) params.set('page', String(rentalsPage + 1));
+        if (view === 'pending' && statusFilter !== 'all') params.set('queue', statusFilter);
+        const next = params.toString();
+        if (next === currentQuery) return;
+        router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+    }, [view, rentalStatus, rentalsPage, statusFilter, userId, currentQuery, pathname, router]);
+
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
 
     const approvalsQuery = usePendingApprovals({ size: PENDING_PAGE_SIZE });

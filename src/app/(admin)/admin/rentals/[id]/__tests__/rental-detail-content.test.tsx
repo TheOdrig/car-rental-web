@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { renderWithProviders } from '@/app/testing/test-utils';
 
 const approve = vi.hoisted(() => vi.fn());
 const refetch = vi.hoisted(() => vi.fn());
@@ -98,5 +99,42 @@ describe('admin rental detail approval', () => {
 
         expect(approve).not.toHaveBeenCalled();
         expect(screen.getByRole('button', { name: 'Approve' })).toHaveFocus();
+    });
+});
+
+describe('admin rental return before the end date', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+        detail.current = { ...rental('ACTIVE'), endDate: '2999-01-12' };
+    });
+
+    it('warns that a normal return keeps the full price and points to Return Early', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(
+            <main>
+                <RentalDetailContent id="7" />
+            </main>
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Process Return' }));
+
+        expect(await screen.findByTestId('early-return-warning')).toHaveTextContent('Return Early');
+        await user.click(screen.getByRole('button', { name: 'Use Return Early' }));
+        expect(await screen.findByText('Return the vehicle early?')).toBeInTheDocument();
+    });
+
+    it('does not warn once the end date has been reached', async () => {
+        detail.current = { ...rental('ACTIVE'), endDate: '2000-01-12' };
+        const user = userEvent.setup();
+        renderWithProviders(
+            <main>
+                <RentalDetailContent id="7" />
+            </main>
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Process Return' }));
+
+        await screen.findByText('Record the return?');
+        expect(screen.queryByTestId('early-return-warning')).toBeNull();
     });
 });

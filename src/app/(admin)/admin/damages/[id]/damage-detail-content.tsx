@@ -188,6 +188,12 @@ export function DamageDetailContent({ id }: { id: string }) {
                                     <p className="text-sm text-muted-foreground">Insurance Coverage</p>
                                     <p className="font-medium">{damage.insuranceCoverage ? 'Yes' : 'No'}</p>
                                 </div>
+                                {damage.insuranceDeductible !== undefined && (
+                                    <div data-testid="damage-deductible">
+                                        <p className="text-sm text-muted-foreground">Insurance Deductible</p>
+                                        <p className="font-medium">{formatCurrencyWithDecimals(damage.insuranceDeductible, damage.currency ?? DEFAULT_CURRENCY)}</p>
+                                    </div>
+                                )}
                                 {damage.assessedAt && (
                                     <div>
                                         <p className="text-sm text-muted-foreground">Assessed On</p>
@@ -195,6 +201,12 @@ export function DamageDetailContent({ id }: { id: string }) {
                                     </div>
                                 )}
                             </div>
+                            {damage.assessmentNotes && (
+                                <div data-testid="damage-assessment-notes">
+                                    <p className="text-sm text-muted-foreground">Assessment Notes</p>
+                                    <p className="whitespace-pre-wrap break-words font-medium">{damage.assessmentNotes}</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 )}

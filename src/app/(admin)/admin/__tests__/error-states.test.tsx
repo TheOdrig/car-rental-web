@@ -29,7 +29,8 @@ const q = vi.hoisted(() => {
 
 vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
-    useRouter: () => ({ push: vi.fn() }),
+    useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+    usePathname: () => '/admin/rentals',
 }));
 vi.mock('@/widgets/layout', () => ({ Breadcrumb: () => null }));
 vi.mock('@/features/admin', async () => {

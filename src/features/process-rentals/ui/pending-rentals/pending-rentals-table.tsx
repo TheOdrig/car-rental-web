@@ -1,6 +1,7 @@
 'use client';
 
 import { memo, useState } from 'react';
+import Link from 'next/link';
 import { Clock } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
@@ -19,6 +20,7 @@ import { PendingRentalsSkeleton } from './pending-rentals-skeleton';
 interface PendingRentalsTableProps {
     items: PendingItem[];
     total?: number;
+    viewAllHref?: string;
     type: PendingRentalsType;
     isLoading?: boolean;
     onApprove?: (rentalId: number, notes?: string) => void;
@@ -35,6 +37,7 @@ const HEAD_CLASS = 'text-slate-600 dark:text-slate-300 font-semibold';
 export const PendingRentalsTable = memo(function PendingRentalsTable({
     items,
     total,
+    viewAllHref,
     type,
     isLoading = false,
     onApprove,
@@ -126,7 +129,14 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     </div>
                     {total !== undefined && total > items.length && (
                         <p className="mt-3 text-sm text-muted-foreground" data-testid="pending-truncated">
-                            Showing the first {items.length} of {total}. Work through these to see the rest, or open the All Rentals view.
+                            Showing {items.length} of {total}.{' '}
+                            {viewAllHref ? (
+                                <Link href={viewAllHref} className="font-medium text-primary underline underline-offset-2">
+                                    View the full list
+                                </Link>
+                            ) : (
+                                'Work through these to see the rest, or open the All Rentals view.'
+                            )}
                         </p>
                     )}
                 </CardContent>

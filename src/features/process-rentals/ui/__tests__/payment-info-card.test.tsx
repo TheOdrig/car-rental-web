@@ -28,3 +28,26 @@ describe('PaymentInfoCard pay-by', () => {
         expect(screen.queryByTestId('payment-due-by')).not.toBeInTheDocument();
     });
 });
+
+describe('PaymentInfoCard totals', () => {
+    it('lists the applied adjustments and labels the total as the rental total', () => {
+        renderWithProviders(
+            <PaymentInfoCard
+                rentalId={9}
+                pricing={{ ...pricing, appliedAdjustments: ['Season -10%', 'Weekend +11.3%'] }}
+                paymentEnabled={false}
+            />
+        );
+
+        expect(screen.getByTestId('applied-adjustments')).toHaveTextContent('Season -10%');
+        expect(screen.getByTestId('applied-adjustments')).toHaveTextContent('Weekend +11.3%');
+        expect(screen.getByText('Rental Total')).toBeInTheDocument();
+        expect(screen.queryByText('Base Total')).not.toBeInTheDocument();
+    });
+
+    it('omits the adjustments block when there are none', () => {
+        renderWithProviders(<PaymentInfoCard rentalId={9} pricing={pricing} paymentEnabled={false} />);
+
+        expect(screen.queryByTestId('applied-adjustments')).not.toBeInTheDocument();
+    });
+});
