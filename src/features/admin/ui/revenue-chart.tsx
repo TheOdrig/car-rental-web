@@ -211,9 +211,9 @@ export function RevenueChart({
                         </div>
 
                         <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-3">
-                            <h4 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                            <h2 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                                 Damage Summary
-                            </h4>
+                            </h2>
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Recovered</p>

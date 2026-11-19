@@ -112,10 +112,10 @@ export function ProcessPickupDialog({
                     </p>
 
                     <div className="space-y-4">
-                        <h4 className="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
+                        <h3 className="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
                             <ClipboardCheck className="h-4 w-4 text-primary" />
                             Handover Checklist
-                        </h4>
+                        </h3>
 
                         <div className="space-y-3">
                             <div className={cn(

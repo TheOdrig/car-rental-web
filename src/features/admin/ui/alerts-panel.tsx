@@ -60,9 +60,9 @@ export function AlertsPanel({
                             </div>
 
                             <div className="flex-1 min-w-0 pr-6">
-                                <h4 className={cn('text-sm font-semibold', styles.text)}>
+                                <h2 className={cn('text-sm font-semibold', styles.text)}>
                                     {alert.title}
-                                </h4>
+                                </h2>
                                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                     {alert.description}
                                 </p>

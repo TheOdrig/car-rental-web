@@ -10,7 +10,7 @@ test.describe('accessibility', () => {
             await page.goto(path);
             await expect(page.locator('main')).toBeVisible();
 
-            const results = await new AxeBuilder({ page }).withTags(RULES).disableRules(['color-contrast']).analyze();
+            const results = await new AxeBuilder({ page }).withTags(RULES).analyze();
 
             expect(results.violations.map((violation) => `${violation.id}: ${violation.nodes.length}`)).toEqual([]);
         });

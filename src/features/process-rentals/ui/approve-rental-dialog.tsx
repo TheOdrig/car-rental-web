@@ -69,10 +69,10 @@ export function ApproveRentalDialog({
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <Car className="h-12 w-12" />
                             </div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
                                 <Car className="h-3.5 w-3.5" />
                                 Vehicle
-                            </h4>
+                            </h3>
                             <div className="flex gap-4 relative z-10">
                                 {item.carImage ? (
                                     <div className="relative h-20 w-32 shrink-0 shadow-sm border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden">
@@ -105,10 +105,10 @@ export function ApproveRentalDialog({
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <User className="h-12 w-12" />
                             </div>
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-2">
                                 <User className="h-3.5 w-3.5" />
                                 Customer
-                            </h4>
+                            </h3>
                             <div className="flex gap-4 relative z-10">
                                 <div className="h-14 w-14 shrink-0 rounded-full border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
                                     <User className="h-6 w-6 text-slate-400 dark:text-slate-600" />

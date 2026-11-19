@@ -56,9 +56,9 @@ export const SimilarCarCard = memo(function SimilarCarCard({
                 </div>
 
                 <CardContent className="p-3">
-                    <h4 className="font-semibold text-base leading-tight mb-0.5 text-slate-900 dark:text-slate-100">
+                    <h3 className="font-semibold text-base leading-tight mb-0.5 text-slate-900 dark:text-slate-100">
                         {car.brand} {car.model}
-                    </h4>
+                    </h3>
                     <p className="text-muted-foreground text-sm mb-2">
                         {car.productionYear}
                         {car.bodyType && <span className="ml-1">• {car.bodyType}</span>}
