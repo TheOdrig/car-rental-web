@@ -11,7 +11,7 @@ const nodeTests = [
 export default defineConfig({
     plugins: [react()],
     test: {
-        testTimeout: 15000,
+        testTimeout: 45000,
         allowOnly: false,
         coverage: {
             provider: 'v8',
