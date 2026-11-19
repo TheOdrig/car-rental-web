@@ -60,6 +60,7 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
 
         await adminPage.goto(`/admin/rentals/${rental.id}`);
         await adminPage.getByRole('button', { name: 'Approve' }).click();
+        await adminPage.getByRole('button', { name: 'Approve Rental' }).click();
 
         await expect
             .poll(async () => (await (await customerPage.request.get(`/api/rentals/${rental.id}`)).json()).status)
