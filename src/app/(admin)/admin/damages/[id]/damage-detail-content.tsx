@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate, formatDateTime } from '@/shared/lib';
 import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
@@ -47,6 +47,14 @@ export function DamageDetailContent({ id }: { id: string }) {
 
     const canAssess = damage.status === 'REPORTED' || damage.status === 'UNDER_ASSESSMENT';
     const canReassess = damage.status === 'ASSESSED';
+    const hasDispute = Boolean(
+        damage.disputeReason ||
+        damage.disputeComments ||
+        damage.disputedAt ||
+        damage.resolutionNotes ||
+        damage.resolvedAt ||
+        damage.refundAmount !== undefined
+    );
     const canResolve = damage.status === 'DISPUTED';
     const liability = damage.customerLiability ?? 0;
     const canCharge = damage.status === 'ASSESSED' && liability > 0;
@@ -187,6 +195,60 @@ export function DamageDetailContent({ id }: { id: string }) {
                                     </div>
                                 )}
                             </div>
+                        </CardContent>
+                    </Card>
+                )}
+
+                {hasDispute && (
+                    <Card className="md:col-span-2">
+                        <CardHeader>
+                            <CardTitle>Dispute</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+                                {damage.disputedAt && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Disputed On</p>
+                                        <p className="font-medium">{formatDateTime(damage.disputedAt)}</p>
+                                    </div>
+                                )}
+                                {damage.originalLiability !== undefined && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Original Liability</p>
+                                        <p className="font-medium">{formatCurrencyWithDecimals(damage.originalLiability, damage.currency ?? DEFAULT_CURRENCY)}</p>
+                                    </div>
+                                )}
+                                {damage.refundAmount !== undefined && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Refund</p>
+                                        <p className="font-medium">{formatCurrencyWithDecimals(damage.refundAmount, damage.currency ?? DEFAULT_CURRENCY)}</p>
+                                    </div>
+                                )}
+                                {damage.resolvedAt && (
+                                    <div>
+                                        <p className="text-sm text-muted-foreground">Resolved On</p>
+                                        <p className="font-medium">{formatDateTime(damage.resolvedAt)}</p>
+                                    </div>
+                                )}
+                            </div>
+                            {damage.disputeReason && (
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Customer Reason</p>
+                                    <p className="mt-1">{damage.disputeReason}</p>
+                                </div>
+                            )}
+                            {damage.disputeComments && (
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Customer Comments</p>
+                                    <p className="mt-1">{damage.disputeComments}</p>
+                                </div>
+                            )}
+                            {damage.resolutionNotes && (
+                                <div>
+                                    <p className="text-sm text-muted-foreground">Resolution Notes</p>
+                                    <p className="mt-1">{damage.resolutionNotes}</p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 )}
