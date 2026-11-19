@@ -90,7 +90,7 @@ export function ApproveRentalDialog({
                                     </div>
                                 )}
                                 <div className="space-y-1.5 min-w-0">
-                                    <p className="font-bold text-base text-slate-900 dark:text-white truncate">
+                                    <p className="font-bold text-base text-slate-900 dark:text-white [overflow-wrap:anywhere]">
                                         {item.carBrand} {item.carModel}
                                     </p>
                                     <p className="text-xs font-mono text-slate-500 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2 py-0.5 rounded w-fit">
@@ -115,9 +115,9 @@ export function ApproveRentalDialog({
                                 </div>
                                 <div className="space-y-1.5 min-w-0">
                                     <div className="flex items-center gap-1.5">
-                                        <p className="font-bold text-base text-slate-900 dark:text-white truncate">{item.customerName}</p>
+                                        <p className="font-bold text-base text-slate-900 dark:text-white [overflow-wrap:anywhere]">{item.customerName}</p>
                                     </div>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                    <p className="text-xs text-slate-500 dark:text-slate-400 [overflow-wrap:anywhere]">
                                         {item.customerEmail}
                                     </p>
                                 </div>
@@ -157,7 +157,7 @@ export function ApproveRentalDialog({
                             <div className="space-y-1 ml-auto text-right">
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Amount</p>
                                 <div className="text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-1">
-                                    {formatAmount(item.totalAmount)}
+                                    {formatAmount(item.totalAmount, item.currency)}
                                 </div>
                             </div>
                         </div>

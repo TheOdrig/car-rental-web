@@ -18,7 +18,7 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
     return (
         <div
             className={cn(
-                'rounded-xl border border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm p-4 shadow-sm',
+                'min-w-0 rounded-xl border border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm p-4 shadow-sm',
                 className
             )}
         >
@@ -27,7 +27,7 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
                 {Icon && <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />}
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-                <p className="text-2xl font-semibold text-slate-900 dark:text-slate-100">{value}</p>
+                <p className="min-w-0 text-2xl font-semibold text-slate-900 [overflow-wrap:anywhere] dark:text-slate-100">{value}</p>
                 {trend && (
                     <span
                         className={cn(

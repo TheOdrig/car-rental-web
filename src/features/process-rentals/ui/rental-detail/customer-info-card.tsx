@@ -97,7 +97,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                     )}
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
                     <StatCard
                         label="Rentals"
                         value={customer.stats.totalRentals}
@@ -105,16 +105,16 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                         className="p-2"
                     />
                     <StatCard
-                        label="Net paid"
-                        value={formatAmountsByCurrency(customer.stats.spentByCurrency).join(' + ') || '-'}
-                        icon={DollarSign}
-                        className="p-2"
-                    />
-                    <StatCard
                         label="Damages"
                         value={customer.stats.damageCount}
                         icon={AlertTriangle}
                         className="p-2"
+                    />
+                    <StatCard
+                        label="Net paid"
+                        value={formatAmountsByCurrency(customer.stats.spentByCurrency).join(' + ') || '-'}
+                        icon={DollarSign}
+                        className="col-span-2 p-2"
                     />
                 </div>
             </CardContent>

@@ -81,6 +81,7 @@ export function PenaltyWaiveDialog({
     });
 
     const waiverAmount = useWatch({ control, name: 'waiverAmount' });
+    const exceedsPenalty = !isFullWaiver && (waiverAmount || 0) > originalPenalty;
     const remainingPenalty = isFullWaiver
         ? 0
         : originalPenalty - (waiverAmount || 0);
@@ -169,8 +170,14 @@ export function PenaltyWaiveDialog({
                                 {...register('waiverAmount', { valueAsNumber: true })}
                                 className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                             />
-                            {errors.waiverAmount && (
-                                <p className="text-sm text-red-500">{errors.waiverAmount.message}</p>
+                            {exceedsPenalty ? (
+                                <p className="text-sm text-red-600 dark:text-red-400" role="alert">
+                                    The waiver cannot be more than the penalty of {formatCurrency(originalPenalty, currency)}
+                                </p>
+                            ) : (
+                                errors.waiverAmount && (
+                                    <p className="text-sm text-red-600 dark:text-red-400">{errors.waiverAmount.message}</p>
+                                )
                             )}
                         </div>
                     )}
@@ -209,7 +216,7 @@ export function PenaltyWaiveDialog({
                         </Button>
                         <Button
                             type="submit"
-                            disabled={waivePenalty.isPending}
+                            disabled={waivePenalty.isPending || exceedsPenalty}
                         >
                             {waivePenalty.isPending ? 'Waiving...' : 'Waive Penalty'}
                         </Button>
