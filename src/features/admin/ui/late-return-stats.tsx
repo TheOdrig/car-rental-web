@@ -12,7 +12,7 @@ import {
     Percent,
 } from 'lucide-react';
 import type { LateReturnStatistics } from '@/entities/rental';
-import { formatAmount } from '@/shared/lib';
+import { formatCurrency } from '@/shared/lib';
 
 interface LateReturnStatsProps {
     data?: LateReturnStatistics;
@@ -44,27 +44,6 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
             bgColor: 'bg-red-100 dark:bg-red-900/30',
         },
         {
-            label: 'Total Penalties',
-            value: formatAmount(data.totalPenaltyAmount),
-            icon: DollarSign,
-            color: 'text-orange-600 dark:text-orange-400',
-            bgColor: 'bg-orange-100 dark:bg-orange-900/30',
-        },
-        {
-            label: 'Collected',
-            value: formatAmount(data.collectedPenaltyAmount),
-            icon: CheckCircle,
-            color: 'text-green-600 dark:text-green-400',
-            bgColor: 'bg-green-100 dark:bg-green-900/30',
-        },
-        {
-            label: 'Pending',
-            value: formatAmount(data.pendingPenaltyAmount),
-            icon: Timer,
-            color: 'text-yellow-600 dark:text-yellow-400',
-            bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
-        },
-        {
             label: 'Avg. Late Hours',
             value: `${data.averageLateHours.toFixed(1)}h`,
             icon: TrendingUp,
@@ -80,8 +59,53 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
         },
     ];
 
+    const penalties = (data.penaltiesByCurrency ?? []).flatMap((entry) => {
+        const currency = entry.currency;
+        if (!currency) return [];
+        return [
+            {
+                label: `Total Penalties (${currency})`,
+                value: formatCurrency(entry.totalPenaltyAmount ?? 0, currency),
+                icon: DollarSign,
+                color: 'text-orange-600 dark:text-orange-400',
+                bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+            },
+            {
+                label: `Collected (${currency})`,
+                value: formatCurrency(entry.collectedPenaltyAmount ?? 0, currency),
+                icon: CheckCircle,
+                color: 'text-green-600 dark:text-green-400',
+                bgColor: 'bg-green-100 dark:bg-green-900/30',
+            },
+            {
+                label: `Pending (${currency})`,
+                value: formatCurrency(entry.pendingPenaltyAmount ?? 0, currency),
+                icon: Timer,
+                color: 'text-yellow-600 dark:text-yellow-400',
+                bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
+            },
+        ];
+    });
+
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+        <div className="space-y-4">
+            <StatGrid stats={stats} columns="grid-cols-2 md:grid-cols-4" />
+            {penalties.length > 0 && <StatGrid stats={penalties} columns="grid-cols-1 sm:grid-cols-3" />}
+        </div>
+    );
+}
+
+interface StatItem {
+    label: string;
+    value: string;
+    icon: typeof Clock;
+    color: string;
+    bgColor: string;
+}
+
+function StatGrid({ stats, columns }: { stats: StatItem[]; columns: string }) {
+    return (
+        <div className={`grid ${columns} gap-4`}>
             {stats.map((stat) => (
                 <Card
                     key={stat.label}
@@ -110,8 +134,8 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
 
 function LateReturnStatsSkeleton() {
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
-            {Array.from({ length: 7 }).map((_, i) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
                 <Card
                     key={i}
                     className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"

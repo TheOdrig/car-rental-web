@@ -78,7 +78,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     <p className="text-muted-foreground">to {formatDate(item.endDate)}</p>
                 </div>
             </TableCell>
-            <TableCell className="font-medium">{formatAmount(item.totalAmount)}</TableCell>
+            <TableCell className="font-medium">{formatAmount(item.totalAmount, item.currency)}</TableCell>
             <TableCell>
                 <Badge variant={display.variant} className={display.className}>
                     {display.label}
