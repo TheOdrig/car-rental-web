@@ -116,6 +116,7 @@ export const API = {
         },
         lateReturns: endpoint('GET', `${V1}/admin/late-returns`),
         lateReturnStatistics: endpoint('GET', `${V1}/admin/late-returns/statistics`),
+        earlyReturnPreview: endpoint('GET', `${V1}/admin/rentals/{id}/early-return/preview`),
         penaltyHistory: endpoint('GET', `${V1}/admin/rentals/{id}/penalty/history`),
         penaltyWaive: endpoint('POST', `${V1}/admin/rentals/{id}/penalty/waive`),
         users: {

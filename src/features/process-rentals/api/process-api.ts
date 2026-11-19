@@ -14,6 +14,7 @@ import type {
     RejectRentalRequest,
     ProcessPickupRequest,
     ProcessReturnRequest,
+    EarlyReturnPreview,
 } from '../model/types';
 
 
@@ -165,6 +166,18 @@ export function useAdminRentals(params: AdminRentalsParams) {
         queryFn: () => fetchAdminRentals(params),
         staleTime: 30 * 1000,
         placeholderData: (previous) => previous,
+    });
+}
+
+export function useEarlyReturnPreview(rentalId: number, enabled: boolean) {
+    return useQuery({
+        queryKey: processKeys.earlyReturnPreview(rentalId),
+        queryFn: () => clientGet<EarlyReturnPreview>(`/api/admin/rentals/${rentalId}/early-return/preview`),
+        enabled: enabled && Number.isFinite(rentalId),
+        staleTime: 0,
+        gcTime: 0,
+        retry: false,
+        refetchOnWindowFocus: false,
     });
 }
 

@@ -29,6 +29,7 @@ import { GET as listCars } from '../cars/route';
 import { GET as searchFleet } from '../admin/cars/route';
 import { GET as fleetCar } from '../admin/cars/[id]/route';
 import { POST as changeCarStatus } from '../admin/cars/[id]/status/route';
+import { GET as earlyReturnPreview } from '../admin/rentals/[id]/early-return/preview/route';
 import { buildRentalDetail } from '../admin/rentals/_lib/rental-detail';
 
 const fetchMock = vi.fn();
@@ -163,6 +164,33 @@ describe('admin BFF routes', () => {
 
         expect(response.status).toBe(200);
         expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/rentals/admin?page=0&size=5');
+    });
+
+    it('previews an early return for an admin and passes the amounts through', async () => {
+        fetchMock.mockResolvedValueOnce(json({ rentalId: 7, amount: 84.5, currency: 'EUR', unusedDays: 2 }));
+
+        const response = await earlyReturnPreview(new NextRequest('http://localhost:3000/api/admin/rentals/7/early-return/preview'), ctx('7'));
+
+        expect(response.status).toBe(200);
+        expect(await response.json()).toEqual({ rentalId: 7, amount: 84.5, currency: 'EUR', unusedDays: 2 });
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/admin/rentals/7/early-return/preview');
+        expect(fetchMock.mock.calls[0][1].method).toBe('GET');
+    });
+
+    it('passes a preview for a rental that is not in use through as a problem response', async () => {
+        fetchMock.mockResolvedValueOnce(json({ status: 400, detail: 'Rental is not IN_USE', code: 'INVALID_RENTAL_STATE' }, 400));
+
+        const response = await earlyReturnPreview(new NextRequest('http://localhost:3000/api/admin/rentals/7/early-return/preview'), ctx('7'));
+
+        expect(response.status).toBe(400);
+        expect(await response.json()).toMatchObject({ code: 'INVALID_RENTAL_STATE' });
+    });
+
+    it('rejects a malformed rental id before previewing an early return', async () => {
+        const response = await earlyReturnPreview(new NextRequest('http://localhost:3000/api/admin/rentals/x/early-return/preview'), ctx('x'));
+
+        expect(response.status).toBe(400);
+        expect(fetchMock).not.toHaveBeenCalled();
     });
 
     it('forwards the status filter of the admin rental list', async () => {

@@ -1,5 +1,6 @@
 'use client';
 
+import type { ReactNode } from 'react';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -21,6 +22,8 @@ interface ConfirmActionDialogProps {
     cancelLabel?: string;
     destructive?: boolean;
     isPending?: boolean;
+    confirmDisabled?: boolean;
+    children?: ReactNode;
     onConfirm: () => void;
 }
 
@@ -34,6 +37,8 @@ export function ConfirmActionDialog({
     cancelLabel = 'Keep As Is',
     destructive = false,
     isPending = false,
+    confirmDisabled = false,
+    children,
     onConfirm,
 }: ConfirmActionDialogProps) {
     return (
@@ -42,11 +47,12 @@ export function ConfirmActionDialog({
                 <AlertDialogHeader>
                     <AlertDialogTitle>{title}</AlertDialogTitle>
                     <AlertDialogDescription>{description}</AlertDialogDescription>
+                    {children}
                 </AlertDialogHeader>
                 <AlertDialogFooter>
                     <AlertDialogCancel disabled={isPending}>{cancelLabel}</AlertDialogCancel>
                     <AlertDialogAction
-                        disabled={isPending}
+                        disabled={isPending || confirmDisabled}
                         onClick={(event) => {
                             event.preventDefault();
                             onConfirm();

@@ -36,4 +36,23 @@ describe('ConfirmActionDialog', () => {
 
         expect(screen.getByRole('button', { name: 'Working...' })).toBeDisabled();
     });
+
+    it('renders extra content and blocks confirming while it is disabled', () => {
+        renderWithProviders(
+            <ConfirmActionDialog
+                open
+                onOpenChange={vi.fn()}
+                title="Return the vehicle early?"
+                description="Unused days are refunded."
+                confirmLabel="Return Early"
+                confirmDisabled
+                onConfirm={vi.fn()}
+            >
+                <p>Refund preview</p>
+            </ConfirmActionDialog>
+        );
+
+        expect(screen.getByText('Refund preview')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Return Early' })).toBeDisabled();
+    });
 });

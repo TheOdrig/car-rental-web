@@ -22,6 +22,8 @@ import {
     useProcessPickup,
     useProcessReturn,
     useProcessEarlyReturn,
+    useEarlyReturnPreview,
+    EarlyReturnPreviewPanel,
     ConfirmActionDialog,
 } from '@/features/process-rentals';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
@@ -64,6 +66,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const cancelRental = useCancelRental();
     const singleFlight = useSingleFlight();
     const [confirming, setConfirming] = useState<'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
+    const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn');
     const paymentQuery = useRentalPayment(rentalId, {
         enabled: !isNaN(rentalId) && !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED',
     });
@@ -310,8 +313,11 @@ export function RentalDetailContent({ id }: { id: string }) {
                 confirmLabel={CONFIRM_COPY[confirming ?? 'pickup'].confirm}
                 destructive={confirming === 'cancel'}
                 isPending={isActionLoading}
+                confirmDisabled={confirming === 'earlyReturn' && !earlyReturnPreview.data}
                 onConfirm={runConfirmed}
-            />
+            >
+                {confirming === 'earlyReturn' && <EarlyReturnPreviewPanel query={earlyReturnPreview} />}
+            </ConfirmActionDialog>
 
             <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
                 <DialogContent className="sm:max-w-md">

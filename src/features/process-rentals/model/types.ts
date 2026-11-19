@@ -2,9 +2,12 @@
 
 
 
+import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { ProcessReturnData } from '@/entities/rental';
 
 export type { ProcessReturnData };
+
+export type EarlyReturnPreview = WithRequired<Schemas['EarlyReturnPreview'], 'rentalId' | 'amount' | 'currency' | 'unusedDays'>;
 
 export interface QuickActionResult {
     success: boolean;

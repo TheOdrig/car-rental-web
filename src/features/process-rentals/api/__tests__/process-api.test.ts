@@ -207,3 +207,26 @@ describe('early return', () => {
         await waitFor(() => expect(mockToast.error).toHaveBeenCalledWith('Failed to record the early return', 'Not in use'));
     });
 });
+
+
+describe('early return preview', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('loads the preview from the BFF route when enabled', async () => {
+        mockGet.mockResolvedValueOnce({ rentalId: 7, amount: 40, currency: 'USD', unusedDays: 1 });
+        const { useEarlyReturnPreview } = await import('../process-api');
+        const { result } = renderHook(() => useEarlyReturnPreview(7, true), { wrapper: createQueryWrapper() });
+
+        await waitFor(() => expect(result.current.data).toEqual({ rentalId: 7, amount: 40, currency: 'USD', unusedDays: 1 }));
+        expect(mockGet).toHaveBeenCalledWith('/api/admin/rentals/7/early-return/preview');
+    });
+
+    it('does not call the API while disabled', async () => {
+        const { useEarlyReturnPreview } = await import('../process-api');
+        renderHook(() => useEarlyReturnPreview(7, false), { wrapper: createQueryWrapper() });
+
+        expect(mockGet).not.toHaveBeenCalled();
+    });
+});
