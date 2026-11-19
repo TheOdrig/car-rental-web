@@ -19,7 +19,7 @@ test.describe('admin BFF routes against the real API', () => {
         expect(list).toMatchObject({ page: 0, size: 5 });
         expect(list.totalElements).toBeGreaterThan(0);
 
-        const rentals = await page.request.get('/api/rentals?page=0&size=5');
+        const rentals = await page.request.get('/api/admin/rentals?page=0&size=5');
         expect(rentals.status()).toBe(200);
         const rentalPage = await rentals.json();
         if (rentalPage.content.length > 0) {

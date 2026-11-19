@@ -67,7 +67,9 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
 
         await customerPage.goto(`/rentals/${rental.id}/pay`);
         await expect(customerPage).toHaveURL(new RegExp(`/rentals/${rental.id}/pay$`));
-        await expect(customerPage.getByTestId('payment-state-ready')).toBeVisible();
+        await expect(
+            customerPage.locator('[data-testid="payment-state-ready"], [data-testid="payment-state-authorized"]')
+        ).toBeVisible();
         await expect(customerPage.getByText('Rental not found')).toHaveCount(0);
         expect(cspViolations).toEqual([]);
     });

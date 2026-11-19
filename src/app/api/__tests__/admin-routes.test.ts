@@ -20,6 +20,7 @@ import { resetRefreshCacheForTests } from '@/shared/server/upstream';
 import { GET as listAlerts } from '../admin/alerts/route';
 import { POST as acknowledge } from '../admin/alerts/[id]/acknowledge/route';
 import { GET as rentalDetail } from '../admin/rentals/[id]/detail/route';
+import { GET as listRentals } from '../admin/rentals/route';
 import { GET as carRentals } from '../admin/cars/[id]/rentals/route';
 import { GET as userRentals } from '../admin/users/[id]/rentals/route';
 import { GET as lateReturns } from '../admin/late-returns/route';
@@ -103,6 +104,22 @@ describe('admin BFF routes', () => {
 
         expect(response.status).toBe(401);
         expect(body).toMatchObject({ code: 'AUTHENTICATION_FAILED', detail: 'Authentication is required' });
+    });
+
+    it('lists all rentals for admins under the admin namespace and forwards the query', async () => {
+        fetchMock.mockResolvedValueOnce(json({ content: [], page: 0, size: 5, totalElements: 0, totalPages: 0 }));
+
+        const response = await listRentals(new NextRequest('http://localhost:3000/api/admin/rentals?page=0&size=5'), noParams);
+
+        expect(response.status).toBe(200);
+        expect(upstreamUrls()[0]).toBe('http://localhost:8082/api/v1/rentals/admin?page=0&size=5');
+    });
+
+    it('no longer exposes the admin rental list on the public /api/rentals path', async () => {
+        const publicRentals = await import('../rentals/route');
+
+        expect(publicRentals).not.toHaveProperty('GET');
+        expect(publicRentals).toHaveProperty('POST');
     });
 
     it('maps the vehicle rental history status filter to the API vocabulary', async () => {
