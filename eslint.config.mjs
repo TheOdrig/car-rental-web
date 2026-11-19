@@ -88,6 +88,13 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    files: ["src/**/*.ts", "src/**/*.tsx"],
+    ignores: ["src/shared/lib/logger.ts", "**/*.test.ts", "**/*.test.tsx", "**/__tests__/**"],
+    rules: {
+      "no-console": ["error", { allow: ["warn", "error"] }],
+    },
+  },
+  {
     files: ["**/testing/**"],
     rules: {
       "no-restricted-imports": "off",

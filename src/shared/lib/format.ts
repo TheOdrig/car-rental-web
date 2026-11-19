@@ -63,6 +63,10 @@ export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): stri
     return part?.value ?? currency;
 }
 
+export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
+    return new Intl.NumberFormat(LOCALE, options).format(value);
+}
+
 export function formatDailyPrice(
     amount: number,
     currency: CurrencyType | string = 'USD'
@@ -98,6 +102,14 @@ function format(value: DateInput, options: Intl.DateTimeFormatOptions): string {
     if (!parsed) return MISSING;
     const timeZone = isDateOnly(value) ? 'UTC' : undefined;
     return new Intl.DateTimeFormat(LOCALE, { ...options, timeZone }).format(parsed);
+}
+
+export function formatMonthShort(date: Date): string {
+    return new Intl.DateTimeFormat(LOCALE, { month: 'short' }).format(date);
+}
+
+export function formatNumericDate(date: Date): string {
+    return new Intl.DateTimeFormat(LOCALE).format(date);
 }
 
 export function formatDate(value: DateInput): string {

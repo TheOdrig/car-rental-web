@@ -6,7 +6,6 @@ export type {
     PaginatedRentals,
 } from './model/types';
 
-export { rentalActions, rentalStore } from './model/rental-store';
 
 export { RentalList, RentalListSkeleton, RentalListEmpty } from './ui/rental-list';
 export { RentalActions, RentalActionsSkeleton } from './ui/rental-actions';

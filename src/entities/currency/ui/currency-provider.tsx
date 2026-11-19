@@ -10,6 +10,7 @@ import {
     type ReactNode,
 } from 'react';
 import { clientGet } from '@/shared/api';
+import { formatNumber } from '@/shared/lib';
 import {
     type CurrencyCode,
     type ExchangeRatesResponse,
@@ -35,9 +36,9 @@ interface CurrencyContextValue {
 function formatInCurrency(amount: number, code: CurrencyCode): string {
     const info = getCurrencyByCode(code);
     if (code === 'JPY') {
-        return `${info.symbol}${Math.round(amount).toLocaleString()}`;
+        return `${info.symbol}${formatNumber(Math.round(amount))}`;
     }
-    return `${info.symbol}${amount.toLocaleString(undefined, {
+    return `${info.symbol}${formatNumber(amount, {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
     })}`;

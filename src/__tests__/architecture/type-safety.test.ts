@@ -7,8 +7,6 @@ import {
   hasDomainSpecificTypes,
 } from './helpers/ast-parser';
 
-
-
 const CONTRACT_STATUS_LITERAL_FILES = [
   'src/entities/payment/model/rental-payment.ts',
   'src/entities/payment/ui/payment-status-badge.tsx',
@@ -26,10 +24,9 @@ function normalized(files: string[]): string[] {
 
 describe('Type Safety Properties', () => {
 
-  it('Property 15: No Magic Strings in Business Logic - use enums', async () => {
+  it('No Magic Strings in Business Logic - use enums', async () => {
     const businessLogic = await scanFiles('src/{features,entities}/**/*.{ts,tsx}');
     const violations: string[] = [];
-
 
     const suspiciousStrings = [
       'PENDING',
@@ -50,19 +47,10 @@ describe('Type Safety Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 15 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Contains magic strings (should use enums)`);
-      });
-    }
-
-
     expect(normalized(violations)).toEqual(CONTRACT_STATUS_LITERAL_FILES);
   });
 
-
-  it('Property 16: Exhaustive Enum Handling - switch with never type check', async () => {
+  it('Exhaustive Enum Handling - switch with never type check', async () => {
     const files = await scanFiles('src/**/*.{ts,tsx}');
     const violations: string[] = [];
 
@@ -84,19 +72,10 @@ describe('Type Safety Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 16 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Switch on enum missing exhaustive check`);
-      });
-    }
-
-
     expect(violations).toEqual([]);
   });
 
-
-  it('Property 17: Type Location Convention - domain types in entities', async () => {
+  it('Type Location Convention - domain types in entities', async () => {
     const sharedTypes = await scanFiles('src/shared/**/*.ts');
     const violations: string[] = [];
 
@@ -111,16 +90,7 @@ describe('Type Safety Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n❌ Property 17 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Domain types should be in entities, not shared`);
-      });
-    }
-
     expect(violations).toHaveLength(0);
   });
-
-
 
 });

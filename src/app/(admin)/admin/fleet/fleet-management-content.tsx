@@ -9,7 +9,7 @@ import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
 import { FleetStatsCards, FleetTable } from '@/features/manage-fleet';
-import { useFleetStatus, useInvalidateAdmin } from '@/features/admin';
+import { useFleetStatus } from '@/features/admin';
 import {
     useFleetList,
     useDeleteCar,
@@ -33,7 +33,6 @@ export function FleetManagementContent() {
         search: searchQuery || undefined,
         size: 25,
     });
-    useInvalidateAdmin();
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
@@ -61,13 +60,11 @@ export function FleetManagementContent() {
     }, [carsContent, searchQuery, statusFilter, brandFilter]);
 
     const handleRefresh = async () => {
-        console.log('[Fleet] Refreshing data...');
         try {
             await Promise.all([
                 refetchFleet(),
                 refetchCars(),
             ]);
-            console.log('[Fleet] Refresh complete');
             toast.success('Fleet data refreshed');
         } catch (error) {
             console.error('[Fleet] Refresh failed:', error);

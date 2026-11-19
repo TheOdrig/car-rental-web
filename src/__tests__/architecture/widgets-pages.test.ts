@@ -4,8 +4,6 @@ import { scanFiles, hasUseClientDirective } from './helpers/file-scanner';
 import { getImports, hasBusinessLogic, hasAPIcalls } from './helpers/import-analyzer';
 import { hasComplexJSX, hasInlineClientComponent } from './helpers/ast-parser';
 
-
-
 const WIDGETS_WITH_LOGIC = [
   'src/widgets/car-filters/ui/filter-panel.tsx',
   'src/widgets/car-filters/ui/price-range-slider.tsx',
@@ -27,7 +25,7 @@ function normalized(files: string[]): string[] {
 
 describe('Widget & Page Properties', () => {
 
-  it('Property 20: Widget Import Restrictions - widgets import features, entities, shared', async () => {
+  it('Widget Import Restrictions - widgets import features, entities, shared', async () => {
     const widgets = await scanFiles('src/widgets/**/*.{ts,tsx}');
     const violations: Array<{ file: string; invalidImports: string[] }> = [];
 
@@ -42,21 +40,10 @@ describe('Widget & Page Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n❌ Property 20 Violations:');
-      violations.forEach(({ file, invalidImports }) => {
-        console.log(`  - ${file}:`);
-        invalidImports.forEach((imp) => {
-          console.log(`    → invalid import: ${imp}`);
-        });
-      });
-    }
-
     expect(violations).toHaveLength(0);
   });
 
-
-  it('Property 21: Widget Composition Pattern - compose, dont implement logic', async () => {
+  it('Widget Composition Pattern - compose, dont implement logic', async () => {
     const widgets = await scanFiles('src/widgets/**/*.{ts,tsx}');
     const violations: string[] = [];
 
@@ -74,19 +61,10 @@ describe('Widget & Page Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 21 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Widget should compose, not implement logic`);
-      });
-    }
-
-
     expect(normalized(violations)).toEqual(WIDGETS_WITH_LOGIC);
   });
 
-
-  it('Property 22: Page Widget Usage - pages compose widgets/features', async () => {
+  it('Page Widget Usage - pages compose widgets/features', async () => {
     const pages = await scanFiles('src/app/**/page.tsx');
     const violations: string[] = [];
 
@@ -97,25 +75,15 @@ describe('Widget & Page Properties', () => {
       );
       const hasInlineUI = hasComplexJSX(file);
 
-
       if (hasInlineUI && !hasWidgetOrFeature) {
         violations.push(file);
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 22 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Page should compose widgets/features, not implement UI`);
-      });
-    }
-
-
     expect(normalized(violations)).toEqual(STATIC_PAGES);
   });
 
-
-  it('Property 23: Feature Unit Test Coverage - isolated feature tests', async () => {
+  it('Feature Unit Test Coverage - isolated feature tests', async () => {
     const features = readdirSync('src/features').filter((name) => statSync(`src/features/${name}`).isDirectory());
     const violations: string[] = [];
 
@@ -129,25 +97,15 @@ describe('Widget & Page Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 23 Violations:');
-      violations.forEach((feature) => {
-        console.log(`  - ${feature}: Feature should have unit tests`);
-      });
-    }
-
-
     expect(violations).toEqual([]);
   });
 
-
-  it('Property 24: Page Server Component Default - pages are Server Components', async () => {
+  it('Page Server Component Default - pages are Server Components', async () => {
     const pages = await scanFiles('src/app/**/page.tsx');
     const violations: string[] = [];
 
     for (const file of pages) {
       const hasUseClient = hasUseClientDirective(file);
-
 
       if (hasUseClient) {
 
@@ -166,19 +124,10 @@ describe('Widget & Page Properties', () => {
       }
     }
 
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 24 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Page should be Server Component (remove 'use client')`);
-      });
-    }
-
-
     expect(violations).toEqual([]);
   });
 
-
-  it('Property 25: Client Component Extraction - extract to features, not inline', async () => {
+  it('Client Component Extraction - extract to features, not inline', async () => {
     const pages = await scanFiles('src/app/**/page.tsx');
     const violations: string[] = [];
 
@@ -187,14 +136,6 @@ describe('Widget & Page Properties', () => {
         violations.push(file);
       }
     }
-
-    if (violations.length > 0) {
-      console.log('\n⚠️  Property 25 Violations:');
-      violations.forEach((file) => {
-        console.log(`  - ${file}: Extract client components to features`);
-      });
-    }
-
 
     expect(violations).toEqual([]);
   });

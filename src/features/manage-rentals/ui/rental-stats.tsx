@@ -2,7 +2,7 @@
 
 import { memo, type ReactNode } from 'react';
 import { History, CalendarClock } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, formatNumber } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import type { RentalStats as RentalStatsType } from '@/entities/rental';
@@ -49,7 +49,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
                                 : 'text-foreground'
                         )}
                     >
-                        {value.toLocaleString()}
+                        {formatNumber(value)}
                     </p>
                 </div>
             </CardContent>
