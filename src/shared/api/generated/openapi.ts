@@ -208,6 +208,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/damages/{id}/charge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Charge damage
+         * @description Charge the assessed customer liability to the card saved with the rental (admin only). A charged report can then be disputed by the customer.
+         */
+        post: operations["chargeDamage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/damages/{id}/photos": {
         parameters: {
             query?: never;
@@ -2343,10 +2363,12 @@ export interface components {
             toCurrency: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
         };
         DailyRevenueDto: {
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             /** Format: date */
             date?: string;
             /** Format: int32 */
-            rentalCount?: number;
+            paymentCount?: number;
             revenue?: number;
         };
         DailySummaryDto: {
@@ -2392,6 +2414,19 @@ export interface components {
             repairCostEstimate?: number;
             /** @enum {string} */
             severity?: "MINOR" | "MODERATE" | "MAJOR" | "TOTAL_LOSS";
+        };
+        DamageChargeResponse: {
+            amount?: number;
+            /** @description True when the saved card was charged. A declined or undecided charge answers 200 with charged=false and the report stays ASSESSED so the charge can be retried. */
+            charged?: boolean;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** Format: int64 */
+            damageId?: number;
+            message?: string;
+            /** @enum {string} */
+            status?: "REPORTED" | "UNDER_ASSESSMENT" | "ASSESSED" | "CHARGED" | "DISPUTED" | "RESOLVED";
+            transactionId?: string;
         };
         DamageCostTotals: {
             /** Format: int64 */
@@ -2655,21 +2690,21 @@ export interface components {
             cancelledRentals?: number;
             /** Format: int32 */
             completedRentals?: number;
-            damageCharges?: number;
             /** Format: date */
             endDate?: string;
             /** Format: date-time */
             generatedAt?: string;
-            penaltyRevenue?: number;
+            revenueByCurrency?: components["schemas"]["RevenueBreakdownDto"][];
             /** Format: date */
             startDate?: string;
-            totalRevenue?: number;
         };
         MonthlyRevenueDto: {
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             growthPercentage?: number;
             month?: string;
             /** Format: int32 */
-            rentalCount?: number;
+            paymentCount?: number;
             revenue?: number;
         };
         PageResponseAdminUserListItem: {
@@ -2991,13 +3026,15 @@ export interface components {
             notes?: string;
         };
         RevenueAnalyticsDto: {
-            breakdown?: components["schemas"]["RevenueBreakdownDto"];
+            breakdownByCurrency?: components["schemas"]["RevenueBreakdownDto"][];
             dailyRevenue?: components["schemas"]["DailyRevenueDto"][];
             /** Format: date-time */
             generatedAt?: string;
             monthlyRevenue?: components["schemas"]["MonthlyRevenueDto"][];
         };
         RevenueBreakdownDto: {
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             damagePercentage?: number;
             damageRecovered?: number;
             damageRepairCosts?: number;
@@ -3057,7 +3094,7 @@ export interface components {
             damageCostByCurrency?: components["schemas"]["DamageCostTotals"][];
             /** Format: int32 */
             lateReturns?: number;
-            /** @description Amount spent on returned rentals, grouped by rental currency; amounts of different currencies are never summed together. */
+            /** @description Net amount paid for the rentals of the user (rental, late-return penalty and damage payments, after refunds), grouped by currency; amounts of different currencies are never summed together. */
             spentByCurrency?: components["schemas"]["RentalSpendTotals"][];
             /** Format: int32 */
             totalDamageReports?: number;
@@ -3821,6 +3858,74 @@ export interface operations {
                 };
             };
             /** @description Invalid status or data */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Damage report not found */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    chargeDamage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Damage ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Charge attempted; see the charged flag */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DamageChargeResponse"];
+                };
+            };
+            /** @description Report is not in ASSESSED status or has no liability */
             400: {
                 headers: {
                     [name: string]: unknown;
