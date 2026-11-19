@@ -16,31 +16,12 @@ interface RentalFilters {
 
 export const rentalKeys = {
     all: ['rentals'] as const,
-    lists: () => [...rentalKeys.all, 'list'] as const,
-    list: (filters?: RentalFilters) => [...rentalKeys.lists(), filters] as const,
     myRentals: () => [...rentalKeys.all, 'my'] as const,
     myList: (filters?: RentalFilters) => [...rentalKeys.myRentals(), filters] as const,
     myAll: () => [...rentalKeys.myRentals(), 'all'] as const,
     details: () => [...rentalKeys.all, 'detail'] as const,
     detail: (id: number) => [...rentalKeys.details(), id] as const,
 };
-
-async function fetchRentals(filters?: RentalFilters): Promise<PageResponse<Rental>> {
-    const params = new URLSearchParams();
-
-    if (filters) {
-        Object.entries(filters).forEach(([key, value]) => {
-            if (value !== undefined && value !== null && value !== '') {
-                params.append(key, String(value));
-            }
-        });
-    }
-
-    const queryString = params.toString();
-    const url = queryString ? `/api/rentals?${queryString}` : '/api/rentals';
-
-    return clientGet<PageResponse<Rental>>(url);
-}
 
 async function fetchMyRentals(filters?: RentalFilters): Promise<PageResponse<Rental>> {
     const params = new URLSearchParams();
@@ -82,14 +63,6 @@ async function createRental(data: RentalRequest): Promise<Rental> {
 
 async function cancelRental(id: number): Promise<Rental> {
     return clientDelete<Rental>(`/api/rentals/${id}`);
-}
-
-export function useRentals(filters?: RentalFilters) {
-    return useQuery({
-        queryKey: rentalKeys.list(filters),
-        queryFn: () => fetchRentals(filters),
-        staleTime: 2 * 60 * 1000,
-    });
 }
 
 export function useMyRentals(filters?: RentalFilters) {
@@ -165,7 +138,6 @@ export function useInvalidateRentals() {
 
     return {
         all: () => queryClient.invalidateQueries({ queryKey: rentalKeys.all }),
-        lists: () => queryClient.invalidateQueries({ queryKey: rentalKeys.lists() }),
         myRentals: () => queryClient.invalidateQueries({ queryKey: rentalKeys.myRentals() }),
         single: (id: number) => queryClient.invalidateQueries({ queryKey: rentalKeys.detail(id) }),
     };

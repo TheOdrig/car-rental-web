@@ -8,8 +8,6 @@ export type {
 
 export { rentalActions, rentalStore } from './model/rental-store';
 
-export { getRentals, getRentalById, performRentalAction, cancelRental } from './api/rental-api';
-
 export { RentalList, RentalListSkeleton, RentalListEmpty } from './ui/rental-list';
 export { RentalActions, RentalActionsSkeleton } from './ui/rental-actions';
 export { RentalCard, RentalCardSkeleton } from './ui/rental-card';

@@ -96,6 +96,34 @@ describe('route request guards', () => {
         expect(response.status).toBe(200);
     });
 
+    it('rejects a state-changing request without Origin when the browser says it is cross-site', async () => {
+        for (const site of ['cross-site', 'same-site']) {
+            const response = await ok(
+                request(undefined, { method: 'POST', headers: { ...json, 'sec-fetch-site': site }, body: '{}' }),
+                context({})
+            );
+
+            expect(response.status).toBe(403);
+        }
+    });
+
+    it('accepts a request without Origin when Sec-Fetch-Site says same-origin or none', async () => {
+        for (const site of ['same-origin', 'none']) {
+            const response = await ok(
+                request(undefined, { method: 'POST', headers: { ...json, 'sec-fetch-site': site }, body: '{}' }),
+                context({})
+            );
+
+            expect(response.status).toBe(200);
+        }
+    });
+
+    it('ignores Sec-Fetch-Site on safe methods', async () => {
+        const response = await ok(request(undefined, { headers: { 'sec-fetch-site': 'cross-site' } }), context({}));
+
+        expect(response.status).toBe(200);
+    });
+
     it('ignores Origin on safe methods', async () => {
         const response = await ok(request(undefined, { headers: { origin: 'https://evil.example' } }), context({}));
 

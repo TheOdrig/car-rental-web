@@ -30,7 +30,8 @@ function requestHost(request: NextRequest): string {
 function isCrossOrigin(request: NextRequest): boolean {
     const origin = request.headers.get('origin');
     if (origin === null) {
-        return false;
+        const site = request.headers.get('sec-fetch-site');
+        return site !== null && site !== 'same-origin' && site !== 'none';
     }
 
     try {

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 const jar = new Map<string, string>();
 let incomingHeaders: Record<string, string> = {};
@@ -174,6 +174,52 @@ describe('upstream', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(first).toEqual({ kind: 'ok', tokens: refreshed });
         expect(second).toBe(first);
+    });
+
+    describe('refresh share expiry', () => {
+        afterEach(() => {
+            vi.useRealTimers();
+        });
+
+        it('shares a rotated pair for ten seconds and refreshes again afterwards', async () => {
+            vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+            fetchMock.mockImplementation(async () => jsonResponse(200, refreshed));
+
+            await refreshAuthSession('old');
+            await vi.advanceTimersByTimeAsync(9_999);
+            await refreshAuthSession('old');
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            await vi.advanceTimersByTimeAsync(2);
+            await refreshAuthSession('old');
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        it('shares a rejected token for ten seconds and asks the API again afterwards', async () => {
+            vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+            fetchMock.mockImplementation(async () => jsonResponse(401, { code: 'INVALID_TOKEN' }));
+
+            await refreshAuthSession('dead');
+            await vi.advanceTimersByTimeAsync(5_000);
+            await refreshAuthSession('dead');
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+
+            await vi.advanceTimersByTimeAsync(5_001);
+            await refreshAuthSession('dead');
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
+
+        it('does not keep an unavailable outcome in the share', async () => {
+            vi.useFakeTimers({ toFake: ['setTimeout', 'clearTimeout'] });
+            fetchMock
+                .mockImplementationOnce(async () => jsonResponse(503, {}))
+                .mockImplementation(async () => jsonResponse(200, refreshed));
+
+            expect(await refreshAuthSession('flaky')).toEqual({ kind: 'unavailable' });
+            await Promise.resolve();
+            expect(await refreshAuthSession('flaky')).toMatchObject({ kind: 'ok' });
+            expect(fetchMock).toHaveBeenCalledTimes(2);
+        });
     });
 
     it('does not replay a token the API already rejected', async () => {

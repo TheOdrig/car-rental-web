@@ -33,7 +33,6 @@ export * from './lib/rental-rules';
 export * from './lib/rental-errors';
 export * from './lib/admin-status';
 export {
-    useRentals,
     useMyRentals,
     useAllMyRentals,
     useRental,

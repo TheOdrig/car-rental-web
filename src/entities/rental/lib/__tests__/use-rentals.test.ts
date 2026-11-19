@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
-import { useRentals, useMyRentals, useRental, useCreateRental, useCancelRental, rentalKeys } from '../use-rentals';
+import { useMyRentals, useAllMyRentals, useRental, useCreateRental, useCancelRental, rentalKeys } from '../use-rentals';
 import { ApiError, clientGet, clientPost, clientDelete } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { createMockRental, createMockRentals } from '@/entities/rental/lib/testing/factories';
@@ -35,29 +35,30 @@ describe('use-rentals hooks', () => {
     describe('rentalKeys', () => {
         it('should generate correct query keys', () => {
             expect(rentalKeys.all).toEqual(['rentals']);
-            expect(rentalKeys.list({ status: 'CONFIRMED' })).toEqual(['rentals', 'list', { status: 'CONFIRMED' }]);
+            expect(rentalKeys.myAll()).toEqual(['rentals', 'my', 'all']);
             expect(rentalKeys.myList()).toEqual(['rentals', 'my', undefined]);
         });
     });
-    describe('useRentals', () => {
-        it('should fetch rentals successfully', async () => {
-            const mockRentals = createMockRentals(3);
-            mockClientGet.mockResolvedValueOnce({ content: mockRentals, totalElements: 3 });
-            const { result } = renderHook(() => useRentals(), {
+    describe('useAllMyRentals', () => {
+        it('collects every page so stats and tabs cover all rentals', async () => {
+            mockClientGet
+                .mockResolvedValueOnce({ content: createMockRentals(2), totalElements: 3, totalPages: 2, page: 0 })
+                .mockResolvedValueOnce({ content: createMockRentals(1), totalElements: 3, totalPages: 2, page: 1 });
+            const { result } = renderHook(() => useAllMyRentals(), {
                 wrapper: createQueryWrapper(),
             });
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
-            expect(result.current.data?.content).toHaveLength(3);
-            expect(mockClientGet).toHaveBeenCalledWith('/api/rentals');
+            expect(result.current.data).toHaveLength(3);
+            expect(mockClientGet).toHaveBeenNthCalledWith(1, '/api/rentals/me?page=0&size=100');
+            expect(mockClientGet).toHaveBeenNthCalledWith(2, '/api/rentals/me?page=1&size=100');
         });
-        it('should support filters', async () => {
-            mockClientGet.mockResolvedValueOnce({ content: [] });
-            renderHook(() => useRentals({ status: 'CONFIRMED', page: 1 }), {
+        it('stops after a single page', async () => {
+            mockClientGet.mockResolvedValueOnce({ content: createMockRentals(2), totalElements: 2, totalPages: 1, page: 0 });
+            const { result } = renderHook(() => useAllMyRentals(), {
                 wrapper: createQueryWrapper(),
             });
-            await waitFor(() => {
-                expect(mockClientGet).toHaveBeenCalledWith('/api/rentals?status=CONFIRMED&page=1');
-            });
+            await waitFor(() => expect(result.current.isSuccess).toBe(true));
+            expect(mockClientGet).toHaveBeenCalledTimes(1);
         });
     });
     describe('useMyRentals', () => {

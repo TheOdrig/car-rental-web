@@ -5,6 +5,7 @@ import path from 'path';
 const nodeTests = [
     'src/shared/server/**/__tests__/**/*.test.{ts,tsx}',
     'src/__tests__/proxy.test.ts',
+    'src/app/api/__tests__/auth-me.test.ts',
 ];
 
 export default defineConfig({
