@@ -164,7 +164,7 @@ export function RentalInfoCard({
                     </div>
                 )}
 
-                {status === 'CANCELLED' && (cancelledBy || cancellationReason) && (
+                {(cancelledBy || cancellationReason) && (
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
                         <RentalCancellationNotice audience="admin" cancelledBy={cancelledBy} reason={cancellationReason} />
                     </div>
