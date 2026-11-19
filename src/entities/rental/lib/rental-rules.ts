@@ -54,6 +54,16 @@ export function toDateInputValue(date: Date): string {
     return `${date.getFullYear()}-${month}-${day}`;
 }
 
+export function findBookedDate(start: Date, end: Date, booked: ReadonlySet<string>): string | null {
+    if (booked.size === 0) return null;
+    const last = dayStart(end);
+    for (let day = dayStart(start); day <= last; day = addCalendarDays(day, 1)) {
+        const key = toDateInputValue(day);
+        if (booked.has(key)) return key;
+    }
+    return null;
+}
+
 export function rentalLengthInDays(start: Date, end: Date): number {
     return diffCalendarDays(end, start) + 1;
 }

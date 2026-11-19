@@ -58,4 +58,10 @@ describe('Textarea Component - Validation States', () => {
             expect(textarea).toHaveAttribute('data-slot', 'textarea');
         });
     });
+});describe('Textarea Component - Long content', () => {
+    it('can shrink inside a grid and wraps unbroken text', () => {
+        render(<Textarea placeholder="Reason" />);
+        const textarea = screen.getByPlaceholderText('Reason');
+        expect(textarea).toHaveClass('min-w-0', 'max-w-full', 'break-words');
+    });
 });

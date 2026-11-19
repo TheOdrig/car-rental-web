@@ -19,16 +19,7 @@ import {
 } from '@/shared/ui/popover';
 import { Calendar } from '@/shared/ui/calendar';
 import { cn } from '@/shared/lib';
-
-const VEHICLE_TYPES = [
-    { value: 'all', label: 'All Types' },
-    { value: 'SUV', label: 'SUV' },
-    { value: 'Sedan', label: 'Sedan' },
-    { value: 'Hatchback', label: 'Hatchback' },
-    { value: 'Coupe', label: 'Coupe' },
-    { value: 'Convertible', label: 'Convertible' },
-    { value: 'Van', label: 'Van' },
-];
+import { useFilterOptions } from '@/entities/car';
 
 interface SearchWidgetProps {
     className?: string;
@@ -40,6 +31,8 @@ export function SearchWidget({ className }: SearchWidgetProps) {
     const [returnDate, setReturnDate] = useState<Date>();
     const [vehicleType, setVehicleType] = useState('all');
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const { data: options } = useFilterOptions();
+    const vehicleTypes = [{ value: 'all', label: 'All Types' }, ...(options?.bodyTypes ?? []).map((value) => ({ value, label: value }))];
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -170,7 +163,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>
-                                {VEHICLE_TYPES.map((type) => (
+                                {vehicleTypes.map((type) => (
                                     <SelectItem key={type.value} value={type.value}>
                                         {type.label}
                                     </SelectItem>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, clientDelete, getApiErrorMessage, getSafeErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type {
     DamageReport,
@@ -236,7 +236,7 @@ export function useUploadPhotos() {
             void queryClient.invalidateQueries({ queryKey: damageKeys.detail(variables.damageId) });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to upload photos', getApiErrorMessage(error));
+            showToast.error('Failed to upload photos', getSafeErrorMessage(error, 'The photos could not be stored. Please try again later.'));
         },
     });
 }

@@ -3,6 +3,10 @@ import Image from 'next/image';
 
 const footerLinks = {
     explore: [{ label: 'Browse Cars', href: '/cars' }],
+    legal: [
+        { label: 'Terms of Service', href: '/terms' },
+        { label: 'Privacy Policy', href: '/privacy' },
+    ],
 };
 
 export function Footer() {
@@ -16,12 +20,12 @@ export function Footer() {
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                             <Image
                                 src="/images/logo.svg"
-                                alt="CarRental"
+                                alt="Car Rental"
                                 width={48}
                                 height={48}
                                 className="h-12 w-auto dark:invert"
                             />
-                            <span>CarRental</span>
+                            <span>Car Rental</span>
                         </Link>
                         <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
                             Find and rent your perfect car with ease. Quality vehicles, competitive prices, and exceptional service.
@@ -31,7 +35,7 @@ export function Footer() {
                     <div>
                         <h3 className="font-semibold mb-4">Explore</h3>
                         <ul className="space-y-3">
-                            {footerLinks.explore.map((link) => (
+                            {[...footerLinks.explore, ...footerLinks.legal].map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
@@ -48,7 +52,7 @@ export function Footer() {
 
                 <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800 pt-8 md:flex-row">
                     <p className="text-sm text-slate-600 dark:text-slate-400">
-                        © {currentYear} CarRental. All rights reserved.
+                        © {currentYear} Car Rental. All rights reserved.
                     </p>
                     <div className="flex gap-6">
                         <Link

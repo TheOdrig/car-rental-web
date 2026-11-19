@@ -24,22 +24,22 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
                 <div className="relative z-20 p-12 max-w-lg text-white">
                     <div className="mb-6">
-                        <h3 className="text-xl font-bold tracking-wide">CarRental</h3>
+                        <p className="text-xl font-bold tracking-wide">Car Rental</p>
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                         Experience the freedom of the open road.
                     </h1>
                     <p className="text-lg text-gray-200 leading-relaxed mb-8">
-                        Join our community of over 50,000 satisfied drivers. Premium fleet, transparent pricing, and 24/7 support for your journey.
+                        Check live availability, see the full price breakdown before you request, and pay once your rental is approved.
                     </p>
                     <div className="flex items-center gap-6 text-sm font-medium text-gray-300">
                         <div className="flex items-center gap-2">
                             <span className="text-primary" aria-hidden="true">✓</span>
-                            <span>Instant Booking</span>
+                            <span>Live availability</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-primary" aria-hidden="true">✓</span>
-                            <span>Best Price Guarantee</span>
+                            <span>Clear pricing</span>
                         </div>
                     </div>
                 </div>
@@ -48,7 +48,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             <div className="w-full lg:w-1/2 flex flex-col min-h-screen bg-white dark:bg-slate-950">
                 <div className="p-6 flex justify-between items-center">
                     <Link href="/" className="text-slate-900 dark:text-slate-100">
-                        <span className="font-bold text-lg">CarRental</span>
+                        <span className="font-bold text-lg">Car Rental</span>
                     </Link>
                     <Link
                         href="/"
@@ -66,7 +66,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
                 <div className="p-6 text-center lg:text-left">
                     <p className="text-xs text-slate-600 dark:text-slate-400">
-                        © {new Date().getFullYear()} CarRental Inc. All rights reserved.
+                        © {new Date().getFullYear()} Car Rental. All rights reserved.
                     </p>
                 </div>
             </div>

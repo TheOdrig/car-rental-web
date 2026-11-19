@@ -66,15 +66,17 @@ describe('BookingSuccess', () => {
         render(<BookingSuccess {...defaultProps} />);
         expect(screen.getByRole('link', { name: /return to home/i })).toBeInTheDocument();
     });
-    it('should have Print Receipt button', () => {
+    it('should not offer a receipt for an unpaid request', () => {
         render(<BookingSuccess {...defaultProps} />);
-        expect(screen.getByRole('button', { name: /print receipt/i })).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /print receipt/i })).not.toBeInTheDocument();
     });
 });
 
 describe('BookingSuccessLoader', () => {
     it('loads the rental by id and shows the real car and dates', () => {
         mockUseRental.mockReturnValue({
+            isLoading: false,
+            isError: false,
             data: {
                 id: 42,
                 startDate: '2024-03-01',
@@ -90,11 +92,29 @@ describe('BookingSuccessLoader', () => {
         expect(screen.getByRole('link', { name: /view booking details/i })).toHaveAttribute('href', '/rentals/42');
     });
 
-    it('does not query a rental for a non numeric reference', () => {
-        mockUseRental.mockReturnValue({ data: undefined });
+    it('does not query a rental for a non numeric reference and shows an error state', () => {
+        mockUseRental.mockReturnValue({ data: undefined, isLoading: false, isError: false });
         render(<BookingSuccessLoader referenceNumber="ABC" />);
 
         expect(mockUseRental).toHaveBeenCalledWith(null);
-        expect(screen.getByText('Your Selected Vehicle')).toBeInTheDocument();
+        expect(screen.getByRole('alert')).toHaveTextContent(/could not load this booking/i);
+        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
+    });
+
+    it('shows an error state instead of success when the rental cannot be read', () => {
+        mockUseRental.mockReturnValue({ data: undefined, isLoading: false, isError: true });
+        render(<BookingSuccessLoader referenceNumber="1" />);
+
+        expect(screen.getByRole('alert')).toHaveTextContent(/could not load this booking/i);
+        expect(screen.getByRole('link', { name: /my rentals/i })).toHaveAttribute('href', '/rentals');
+        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
+    });
+
+    it('shows a loading state while the rental loads', () => {
+        mockUseRental.mockReturnValue({ data: undefined, isLoading: true, isError: false });
+        const { container } = render(<BookingSuccessLoader referenceNumber="1" />);
+
+        expect(container.querySelector('[aria-busy="true"]')).not.toBeNull();
+        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
     });
 });

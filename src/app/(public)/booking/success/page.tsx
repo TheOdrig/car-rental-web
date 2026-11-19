@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { BookingSuccessLoader } from '@/features/book-car';
 
 export const metadata: Metadata = {
-    title: 'Booking Requested | Car Rental',
+    title: 'Booking Requested',
     description: 'Your car rental request has been submitted and awaits confirmation.',
     robots: { index: false, follow: false },
 };

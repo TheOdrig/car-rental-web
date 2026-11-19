@@ -25,6 +25,8 @@ export {
     type VehicleDetailResponse,
 } from './model/types';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
+export { useFilterOptions, filterOptionsKeys, uniqueOptions, type FilterOptions } from './lib/use-filter-options';
+export { getCarUnavailableMessage, friendlyUnavailableReason } from './lib/status-messages';
 export { parseCarListParams, buildCarListParams, type CarListState } from './lib/list-url-state';
 export { CarCard, CarCardSkeleton } from './ui/car-card';
 export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';
@@ -38,6 +40,7 @@ export {
     useCarSearch,
     useCar,
     useCarCalendar,
+    useBookedDates,
     useFeaturedCars,
     usePrefetchCar,
     useInvalidateCars,

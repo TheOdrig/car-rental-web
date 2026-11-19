@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ForgotPasswordForm } from '@/features/auth';
 
 export const metadata: Metadata = {
-    title: 'Forgot Password | CarRental',
-    description: 'Reset your CarRental account password. Enter your email to receive a password reset link.',
+    title: 'Forgot Password',
+    description: 'Reset your Car Rental account password. Enter your email to receive a password reset link.',
 };
 
 export default function ForgotPasswordPage() {

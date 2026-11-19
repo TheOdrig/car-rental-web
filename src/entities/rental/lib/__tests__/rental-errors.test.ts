@@ -115,7 +115,8 @@ describe('getRentalRequestErrorMessage', () => {
 
     it('keeps the booked-dates and unavailable messages', () => {
         expect(getRentalRequestErrorMessage(apiError(409, 'booked', 'CAR_DATES_UNAVAILABLE'), 'x')).toBe(CAR_BOOKED_MESSAGE);
-        expect(getRentalRequestErrorMessage(apiError(400, 'in maintenance', 'CAR_NOT_AVAILABLE'), 'x')).toBe('in maintenance');
+        expect(getRentalRequestErrorMessage(apiError(400, 'Reason: Car status is: Maintenance', 'CAR_NOT_AVAILABLE'), 'x')).toMatch(/in maintenance/);
+        expect(getRentalRequestErrorMessage(apiError(409, 'in use', 'CAR_NOT_AVAILABLE'), 'x')).toBe(CAR_BOOKED_MESSAGE);
     });
 
     it('falls back for unknown errors', () => {

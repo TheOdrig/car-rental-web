@@ -4,7 +4,9 @@ const ADMIN_PAGE_ROUTES = ['/admin'];
 const ADMIN_API_ROUTES = ['/api/admin'];
 const GUEST_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
 const AUTH_FLOW_ROUTES = ['/reset-password'];
-const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api'];
+const PROTECTED_ROUTES = ['/rentals', '/damages', '/settings', '/dashboard', '/checkout', '/booking'];
+const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api', '/terms', '/privacy'];
+const CHROMELESS_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password'];
 
 function matches(pathname: string, route: string): boolean {
     return pathname === route || pathname.startsWith(`${route}/`);
@@ -14,6 +16,10 @@ function matchesAny(pathname: string, routes: string[]): boolean {
     return routes.some((route) => matches(pathname, route));
 }
 
+export function isChromelessRoute(pathname: string | null | undefined): boolean {
+    return !!pathname && matchesAny(pathname, CHROMELESS_ROUTES);
+}
+
 export function classifyRoute(pathname: string): RouteAccess {
     if (pathname === '/') return 'public';
     if (matchesAny(pathname, ADMIN_API_ROUTES)) return 'admin-api';
@@ -21,5 +27,6 @@ export function classifyRoute(pathname: string): RouteAccess {
     if (matchesAny(pathname, GUEST_ONLY_ROUTES)) return 'guest-only';
     if (matchesAny(pathname, AUTH_FLOW_ROUTES)) return 'auth-flow';
     if (matchesAny(pathname, PUBLIC_ROUTES)) return 'public';
-    return 'protected';
+    if (matchesAny(pathname, PROTECTED_ROUTES)) return 'protected';
+    return 'public';
 }

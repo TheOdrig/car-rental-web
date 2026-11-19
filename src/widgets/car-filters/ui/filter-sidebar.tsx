@@ -6,6 +6,8 @@ import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
 import { useFilterStore } from '@/widgets/car-filters';
+import { useFilterOptions } from '@/entities/car';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { PriceRangeSlider } from './price-range-slider';
 import { cn, formatCurrency } from '@/shared/lib';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
@@ -14,31 +16,12 @@ interface FilterSidebarProps {
     className?: string;
 }
 
-const BODY_TYPES = [
-    { value: 'SUV', label: 'SUV' },
-    { value: 'Sedan', label: 'Sedan' },
-    { value: 'Hatchback', label: 'Hatchback' },
-    { value: 'Coupe', label: 'Coupe' },
-    { value: 'Convertible', label: 'Convertible' },
-    { value: 'Van', label: 'Van' },
-];
-
-const CAPACITY_OPTIONS = [2, 4, 5, 7];
-
-const TRANSMISSION_TYPES = [
-    { value: 'Automatic', label: 'Automatic' },
-    { value: 'Manual', label: 'Manual' },
-];
-
-const FUEL_TYPES = [
-    { value: 'Gasoline', label: 'Gasoline' },
-    { value: 'Diesel', label: 'Diesel' },
-    { value: 'Electric', label: 'Electric' },
-    { value: 'Hybrid', label: 'Hybrid' },
-];
-
 export function FilterSidebar({ className }: FilterSidebarProps) {
     const { filters, setFilter, setFilters, clearFilters, hasActiveFilters } = useFilterStore();
+    const { data: options, isLoading, isError } = useFilterOptions();
+    const bodyTypes = options?.bodyTypes ?? [];
+    const transmissionTypes = options?.transmissionTypes ?? [];
+    const fuelTypes = options?.fuelTypes ?? [];
 
     const handlePriceRangeCommit = useCallback(
         (value: [number, number]) => {
@@ -55,14 +38,6 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             setFilter('bodyType', checked ? bodyType : undefined);
         },
         [setFilter]
-    );
-
-    const handleCapacityChange = useCallback(
-        (capacity: number) => {
-            const currentMinSeats = filters.minSeats;
-            setFilter('minSeats', currentMinSeats === capacity ? undefined : capacity);
-        },
-        [filters.minSeats, setFilter]
     );
 
     const handleTransmissionChange = useCallback(
@@ -110,8 +85,9 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 </FilterSection>
 
                 <FilterSection title="Body Type">
+                    <OptionsState isLoading={isLoading} isError={isError} isEmpty={bodyTypes.length === 0} />
                     <div className="space-y-3">
-                        {BODY_TYPES.map((type) => (
+                        {bodyTypes.map((value) => ({ value, label: value })).map((type) => (
                             <div key={type.value} className="flex items-center space-x-2">
                                 <Checkbox
                                     id={`body-${type.value}`}
@@ -131,27 +107,10 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                     </div>
                 </FilterSection>
 
-                <FilterSection title="Capacity">
-                    <div className="flex flex-wrap gap-2">
-                        {CAPACITY_OPTIONS.map((capacity) => (
-                            <Button
-                                key={capacity}
-                                variant="outline"
-                                size="sm"
-                                onClick={() => handleCapacityChange(capacity)}
-                                className="min-w-[48px]"
-                                aria-pressed={filters.minSeats === capacity}
-                                data-selected={filters.minSeats === capacity}
-                            >
-                                {capacity === 7 ? '7+' : capacity}
-                            </Button>
-                        ))}
-                    </div>
-                </FilterSection>
-
                 <FilterSection title="Transmission">
+                    <OptionsState isLoading={isLoading} isError={isError} isEmpty={transmissionTypes.length === 0} />
                     <div className="flex gap-2">
-                        {TRANSMISSION_TYPES.map((type) => (
+                        {transmissionTypes.map((value) => ({ value, label: value })).map((type) => (
                             <Button
                                 key={type.value}
                                 variant="outline"
@@ -168,8 +127,9 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                 </FilterSection>
 
                 <FilterSection title="Fuel Type">
+                    <OptionsState isLoading={isLoading} isError={isError} isEmpty={fuelTypes.length === 0} />
                     <div className="space-y-3">
-                        {FUEL_TYPES.map((type) => (
+                        {fuelTypes.map((value) => ({ value, label: value })).map((type) => (
                             <div key={type.value} className="flex items-center space-x-2">
                                 <Checkbox
                                     id={`fuel-${type.value}`}
@@ -191,6 +151,13 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             </div>
         </div>
     );
+}
+
+function OptionsState({ isLoading, isError, isEmpty }: { isLoading: boolean; isError: boolean; isEmpty: boolean }) {
+    if (isLoading) return <Skeleton className="h-16 w-full" />;
+    if (isError) return <p className="text-sm text-muted-foreground">Filter options could not be loaded.</p>;
+    if (isEmpty) return <p className="text-sm text-muted-foreground">No options available.</p>;
+    return null;
 }
 
 interface FilterSectionProps {

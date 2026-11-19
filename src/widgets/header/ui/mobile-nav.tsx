@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { Car, Home, User, LogIn, UserPlus, LayoutDashboard, ClipboardList } from 'lucide-react';
+import { Car, Home, User, LogIn, UserPlus, LayoutDashboard, ClipboardList, Wrench } from 'lucide-react';
 import { useAuth } from '@/features/auth';
 import { Button } from '@/shared/ui/button';
 import {
@@ -28,6 +28,7 @@ const publicLinks = [
 
 const userLinks = [
     { href: '/rentals', label: 'My Rentals', icon: ClipboardList },
+    { href: '/damages', label: 'My Damages', icon: Wrench },
     { href: '/settings/profile', label: 'Profile', icon: User },
 ];
 
@@ -51,12 +52,12 @@ export function MobileNav({ trigger }: MobileNavProps) {
                     <SheetTitle className="flex items-center gap-2">
                         <Image
                             src="/images/logo.svg"
-                            alt="CarRental"
+                            alt="Car Rental"
                             width={40}
                             height={40}
                             className="h-10 w-auto dark:invert"
                         />
-                        <span>CarRental</span>
+                        <span>Car Rental</span>
                     </SheetTitle>
                 </SheetHeader>
 
@@ -162,7 +163,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                     className="w-full text-red-600 hover:text-red-600 hover:bg-red-50"
                                     onClick={handleLogout}
                                 >
-                                    Log out
+                                    Log Out
                                 </Button>
                             </SheetClose>
                         </div>
@@ -172,7 +173,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                 <Button variant="outline" asChild className="w-full">
                                     <Link href="/login" className="flex items-center gap-2">
                                         <LogIn className="h-4 w-4" />
-                                        Log in
+                                        Log In
                                     </Link>
                                 </Button>
                             </SheetClose>
@@ -180,7 +181,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                 <Button asChild className="w-full">
                                     <Link href="/register" className="flex items-center gap-2">
                                         <UserPlus className="h-4 w-4" />
-                                        Sign up
+                                        Sign Up
                                     </Link>
                                 </Button>
                             </SheetClose>

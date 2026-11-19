@@ -3,7 +3,7 @@ import { CarSearch } from '@/widgets/car-search';
 import { SearchContent } from './search-content';
 
 export const metadata: Metadata = {
-    title: 'Search Available Cars | Car Rental',
+    title: 'Search Available Cars',
     description: 'Find and book available cars for your travel dates. Wide selection of vehicles to choose from.',
 };
 

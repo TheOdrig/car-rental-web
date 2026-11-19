@@ -4,7 +4,7 @@ import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "@/shared/ui/sonner";
 import { Header } from '@/widgets/header';
-import { Footer } from "@/widgets/layout";
+import { Footer, HideOnAuthRoutes } from "@/widgets/layout";
 import React from "react";
 
 const geistSans = Geist({
@@ -19,8 +19,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "CarRental - Find Your Perfect Ride",
-    template: "%s | CarRental",
+    default: "Car Rental - Find Your Perfect Ride",
+    template: "%s | Car Rental",
   },
   description:
     "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
@@ -31,21 +31,21 @@ export const metadata: Metadata = {
     "car hire",
     "affordable car rental",
   ],
-  authors: [{ name: "CarRental Team" }],
-  creator: "CarRental",
+  authors: [{ name: "Car Rental" }],
+  creator: "Car Rental",
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "CarRental",
-    title: "CarRental - Find Your Perfect Ride",
+    siteName: "Car Rental",
+    title: "Car Rental - Find Your Perfect Ride",
     description:
       "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CarRental - Find Your Perfect Ride",
+    title: "Car Rental - Find Your Perfect Ride",
     description:
       "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
   },
@@ -85,9 +85,13 @@ export default function RootLayout({
           >
             Skip to main content
           </a>
-          <Header />
+          <HideOnAuthRoutes>
+            <Header />
+          </HideOnAuthRoutes>
           <main id="main-content" className="flex-1">{children}</main>
-          <Footer />
+          <HideOnAuthRoutes>
+            <Footer />
+          </HideOnAuthRoutes>
         </Providers>
         <Toaster richColors position="top-right" duration={3000} />
       </body>

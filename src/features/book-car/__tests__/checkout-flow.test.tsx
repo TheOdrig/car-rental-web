@@ -20,6 +20,7 @@ const mockCar = vi.hoisted(() => ({
         transmissionType: 'Automatic',
         fuelType: 'Petrol',
         seats: 5,
+        carStatusType: 'Available',
     } as Record<string, unknown>,
 }));
 const mockPricing = vi.hoisted(() => ({
@@ -41,7 +42,8 @@ const mockPricing = vi.hoisted(() => ({
 
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
-        push: mockPush,
+        push: vi.fn(),
+        replace: mockPush,
         back: mockBack,
     }),
 }));
@@ -63,6 +65,7 @@ vi.mock('@/shared/api', async () => {
     };
 });
 vi.mock('@/entities/car', () => ({
+    getCarUnavailableMessage: () => 'This car is in maintenance and cannot be booked right now.',
     useCar: vi.fn(() => ({
         data: { car: mockCar.value },
         isLoading: false,
@@ -118,6 +121,7 @@ describe('Checkout Flow Integration', () => {
             productionYear: 2023,
             transmissionType: 'Automatic',
             fuelType: 'Petrol',
+            carStatusType: 'Available',
             seats: 5,
         };
         mockPricing.value = {
@@ -295,6 +299,15 @@ describe('Checkout Flow Integration', () => {
             expect(screen.getByRole('button', { name: /processing/i })).toBeDisabled();
         });
 
+        it('should block the request for a car in maintenance', () => {
+            mockCar.value = { ...mockCar.value, carStatusType: 'Maintenance' };
+            renderWithProviders(<CheckoutForm {...defaultProps} />);
+
+            expect(screen.getByRole('alert')).toHaveTextContent(/in maintenance/i);
+            expect(screen.getByRole('button', { name: /request rental/i })).toBeDisabled();
+            mockCar.value = { ...mockCar.value, carStatusType: 'Available' };
+        });
+
         it('should stay disabled after success while navigation is pending', async () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
 
@@ -313,7 +326,7 @@ describe('Checkout Flow Integration', () => {
 
             expect(await screen.findByRole('alert')).toBeInTheDocument();
             expect(mockPush).not.toHaveBeenCalled();
-            expect(screen.getByRole('button', { name: /request rental/i })).toBeEnabled();
+            await waitFor(() => expect(screen.getByRole('button', { name: /request rental/i })).toBeEnabled());
 
             submitRequest();
             await waitFor(() => expect(mockPost).toHaveBeenCalledTimes(2));

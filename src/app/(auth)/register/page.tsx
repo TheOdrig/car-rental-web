@@ -3,8 +3,8 @@ import { RegisterForm } from '@/features/auth';
 import { OAuthButtons, OAuthDivider } from '@/features/auth';
 
 export const metadata: Metadata = {
-    title: 'Register | CarRental',
-    description: 'Create a CarRental account to start booking your perfect ride.',
+    title: 'Sign Up',
+    description: 'Create a Car Rental account to start booking your perfect ride.',
 };
 
 export default function RegisterPage() {

@@ -56,12 +56,12 @@ export function Header() {
                     <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                         <Image
                             src="/images/logo.svg"
-                            alt="CarRental"
+                            alt="Car Rental"
                             width={48}
                             height={48}
                             className="h-12 w-auto dark:invert"
                         />
-                        <span>CarRental</span>
+                        <span>Car Rental</span>
                     </Link>
                 </div>
 
@@ -112,17 +112,17 @@ export function Header() {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
                                 <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 focus:bg-red-50 dark:focus:bg-red-900/20">
-                                    Log out
+                                    Log Out
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
                         <div className="hidden md:flex items-center gap-2">
                             <Button variant="ghost" asChild className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800">
-                                <Link href="/login">Log in</Link>
+                                <Link href="/login">Log In</Link>
                             </Button>
                             <Button asChild className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200">
-                                <Link href="/register">Sign up</Link>
+                                <Link href="/register">Sign Up</Link>
                             </Button>
                         </div>
                     )}

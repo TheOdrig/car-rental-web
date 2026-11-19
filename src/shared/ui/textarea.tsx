@@ -37,7 +37,8 @@ function Textarea({
       aria-busy={effectiveState === 'loading' || undefined}
       className={cn(
         "placeholder:text-muted-foreground dark:bg-input/30",
-        "flex field-sizing-content min-h-16 w-full rounded-md border bg-transparent",
+        "flex field-sizing-content min-h-16 w-full min-w-0 max-w-full rounded-md border bg-transparent",
+        "break-words [overflow-wrap:anywhere]",
         "px-3 py-2 text-base shadow-xs transition-all duration-200 outline-none",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "md:text-sm",

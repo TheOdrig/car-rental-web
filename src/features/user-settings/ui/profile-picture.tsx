@@ -20,6 +20,7 @@ function normalizeAvatarUrl(url: string | null | undefined): string | null {
 
 interface ProfilePictureProps {
     avatarUrl?: string | null;
+    initials?: string;
     onUpload: (file: File) => Promise<void>;
     onDelete: () => Promise<void>;
     isUploading?: boolean;
@@ -29,6 +30,7 @@ interface ProfilePictureProps {
 
 export function ProfilePicture({
     avatarUrl,
+    initials,
     onUpload,
     onDelete,
     isUploading = false,
@@ -85,7 +87,7 @@ export function ProfilePicture({
                     ) : (
                         <div className="flex h-full w-full items-center justify-center bg-muted">
                             <span className="text-4xl font-bold text-muted-foreground">
-                                ?
+                                {initials || '?'}
                             </span>
                         </div>
                     )}

@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { ResetPasswordForm } from '@/features/auth';
 
 export const metadata: Metadata = {
-    title: 'Reset Password | CarRental',
-    description: 'Create a new password for your CarRental account.',
+    title: 'Reset Password',
+    description: 'Create a new password for your Car Rental account.',
 };
 
 interface ResetPasswordPageProps {

@@ -3,7 +3,8 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, FileText } from 'lucide-react';
-import { useCar, usePricingPreview } from '@/entities/car';
+import { toast } from 'sonner';
+import { getCarUnavailableMessage, useCar, usePricingPreview } from '@/entities/car';
 import { parseLocalDate } from '@/entities/rental';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
@@ -42,11 +43,13 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
 
     const booking = useCreateBooking({
         onSuccess: (created) => {
-            router.push(`/booking/success?ref=${created.id}`);
+            router.replace(`/booking/success?ref=${created.id}`);
         },
         onError: (error) => {
             submitted.current = false;
-            setSubmitError(getBookingErrorMessage(error));
+            const message = getBookingErrorMessage(error);
+            setSubmitError(message);
+            toast.error(message);
         },
     });
 
@@ -132,6 +135,7 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
     }
 
     const isSubmitting = booking.isPending || booking.isSuccess;
+    const unavailableMessage = car.carStatusType === 'Available' ? null : getCarUnavailableMessage(car.carStatusType);
 
     return (
         <form onSubmit={onSubmit}>
@@ -149,7 +153,6 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
                             <li>An administrator reviews it and approves or rejects it.</li>
                             <li>Payment comes after approval, from your rental page.</li>
                         </ol>
-                        {submitError && <ErrorMessage className="mt-6" message={submitError} />}
                     </section>
 
                     <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
@@ -188,6 +191,8 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
                         isPricingLoading={pricingLoading}
                         isPricingFailed={pricingFailed}
                         isSubmitting={isSubmitting}
+                        submitError={submitError}
+                        unavailableMessage={unavailableMessage}
                     />
                 </div>
             </div>

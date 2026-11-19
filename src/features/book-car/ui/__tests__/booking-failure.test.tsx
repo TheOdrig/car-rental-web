@@ -41,14 +41,10 @@ describe('BookingFailure', () => {
             screen.getByRole('link', { name: /browse other cars/i })
         ).toBeInTheDocument();
     });
-    it('should display need help section', () => {
+    it('should not show an invented support line', () => {
         render(<BookingFailure />);
-        expect(screen.getByText('Need Help?')).toBeInTheDocument();
-        expect(screen.getByText(/24\/7/i)).toBeInTheDocument();
-    });
-    it('should display support phone number', () => {
-        render(<BookingFailure />);
-        expect(screen.getByText('1-800-CAR-RENT')).toBeInTheDocument();
+        expect(screen.queryByText(/24\/7/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/1-800/)).not.toBeInTheDocument();
     });
     it('should call router.back when Try Again is clicked', async () => {
         const user = userEvent.setup();

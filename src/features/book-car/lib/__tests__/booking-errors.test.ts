@@ -13,10 +13,11 @@ describe('getBookingErrorMessage', () => {
         expect(getBookingErrorMessage(error)).toBe(CAR_BOOKED_MESSAGE);
     });
 
-    it('keeps the API message for a 400 CAR_NOT_AVAILABLE that is not a date conflict', () => {
-        const error = apiError(400, 'Car with id 5 is not available for rental. Reason: MAINTENANCE', 'CAR_NOT_AVAILABLE');
+    it('rewrites a 400 CAR_NOT_AVAILABLE into customer-facing copy', () => {
+        const error = apiError(400, 'Car with id 5 is not available for rental. Reason: Car status is: Maintenance', 'CAR_NOT_AVAILABLE');
 
-        expect(getBookingErrorMessage(error)).toBe(error.message);
+        expect(getBookingErrorMessage(error)).toMatch(/maintenance/i);
+        expect(getBookingErrorMessage(error)).not.toContain('Car with id');
     });
 
     it('shows the wait time on a rate limit', () => {

@@ -90,6 +90,18 @@ describe('proxy', () => {
             expect(target.searchParams.get('callbackUrl')).toBe('/rentals?tab=active');
         });
 
+        it('lets anonymous visitors reach the 404 page for an unknown address', async () => {
+            const response = await proxy(requestFor('/this-does-not-exist'));
+
+            expect(response.status).toBe(200);
+            expect(response.headers.get('location')).toBeNull();
+        });
+
+        it('lets anonymous visitors read the terms and privacy pages', async () => {
+            expect((await proxy(requestFor('/terms'))).headers.get('location')).toBeNull();
+            expect((await proxy(requestFor('/privacy'))).headers.get('location')).toBeNull();
+        });
+
         it('lets a verified user through', async () => {
             const token = await createToken();
             const response = await proxy(requestFor('/dashboard', { access_token: token }));

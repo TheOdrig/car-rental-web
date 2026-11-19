@@ -1,8 +1,9 @@
 'use client';
 
-import { CheckCircle, Calendar, Clock, Mail, FileText, Printer, CreditCard } from 'lucide-react';
+import { CheckCircle, Calendar, Car, Clock, Mail, FileText, CreditCard, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
+import { Skeleton } from '@/shared/ui/skeleton';
 import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useRental } from '@/entities/rental';
 
@@ -28,10 +29,6 @@ export function BookingSuccess({
     endDate,
 }: BookingSuccessProps) {
     const formattedRef = formatBookingReference(referenceNumber);
-    const handlePrint = () => {
-        window.print();
-    };
-
     return (
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
             <div className="max-w-2xl w-full">
@@ -57,7 +54,7 @@ export function BookingSuccess({
 
                             <div className="flex items-start gap-3">
                                 <div className="p-2 bg-primary/10 rounded-lg">
-                                    <FileText className="h-5 w-5 text-primary" />
+                                    <Car className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
                                     <p className="text-sm text-slate-600 dark:text-slate-400">Vehicle</p>
@@ -121,17 +118,6 @@ export function BookingSuccess({
                             </Button>
                         </div>
 
-                        <div className="flex justify-center">
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={handlePrint}
-                                className="text-slate-600 dark:text-slate-400"
-                            >
-                                <Printer className="h-4 w-4 mr-2" />
-                                Print Receipt
-                            </Button>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -141,8 +127,35 @@ export function BookingSuccess({
 
 export function BookingSuccessLoader({ referenceNumber }: { referenceNumber: string }) {
     const rentalId = Number(referenceNumber);
-    const { data: rental } = useRental(Number.isInteger(rentalId) ? rentalId : null);
-    const carName = rental?.carSummary
+    const { data: rental, isLoading, isError } = useRental(Number.isInteger(rentalId) ? rentalId : null);
+
+    if (isLoading) {
+        return (
+            <div className="mx-auto max-w-2xl space-y-4 px-4 py-12" aria-busy="true">
+                <Skeleton className="h-40 w-full rounded-2xl" />
+                <Skeleton className="h-64 w-full rounded-2xl" />
+            </div>
+        );
+    }
+
+    if (isError || !rental) {
+        return (
+            <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
+                <div className="max-w-md text-center" role="alert">
+                    <AlertCircle className="mx-auto mb-4 h-10 w-10 text-destructive" aria-hidden="true" />
+                    <h1 className="mb-2 text-2xl font-bold">We could not load this booking</h1>
+                    <p className="mb-6 text-muted-foreground">
+                        This booking does not exist or belongs to another account. Your requests are listed on your rentals page.
+                    </p>
+                    <Button asChild>
+                        <Link href="/rentals">My Rentals</Link>
+                    </Button>
+                </div>
+            </div>
+        );
+    }
+
+    const carName = rental.carSummary
         ? `${rental.carSummary.brand} ${rental.carSummary.model}`
         : undefined;
 
@@ -150,8 +163,8 @@ export function BookingSuccessLoader({ referenceNumber }: { referenceNumber: str
         <BookingSuccess
             referenceNumber={referenceNumber}
             carName={carName}
-            startDate={rental?.startDate}
-            endDate={rental?.endDate}
+            startDate={rental.startDate}
+            endDate={rental.endDate}
         />
     );
 }

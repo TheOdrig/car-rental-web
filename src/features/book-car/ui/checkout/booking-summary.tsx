@@ -1,7 +1,7 @@
 'use client';
 
 import { DynamicImage } from '@/shared/ui/dynamic-image';
-import { Lock, ArrowRight, Phone, Headphones, Sparkles, Tag } from 'lucide-react';
+import { Lock, ArrowRight, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { formatWeekdayDate } from '@/shared/lib';
 import { useCurrency } from '@/entities/currency';
@@ -17,6 +17,8 @@ interface BookingSummaryProps {
     isPricingLoading?: boolean;
     isPricingFailed?: boolean;
     isSubmitting: boolean;
+    submitError?: string | null;
+    unavailableMessage?: string | null;
 }
 
 export function BookingSummary({
@@ -27,6 +29,8 @@ export function BookingSummary({
     isPricingLoading = false,
     isPricingFailed = false,
     isSubmitting,
+    submitError = null,
+    unavailableMessage = null,
 }: BookingSummaryProps) {
     const { format: formatPrice, formatSource, isConverted } = useCurrency();
     const sourceCurrency = mapCurrency(priceBreakdown.currency);
@@ -170,11 +174,17 @@ export function BookingSummary({
                         </div>
                     </div>
 
+                    {(unavailableMessage || submitError) && (
+                        <p className="mb-3 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
+                            {unavailableMessage ?? submitError}
+                        </p>
+                    )}
+
                     <Button
                         type="submit"
                         size="lg"
                         className="w-full h-14 text-base font-bold shadow-md group"
-                        disabled={isSubmitting || isPricingLoading}
+                        disabled={isSubmitting || isPricingLoading || Boolean(unavailableMessage)}
                     >
                         {isSubmitting ? (
                             <span className="flex items-center gap-2">
@@ -215,24 +225,6 @@ export function BookingSummary({
                 </div>
             </div>
 
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 flex items-start gap-4">
-                <div className="bg-blue-50 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-full p-2 shrink-0">
-                    <Headphones className="h-5 w-5" />
-                </div>
-                <div>
-                    <h4 className="font-bold text-slate-900 dark:text-slate-100 text-sm">Need Help?</h4>
-                    <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                        Call our 24/7 support line if you have any questions.
-                    </p>
-                    <a
-                        href="tel:+18001234567"
-                        className="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-2 inline-flex items-center gap-1 hover:underline"
-                    >
-                        <Phone className="h-4 w-4" />
-                        +1 (800) 123-4567
-                    </a>
-                </div>
-            </div>
         </div>
     );
 }

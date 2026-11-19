@@ -1,7 +1,10 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { CreditCard, Shield } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+
+export const metadata: Metadata = { title: 'Payment Methods' };
 
 export default function PaymentMethodsPage() {
     return (

@@ -14,7 +14,12 @@ const WIDGETS_WITH_LOGIC = [
   'src/widgets/home/ui/search-widget.tsx',
 ];
 
-const STATIC_PAGES = ['src/app/(protected)/settings/payment/page.tsx', 'src/app/forbidden/page.tsx'];
+const STATIC_PAGES = [
+  'src/app/(protected)/settings/payment/page.tsx',
+  'src/app/(public)/privacy/page.tsx',
+  'src/app/(public)/terms/page.tsx',
+  'src/app/forbidden/page.tsx',
+];
 
 function normalized(files: string[]): string[] {
   return files.map((file) => file.split(String.fromCharCode(92)).join('/')).sort();

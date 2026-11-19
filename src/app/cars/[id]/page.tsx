@@ -65,11 +65,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     try {
         car = await getCar(carId);
     } catch (error) {
-        return { title: isApiError(error) && error.status === 404 ? 'Car Not Found' : 'Car | Car Rental' };
+        return { title: isApiError(error) && error.status === 404 ? 'Car Not Found' : 'Car' };
     }
 
     return {
-        title: `${car.brand} ${car.model} ${car.productionYear} | Car Rental`,
+        title: `${car.brand} ${car.model} ${car.productionYear}`,
         description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
     };
 }

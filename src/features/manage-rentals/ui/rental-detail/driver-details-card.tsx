@@ -28,7 +28,7 @@ export function DriverDetailsCard({ userSummary, fullName }: DriverDetailsCardPr
                 <div className="grid gap-4 sm:grid-cols-2">
                     {name && (
                         <div className="min-w-0">
-                            <p className="mb-1 text-sm text-muted-foreground">Full name</p>
+                            <p className="mb-1 text-sm text-muted-foreground">Full Name</p>
                             <p className="break-words font-medium">{name}</p>
                         </div>
                     )}

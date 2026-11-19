@@ -1,6 +1,7 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMemo } from 'react';
+import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { getSortParams } from './utils';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
@@ -109,29 +110,56 @@ export function useCar(id: number | null | undefined, options?: UseCarOptions) {
     });
 }
 
+async function fetchCarCalendar(id: number, month?: string): Promise<CarAvailabilityCalendar | null> {
+    try {
+        const params = new URLSearchParams();
+        if (month) params.append('month', month);
+
+        const queryString = params.toString();
+        const url = queryString
+            ? `/api/cars/${id}/availability/calendar?${queryString}`
+            : `/api/cars/${id}/availability/calendar`;
+
+        const data = await clientGet<CarAvailabilityCalendar>(url);
+        return data ?? null;
+    } catch (error) {
+        console.error('Error fetching car calendar:', error);
+        return null;
+    }
+}
+
 export function useCarCalendar(id: number | null | undefined, month?: string) {
     return useQuery({
         queryKey: carKeys.calendar(id!, month),
-        queryFn: async () => {
-            try {
-                const params = new URLSearchParams();
-                if (month) params.append('month', month);
-
-                const queryString = params.toString();
-                const url = queryString
-                    ? `/api/cars/${id}/availability/calendar?${queryString}`
-                    : `/api/cars/${id}/availability/calendar`;
-
-                const data = await clientGet<CarAvailabilityCalendar>(url);
-                return data ?? null;
-            } catch (error) {
-                console.error('Error fetching car calendar:', error);
-                return null;
-            }
-        },
+        queryFn: () => fetchCarCalendar(id!, month),
         enabled: !!id,
         staleTime: 2 * 60 * 1000,
     });
+}
+
+export function useBookedDates(id: number | null | undefined, months: readonly string[]) {
+    const results = useQueries({
+        queries: months.map((month) => ({
+            queryKey: carKeys.calendar(id!, month),
+            queryFn: () => fetchCarCalendar(id!, month),
+            enabled: !!id,
+            staleTime: 2 * 60 * 1000,
+        })),
+    });
+
+    return useMemo(() => {
+        const booked = new Set<string>();
+        let blocked: string | null = null;
+        for (const result of results) {
+            const calendar = result.data;
+            if (!calendar) continue;
+            if (calendar.carBlocked) blocked = calendar.blockReason ?? 'This car is currently unavailable';
+            for (const day of calendar.days) {
+                if (day.status !== 'Available') booked.add(day.date);
+            }
+        }
+        return { booked, blockedReason: blocked };
+    }, [results]);
 }
 
 export function useSimilarCars(id: number | null | undefined) {

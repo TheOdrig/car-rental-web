@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useAuth } from '@/features/auth';
 import { RentalForm } from '@/features/manage-rentals';
-import { type Car } from '@/entities/car';
+import { getCarUnavailableMessage, type Car } from '@/entities/car';
 
 interface CarBookingCardProps {
     car: Car;
@@ -23,6 +23,7 @@ export function CarBookingCard({ car }: CarBookingCardProps) {
     const { isAuthenticated, isLoading: isAuthLoading } = useAuth();
 
     const showAuthLoading = !mounted || isAuthLoading;
+    const unavailable = car.carStatusType !== 'Available';
 
     return (
         <Card>
@@ -30,7 +31,11 @@ export function CarBookingCard({ car }: CarBookingCardProps) {
                 <CardTitle className="text-lg">Book This Car</CardTitle>
             </CardHeader>
             <CardContent>
-                {showAuthLoading ? (
+                {unavailable ? (
+                    <p className="py-4 text-center text-muted-foreground" role="status">
+                        {getCarUnavailableMessage(car.carStatusType)}
+                    </p>
+                ) : showAuthLoading ? (
                     <div className="space-y-4">
                         <Skeleton className="h-12 w-full" />
                         <Skeleton className="h-12 w-full" />

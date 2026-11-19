@@ -108,7 +108,7 @@ export const CarCard = memo(function CarCard({
                 </h3>
                 <p className="text-muted-foreground text-sm mb-3">{year}</p>
 
-                <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-4">
                     {fuelType && (
                         <div className="flex items-center gap-1" title="Fuel Type">
                             <Fuel className="h-4 w-4" aria-hidden="true" />

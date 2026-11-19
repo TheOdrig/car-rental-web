@@ -12,7 +12,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { useFilterStore } from '@/widgets/car-filters';
-import { useFilterOptions } from '@/widgets/car-filters';
+import { useFilterOptions } from '@/entities/car';
 
 interface CarFiltersProps {
     className?: string;

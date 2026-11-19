@@ -7,7 +7,7 @@ import { CheckoutSkeleton } from '@/features/book-car';
 import { rentalDatesSchema } from '@/entities/rental';
 
 export const metadata: Metadata = {
-    title: 'Checkout | Car Rental',
+    title: 'Checkout',
     description: 'Review and send your car rental request.',
     robots: { index: false, follow: false },
 };
@@ -26,7 +26,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
 
     if (!carId || !startDate || !endDate) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">
                         Missing Booking Information
@@ -48,7 +48,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     const dateCheck = rentalDatesSchema.safeParse({ startDate, endDate });
     if (!dateCheck.success) {
         return (
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="flex min-h-[60vh] items-center justify-center">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">
                         Invalid Rental Dates
@@ -68,8 +68,8 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
+        <div className="container py-8">
+            <div>
                 <nav className="flex mb-8 text-sm font-medium text-slate-600 dark:text-slate-400">
                     <ol className="flex items-center space-x-2">
                         <li>
@@ -97,7 +97,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                     </ol>
                 </nav>
 
-                <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-8">
+                <h1 className="mb-8 text-3xl font-bold">
                     Checkout
                 </h1>
 

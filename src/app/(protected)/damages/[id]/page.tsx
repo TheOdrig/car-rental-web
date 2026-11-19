@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MyDamageDetailContent } from './my-damage-detail-content';
 
@@ -8,6 +9,8 @@ interface PageProps {
 function isNumericId(value: string): boolean {
     return /^[0-9]+$/.test(value) && Number.isSafeInteger(Number(value));
 }
+
+export const metadata: Metadata = { title: 'Damage Report' };
 
 export default async function MyDamageDetailPage({ params }: PageProps) {
     const { id } = await params;

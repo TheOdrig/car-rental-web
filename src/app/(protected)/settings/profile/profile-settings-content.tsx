@@ -9,6 +9,13 @@ import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import type { ProfileFormData } from '@/features/user-settings';
 
+function initialsOf(...parts: (string | undefined)[]): string {
+    const [first, second, fallback] = parts;
+    const letters = [first, second].filter(Boolean).map((part) => part![0]);
+    const source = letters.length > 0 ? letters : fallback ? [fallback[0]] : [];
+    return source.join('').toUpperCase();
+}
+
 export function ProfileSettingsContent() {
     const { data: profile, isLoading, error, refetch } = useProfile();
     const updateProfile = useUpdateProfile();
@@ -24,11 +31,11 @@ export function ProfileSettingsContent() {
     };
 
     const handleAvatarUpload = async (file: File) => {
-        await uploadAvatar.mutateAsync(file);
+        await uploadAvatar.mutateAsync(file).catch(() => undefined);
     };
 
     const handleAvatarDelete = async () => {
-        await deleteAvatar.mutateAsync();
+        await deleteAvatar.mutateAsync().catch(() => undefined);
     };
 
     if (isLoading) {
@@ -58,6 +65,7 @@ export function ProfileSettingsContent() {
                 <CardContent className="flex flex-col items-center py-8 sm:flex-row sm:gap-8">
                     <ProfilePicture
                         avatarUrl={profile?.avatarUrl}
+                        initials={initialsOf(profile?.firstName, profile?.lastName, profile?.username)}
                         onUpload={handleAvatarUpload}
                         onDelete={handleAvatarDelete}
                         isUploading={uploadAvatar.isPending}
@@ -85,7 +93,6 @@ export function ProfileSettingsContent() {
                     phone: profile?.phone,
                 }}
                 email={profile?.email}
-                emailVerified={true}
                 onSubmit={handleProfileUpdate}
                 isSubmitting={updateProfile.isPending}
             />

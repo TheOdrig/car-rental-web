@@ -5,8 +5,8 @@ import { FormError, OAuthButtons, OAuthDivider, oauthErrorMessage } from '@/feat
 import { safeRedirectPath } from '@/shared/lib';
 
 export const metadata: Metadata = {
-    title: 'Login | CarRental',
-    description: 'Sign in to your CarRental account to manage your rentals and access exclusive deals.',
+    title: 'Log In',
+    description: 'Log in to your Car Rental account to manage your rentals.',
 };
 
 interface LoginPageProps {
@@ -24,7 +24,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                     Welcome Back
                 </h1>
                 <p className="text-muted-foreground text-base">
-                    Sign in to manage your fleet and access exclusive deals.
+                    Log in to manage your rentals and your account.
                 </p>
             </div>
 
@@ -40,7 +40,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
                 <p className="text-sm text-muted-foreground">
                     Don&apos;t have an account?{' '}
                     <Link href="/register" className="font-bold text-primary hover:underline">
-                        Create account
+                        Create Account
                     </Link>
                 </p>
             </div>

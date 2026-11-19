@@ -1,4 +1,5 @@
 import { fieldErrorMessages, isApiError, isRateLimited, rateLimitMessage } from '@/shared/api';
+import { friendlyUnavailableReason } from '@/entities/car/@x/rental';
 import { MAX_OPEN_REQUESTS, MAX_LEAD_DAYS, MAX_RENTAL_DAYS, RENTAL_MESSAGES } from './rental-rules';
 
 export const CAR_NOT_AVAILABLE_CODE = 'CAR_NOT_AVAILABLE';
@@ -98,7 +99,7 @@ export function getRentalRequestErrorMessage(error: unknown, fallback: string): 
             return CAR_BOOKED_MESSAGE;
         }
         if (error.code === CAR_NOT_AVAILABLE_CODE) {
-            return error.message;
+            return error.status === 409 ? CAR_BOOKED_MESSAGE : friendlyUnavailableReason(error.message);
         }
         if (error.status === 409 && error.code === OPEN_RENTAL_REQUEST_LIMIT_CODE) {
             return OPEN_REQUEST_LIMIT_MESSAGE;

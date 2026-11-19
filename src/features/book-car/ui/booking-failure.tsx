@@ -1,6 +1,6 @@
 'use client';
 
-import { XCircle, RefreshCw, Headphones, ArrowLeft } from 'lucide-react';
+import { XCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -62,27 +62,6 @@ export function BookingFailure({ errorMessage }: BookingFailureProps) {
                             </Button>
                         </div>
 
-                        <div className="border-t border-border pt-6">
-                            <div className="bg-slate-50 dark:bg-slate-950 rounded-xl p-5">
-                                <div className="flex items-start gap-4">
-                                    <div className="bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 rounded-full p-2 shrink-0">
-                                        <Headphones className="h-5 w-5" />
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold text-slate-900 dark:text-slate-100 mb-1">Need Help?</h3>
-                                        <p className="text-sm text-slate-600 dark:text-slate-400 mb-2">
-                                            Our support team is available 24/7
-                                        </p>
-                                        <a
-                                            href="tel:1-800-CAR-RENT"
-                                            className="text-primary font-semibold hover:underline"
-                                        >
-                                            1-800-CAR-RENT
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>

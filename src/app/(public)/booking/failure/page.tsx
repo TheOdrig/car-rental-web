@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { BookingFailure } from '@/features/book-car';
 
 export const metadata: Metadata = {
-    title: 'Booking Failed | Car Rental',
+    title: 'Booking Failed',
     description: 'Your booking request could not be submitted. Please try again.',
     robots: { index: false, follow: false },
 };

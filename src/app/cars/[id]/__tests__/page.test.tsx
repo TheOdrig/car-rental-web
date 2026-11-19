@@ -77,7 +77,7 @@ describe('car detail page', () => {
         expect(await generateMetadata(props('5'))).toEqual({ title: 'Car Not Found' });
 
         getCar.mockRejectedValueOnce(problem(500));
-        expect(await generateMetadata(props('5'))).toEqual({ title: 'Car | Car Rental' });
+        expect(await generateMetadata(props('5'))).toEqual({ title: 'Car' });
 
         expect(await generateMetadata(props('abc'))).toEqual({ title: 'Car Not Found' });
     });

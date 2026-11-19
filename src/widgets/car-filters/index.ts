@@ -4,6 +4,6 @@ export { FilterSidebar } from './ui/filter-sidebar';
 export { SortDropdown } from './ui/sort-dropdown';
 export { ViewToggle } from './ui/view-toggle';
 
-export { useFilterOptions, filterOptionsKeys, type FilterOptions } from './lib/use-filter-options';
+export { useFilterOptions, filterOptionsKeys, type FilterOptions } from '@/entities/car';
 export { useFilterStore } from './model/store';
 export type { ViewMode, SortOption } from '@/entities/car';

@@ -1,5 +1,5 @@
-import { Dashboard } from '@/widgets/rental-dashboard';
+import { redirect } from 'next/navigation';
 
 export default function UserDashboardPage() {
-    return <Dashboard />;
+    redirect('/rentals');
 }

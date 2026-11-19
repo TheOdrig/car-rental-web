@@ -4,7 +4,7 @@ import { PayRental } from '@/features/pay-rental';
 import { getServerEnv } from '@/shared/server';
 
 export const metadata: Metadata = {
-    title: 'Pay for rental | Car Rental',
+    title: 'Pay for Rental',
     description: 'Pay for your confirmed rental with Stripe in test mode.',
 };
 

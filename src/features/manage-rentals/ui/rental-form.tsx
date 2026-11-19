@@ -1,26 +1,43 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useMemo, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { format } from 'date-fns';
 import { CalendarIcon, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Calendar } from '@/shared/ui/calendar';
 import { Label } from '@/shared/ui/label';
 import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import {
+    addCalendarDays,
+    findBookedDate,
     findRentalDateIssue,
     getEndDateRange,
     isEndDateDisabled,
     isStartDateDisabled,
     rentalLengthInDays,
+    toDateInputValue,
+    CAR_BOOKED_MESSAGE,
 } from '@/entities/rental';
-import { cn, formatCurrencyWithDecimals } from '@/shared/lib';
+import { cn, formatCurrency, formatDate } from '@/shared/lib';
 import { toast } from 'sonner';
+import { useBookedDates } from '@/entities/car';
 import type { Car as CarType } from '@/entities/car';
 
 function formatPrice(price: number, currency: string): string {
-    return formatCurrencyWithDecimals(price, currency || 'USD');
+    return formatCurrency(price, currency || 'USD');
+}
+
+function monthKey(date: Date): string {
+    return toDateInputValue(date).slice(0, 7);
+}
+
+function firstBookedAfter(start: Date | undefined, booked: ReadonlySet<string>): Date | null {
+    if (!start || booked.size === 0) return null;
+    const horizon = addCalendarDays(start, 40);
+    for (let day = addCalendarDays(start, 1); day <= horizon; day = addCalendarDays(day, 1)) {
+        if (booked.has(toDateInputValue(day))) return day;
+    }
+    return null;
 }
 
 interface RentalFormProps {
@@ -34,6 +51,16 @@ export function RentalForm({ car, className }: RentalFormProps) {
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [months, setMonths] = useState<string[]>(() => [monthKey(new Date())]);
+    const { booked } = useBookedDates(car.id, months);
+
+    const watchMonth = (date: Date) => {
+        const key = monthKey(date);
+        setMonths((current) => (current.includes(key) ? current : [...current, key]));
+    };
+
+    const firstBooked = useMemo(() => firstBookedAfter(startDate, booked), [startDate, booked]);
+    const isBooked = (date: Date) => booked.has(toDateInputValue(date));
 
     const validateForm = (): boolean => {
         const newErrors: Record<string, string> = {};
@@ -50,6 +77,8 @@ export function RentalForm({ car, className }: RentalFormProps) {
             const issue = findRentalDateIssue(startDate, endDate);
             if (issue) {
                 newErrors[issue.field] = issue.message;
+            } else if (findBookedDate(startDate, endDate, booked)) {
+                newErrors.range = CAR_BOOKED_MESSAGE;
             }
         }
 
@@ -61,14 +90,14 @@ export function RentalForm({ car, className }: RentalFormProps) {
         e.preventDefault();
 
         if (!validateForm()) {
-            toast.error('Please select both start and end dates');
+            toast.error(errors.range || 'Please check the dates you selected');
             return;
         }
 
         const params = new URLSearchParams();
         params.append('carId', car.id.toString());
-        params.append('startDate', format(startDate!, 'yyyy-MM-dd'));
-        params.append('endDate', format(endDate!, 'yyyy-MM-dd'));
+        params.append('startDate', toDateInputValue(startDate!));
+        params.append('endDate', toDateInputValue(endDate!));
         router.push(`/checkout?${params.toString()}`);
     };
 
@@ -110,7 +139,7 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 )}
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {startDate ? format(startDate, 'PPP') : 'Select date'}
+                                {startDate ? formatDate(startDate) : 'Select date'}
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -119,9 +148,11 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 selected={startDate}
                                 onSelect={(date) => {
                                     setStartDate(date);
-                                    if (errors.startDate) {
-                                        setErrors(prev => ({ ...prev, startDate: '' }));
+                                    if (date) {
+                                        watchMonth(date);
+                                        watchMonth(addCalendarDays(date, 30));
                                     }
+                                    setErrors(prev => ({ ...prev, startDate: '', range: '' }));
                                     if (date && endDate) {
                                         const range = getEndDateRange(date);
                                         if (endDate < range.min || endDate > range.max) {
@@ -129,7 +160,8 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                         }
                                     }
                                 }}
-                                disabled={(date) => isStartDateDisabled(date)}
+                                disabled={(date) => isStartDateDisabled(date) || isBooked(date)}
+                                onMonthChange={watchMonth}
                             />
                         </PopoverContent>
                     </Popover>
@@ -152,7 +184,7 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 )}
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {endDate ? format(endDate, 'PPP') : 'Select date'}
+                                {endDate ? formatDate(endDate) : 'Select date'}
                             </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-auto p-0" align="start">
@@ -161,11 +193,13 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 selected={endDate}
                                 onSelect={(date) => {
                                     setEndDate(date);
-                                    if (errors.endDate) {
-                                        setErrors(prev => ({ ...prev, endDate: '' }));
-                                    }
+                                    setErrors(prev => ({ ...prev, endDate: '', range: '' }));
                                 }}
-                                disabled={(date) => isEndDateDisabled(date, startDate)}
+                                disabled={(date) =>
+                                    isEndDateDisabled(date, startDate) || isBooked(date) || (firstBooked !== null && date > firstBooked)
+                                }
+                                defaultMonth={startDate}
+                                onMonthChange={watchMonth}
                             />
                         </PopoverContent>
                     </Popover>
@@ -193,6 +227,10 @@ export function RentalForm({ car, className }: RentalFormProps) {
                         Estimated from the daily rate, final price on review. Weekend and demand pricing may apply.
                     </p>
                 </div>
+            )}
+
+            {errors.range && (
+                <p className="text-sm text-destructive" role="alert">{errors.range}</p>
             )}
 
             <Button type="submit" className="w-full h-12 font-bold">
