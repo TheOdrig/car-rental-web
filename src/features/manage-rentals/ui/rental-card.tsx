@@ -98,10 +98,10 @@ export const RentalCard = memo(function RentalCard({
     onClick,
     onAction,
 }: RentalCardProps) {
-    const { carSummary, startDate, endDate, days, totalPrice, currency, status, id } = rental;
+    const { carSummary, startDate, endDate, days, totalPrice, currency, status, id, paymentOpensOn } = rental;
     const isActive = status === RentalStatus.IN_USE;
     const isCompleted = status === RentalStatus.RETURNED;
-    const actions = showActions ? getActionButtons(status, { startDate }) : [];
+    const actions = showActions ? getActionButtons(status, { paymentOpensOn }) : [];
 
     const referenceId = formatRentalReference(id);
 

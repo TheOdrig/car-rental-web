@@ -18,6 +18,7 @@ const createMockRental = (status: RentalStatus): Rental => ({
         email: 'test@example.com',
     },
     startDate: '2025-01-01',
+    paymentOpensOn: '2024-12-27',
     endDate: '2025-01-05',
     days: 4,
     dailyPrice: 50,
@@ -31,6 +32,28 @@ describe('RentalActions', () => {
     const mockOnAction = vi.fn();
     beforeEach(() => {
         vi.clearAllMocks();
+    });
+    describe('payment window from the server date', () => {
+        it('disables Pay Now with the date until paymentOpensOn', () => {
+            render(
+                <RentalActions
+                    rental={{ ...createMockRental(RentalStatus.CONFIRMED), paymentOpensOn: '2999-03-04' }}
+                    onAction={mockOnAction}
+                />
+            );
+            const pay = screen.getByRole('button', { name: /pay now/i });
+            expect(pay).toBeDisabled();
+            expect(pay).toHaveAttribute('title', 'Payment opens on Mar 4, 2999');
+        });
+        it('enables Pay Now once paymentOpensOn has passed', () => {
+            render(
+                <RentalActions
+                    rental={createMockRental(RentalStatus.CONFIRMED)}
+                    onAction={mockOnAction}
+                />
+            );
+            expect(screen.getByRole('button', { name: /pay now/i })).toBeEnabled();
+        });
     });
     describe('button rendering by status', () => {
         it('should render View Details for In Use status', () => {

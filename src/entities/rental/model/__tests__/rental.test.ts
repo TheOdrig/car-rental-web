@@ -3,6 +3,7 @@ import { type Rental, RentalStatus, isActive, canCancel, getFormattedRentalPerio
 const mockRental: Rental = {
   id: 1,
   startDate: '2023-12-01T10:00:00Z',
+  paymentOpensOn: '2023-11-26',
   endDate: '2023-12-05T10:00:00Z',
   totalPrice: 200,
   status: RentalStatus.REQUESTED,
@@ -12,6 +13,7 @@ const activeRental: Rental = {
   id: 2,
   status: RentalStatus.IN_USE,
   startDate: '2023-12-01T10:00:00Z',
+  paymentOpensOn: '2023-11-26',
 };
 const completedRental: Rental = {
   ...mockRental,

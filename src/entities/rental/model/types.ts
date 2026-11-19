@@ -19,7 +19,7 @@ export const RENTAL_STATUS_LABELS: Record<RentalStatus, string> = {
     [RentalStatus.CANCELLED]: 'Cancelled',
 };
 export type Rental = Omit<
-    WithRequired<Schemas['RentalResponse'], 'id' | 'startDate' | 'endDate' | 'totalPrice'>,
+    WithRequired<Schemas['RentalResponse'], 'id' | 'startDate' | 'endDate' | 'totalPrice' | 'paymentOpensOn'>,
     'status' | 'carSummary' | 'userSummary'
 > & {
     status: RentalStatus;

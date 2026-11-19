@@ -1,6 +1,6 @@
 import { LATE_RETURN_STATUS_LABELS, Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
-import { addCalendarDays, parseLocalDate } from './rental-rules';
+import { parseLocalDate } from './rental-rules';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.IN_USE;
@@ -104,12 +104,12 @@ const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
 
 export function getActionButtons(
     status: RentalStatus,
-    options: { startDate?: string; now?: Date } = {}
+    options: { paymentOpensOn?: string; now?: Date } = {}
 ): ActionButton[] {
     const buttons = ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
-    if (status !== RentalStatus.CONFIRMED || !options.startDate) return buttons;
-    if (isPaymentWindowOpen(options.startDate, options.now)) return buttons;
-    const opensOn = getPaymentOpensOn(options.startDate);
+    if (status !== RentalStatus.CONFIRMED || !options.paymentOpensOn) return buttons;
+    if (isPaymentWindowOpen(options.paymentOpensOn, options.now)) return buttons;
+    const opensOn = getPaymentOpensOn(options.paymentOpensOn);
     return buttons.map((button) =>
         button.action === 'pay'
             ? { ...button, disabled: true, hint: opensOn ? `Payment opens on ${formatDate(opensOn)}` : undefined }
@@ -138,16 +138,12 @@ export function isUpcomingRental(rental: Rental, now: Date = new Date()): boolea
     return startDate >= today;
 }
 
-export const PAYMENT_WINDOW_DAYS = 5;
-
-export function getPaymentOpensOn(startDate: string): Date | null {
-    const start = parseLocalDate(startDate);
-    if (!start) return null;
-    return addCalendarDays(start, -PAYMENT_WINDOW_DAYS);
+export function getPaymentOpensOn(paymentOpensOn: string): Date | null {
+    return parseLocalDate(paymentOpensOn);
 }
 
-export function isPaymentWindowOpen(startDate: string, now: Date = new Date()): boolean {
-    const opensOn = getPaymentOpensOn(startDate);
+export function isPaymentWindowOpen(paymentOpensOn: string, now: Date = new Date()): boolean {
+    const opensOn = getPaymentOpensOn(paymentOpensOn);
     if (!opensOn) return true;
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return today >= opensOn;

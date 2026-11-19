@@ -37,6 +37,7 @@ export const createMockRental = (overrides = {}): Rental => ({
         email: 'john@example.com',
     },
     startDate: '2025-02-01T00:00:00Z',
+    paymentOpensOn: '2025-01-27',
     endDate: '2025-02-05T00:00:00Z',
     days: 4,
     dailyPrice: 50,

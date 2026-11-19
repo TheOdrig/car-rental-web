@@ -30,7 +30,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const cancelMutation = useCancelRental();
 
-    const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status } = rental;
+    const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status, paymentOpensOn } = rental;
     const canCancel = status === RentalStatus.REQUESTED;
 
     const handleCancel = async () => {
@@ -82,8 +82,8 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                             rentalId={rental.id}
                             action={(paymentStatus) => {
                                 if (status !== RentalStatus.CONFIRMED || !isPayableStatus(paymentStatus)) return null;
-                                if (!isPaymentWindowOpen(startDate)) {
-                                    const opensOn = getPaymentOpensOn(startDate);
+                                if (!isPaymentWindowOpen(paymentOpensOn)) {
+                                    const opensOn = getPaymentOpensOn(paymentOpensOn);
                                     return (
                                         <div className="space-y-2">
                                             <Button className="w-full" disabled>

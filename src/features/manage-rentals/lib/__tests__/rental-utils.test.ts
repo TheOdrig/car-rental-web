@@ -16,6 +16,7 @@ const createMockRental = (overrides: Partial<Rental> = {}): Rental => ({
         email: 'test@example.com',
     },
     startDate: '2025-01-01',
+    paymentOpensOn: '2024-12-27',
     endDate: '2025-01-05',
     days: 4,
     dailyPrice: 50,
@@ -161,10 +162,10 @@ describe('Rental Utils', () => {
         });
         it('should disable Pay Now until the payment window opens', () => {
             const now = new Date(2025, 0, 1);
-            const early = getActionButtons(RentalStatus.CONFIRMED, { startDate: '2025-01-20', now });
+            const early = getActionButtons(RentalStatus.CONFIRMED, { paymentOpensOn: '2025-01-15', now });
             expect(early[1].disabled).toBe(true);
             expect(early[1].hint).toBe('Payment opens on Jan 15, 2025');
-            const open = getActionButtons(RentalStatus.CONFIRMED, { startDate: '2025-01-06', now });
+            const open = getActionButtons(RentalStatus.CONFIRMED, { paymentOpensOn: '2025-01-01', now });
             expect(open[1].disabled).toBeUndefined();
         });
         it('should return correct buttons for "Returned" status', () => {
