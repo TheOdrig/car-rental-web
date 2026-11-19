@@ -11,6 +11,7 @@ export default defineConfig({
     plugins: [react()],
     test: {
         testTimeout: 15000,
+        allowOnly: false,
         coverage: {
             provider: 'v8',
             reporter: ['text', 'json', 'html'],

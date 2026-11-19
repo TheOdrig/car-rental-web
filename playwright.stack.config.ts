@@ -8,7 +8,7 @@ export default defineConfig({
     testDir: './e2e-stack',
     fullyParallel: false,
     workers: 1,
-    forbidOnly: !!process.env.CI,
+    forbidOnly: true,
     retries: 0,
     timeout: 90_000,
     expect: { timeout: 20_000 },

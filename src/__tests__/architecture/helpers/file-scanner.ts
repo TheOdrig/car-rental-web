@@ -23,12 +23,20 @@ export async function scanFiles(
     ],
   });
 
+  if (files.length === 0) {
+    throw new Error(`Architecture scan matched no files: ${pattern}`);
+  }
+
   if (options?.hasUseClient !== undefined) {
-    return files.filter((file) => {
+    const filtered = files.filter((file) => {
       const content = readFileSync(file, 'utf-8');
       const hasDirective = content.includes("'use client'") || content.includes('"use client"');
       return options.hasUseClient ? hasDirective : !hasDirective;
     });
+    if (filtered.length === 0) {
+      throw new Error(`Architecture scan matched no files after the client filter: ${pattern}`);
+    }
+    return filtered;
   }
 
   return files;

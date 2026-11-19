@@ -21,6 +21,12 @@ describe('AI-file guard patterns', () => {
         'docs/index.md',
         'src/docs/notes.md',
         'specs/plan.md',
+        'Claude.md',
+        '.Cursor/rules/a.mdc',
+        'CHANGELOG.md',
+        'CONTRIBUTING.md',
+        '.cursorrules',
+        '.windsurfrules',
         'kiro.steering/product.md',
         'image.png:Zone.Identifier',
     ])('blocks %s', (path) => {

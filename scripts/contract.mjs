@@ -50,6 +50,9 @@ function check() {
             process.exitCode = 1;
             return;
         }
+        if (!existsSync(apiSpec)) {
+            console.log('contract: SKIPPED comparison with the sibling API spec (../car-rental-api not found)');
+        }
         console.log('contract: generated types match the snapshot');
     } finally {
         rmSync(dir, { recursive: true, force: true });

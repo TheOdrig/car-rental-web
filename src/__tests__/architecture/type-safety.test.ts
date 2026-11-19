@@ -92,7 +92,7 @@ describe('Type Safety Properties', () => {
     }
 
 
-    expect(violations.length).toBeGreaterThanOrEqual(0);
+    expect(violations).toEqual([]);
   });
 
 

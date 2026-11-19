@@ -64,6 +64,22 @@ const eslintConfig = defineConfig([
     },
   },
   {
+    files: ["**/*.test.ts", "**/*.test.tsx", "**/__tests__/**", "e2e/**", "e2e-stack/**"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "MemberExpression[object.name=/^(it|test|describe|suite)$/][property.name=/^(only|fixme)$/]",
+          message: "Focused tests are not allowed.",
+        },
+        {
+          selector: "MemberExpression[object.property.name=/^(it|test|describe|suite)$/][property.name=/^(only|fixme)$/]",
+          message: "Focused tests are not allowed.",
+        },
+      ],
+    },
+  },
+  {
     files: ["**/*.test.ts", "**/*.test.tsx", "**/__tests__/**"],
     rules: {
       "@next/next/no-img-element": "off",
