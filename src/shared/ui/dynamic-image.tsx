@@ -1,12 +1,13 @@
 'use client';
 
 import Image, { ImageProps } from 'next/image';
-import { toFileProxyUrl } from '@/shared/lib/file-url';
+import { FILE_PROXY_ROOT, toFileProxyUrl } from '@/shared/lib/file-url';
 
 const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'];
 
-function isAllowedHostname(src: string): boolean {
+export function isAllowedHostname(src: string): boolean {
     if (!src || typeof src !== 'string') return false;
+    if (src.startsWith(FILE_PROXY_ROOT)) return false;
     try {
         const url = new URL(src);
         return ALLOWED_HOSTNAMES.includes(url.hostname);
