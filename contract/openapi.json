@@ -425,8 +425,10 @@
         "description" : "Request for cancelling a rental",
         "properties" : {
           "reason" : {
-            "description" : "Reason for cancellation",
+            "description" : "Optional reason for the cancellation",
             "example" : "Customer requested cancellation",
+            "maxLength" : 500,
+            "minLength" : 0,
             "type" : "string"
           }
         },
@@ -1211,12 +1213,18 @@
             "format" : "date-time",
             "type" : "string"
           },
+          "assessmentNotes" : {
+            "type" : "string"
+          },
           "carId" : {
             "format" : "int64",
             "type" : "integer"
           },
           "carLicensePlate" : {
             "type" : "string"
+          },
+          "carSummary" : {
+            "$ref" : "#/components/schemas/CarSummaryResponse"
           },
           "category" : {
             "enum" : [ "SCRATCH", "DENT", "GLASS_DAMAGE", "TIRE_DAMAGE", "INTERIOR_DAMAGE", "MECHANICAL_DAMAGE" ],
@@ -1244,6 +1252,9 @@
           },
           "insuranceCoverage" : {
             "type" : "boolean"
+          },
+          "insuranceDeductible" : {
+            "type" : "number"
           },
           "pending" : {
             "type" : "boolean"
@@ -1300,12 +1311,18 @@
             "format" : "date-time",
             "type" : "string"
           },
+          "assessmentNotes" : {
+            "type" : "string"
+          },
           "carId" : {
             "format" : "int64",
             "type" : "integer"
           },
           "carLicensePlate" : {
             "type" : "string"
+          },
+          "carSummary" : {
+            "$ref" : "#/components/schemas/CarSummaryResponse"
           },
           "category" : {
             "enum" : [ "SCRATCH", "DENT", "GLASS_DAMAGE", "TIRE_DAMAGE", "INTERIOR_DAMAGE", "MECHANICAL_DAMAGE" ],
@@ -1343,6 +1360,9 @@
           },
           "insuranceCoverage" : {
             "type" : "boolean"
+          },
+          "insuranceDeductible" : {
+            "type" : "number"
           },
           "originalLiability" : {
             "type" : "number"
@@ -1430,10 +1450,6 @@
           "date" : {
             "format" : "date",
             "type" : "string"
-          },
-          "rentalId" : {
-            "format" : "int64",
-            "type" : "integer"
           },
           "status" : {
             "enum" : [ "AVAILABLE", "UNAVAILABLE" ],
@@ -2324,7 +2340,7 @@
             "type" : "string"
           },
           "phone" : {
-            "pattern" : "^$|^\\+?[1-9]\\d{1,14}$",
+            "pattern" : "^$|^\\+?[1-9]\\d{6,14}$",
             "type" : "string"
           }
         },
@@ -2611,6 +2627,10 @@
           "cancellationReason" : {
             "type" : "string"
           },
+          "cancelledBy" : {
+            "enum" : [ "CUSTOMER", "ADMIN", "SYSTEM" ],
+            "type" : "string"
+          },
           "carSummary" : {
             "$ref" : "#/components/schemas/CarSummaryResponse"
           },
@@ -2653,8 +2673,16 @@
           "originalPrice" : {
             "type" : "number"
           },
+          "paymentDueBy" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
           "paymentOpensOn" : {
             "format" : "date",
+            "type" : "string"
+          },
+          "paymentStatus" : {
+            "enum" : [ "PENDING", "AUTHORIZED", "CAPTURED", "FAILED", "REFUNDED", "CANCELLED" ],
             "type" : "string"
           },
           "pickupNotes" : {
@@ -5271,6 +5299,7 @@
           "name" : "status",
           "required" : false,
           "schema" : {
+            "enum" : [ "ON_TIME", "GRACE_PERIOD", "LATE", "SEVERELY_LATE" ],
             "type" : "string"
           }
         }, {
@@ -10673,7 +10702,7 @@
     },
     "/api/v1/rentals/admin" : {
       "get" : {
-        "description" : "Get all rentals (admin only) with optional currency conversion and an optional status filter. The status parameter may be repeated or given as a comma separated list of RentalStatus codes; an unknown value is rejected with INVALID_PARAMETER.",
+        "description" : "Get all rentals (admin only) with optional currency conversion and an optional status filter. The status parameter may be repeated or given as a comma separated list of RentalStatus codes; a value that is not an exact RentalStatus code is rejected with INVALID_PARAMETER.",
         "operationId" : "getAllRentals",
         "parameters" : [ {
           "description" : "Zero-based page index (0..N)",
@@ -10723,6 +10752,7 @@
           "required" : false,
           "schema" : {
             "items" : {
+              "enum" : [ "REQUESTED", "CONFIRMED", "IN_USE", "RETURNED", "CANCELLED" ],
               "type" : "string"
             },
             "type" : "array"
@@ -11088,7 +11118,7 @@
     },
     "/api/v1/rentals/{id}/cancel" : {
       "post" : {
-        "description" : "Cancel a REQUESTED or CONFIRMED rental (user can cancel own, admin can cancel any). A rental in use ends only through the return flow.",
+        "description" : "Cancel a REQUESTED or CONFIRMED rental (user can cancel own, admin can cancel any). The optional reason is stored with who cancelled (cancelledBy). A rental in use ends only through the return flow.",
         "operationId" : "cancelRental",
         "parameters" : [ {
           "description" : "Rental ID",

@@ -38,7 +38,7 @@ function createMockCalendar(): CarAvailabilityCalendar {
         month: '2025-01',
         days: [
             { date: '2025-01-01', status: 'AVAILABLE' },
-            { date: '2025-01-02', status: 'UNAVAILABLE', rentalId: 10 },
+            { date: '2025-01-02', status: 'UNAVAILABLE' },
             { date: '2025-01-03', status: 'AVAILABLE' },
         ],
         carBlocked: false,

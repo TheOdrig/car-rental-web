@@ -1776,7 +1776,7 @@ export interface paths {
         };
         /**
          * Get all rentals (Admin)
-         * @description Get all rentals (admin only) with optional currency conversion and an optional status filter. The status parameter may be repeated or given as a comma separated list of RentalStatus codes; an unknown value is rejected with INVALID_PARAMETER.
+         * @description Get all rentals (admin only) with optional currency conversion and an optional status filter. The status parameter may be repeated or given as a comma separated list of RentalStatus codes; a value that is not an exact RentalStatus code is rejected with INVALID_PARAMETER.
          */
         get: operations["getAllRentals"];
         put?: never;
@@ -1858,7 +1858,7 @@ export interface paths {
         put?: never;
         /**
          * Cancel rental
-         * @description Cancel a REQUESTED or CONFIRMED rental (user can cancel own, admin can cancel any). A rental in use ends only through the return flow.
+         * @description Cancel a REQUESTED or CONFIRMED rental (user can cancel own, admin can cancel any). The optional reason is stored with who cancelled (cancelledBy). A rental in use ends only through the return flow.
          */
         post: operations["cancelRental"];
         delete?: never;
@@ -2245,7 +2245,7 @@ export interface components {
         /** @description Request for cancelling a rental */
         CancelRequest: {
             /**
-             * @description Reason for cancellation
+             * @description Optional reason for the cancellation
              * @example Customer requested cancellation
              */
             reason?: string;
@@ -2546,9 +2546,11 @@ export interface components {
         DamageReportDto: {
             /** Format: date-time */
             assessedAt?: string;
+            assessmentNotes?: string;
             /** Format: int64 */
             carId?: number;
             carLicensePlate?: string;
+            carSummary?: components["schemas"]["CarSummaryResponse"];
             /** @enum {string} */
             category?: "SCRATCH" | "DENT" | "GLASS_DAMAGE" | "TIRE_DAMAGE" | "INTERIOR_DAMAGE" | "MECHANICAL_DAMAGE";
             /** @enum {string} */
@@ -2560,6 +2562,7 @@ export interface components {
             /** Format: int64 */
             id?: number;
             insuranceCoverage?: boolean;
+            insuranceDeductible?: number;
             pending?: boolean;
             /** Format: int64 */
             rentalId?: number;
@@ -2582,9 +2585,11 @@ export interface components {
         DamageReportResponse: {
             /** Format: date-time */
             assessedAt?: string;
+            assessmentNotes?: string;
             /** Format: int64 */
             carId?: number;
             carLicensePlate?: string;
+            carSummary?: components["schemas"]["CarSummaryResponse"];
             /** @enum {string} */
             category?: "SCRATCH" | "DENT" | "GLASS_DAMAGE" | "TIRE_DAMAGE" | "INTERIOR_DAMAGE" | "MECHANICAL_DAMAGE";
             /** @enum {string} */
@@ -2600,6 +2605,7 @@ export interface components {
             /** Format: int64 */
             id?: number;
             insuranceCoverage?: boolean;
+            insuranceDeductible?: number;
             originalLiability?: number;
             photos?: components["schemas"]["DamagePhotoDto"][];
             refundAmount?: number;
@@ -2637,8 +2643,6 @@ export interface components {
         DayAvailabilityDto: {
             /** Format: date */
             date?: string;
-            /** Format: int64 */
-            rentalId?: number;
             /** @enum {string} */
             status?: "AVAILABLE" | "UNAVAILABLE";
         };
@@ -3130,6 +3134,8 @@ export interface components {
             appliedDiscounts?: string[];
             approvalNotes?: string;
             cancellationReason?: string;
+            /** @enum {string} */
+            cancelledBy?: "CUSTOMER" | "ADMIN" | "SYSTEM";
             carSummary?: components["schemas"]["CarSummaryResponse"];
             convertedTotalPrice?: number;
             /** Format: date-time */
@@ -3148,8 +3154,12 @@ export interface components {
             /** Format: int64 */
             id?: number;
             originalPrice?: number;
+            /** Format: date-time */
+            paymentDueBy?: string;
             /** Format: date */
             paymentOpensOn?: string;
+            /** @enum {string} */
+            paymentStatus?: "PENDING" | "AUTHORIZED" | "CAPTURED" | "FAILED" | "REFUNDED" | "CANCELLED";
             pickupNotes?: string;
             rateSource?: string;
             returnNotes?: string;
@@ -4968,7 +4978,7 @@ export interface operations {
                 /** @description End date for filtering (yyyy-MM-dd) */
                 endDate?: string;
                 /** @description Late return status filter */
-                status?: string;
+                status?: "ON_TIME" | "GRACE_PERIOD" | "LATE" | "SEVERELY_LATE";
                 /** @description Sort field (endDate, penaltyAmount, lateHours) */
                 sortBy?: string;
                 /** @description Sort direction (ASC, DESC) */
@@ -9035,7 +9045,7 @@ export interface operations {
                 /** @description Target currency for price conversion */
                 currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
                 /** @description Rental status codes to include; repeat the parameter or use a comma separated list */
-                status?: string[];
+                status?: ("REQUESTED" | "CONFIRMED" | "IN_USE" | "RETURNED" | "CANCELLED")[];
             };
             header?: never;
             path?: never;
