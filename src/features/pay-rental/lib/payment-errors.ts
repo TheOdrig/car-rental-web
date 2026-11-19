@@ -62,6 +62,15 @@ export function describePaymentWindow(opensOn: string | undefined): PaymentBlock
     return label ? { ...BLOCKS['window-not-open'], message: `Payment opens on ${label}.` } : BLOCKS['window-not-open'];
 }
 
+export function describeNotConfirmed(opensOn: string | undefined): PaymentBlock {
+    const label = opensOn && parseApiDate(opensOn) ? formatDate(opensOn) : undefined;
+    const base = BLOCKS['not-confirmed'];
+
+    return label
+        ? { ...base, message: `Payment opens once an administrator has confirmed your rental request, and not before ${label}. Approval comes first.` }
+        : base;
+}
+
 function windowNotOpen(error: unknown): PaymentBlock {
     return describePaymentWindow(paymentOpensOn(error));
 }

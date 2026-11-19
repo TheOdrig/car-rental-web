@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader } from '@/shared/ui/card';
 import { isApiError } from '@/shared/api';
 import { formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
-import { getPayByLabel, isPaymentWindowOpen, isRentalPaymentSecured, rentalKeys, useRental } from '@/entities/rental';
+import { getPayByLabel, isPaymentWindowOpen, isRentalPaymentSecured, RentalStatus, rentalKeys, useRental } from '@/entities/rental';
 import {
     isPaymentSecured,
     paymentKeys,
@@ -21,6 +21,7 @@ import {
 import {
     CONFIG_MISSING_BLOCK,
     describePaymentError,
+    describeNotConfirmed,
     describePaymentWindow,
     type PaymentBlock,
 } from '../lib/payment-errors';
@@ -233,7 +234,9 @@ export function PayRental({
     const paymentOpensOn = rentalQuery.data?.paymentOpensOn;
     const windowClosed = Boolean(paymentOpensOn) && !isPaymentWindowOpen(paymentOpensOn!);
     const alreadySecured = isRentalPaymentSecured(rentalQuery.data?.paymentStatus);
-    const intentEnabled = !processing && failure === null && !rentalQuery.isPending && !windowClosed && !alreadySecured;
+    const awaitingApproval = rentalQuery.data?.status === RentalStatus.REQUESTED;
+    const intentEnabled =
+        !processing && failure === null && !rentalQuery.isPending && !awaitingApproval && !windowClosed && !alreadySecured;
     const intentQuery = usePaymentIntent(rentalId, attempt, intentEnabled);
     const paymentQuery = useRentalPayment(rentalId, { poll: processing, enabled: processing, runKey: pollRun });
 
@@ -304,6 +307,10 @@ export function PayRental({
 
     if (alreadySecured) {
         return <AuthorizedView rentalId={rentalId} />;
+    }
+
+    if (awaitingApproval) {
+        return <BlockedView rentalId={rentalId} block={describeNotConfirmed(windowClosed ? paymentOpensOn : undefined)} />;
     }
 
     if (windowClosed) {

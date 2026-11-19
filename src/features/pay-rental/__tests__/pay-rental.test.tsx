@@ -112,6 +112,15 @@ describe('PayRental', () => {
         expect(document.querySelector('h1')).toHaveTextContent('Pay for rental CR-000007');
     });
 
+    it('says approval comes first for a requested rental, even before the window opens', async () => {
+        serveRental({ status: 'REQUESTED', paymentOpensOn: '2999-12-01' });
+
+        renderPay();
+
+        expect(await screen.findByTestId('payment-state-not-confirmed')).toHaveTextContent(/Approval comes first/);
+        expect(clientPost).not.toHaveBeenCalled();
+    });
+
     it('shows the pay-by time next to the amount', async () => {
         serveRental({ paymentDueBy: '2030-05-06T12:00:00Z' });
         clientPost.mockResolvedValue(intent());
