@@ -1,10 +1,10 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, isApiError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { carKeys } from '@/entities/car';
-import { getAdminActionErrorMessage, rentalKeys } from '@/entities/rental';
+import { getAdminActionErrorMessage, RENTAL_VALIDATION_FAILED_CODE, rentalKeys } from '@/entities/rental';
 import { processKeys } from './process-keys';
 import type {
     QuickActionResult,
@@ -73,6 +73,11 @@ export function useProcessPickup() {
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.pickupError, getAdminActionErrorMessage(error));
+            if (isApiError(error) && error.status === 400 && error.code === RENTAL_VALIDATION_FAILED_CODE) {
+                void queryClient.invalidateQueries({ queryKey: processKeys.all });
+                void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+                void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
+            }
         },
     });
 }

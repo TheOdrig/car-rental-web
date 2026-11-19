@@ -1,10 +1,15 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
-import { ApiError, clientPost } from '@/shared/api';
+import { ApiError, clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { ADMIN_CAR_NOT_AVAILABLE_MESSAGE } from '@/entities/rental';
-import { useApproveRental, useProcessPickup, useProcessReturn, useRejectRental } from '../process-api';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { createElement, type ReactNode } from 'react';
+import { rentalKeys } from '@/entities/rental';
+import { useRentalActions } from '../../lib/use-rental-actions';
+import { processKeys } from '../process-keys';
+import { useApproveRental, useProcessPickup, useProcessReturn, useRejectRental, useRentalDetail } from '../process-api';
 
 vi.mock('@/shared/api', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/api')>();
@@ -28,6 +33,7 @@ vi.mock('@/shared/lib', async (importOriginal) => {
 
 const mockClientPost = vi.mocked(clientPost);
 const mockToast = vi.mocked(showToast);
+const mockGet = vi.mocked(clientGet);
 
 function carNotAvailable(status: number, message: string): ApiError {
     return new ApiError({ status, message, timestamp: new Date().toISOString(), code: 'CAR_NOT_AVAILABLE' });
@@ -102,5 +108,75 @@ describe('admin rental actions error handling', () => {
             'Failed to reject rental',
             'Rental is not in a state that allows rejection'
         );
+    });
+});
+
+describe('pickup refused by the API on the rental dates', () => {
+    const apiMessage = 'Pickup is only allowed until 2026-11-19';
+
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    function refusal(): ApiError {
+        return new ApiError({
+            status: 400,
+            message: apiMessage,
+            timestamp: new Date().toISOString(),
+            code: 'RENTAL_VALIDATION_FAILED',
+        });
+    }
+
+    function observedWrapper() {
+        const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+        const wrapper = ({ children }: { children: ReactNode }) =>
+            createElement(QueryClientProvider, { client }, children);
+        return { client, wrapper };
+    }
+
+    it('shows the API message and refreshes the rental detail', async () => {
+        mockClientPost.mockRejectedValueOnce(refusal());
+        mockGet.mockResolvedValue({ id: 5 });
+        const { wrapper } = observedWrapper();
+        const { result } = renderHook(
+            () => ({ pickup: useProcessPickup(), detail: useRentalDetail(5) }),
+            { wrapper }
+        );
+        await waitFor(() => expect(result.current.detail.isFetching).toBe(false));
+        const fetchesBefore = mockGet.mock.calls.length;
+
+        result.current.pickup.mutate({ rentalId: 5 });
+
+        await waitFor(() => expect(mockToast.error).toHaveBeenCalled());
+        expect(mockToast.error).toHaveBeenCalledWith('Failed to process pickup', apiMessage);
+        await waitFor(() => expect(mockGet.mock.calls.length).toBeGreaterThan(fetchesBefore));
+    });
+
+    it('does not refresh anything for an unrelated pickup failure', async () => {
+        mockClientPost.mockRejectedValueOnce(new Error('boom'));
+        const { client, wrapper } = observedWrapper();
+        const invalidate = vi.spyOn(client, 'invalidateQueries');
+        const { result } = renderHook(() => useProcessPickup(), { wrapper });
+
+        result.current.mutate({ rentalId: 5 });
+
+        await waitFor(() => expect(mockToast.error).toHaveBeenCalled());
+        expect(invalidate).not.toHaveBeenCalled();
+    });
+
+    it('shows the same message and refreshes the lists when started from the quick action', async () => {
+        mockClientPost.mockRejectedValueOnce(refusal());
+        const { client, wrapper } = observedWrapper();
+        const invalidate = vi.spyOn(client, 'invalidateQueries');
+        const errorLog = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const { result } = renderHook(() => useRentalActions(), { wrapper });
+
+        await result.current.pickup(5);
+
+        expect(mockToast.error).toHaveBeenCalledWith('Failed to process pickup', apiMessage);
+        const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
+        expect(keys).toContainEqual(processKeys.all);
+        expect(keys).toContainEqual(rentalKeys.all);
+        errorLog.mockRestore();
     });
 });
