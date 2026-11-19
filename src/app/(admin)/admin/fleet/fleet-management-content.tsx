@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -16,13 +16,18 @@ import {
     useChangeCarStatus,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
-import type { Car, CarStatus } from '@/entities/car';
+import { CAR_STATUSES, CAR_STATUS_LABELS, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
 
 type StatusFilter = 'all' | CarStatus;
 
+const PAGE_SIZE = 25;
+const SEARCH_DEBOUNCE_MS = 300;
+
 export function FleetManagementContent() {
     const [searchQuery, setSearchQuery] = useState('');
+    const [debouncedSearch, setDebouncedSearch] = useState('');
+    const [page, setPage] = useState(0);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
 
@@ -30,34 +35,24 @@ export function FleetManagementContent() {
     const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useFleetList({
         status: statusFilter !== 'all' ? statusFilter : undefined,
         brand: brandFilter !== 'all' ? brandFilter : undefined,
-        search: searchQuery || undefined,
-        size: 25,
+        search: debouncedSearch || undefined,
+        page,
+        size: PAGE_SIZE,
     });
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery.trim());
+            setPage(0);
+        }, SEARCH_DEBOUNCE_MS);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     const isRefreshing = isFetchingFleet || isFetchingCars;
 
     const deleteCarMutation = useDeleteCar();
     const updateStatusMutation = useChangeCarStatus();
 
-    const carsContent = carsData?.content;
-    const filteredCars = useMemo(() => {
-        if (!carsContent) return [];
-
-        return carsContent.filter((car: Car) => {
-            const matchesSearch =
-                searchQuery === '' ||
-                `${car.brand} ${car.model}`.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                car.licensePlate.toLowerCase().includes(searchQuery.toLowerCase());
-
-            const matchesStatus =
-                statusFilter === 'all' || car.carStatusType === statusFilter;
-
-            const matchesBrand =
-                brandFilter === 'all' || car.brand.toLowerCase() === brandFilter.toLowerCase();
-
-            return matchesSearch && matchesStatus && matchesBrand;
-        });
-    }, [carsContent, searchQuery, statusFilter, brandFilter]);
 
     const handleRefresh = async () => {
         try {
@@ -147,7 +142,7 @@ export function FleetManagementContent() {
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <Input
-                        placeholder="Search by car name or license plate..."
+                        placeholder="Search by brand, model or license plate..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                         className="pl-10"
@@ -155,7 +150,10 @@ export function FleetManagementContent() {
                     />
                 </div>
                 <div className="flex gap-2">
-                    <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as StatusFilter)}>
+                    <Select value={statusFilter} onValueChange={(v) => {
+                        setStatusFilter(v as StatusFilter);
+                        setPage(0);
+                    }}>
                         <SelectTrigger
                             className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by status"
@@ -165,13 +163,20 @@ export function FleetManagementContent() {
                         </SelectTrigger>
                         <SelectContent>
                             <SelectItem value="all">All Status</SelectItem>
-                            <SelectItem value="Available">Available</SelectItem>
-                            <SelectItem value="Maintenance">Maintenance</SelectItem>
-                            <SelectItem value="Inspection">Inspection</SelectItem>
-                            <SelectItem value="Damaged">Damaged</SelectItem>
+                            {CAR_STATUSES.map((status) => (
+                                <SelectItem key={status} value={status}>
+                                    {CAR_STATUS_LABELS[status]}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
-                    <Select value={brandFilter} onValueChange={setBrandFilter}>
+                    <Select
+                        value={brandFilter}
+                        onValueChange={(v) => {
+                            setBrandFilter(v);
+                            setPage(0);
+                        }}
+                    >
                         <SelectTrigger
                             className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by brand"
@@ -189,10 +194,12 @@ export function FleetManagementContent() {
                 </div>
             </div>
 
-            { }
             <FleetTable
-                cars={filteredCars}
+                cars={carsData?.content ?? []}
                 totalCars={carsData?.totalElements ?? 0}
+                page={page}
+                totalPages={carsData?.totalPages ?? 1}
+                onPageChange={setPage}
                 isLoading={isLoading}
                 onDeleteCar={handleDeleteCar}
                 onUpdateStatus={handleUpdateStatus}
