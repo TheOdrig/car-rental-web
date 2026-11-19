@@ -4,7 +4,7 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { CarGrid, CarGridSkeleton } from '@/entities/car';
 import { CarFilters } from '@/widgets/car-filters';
-import { HeroSection, TopRatedCarousel, PromotionalBanners } from '@/widgets/home';
+import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/widgets/home';
 import { useCars } from '@/entities/car';
 import { useFilterStore } from '@/widgets/car-filters';
 
@@ -35,7 +35,7 @@ export function HomeContent() {
         <>
             <HeroSection />
 
-            <TopRatedCarousel className="bg-slate-50 dark:bg-slate-950" />
+            <FeaturedCarousel className="bg-slate-50 dark:bg-slate-950" />
 
             <PromotionalBanners />
 

@@ -57,7 +57,7 @@ export interface CarFilters {
 }
 
 export type ViewMode = 'grid' | 'list';
-export type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc' | 'rating-desc';
+export type SortOption = 'recommended' | 'price-asc' | 'price-desc' | 'name-asc';
 
 
 export type FleetStatus = Required<Schemas['FleetStatusDto']>;

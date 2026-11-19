@@ -21,8 +21,6 @@ export function getSortParams(sortBy: SortOption): [string, string] {
             return ['price', 'desc'];
         case 'name-asc':
             return ['brand', 'asc'];
-        case 'rating-desc':
-            return ['rating', 'desc'];
         case 'recommended':
         default:
             return ['createTime', 'desc'];

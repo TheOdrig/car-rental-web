@@ -5,25 +5,25 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { CarCard, CarCardSkeleton } from '@/entities/car';
-import { useTopRatedCars } from '@/entities/car';
+import { useFeaturedCars } from '@/entities/car';
 import { cn } from '@/shared/lib';
 import type { Car } from '@/entities/car';
 
-interface TopRatedCarouselProps {
+interface FeaturedCarouselProps {
     title?: string;
     subtitle?: string;
     viewAllLink?: string;
     className?: string;
 }
 
-export function TopRatedCarousel({
-    title = 'Top Rated Vehicles',
-    subtitle = 'Our highest-rated vehicles available now',
+export function FeaturedCarousel({
+    title = 'Featured Vehicles',
+    subtitle = 'Our newest vehicles available now',
     viewAllLink = '/cars',
     className,
-}: TopRatedCarouselProps) {
+}: FeaturedCarouselProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
-    const { data, isLoading, error } = useTopRatedCars();
+    const { data, isLoading, error } = useFeaturedCars();
 
     const cars = data?.content ?? [];
 
@@ -77,19 +77,19 @@ export function TopRatedCarousel({
                             </Button>
                         </div>
 
-                        <Link href={viewAllLink}>
-                            <Button variant="ghost" className="gap-1">
+                        <Button variant="ghost" className="gap-1" asChild>
+                            <Link href={viewAllLink}>
                                 View all
                                 <ArrowRight className="h-4 w-4" />
-                            </Button>
-                        </Link>
+                            </Link>
+                        </Button>
                     </div>
                 </div>
 
                 {isLoading ? (
-                    <TopRatedCarouselSkeleton />
+                    <FeaturedCarouselSkeleton />
                 ) : cars.length === 0 ? (
-                    <TopRatedCarouselEmpty />
+                    <FeaturedCarouselEmpty />
                 ) : (
                     <div
                         ref={scrollRef}
@@ -114,7 +114,7 @@ export function TopRatedCarousel({
     );
 }
 
-function TopRatedCarouselSkeleton() {
+function FeaturedCarouselSkeleton() {
     return (
         <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
@@ -126,17 +126,15 @@ function TopRatedCarouselSkeleton() {
     );
 }
 
-function TopRatedCarouselEmpty() {
+function FeaturedCarouselEmpty() {
     return (
         <div className="text-center py-12 text-slate-600 dark:text-slate-400">
-            <p>No top-rated cars available at the moment.</p>
-            <Link href="/cars">
-                <Button variant="link" className="mt-2">
-                    Browse all cars
-                </Button>
-            </Link>
+            <p>No featured cars available at the moment.</p>
+            <Button variant="link" className="mt-2" asChild>
+                <Link href="/cars">Browse all cars</Link>
+            </Button>
         </div>
     );
 }
 
-export { TopRatedCarouselSkeleton };
+export { FeaturedCarouselSkeleton };

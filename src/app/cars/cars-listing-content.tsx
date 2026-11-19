@@ -1,7 +1,7 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useState, useMemo, useEffect, useRef } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Pagination, PaginationInfo } from '@/shared/ui/pagination';
@@ -25,15 +25,18 @@ import {
     SortDropdown,
 } from '@/widgets/car-filters';
 import { Breadcrumb } from '@/widgets/layout';
-import { useCars, useCarSearchResults, getSortParams } from '@/entities/car';
+import { useCars, useCarSearchResults, getSortParams, parseCarListParams, buildCarListParams } from '@/entities/car';
 import { useFilterStore } from '@/widgets/car-filters';
 import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/entities/car';
 
 export function CarsListingContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
     const startDateParam = searchParams?.get('startDate');
     const endDateParam = searchParams?.get('endDate');
-    const bodyTypeParam = searchParams?.get('bodyType');
+    const initialised = useRef(false);
+    const skipWrite = useRef(false);
 
     const isSearchMode = !!(startDateParam && endDateParam);
 
@@ -48,14 +51,37 @@ export function CarsListingContent() {
         setSortBy,
         setPage,
         hasActiveFilters,
-        setFilter,
     } = useFilterStore();
 
+    const urlQuery = searchParams?.toString() ?? '';
+
     useEffect(() => {
-        if (bodyTypeParam && bodyTypeParam !== filters.bodyType) {
-            setFilter('bodyType', bodyTypeParam);
+        const params = new URLSearchParams(urlQuery);
+        const fromUrl = parseCarListParams(params);
+        const current = useFilterStore.getState();
+        const stateOf = (state: typeof fromUrl) => buildCarListParams(state, params).toString();
+        const hasUrlState = stateOf(fromUrl) !== buildCarListParams({ filters: {}, sortBy: 'recommended', page: 0, viewMode: 'grid' }, params).toString();
+        const isFirstRun = !initialised.current;
+        initialised.current = true;
+        if (isFirstRun && !hasUrlState) return;
+        const currentState = { filters: current.filters, sortBy: current.sortBy, page: current.page, viewMode: current.viewMode };
+        if (stateOf(currentState) === stateOf(fromUrl)) return;
+        skipWrite.current = true;
+        useFilterStore.setState(fromUrl);
+    }, [urlQuery]);
+
+    useEffect(() => {
+        if (!initialised.current) return;
+        if (skipWrite.current) {
+            skipWrite.current = false;
+            return;
         }
-    }, [bodyTypeParam, filters.bodyType, setFilter]);
+        const params = new URLSearchParams(urlQuery);
+        const next = buildCarListParams({ filters, sortBy, page, viewMode }, params).toString();
+        if (next !== params.toString()) {
+            router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+        }
+    }, [filters, sortBy, page, viewMode, urlQuery, pathname, router]);
 
     const searchRequest: AvailabilitySearchRequest | null = useMemo(() => {
         if (!isSearchMode || !startDateParam || !endDateParam) return null;

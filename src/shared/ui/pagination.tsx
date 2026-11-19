@@ -10,6 +10,7 @@ interface PaginationProps {
     onPageChange: (page: number) => void;
     className?: string;
     siblingCount?: number;
+    scrollToTop?: boolean;
 }
 
 export function Pagination({
@@ -18,8 +19,16 @@ export function Pagination({
     onPageChange,
     className,
     siblingCount = 1,
+    scrollToTop = true,
 }: PaginationProps) {
     if (totalPages <= 1) return null;
+
+    const changePage = (page: number) => {
+        onPageChange(page);
+        if (scrollToTop && typeof window !== 'undefined') {
+            window.scrollTo({ top: 0 });
+        }
+    };
 
     const pages = generatePagination(currentPage, totalPages, siblingCount);
 
@@ -31,7 +40,7 @@ export function Pagination({
             <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onPageChange(currentPage - 1)}
+                onClick={() => changePage(currentPage - 1)}
                 disabled={currentPage === 0}
                 aria-label="Previous page"
             >
@@ -59,7 +68,7 @@ export function Pagination({
                         key={pageNumber}
                         variant="outline"
                         size="icon"
-                        onClick={() => onPageChange(pageNumber)}
+                        onClick={() => changePage(pageNumber)}
                         aria-label={`Page ${pageNumber + 1}`}
                         aria-current={isActive ? 'page' : undefined}
                         data-active={isActive}
@@ -72,7 +81,7 @@ export function Pagination({
             <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => onPageChange(currentPage + 1)}
+                onClick={() => changePage(currentPage + 1)}
                 disabled={currentPage === totalPages - 1}
                 aria-label="Next page"
             >

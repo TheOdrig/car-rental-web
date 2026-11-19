@@ -112,7 +112,6 @@ describe('use-cars hooks', () => {
         it.each([
             ['price-asc', 'price', 'asc'],
             ['price-desc', 'price', 'desc'],
-            ['rating-desc', 'rating', 'desc'],
             ['name-asc', 'brand', 'asc'],
         ] as const)('should send %s as sortBy and sortDirection', async (option, field, direction) => {
             mockClientGet.mockResolvedValueOnce(createMockPageResponse<Car>([]));

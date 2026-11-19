@@ -25,6 +25,7 @@ export {
     type VehicleDetailResponse,
 } from './model/types';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
+export { parseCarListParams, buildCarListParams, type CarListState } from './lib/list-url-state';
 export { CarCard, CarCardSkeleton } from './ui/car-card';
 export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';
 export { CarListView, CarListItem, CarListViewSkeleton } from './ui/car-list-view';
@@ -37,7 +38,7 @@ export {
     useCarSearch,
     useCar,
     useCarCalendar,
-    useTopRatedCars,
+    useFeaturedCars,
     usePrefetchCar,
     useInvalidateCars,
     carKeys
