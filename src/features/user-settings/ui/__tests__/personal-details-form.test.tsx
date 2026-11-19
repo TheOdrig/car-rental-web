@@ -43,10 +43,16 @@ describe('PersonalDetailsForm', () => {
         });
         it('should show verified badge when email is verified', () => {
             render(<PersonalDetailsForm {...defaultProps} emailVerified={true} />);
-            expect(screen.getByText(/verified/i)).toBeInTheDocument();
+            expect(screen.getByText('Verified')).toBeInTheDocument();
+            expect(screen.queryByText('Not verified')).not.toBeInTheDocument();
         });
-        it('should not show verified badge when email is not verified', () => {
+        it('should show a not verified badge when email is not verified', () => {
             render(<PersonalDetailsForm {...defaultProps} emailVerified={false} />);
+            expect(screen.getByText('Not verified')).toBeInTheDocument();
+            expect(screen.queryByText('Verified')).not.toBeInTheDocument();
+        });
+        it('should show no verification badge when the status is unknown', () => {
+            render(<PersonalDetailsForm {...defaultProps} emailVerified={undefined} />);
             expect(screen.queryByText(/verified/i)).not.toBeInTheDocument();
         });
     });

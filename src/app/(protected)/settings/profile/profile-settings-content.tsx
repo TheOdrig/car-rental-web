@@ -93,6 +93,7 @@ export function ProfileSettingsContent() {
                     phone: profile?.phone,
                 }}
                 email={profile?.email}
+                emailVerified={profile?.emailVerified}
                 onSubmit={handleProfileUpdate}
                 isSubmitting={updateProfile.isPending}
             />

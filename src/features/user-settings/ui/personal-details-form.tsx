@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2, CheckCircle } from 'lucide-react';
+import { Loader2, CheckCircle, XCircle } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -31,7 +31,7 @@ interface PersonalDetailsFormProps {
 export function PersonalDetailsForm({
     initialData,
     email,
-    emailVerified = false,
+    emailVerified,
     onSubmit,
     isSubmitting = false,
     className,
@@ -103,10 +103,16 @@ export function PersonalDetailsForm({
                                 disabled
                                 className="bg-muted"
                             />
-                            {emailVerified && (
+                            {emailVerified === true && (
                                 <Badge variant="outline" className="gap-1 text-green-600">
-                                    <CheckCircle className="h-3 w-3" />
+                                    <CheckCircle className="h-3 w-3" aria-hidden="true" />
                                     Verified
+                                </Badge>
+                            )}
+                            {emailVerified === false && (
+                                <Badge variant="outline" className="gap-1 text-muted-foreground">
+                                    <XCircle className="h-3 w-3" aria-hidden="true" />
+                                    Not verified
                                 </Badge>
                             )}
                         </div>
