@@ -113,6 +113,16 @@ describe('PayRental', () => {
         expect(screen.getByRole('button', { name: /Pay/ })).toHaveTextContent('250');
     });
 
+    it('hides the demo card hint once payment is closed and exposes one h1', async () => {
+        clientPost.mockResolvedValue(intent({ status: 'AUTHORIZED' }));
+
+        renderPay();
+
+        expect(await screen.findByTestId('payment-state-authorized')).toBeInTheDocument();
+        expect(screen.queryByTestId('payment-demo-notice')).not.toBeInTheDocument();
+        expect(screen.getAllByRole('heading', { level: 1 })).toHaveLength(1);
+    });
+
     it('prefers the key from the API', async () => {
         clientPost.mockResolvedValue(intent({ publishableKey: 'pk_test_prefers' }));
 

@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
+import { VehicleLabel } from '@/entities/car';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
 import type { DamageReport } from '@/entities/damage';
 
@@ -26,7 +27,9 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-medium truncate">{damage.carLicensePlate}</h3>
+                        <h3 className="font-medium truncate">
+                            <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} />
+                        </h3>
                         <DamageStatusBadge status={damage.status} />
                     </div>
                     <p className="text-sm text-muted-foreground line-clamp-2 mb-2">

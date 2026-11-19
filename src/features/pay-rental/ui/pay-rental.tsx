@@ -39,13 +39,13 @@ type Phase = 'form' | 'processing';
 
 const REDIRECT_FAILURE_REASON = 'Your payment was not completed. Please try again with another card.';
 
-function Shell({ rentalId, children }: { rentalId: number; children: ReactNode }) {
+function Shell({ rentalId, demo = false, children }: { rentalId: number; demo?: boolean; children: ReactNode }) {
     return (
         <div className="mx-auto w-full max-w-xl space-y-4">
-            <DemoNotice />
+            {demo && <DemoNotice />}
             <Card>
                 <CardHeader>
-                    <CardTitle>Pay for rental {formatRentalReference(rentalId)}</CardTitle>
+                    <CardTitle role="heading" aria-level={1}>Pay for rental {formatRentalReference(rentalId)}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">{children}</CardContent>
             </Card>
@@ -134,7 +134,7 @@ function ProcessingView({ rentalId, timedOut, onCheckAgain }: { rentalId: number
 
 function CancelledView({ rentalId, onPayAgain }: { rentalId: number; onPayAgain: () => void }) {
     return (
-        <Shell rentalId={rentalId}>
+        <Shell rentalId={rentalId} demo>
             <div role="alert" data-testid="payment-state-cancelled">
                 <p className="font-semibold">Payment cancelled</p>
                 <p className="text-sm text-muted-foreground">The earlier payment attempt was cancelled. You can start a new one.</p>
@@ -149,7 +149,7 @@ function CancelledView({ rentalId, onPayAgain }: { rentalId: number; onPayAgain:
 
 function FailedView({ rentalId, reason, onRetry }: { rentalId: number; reason: string; onRetry: () => void }) {
     return (
-        <Shell rentalId={rentalId}>
+        <Shell rentalId={rentalId} demo>
             <div className="flex items-start gap-3" role="alert" data-testid="payment-state-failed">
                 <AlertCircle className="mt-0.5 h-5 w-5 shrink-0 text-destructive" aria-hidden="true" />
                 <div>
@@ -180,7 +180,7 @@ function ReadyView({
     const returnUrl = `${window.location.origin}/rentals/${rentalId}/pay`;
 
     return (
-        <Shell rentalId={rentalId}>
+        <Shell rentalId={rentalId} demo>
             <div data-testid="payment-state-ready" className="space-y-4">
                 <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Amount to authorize</span>
@@ -291,7 +291,7 @@ export function PayRental({
 
     if (intentQuery.isPending) {
         return (
-            <Shell rentalId={rentalId}>
+            <Shell rentalId={rentalId} demo>
                 <div className="flex items-center gap-3" role="status" data-testid="payment-state-loading">
                     <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
                     <p>Preparing your payment...</p>

@@ -7,7 +7,7 @@ import {
     MapPin, ChevronLeft, ChevronRight, Loader2
 } from 'lucide-react';
 import { format, addMonths, subMonths, startOfMonth, parse } from 'date-fns';
-import { cn, formatDate } from '@/shared/lib';
+import { cn, formatDate, formatNumber } from '@/shared/lib';
 import { friendlyUnavailableReason, getCarUnavailableMessage } from '../lib/status-messages';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
@@ -37,7 +37,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
         { icon: Fuel, label: 'Fuel', value: car.fuelType },
         { icon: Settings2, label: 'Transmission', value: car.transmissionType },
         { icon: Users, label: 'Seats', value: car.seats },
-        { icon: Gauge, label: 'Mileage', value: car.kilometer ? `${car.kilometer.toLocaleString()} km` : null },
+        { icon: Gauge, label: 'Mileage', value: car.kilometer ? `${formatNumber(car.kilometer)} km` : null },
         { icon: Palette, label: 'Color', value: car.color },
         { icon: Calendar, label: 'Year', value: car.productionYear },
     ].filter(spec => spec.value);
@@ -45,35 +45,34 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
     const isAvailable = car.carStatusType === 'Available';
 
     return (
-        <div className={cn('grid gap-6 lg:grid-cols-2', className)}>
-            <div className="space-y-4">
-                <div className="relative aspect-video overflow-hidden rounded-xl">
-                    <DynamicImage
-                        src={car.imageUrl ?? '/images/car-placeholder.svg'}
-                        alt={`${car.brand} ${car.model} ${car.productionYear}`}
-                        fill
-                        sizes="(max-width: 1024px) 100vw, 50vw"
-                        className="object-cover"
-                    />
-                </div>
-
-                {calendar && (
-                    <Card>
-                        <CardHeader className="pb-3">
-                            <CardTitle className="text-lg">Availability</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <AvailabilityCalendar
-                                calendar={calendar}
-                                isLoading={isCalendarLoading}
-                                onMonthChange={onMonthChange}
-                            />
-                        </CardContent>
-                    </Card>
-                )}
+        <div className={cn('grid gap-6 lg:grid-cols-2 lg:items-start', className)}>
+            <div className="relative aspect-video overflow-hidden rounded-xl lg:col-start-1 lg:row-start-1">
+                <DynamicImage
+                    src={car.imageUrl ?? '/images/car-placeholder.svg'}
+                    alt={`${car.brand} ${car.model} ${car.productionYear}`}
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
+                    className="object-cover"
+                />
             </div>
 
-            <div className="space-y-6">
+            {calendar && (
+                <Card className="order-3 lg:order-none lg:col-start-1 lg:row-start-2">
+                    <CardHeader className="pb-3">
+                        <CardTitle className="text-lg">Availability</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <AvailabilityCalendar
+                            calendar={calendar}
+                            isLoading={isCalendarLoading}
+                            onMonthChange={onMonthChange}
+                        />
+                    </CardContent>
+                </Card>
+            )}
+
+            <div className="order-2 space-y-6 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1">
                 <div>
                     <h1 className="text-3xl font-bold">
                         {car.brand} {car.model}
@@ -218,7 +217,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                         aria-label="Previous month"
                         onClick={previousMonth}
                         disabled={isPast || isLoading}
-                        title={isPast ? "Past months are not available" : ""}
+                        title={isPast ? "Past months are not available" : undefined}
                     >
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
@@ -230,7 +229,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                         aria-label="Next month"
                         onClick={nextMonth}
                         disabled={isMax || isLoading}
-                        title={isMax ? "Viewing the maximum available range" : ""}
+                        title={isMax ? "Viewing the maximum available range" : undefined}
                     >
                         <ChevronRight className="h-4 w-4" />
                     </Button>

@@ -12,12 +12,8 @@ import { useLateReturnStatistics } from '@/features/admin';
 import { toast } from 'sonner';
 
 function StatisticsContent() {
-    const today = new Date();
-    const thirtyDaysAgo = new Date(today);
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const [startDate, setStartDate] = useState(thirtyDaysAgo.toISOString().split('T')[0]);
-    const [endDate, setEndDate] = useState(today.toISOString().split('T')[0]);
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
 
     const { data, isLoading, isFetching, refetch } = useLateReturnStatistics(startDate, endDate);
 
@@ -53,8 +49,9 @@ function StatisticsContent() {
                         size="icon"
                         onClick={handleRefresh}
                         disabled={isFetching}
+                        aria-label="Refresh late return statistics"
                     >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
+                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                     </Button>
                     <Button variant="outline" size="sm" asChild>
                         <Link href="/admin/late-returns">

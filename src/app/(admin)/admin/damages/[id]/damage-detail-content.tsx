@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit2, Camera, CheckCircle, AlertTriangle, CreditCard } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -14,6 +15,7 @@ import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageCharg
 import { DamageSeverityBadge } from '@/entities/damage';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import { useRental } from '@/entities/rental';
+import { VehicleLabel } from '@/entities/car';
 import type { CurrencyType } from '@/shared/types';
 
 export function DamageDetailContent({ id }: { id: string }) {
@@ -62,7 +64,7 @@ export function DamageDetailContent({ id }: { id: string }) {
 
             <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Button variant="ghost" size="icon" onClick={() => router.back()}>
+                    <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="Go back">
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
@@ -139,7 +141,9 @@ export function DamageDetailContent({ id }: { id: string }) {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <p className="text-sm text-muted-foreground">Vehicle</p>
-                                <p className="font-medium">{damage.carLicensePlate}</p>
+                                <p className="font-medium">
+                                    <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} />
+                                </p>
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Customer</p>
@@ -147,7 +151,11 @@ export function DamageDetailContent({ id }: { id: string }) {
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Rental ID</p>
-                                <p className="font-medium">#{damage.rentalId}</p>
+                                <p className="font-medium">
+                                    <Link href={`/admin/rentals/${damage.rentalId}`} className="text-primary hover:underline">
+                                        #{damage.rentalId}
+                                    </Link>
+                                </p>
                             </div>
                         </div>
                     </CardContent>

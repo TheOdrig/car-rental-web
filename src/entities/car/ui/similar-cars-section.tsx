@@ -12,9 +12,11 @@ interface SimilarCarsSectionProps {
 export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps) {
     const { data: similarCars, isLoading, isError } = useSimilarCars(carId);
 
-    if (isError || (!isLoading && (!similarCars || similarCars.length === 0))) {
+    if (isError) {
         return null;
     }
+
+    const isEmpty = !isLoading && (!similarCars || similarCars.length === 0);
 
     return (
         <section
@@ -30,23 +32,29 @@ export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps
                 </p>
             </div>
 
-            <div
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto snap-x snap-mandatory"
-                role="list"
-            >
-                {isLoading
-                    ? Array.from({ length: 4 }).map((_, i) => (
-                        <SimilarCarCardSkeleton
-                            key={`skeleton-${i}`}
-                            className="snap-start"
-                        />
-                    ))
-                    : similarCars?.map((car) => (
-                        <article key={car.id} role="listitem" className="snap-start">
-                            <SimilarCarCard car={car} />
-                        </article>
-                    ))}
-            </div>
+            {isEmpty ? (
+                <p className="rounded-lg border border-dashed p-6 text-center text-muted-foreground">
+                    No similar vehicles are available right now.
+                </p>
+            ) : (
+                <div
+                    className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto snap-x snap-mandatory"
+                    role="list"
+                >
+                    {isLoading
+                        ? Array.from({ length: 4 }).map((_, i) => (
+                            <SimilarCarCardSkeleton
+                                key={`skeleton-${i}`}
+                                className="snap-start"
+                            />
+                        ))
+                        : similarCars?.map((car) => (
+                            <article key={car.id} role="listitem" className="snap-start">
+                                <SimilarCarCard car={car} />
+                            </article>
+                        ))}
+                </div>
+            )}
         </section>
     );
 }

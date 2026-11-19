@@ -30,7 +30,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted">
                         <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0 max-w-[14rem]">
+                    <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
                         {item.customerId && item.customerId > 0 ? (
                             <Link href={`/admin/users/${item.customerId}`} className={LINK_CLASS}>
                                 {item.customerName}
@@ -59,7 +59,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                             <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                         </div>
                     )}
-                    <div className="min-w-0 max-w-[14rem]">
+                    <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
                         <Link href={`/admin/fleet/${item.carId}`} className={LINK_CLASS}>
                             {item.carBrand} {item.carModel}
                         </Link>

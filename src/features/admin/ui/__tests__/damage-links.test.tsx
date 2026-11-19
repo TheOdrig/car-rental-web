@@ -5,6 +5,13 @@ import { CustomerDamageHistory } from '../customer-damage-history';
 import { VehicleDamageHistory } from '../vehicle-damage-history';
 import { DamageTable } from '../damage-table';
 
+const mockUseCar = vi.hoisted(() => vi.fn(() => ({ data: undefined as { car: { brand: string; model: string } } | undefined })));
+
+vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
+    useCar: mockUseCar,
+}));
+
 const mockCustomer = vi.hoisted(() => vi.fn());
 const mockVehicle = vi.hoisted(() => vi.fn());
 

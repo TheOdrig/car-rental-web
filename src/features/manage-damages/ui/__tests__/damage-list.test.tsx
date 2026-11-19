@@ -4,6 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { createMockDamage } from '@/entities/damage/lib/testing/factories';
 import { DamageList } from '../damage-list';
 
+const mockUseCar = vi.hoisted(() => vi.fn(() => ({ data: undefined as { car: { brand: string; model: string } } | undefined })));
+
+vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
+    useCar: mockUseCar,
+}));
+
 vi.mock('../damage-dispute-form', () => ({
     DamageDisputeForm: ({ damageId, open }: { damageId: number; open: boolean }) =>
         open ? <div role="dialog">Dispute for {damageId}</div> : null,

@@ -12,6 +12,7 @@ import {
 } from '@/shared/ui/table';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
+import { VehicleLabel } from '@/entities/car';
 import type { DamageReport } from '@/entities/damage';
 import { formatDate } from '@/shared/lib';
 
@@ -73,7 +74,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                     className="hover:text-primary hover:underline transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                 >
-                                    {damage.carLicensePlate}
+                                    <VehicleLabel carId={damage.carId} licensePlate={damage.carLicensePlate} stacked />
                                 </Link>
                             </TableCell>
                             <TableCell className="text-slate-700 dark:text-slate-300">

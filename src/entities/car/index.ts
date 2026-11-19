@@ -33,6 +33,7 @@ export { CarGrid, CarGridSkeleton, CarGridEmpty } from './ui/car-grid';
 export { CarListView, CarListItem, CarListViewSkeleton } from './ui/car-list-view';
 export { CarDetail, CarDetailSkeleton, type CarDetailProps, type CarDetailSkeletonProps } from './ui/car-detail';
 export { SimilarCarsSection } from './ui/similar-cars-section';
+export { VehicleLabel } from './ui/vehicle-label';
 export {
     useCars,
     useSimilarCars,

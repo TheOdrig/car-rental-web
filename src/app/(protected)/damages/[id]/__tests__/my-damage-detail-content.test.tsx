@@ -4,6 +4,13 @@ import userEvent from '@testing-library/user-event';
 import { createMockDamage } from '@/entities/damage/lib/testing/factories';
 import { MyDamageDetailContent } from '../my-damage-detail-content';
 
+const mockUseCar = vi.hoisted(() => vi.fn(() => ({ data: undefined as { car: { brand: string; model: string } } | undefined })));
+
+vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
+    useCar: mockUseCar,
+}));
+
 const mockUseMyDamageDetail = vi.hoisted(() => vi.fn());
 const mockBack = vi.fn();
 
