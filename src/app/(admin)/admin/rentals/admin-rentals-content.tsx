@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { RefreshCw, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
@@ -8,7 +10,7 @@ import { Badge } from '@/shared/ui/badge';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
-import { PendingRentalsTable } from '@/features/process-rentals';
+import { PendingRentalsTable, AllRentalsTable, useAdminRentals } from '@/features/process-rentals';
 import { usePendingApprovals, usePendingPickups, usePendingReturns, useOverdueRentals, useInvalidateAdmin } from '@/features/admin';
 import {
     useApproveRental,
@@ -21,6 +23,11 @@ import { showToast } from '@/shared/lib';
 import { ErrorMessage } from '@/shared/ui/error-message';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
+type View = 'pending' | 'all-rentals';
+
+const PENDING_PAGE_SIZE = 50;
+
+const RENTAL_STATUS_OPTIONS = ['All statuses', 'Requested', 'Confirmed', 'In Use', 'Returned', 'Cancelled'];
 
 const statusOptions: { value: StatusFilter; label: string }[] = [
     { value: 'all', label: 'All Pending' },
@@ -31,13 +38,20 @@ const statusOptions: { value: StatusFilter; label: string }[] = [
 ];
 
 export function AdminRentalsContent() {
+    const searchParams = useSearchParams();
+    const userIdParam = searchParams?.get('userId');
+    const userId = userIdParam && /^[0-9]+$/.test(userIdParam) ? Number(userIdParam) : undefined;
+    const [view, setView] = useState<View>(userId !== undefined ? 'all-rentals' : 'pending');
+    const [rentalsPage, setRentalsPage] = useState(0);
+    const [rentalStatus, setRentalStatus] = useState('All statuses');
+    const allRentals = useAdminRentals({ page: rentalsPage, userId });
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
 
-    const approvalsQuery = usePendingApprovals();
-    const pickupsQuery = usePendingPickups();
-    const returnsQuery = usePendingReturns();
-    const overdueQuery = useOverdueRentals();
+    const approvalsQuery = usePendingApprovals({ size: PENDING_PAGE_SIZE });
+    const pickupsQuery = usePendingPickups({ size: PENDING_PAGE_SIZE });
+    const returnsQuery = usePendingReturns({ size: PENDING_PAGE_SIZE });
+    const overdueQuery = useOverdueRentals({ size: PENDING_PAGE_SIZE });
     const { data: approvals, isLoading: approvalsLoading } = approvalsQuery;
     const { data: pickups, isLoading: pickupsLoading } = pickupsQuery;
     const { data: returns, isLoading: returnsLoading } = returnsQuery;
@@ -95,10 +109,10 @@ export function AdminRentalsContent() {
     };
 
     const counts = {
-        approvals: approvals?.content.length ?? 0,
-        pickups: pickups?.content.length ?? 0,
-        returns: returns?.content.length ?? 0,
-        overdue: overdue?.content.length ?? 0,
+        approvals: approvals?.totalElements ?? approvals?.content.length ?? 0,
+        pickups: pickups?.totalElements ?? pickups?.content.length ?? 0,
+        returns: returns?.totalElements ?? returns?.content.length ?? 0,
+        overdue: overdue?.totalElements ?? overdue?.content.length ?? 0,
     };
 
     const failed = {
@@ -124,7 +138,7 @@ export function AdminRentalsContent() {
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Rental Management</h1>
                     <p className="text-muted-foreground">
-                        Manage all pending rental operations
+                        {userId !== undefined ? `Rentals of customer #${userId}` : 'Work the pending queues or browse every rental'}
                     </p>
                 </div>
                 <Button
@@ -136,6 +150,60 @@ export function AdminRentalsContent() {
                 </Button>
             </div>
 
+            {userId === undefined && (
+                <div className="flex gap-2" role="tablist" aria-label="Rental views">
+                    <Button role="tab" aria-selected={view === 'pending'} variant={view === 'pending' ? 'default' : 'outline'} onClick={() => setView('pending')}>
+                        Pending Work
+                    </Button>
+                    <Button role="tab" aria-selected={view === 'all-rentals'} variant={view === 'all-rentals' ? 'default' : 'outline'} onClick={() => setView('all-rentals')}>
+                        All Rentals
+                    </Button>
+                </div>
+            )}
+
+            {view === 'all-rentals' && (
+                <div className="space-y-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <Filter className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                        <Select value={rentalStatus} onValueChange={setRentalStatus}>
+                            <SelectTrigger className="w-48" aria-label="Filter this page by status">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {RENTAL_STATUS_OPTIONS.map((option) => (
+                                    <SelectItem key={option} value={option}>
+                                        {option}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <span className="text-sm text-muted-foreground">Filters the rentals on this page</span>
+                        {userId !== undefined && (
+                            <Button variant="ghost" size="sm" asChild>
+                                <Link href="/admin/rentals">Show all customers</Link>
+                            </Button>
+                        )}
+                    </div>
+                    {allRentals.isError ? (
+                        <ErrorMessage
+                            title="Failed to load rentals"
+                            message="The rental list could not be loaded."
+                            onRetry={() => void allRentals.refetch()}
+                        />
+                    ) : (
+                        <AllRentalsTable
+                            rentals={(allRentals.data?.content ?? []).filter((rental) => rentalStatus === 'All statuses' || rental.status === rentalStatus)}
+                            isLoading={allRentals.isLoading}
+                            page={rentalsPage}
+                            totalPages={allRentals.data?.totalPages ?? 0}
+                            totalElements={allRentals.data?.totalElements ?? 0}
+                            onPageChange={setRentalsPage}
+                        />
+                    )}
+                </div>
+            )}
+
+            {view === 'pending' && (<>
             <div className="grid gap-4 md:grid-cols-4">
                 <Card
                     className={`cursor-pointer transition-colors ${statusFilter === 'approvals' ? 'border-primary' : ''}`}
@@ -222,6 +290,7 @@ export function AdminRentalsContent() {
                     ) : (
                         <PendingRentalsTable
                             items={approvals?.content ?? []}
+                            total={approvals?.totalElements}
                             type="approvals"
                             isLoading={approvalsLoading}
                             onApprove={handleApprove}
@@ -241,6 +310,7 @@ export function AdminRentalsContent() {
                     ) : (
                         <PendingRentalsTable
                             items={pickups?.content ?? []}
+                            total={pickups?.totalElements}
                             type="pickups"
                             isLoading={pickupsLoading}
                             onPickup={handlePickup}
@@ -259,6 +329,7 @@ export function AdminRentalsContent() {
                     ) : (
                         <PendingRentalsTable
                             items={returns?.content ?? []}
+                            total={returns?.totalElements}
                             type="returns"
                             isLoading={returnsLoading}
                             onReturn={handleReturn}
@@ -277,6 +348,7 @@ export function AdminRentalsContent() {
                     ) : (
                         <PendingRentalsTable
                             items={overdue?.content ?? []}
+                            total={overdue?.totalElements}
                             type="overdue"
                             isLoading={overdueLoading}
                             onReturn={handleReturn}
@@ -285,6 +357,7 @@ export function AdminRentalsContent() {
                     )
                 )}
             </div>
+            </>)}
         </div>
     );
 }

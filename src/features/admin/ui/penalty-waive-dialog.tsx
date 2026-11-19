@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -14,18 +14,36 @@ import { Label } from '@/shared/ui/label';
 import { useWaivePenalty } from '@/features/admin';
 import { formatCurrency } from '@/shared/lib';
 
-const waiverSchema = z.object({
-    fullWaiver: z.boolean(),
-    waiverAmount: z.number().optional(),
-    reason: z.string()
-        .min(10, 'Reason must be at least 10 characters')
-        .max(500, 'Reason cannot exceed 500 characters'),
-}).refine(
-    (data) => data.fullWaiver || (data.waiverAmount && data.waiverAmount > 0),
-    { message: 'Either select full waiver or enter a waiver amount', path: ['waiverAmount'] }
-);
+export function createWaiverSchema(originalPenalty: number, currency: string) {
+    return z
+        .object({
+            fullWaiver: z.boolean(),
+            waiverAmount: z.number().optional(),
+            reason: z
+                .string()
+                .min(10, 'Reason must be at least 10 characters')
+                .max(500, 'Reason cannot exceed 500 characters'),
+        })
+        .superRefine((data, ctx) => {
+            if (data.fullWaiver) return;
+            const amount = data.waiverAmount;
+            if (!amount || Number.isNaN(amount) || amount <= 0) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['waiverAmount'],
+                    message: 'Either select full waiver or enter a waiver amount',
+                });
+            } else if (amount > originalPenalty) {
+                ctx.addIssue({
+                    code: 'custom',
+                    path: ['waiverAmount'],
+                    message: `The waiver cannot be more than the penalty of ${formatCurrency(originalPenalty, currency)}`,
+                });
+            }
+        });
+}
 
-type WaiverFormData = z.infer<typeof waiverSchema>;
+type WaiverFormData = z.infer<ReturnType<typeof createWaiverSchema>>;
 
 interface PenaltyWaiveDialogProps {
     open: boolean;
@@ -44,6 +62,7 @@ export function PenaltyWaiveDialog({
 }: PenaltyWaiveDialogProps) {
     const [isFullWaiver, setIsFullWaiver] = useState(false);
     const waivePenalty = useWaivePenalty();
+    const schema = useMemo(() => createWaiverSchema(originalPenalty, currency), [originalPenalty, currency]);
 
     const {
         register,
@@ -53,7 +72,7 @@ export function PenaltyWaiveDialog({
         reset,
         formState: { errors },
     } = useForm<WaiverFormData>({
-        resolver: zodResolver(waiverSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             fullWaiver: false,
             waiverAmount: undefined,
@@ -82,6 +101,7 @@ export function PenaltyWaiveDialog({
     };
 
     const onSubmit = (data: WaiverFormData) => {
+        if (waivePenalty.isPending) return;
         waivePenalty.mutate(
             {
                 rentalId,
@@ -145,7 +165,6 @@ export function PenaltyWaiveDialog({
                                 type="number"
                                 step="0.01"
                                 min="0.01"
-                                max={originalPenalty}
                                 placeholder="Enter amount to waive"
                                 {...register('waiverAmount', { valueAsNumber: true })}
                                 className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"

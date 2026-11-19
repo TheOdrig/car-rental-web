@@ -2,9 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { adminKeys, clientGet, clientPost, isApiError } from '@/shared/api';
+import type { PageResponse } from '@/shared/types';
 import { showToast, toastMessages } from '@/shared/lib';
 import { carKeys } from '@/entities/car';
-import { getAdminActionErrorMessage, RENTAL_VALIDATION_FAILED_CODE, rentalKeys } from '@/entities/rental';
+import { getAdminActionErrorMessage, RENTAL_VALIDATION_FAILED_CODE, rentalKeys, type Rental } from '@/entities/rental';
 import { processKeys } from './process-keys';
 import type {
     QuickActionResult,
@@ -136,6 +137,26 @@ export function useRejectRental() {
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.rejectError, getAdminActionErrorMessage(error));
         },
+    });
+}
+
+export const ADMIN_RENTALS_PAGE_SIZE = 20;
+
+async function fetchAdminRentals(params: { page: number; userId?: number }): Promise<PageResponse<Rental>> {
+    const query = new URLSearchParams({ page: String(params.page), size: String(ADMIN_RENTALS_PAGE_SIZE) });
+    if (params.userId === undefined) {
+        query.set('sort', 'createTime,desc');
+        return clientGet<PageResponse<Rental>>(`/api/admin/rentals?${query.toString()}`);
+    }
+    return clientGet<PageResponse<Rental>>(`/api/admin/users/${params.userId}/rentals?${query.toString()}`);
+}
+
+export function useAdminRentals(params: { page: number; userId?: number }) {
+    return useQuery({
+        queryKey: processKeys.list(params),
+        queryFn: () => fetchAdminRentals(params),
+        staleTime: 30 * 1000,
+        placeholderData: (previous) => previous,
     });
 }
 

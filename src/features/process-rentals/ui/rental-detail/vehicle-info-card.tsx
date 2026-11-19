@@ -57,10 +57,16 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                     <div>
                         <div className="font-semibold text-slate-900 dark:text-slate-100">
                             {vehicle.brand} {vehicle.model}
+                            {vehicle.year ? <span className="ml-2 text-xs font-normal text-slate-500 dark:text-slate-400">{vehicle.year}</span> : null}
                         </div>
-                        <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                            {vehicle.status}
-                        </Badge>
+                        {vehicle.status && (
+                            <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                <span>Fleet status</span>
+                                <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
+                                    {vehicle.status}
+                                </Badge>
+                            </div>
+                        )}
                     </div>
                 </div>
 

@@ -18,6 +18,7 @@ import { PendingRentalsSkeleton } from './pending-rentals-skeleton';
 
 interface PendingRentalsTableProps {
     items: PendingItem[];
+    total?: number;
     type: PendingRentalsType;
     isLoading?: boolean;
     onApprove?: (rentalId: number, notes?: string) => void;
@@ -33,6 +34,7 @@ const HEAD_CLASS = 'text-slate-600 dark:text-slate-300 font-semibold';
 
 export const PendingRentalsTable = memo(function PendingRentalsTable({
     items,
+    total,
     type,
     isLoading = false,
     onApprove,
@@ -91,7 +93,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     <CardTitle className="text-lg capitalize">
                         Pending {type}
                         <Badge variant="secondary" className="ml-2">
-                            {items.length}
+                            {total ?? items.length}
                         </Badge>
                     </CardTitle>
                 </CardHeader>
@@ -122,6 +124,11 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                             </TableBody>
                         </Table>
                     </div>
+                    {total !== undefined && total > items.length && (
+                        <p className="mt-3 text-sm text-muted-foreground" data-testid="pending-truncated">
+                            Showing the first {items.length} of {total}. Work through these to see the rest, or open the All Rentals view.
+                        </p>
+                    )}
                 </CardContent>
             </Card>
 

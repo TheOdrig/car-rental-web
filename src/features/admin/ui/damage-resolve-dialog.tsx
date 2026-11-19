@@ -16,14 +16,25 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { useResolveDamage } from '@/entities/damage';
+import { formatCurrency } from '@/shared/lib';
+import { useMemo } from 'react';
 
-const resolveSchema = z.object({
-    adjustedRepairCost: z.coerce.number().min(0, 'Adjusted repair cost cannot be negative'),
-    adjustedCustomerLiability: z.coerce.number().min(0, 'Adjusted liability cannot be negative'),
-    resolutionNotes: z.string().min(1, 'Resolution notes are required').max(1000, 'Notes cannot exceed 1000 characters'),
-});
+export function createResolveSchema(chargedLiability: number | undefined, currency: string) {
+    return z.object({
+        adjustedRepairCost: z.coerce.number().min(0, 'Adjusted repair cost cannot be negative'),
+        adjustedCustomerLiability: z.coerce
+            .number()
+            .min(0, 'Adjusted liability cannot be negative')
+            .refine(
+                (value) => chargedLiability === undefined || value <= chargedLiability,
+                `The liability cannot be raised above the charged ${formatCurrency(chargedLiability ?? 0, currency)}`
+            ),
+        resolutionNotes: z.string().min(1, 'Resolution notes are required').max(1000, 'Notes cannot exceed 1000 characters'),
+    });
+}
 
-type ResolveFormData = z.infer<typeof resolveSchema>;
+
+type ResolveFormData = z.infer<ReturnType<typeof createResolveSchema>>;
 
 interface DamageResolveDialogProps {
     damageId: number;
@@ -46,6 +57,7 @@ export function DamageResolveDialog({
     currency,
 }: DamageResolveDialogProps) {
     const resolveDamage = useResolveDamage();
+    const schema = useMemo(() => createResolveSchema(defaultValues?.customerLiability, currency), [defaultValues?.customerLiability, currency]);
 
     const {
         register,
@@ -53,7 +65,7 @@ export function DamageResolveDialog({
         formState: { errors },
         reset,
     } = useForm({
-        resolver: zodResolver(resolveSchema),
+        resolver: zodResolver(schema),
         defaultValues: {
             adjustedRepairCost: defaultValues?.repairCostEstimate || 0,
             adjustedCustomerLiability: defaultValues?.customerLiability || 0,

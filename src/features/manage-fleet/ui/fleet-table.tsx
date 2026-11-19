@@ -329,7 +329,7 @@ export const FleetTable = memo(function FleetTable({
                                 </span>
                             </span>
                             <Select
-                                value={newStatus || undefined}
+                                value={newStatus ?? ''}
                                 onValueChange={(v) => setNewStatus(v as CarStatus)}
                             >
                                 <SelectTrigger className="w-full mt-4">

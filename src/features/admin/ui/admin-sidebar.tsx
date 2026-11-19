@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/shared/lib';
@@ -70,6 +70,15 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
 
+    useEffect(() => {
+        if (typeof window.matchMedia !== 'function') return;
+        const query = window.matchMedia('(max-width: 1279px)');
+        const apply = () => setCollapsed(query.matches);
+        apply();
+        query.addEventListener('change', apply);
+        return () => query.removeEventListener('change', apply);
+    }, []);
+
     return (
         <aside
             className={cn(
@@ -117,6 +126,7 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
                                 collapsed && 'justify-center px-2'
                             )}
                             title={collapsed ? item.label : undefined}
+                            aria-label={item.label}
                         >
                             {item.icon}
                             {!collapsed && <span>{item.label}</span>}

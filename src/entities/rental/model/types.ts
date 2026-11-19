@@ -104,7 +104,7 @@ export interface RentalVehicleInfo {
     brand: string;
     model: string;
     licensePlate: string;
-    year: number;
+    year?: number;
     thumbnailUrl?: string;
     imageUrl?: string;
     fuelType?: string;
@@ -195,6 +195,7 @@ export interface RentalDetailResponse {
         brand: string;
         model: string;
         licensePlate: string;
+        year?: number;
         imageUrl?: string;
         status: string;
         fuelType: string;

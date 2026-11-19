@@ -63,7 +63,9 @@ export function RentalDetailContent({ id }: { id: string }) {
     const cancelRental = useCancelRental();
     const singleFlight = useSingleFlight();
     const [confirming, setConfirming] = useState<'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
-    const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) });
+    const paymentQuery = useRentalPayment(rentalId, {
+        enabled: !isNaN(rentalId) && !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED',
+    });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
@@ -116,6 +118,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const rentalWithPenalty = rental;
 
     const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
+    const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE', 'OVERDUE'].includes(rental.status);
     const referenceNumber = formatRentalReference(rentalId);
 
     const handleApprove = () => {
@@ -170,10 +173,7 @@ export function RentalDetailContent({ id }: { id: string }) {
 
     const vehicleInfo = {
         ...rental.vehicle,
-        year: new Date().getFullYear(),
         name: `${rental.vehicle.brand} ${rental.vehicle.model}`,
-
-        type: rental.vehicle.bodyType || 'Sedan',
     };
 
     const pickupBlockedReason =
@@ -276,6 +276,13 @@ export function RentalDetailContent({ id }: { id: string }) {
 
             {rental.damages.length > 0 && (
                 <VehicleDamageHistory carId={rental.vehicle.id} />
+            )}
+
+            {showPenaltyHistory && (
+                <PenaltyHistorySection
+                    rentalId={rentalId}
+                    currency={rental.pricing.currency}
+                />
             )}
 
             {hasPenalty && (

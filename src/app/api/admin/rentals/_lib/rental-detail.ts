@@ -95,6 +95,7 @@ export function buildRentalDetail({
             brand: car?.brand ?? summary?.brand ?? '',
             model: car?.model ?? summary?.model ?? '',
             licensePlate: car?.licensePlate ?? summary?.licensePlate ?? '',
+            year: car?.productionYear,
             imageUrl: car?.imageUrl ?? car?.thumbnailUrl ?? summary?.thumbnailUrl,
             status: car?.carStatusType ?? '',
             fuelType: car?.fuelType ?? '',
