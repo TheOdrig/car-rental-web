@@ -110,7 +110,7 @@ function guardRequest(request: NextRequest, options: RouteOptions): NextResponse
     return null;
 }
 
-export function errorResponse(error: unknown, options: RouteOptions): NextResponse {
+export function errorResponse(error: unknown, options: RouteOptions, instance?: string): NextResponse {
     if (isApiError(error)) {
         const headers: Record<string, string> = {};
         if (error.retryAfter !== undefined) {
@@ -123,7 +123,7 @@ export function errorResponse(error: unknown, options: RouteOptions): NextRespon
             {
                 title: error.title,
                 type: error.type,
-                instance: error.instance,
+                instance,
                 traceId: error.traceId,
                 code: error.code,
                 errors: error.errors,
@@ -140,7 +140,7 @@ export function errorResponse(error: unknown, options: RouteOptions): NextRespon
     const message = unreachable ? 'Service unavailable' : options.errorMessage;
     const status = unreachable ? 503 : (options.errorStatus ?? 500);
 
-    return problemResponse(status, message);
+    return problemResponse(status, message, { instance });
 }
 
 export function route<P extends RouteParams = Record<string, never>>(
@@ -166,7 +166,7 @@ export function route<P extends RouteParams = Record<string, never>>(
 
             return NextResponse.json(result ?? {}, { headers: { 'Cache-Control': NO_STORE } });
         } catch (error) {
-            return errorResponse(error, options);
+            return errorResponse(error, options, request.nextUrl.pathname);
         }
     };
 }

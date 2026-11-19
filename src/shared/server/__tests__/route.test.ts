@@ -193,6 +193,25 @@ describe('route', () => {
         });
     });
 
+    it('reports the BFF path as the problem instance, never the upstream path', async () => {
+        const handler = route(
+            async () => {
+                throw new ApiError({
+                    status: 409,
+                    message: 'taken',
+                    timestamp: 't',
+                    instance: '/api/v1/rentals/request',
+                });
+            },
+            { errorMessage: 'failed' }
+        );
+        const response = await handler(request('http://localhost:3000/api/rentals/request'), context({}));
+        const body = await response.json();
+
+        expect(body.instance).toBe('/api/rentals/request');
+        expect(JSON.stringify(body)).not.toContain('/api/v1');
+    });
+
     it('hides unexpected error details behind the fallback message', async () => {
         const handler = route(
             async () => {
