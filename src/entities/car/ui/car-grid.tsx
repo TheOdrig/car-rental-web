@@ -10,6 +10,7 @@ interface CarGridProps {
     variant?: 'default' | 'compact' | 'search-result';
     className?: string;
     showStatus?: boolean;
+    priorityCount?: number;
     onCarSelect?: (car: Car | AvailableCar) => void;
 }
 
@@ -30,6 +31,7 @@ export function CarGrid({
     variant = 'default',
     className,
     showStatus = false,
+    priorityCount = 0,
     onCarSelect,
 }: CarGridProps) {
     if (cars.length === 0) {
@@ -44,9 +46,10 @@ export function CarGrid({
                 className
             )}
         >
-            {cars.map((car) => (
+            {cars.map((car, index) => (
                 <CarCard
                     key={car.id}
+                    priority={index < priorityCount}
                     car={car}
                     variant={variant}
                     showStatus={showStatus}

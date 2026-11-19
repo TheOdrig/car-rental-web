@@ -16,6 +16,7 @@ interface CarCardProps {
     variant?: 'default' | 'compact' | 'search-result';
     className?: string;
     showStatus?: boolean;
+    priority?: boolean;
     onSelect?: (car: Car | AvailableCar) => void;
 }
 
@@ -46,6 +47,7 @@ export const CarCard = memo(function CarCard({
     variant = 'default',
     className,
     showStatus = false,
+    priority = false,
     onSelect,
 }: CarCardProps) {
     const { format } = useCurrency();
@@ -54,7 +56,7 @@ export const CarCard = memo(function CarCard({
     const brand = car.brand;
     const model = car.model;
     const year = isSearchResult ? car.productionYear : car.productionYear;
-    const imageUrl = car.imageUrl ?? '/images/car-placeholder.svg';
+    const imageUrl = (isSearchResult ? undefined : car.thumbnailUrl) || car.imageUrl || '/images/car-placeholder.svg';
     const fuelType = isSearchResult ? car.fuelType : car.fuelType;
     const transmission = isSearchResult ? car.transmissionType : car.transmissionType;
     const seats = car.seats;
@@ -79,7 +81,8 @@ export const CarCard = memo(function CarCard({
                     src={imageUrl}
                     alt={`${brand} ${model} ${year} - Car available for rent`}
                     fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 25vw"
+                    priority={priority}
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                 />
 

@@ -14,6 +14,7 @@ import type { Car, AvailableCar } from '@/entities/car';
 interface CarListItemProps {
     car: Car | AvailableCar;
     className?: string;
+    priority?: boolean;
 }
 
 function getCarDisplayData(car: Car | AvailableCar) {
@@ -24,7 +25,7 @@ function getCarDisplayData(car: Car | AvailableCar) {
         brand: car.brand,
         model: car.model,
         year: car.productionYear,
-        imageUrl: isAvailableCar ? car.imageUrl : car.imageUrl || car.thumbnailUrl,
+        imageUrl: isAvailableCar ? car.imageUrl : car.thumbnailUrl || car.imageUrl,
         price: isAvailableCar ? car.dailyRate : car.price,
         currency: isAvailableCar ? car.currency : car.currencyType,
         bodyType: car.bodyType,
@@ -35,7 +36,7 @@ function getCarDisplayData(car: Car | AvailableCar) {
     };
 }
 
-export function CarListItem({ car, className }: CarListItemProps) {
+export function CarListItem({ car, className, priority = false }: CarListItemProps) {
     const data = getCarDisplayData(car);
 
     return (
@@ -48,6 +49,7 @@ export function CarListItem({ car, className }: CarListItemProps) {
                                 src={data.imageUrl}
                                 alt={`${data.brand} ${data.model}`}
                                 fill
+                                priority={priority}
                                 className="object-cover transition-transform duration-300 group-hover:scale-105"
                                 sizes="(max-width: 640px) 100vw, 288px"
                             />
@@ -146,8 +148,8 @@ export function CarListView({ cars, className }: CarListViewProps) {
 
     return (
         <div className={cn('space-y-4', className)}>
-            {cars.map((car) => (
-                <CarListItem key={car.id} car={car} />
+            {cars.map((car, index) => (
+                <CarListItem key={car.id} car={car} priority={index === 0} />
             ))}
         </div>
     );

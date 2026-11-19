@@ -245,7 +245,7 @@ export function CarsListingContent() {
                             <CarListViewSkeleton count={4} />
                         )
                     ) : viewMode === 'grid' ? (
-                        <CarGrid cars={cars} />
+                        <CarGrid cars={cars} priorityCount={4} />
                     ) : (
                         <CarListView cars={cars} />
                     )}

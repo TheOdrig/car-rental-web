@@ -31,6 +31,7 @@ export function HeroSection({
                         fill
                         className="object-cover"
                         sizes="100vw"
+                        priority
                         onError={() => setImageError(true)}
                     />
                 ) : (

@@ -65,7 +65,7 @@ function SearchResults() {
                     {data.rentalDays} day{data.rentalDays !== 1 ? 's' : ''}
                 </p>
             </div>
-            <CarGrid cars={data.cars} variant="search-result" />
+            <CarGrid cars={data.cars} variant="search-result" priorityCount={4} />
         </div>
     );
 }
