@@ -13,6 +13,7 @@ export {
     useResolveDamage,
     useInvalidateDamages,
     useMyDamages,
+    useMyDamageDetail,
     useDamageStatistics,
     useVehicleDamages,
     useCustomerDamages,

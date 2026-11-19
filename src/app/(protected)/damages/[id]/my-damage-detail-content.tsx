@@ -8,8 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
-import { DamageStatusBadge, DamageSeverityBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
+import { DamageStatusBadge, DamageSeverityBadge, useMyDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { DamageDisputeForm } from '@/features/manage-damages';
 
 export function MyDamageDetailContent({ id }: { id: string }) {
@@ -18,10 +19,24 @@ export function MyDamageDetailContent({ id }: { id: string }) {
 
     const [showDisputeDialog, setShowDisputeDialog] = useState(false);
 
-    const { data: damage, isLoading, refetch } = useDamageDetail(damageId);
+    const { data: damage, isLoading, isError, refetch } = useMyDamageDetail(
+        Number.isInteger(damageId) ? damageId : null
+    );
 
     if (isLoading) {
         return <DamageDetailSkeleton />;
+    }
+
+    if (isError) {
+        return (
+            <div className="container py-8">
+                <ErrorMessage
+                    title="Failed to load the damage report"
+                    message="Please check your connection and try again."
+                    onRetry={() => void refetch()}
+                />
+            </div>
+        );
     }
 
     if (!damage) {
@@ -31,7 +46,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                     <FileWarning className="h-12 w-12 text-muted-foreground mb-4" />
                     <h2 className="text-lg font-semibold">Damage report not found</h2>
                     <p className="text-muted-foreground mt-1">
-                        This damage report may not exist or you may not have access to it.
+                        This damage report does not exist or it belongs to another account.
                     </p>
                     <Button variant="outline" className="mt-4" onClick={() => router.back()}>
                         Go Back

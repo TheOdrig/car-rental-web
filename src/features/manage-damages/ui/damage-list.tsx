@@ -1,7 +1,8 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { DamageCard, DamageCardSkeleton } from './damage-card';
+import { DamageDisputeForm } from './damage-dispute-form';
 import type { DamageReport } from '@/entities/damage';
 
 interface DamageListProps {
@@ -10,7 +11,7 @@ interface DamageListProps {
 }
 
 export function DamageList({ damages, isLoading }: DamageListProps) {
-    const router = useRouter();
+    const [disputing, setDisputing] = useState<DamageReport | null>(null);
 
     if (isLoading) {
         return (
@@ -39,9 +40,20 @@ export function DamageList({ damages, isLoading }: DamageListProps) {
                 <DamageCard
                     key={damage.id}
                     damage={damage}
-                    onClick={() => router.push(`/damages/${damage.id}`)}
+                    href={`/damages/${damage.id}`}
+                    onDispute={setDisputing}
                 />
             ))}
+            {disputing && (
+                <DamageDisputeForm
+                    damageId={disputing.id}
+                    open
+                    onOpenChange={(open) => {
+                        if (!open) setDisputing(null);
+                    }}
+                    onSuccess={() => setDisputing(null)}
+                />
+            )}
         </div>
     );
 }

@@ -20,6 +20,7 @@ export const damageKeys = {
     list: (filters?: DamageSearchFilters) => [...damageKeys.lists(), filters] as const,
     myDamages: () => [...damageKeys.all, 'my'] as const,
     myList: (page?: number, size?: number) => [...damageKeys.myDamages(), { page, size }] as const,
+    myDetail: (id: number) => [...damageKeys.myDamages(), 'detail', id] as const,
     details: () => [...damageKeys.all, 'detail'] as const,
     detail: (id: number) => [...damageKeys.details(), id] as const,
     statistics: (startDate?: string, endDate?: string) => [...damageKeys.all, 'statistics', { startDate, endDate }] as const,
@@ -52,6 +53,19 @@ async function fetchMyDamages(page = 0, size = 20): Promise<DamageListResponse> 
     const queryString = buildQueryString({ page, size });
     const url = queryString ? `/api/damages/me?${queryString}` : '/api/damages/me';
     return clientGet<DamageListResponse>(url);
+}
+
+const MY_DAMAGE_LOOKUP_PAGE_SIZE = 50;
+const MY_DAMAGE_LOOKUP_MAX_PAGES = 20;
+
+async function fetchMyDamageById(id: number): Promise<DamageReport | null> {
+    for (let page = 0; page < MY_DAMAGE_LOOKUP_MAX_PAGES; page += 1) {
+        const result = await fetchMyDamages(page, MY_DAMAGE_LOOKUP_PAGE_SIZE);
+        const match = result.content.find((damage) => damage.id === id);
+        if (match) return match;
+        if (page + 1 >= result.totalPages) return null;
+    }
+    return null;
 }
 
 async function fetchDamageDetail(id: number): Promise<DamageReport> {
@@ -151,6 +165,15 @@ export function useDamageDetail(id: number | null | undefined) {
         queryFn: () => fetchDamageDetail(id!),
         enabled: !!id,
         staleTime: 60 * 1000,
+    });
+}
+
+export function useMyDamageDetail(id: number | null | undefined) {
+    return useQuery({
+        queryKey: damageKeys.myDetail(id!),
+        queryFn: () => fetchMyDamageById(id!),
+        enabled: !!id,
+        staleTime: 30 * 1000,
     });
 }
 

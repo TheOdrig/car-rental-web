@@ -14,12 +14,31 @@ describe('DamageCard', () => {
         expect(screen.getByText('Scratch on the left door')).toBeInTheDocument();
     });
 
-    it('calls onClick when the card is pressed', async () => {
-        const onClick = vi.fn();
-        render(<DamageCard damage={createMockDamage({ carLicensePlate: '34 XYZ 9' })} onClick={onClick} />);
+    it('links to the damage report so keyboards can open it', () => {
+        render(<DamageCard damage={createMockDamage({ id: 9, carLicensePlate: '34 XYZ 9' })} href="/damages/9" />);
 
-        await userEvent.click(screen.getByText('34 XYZ 9'));
+        expect(screen.getByRole('link', { name: /open damage report for 34 XYZ 9/i })).toHaveAttribute('href', '/damages/9');
+    });
 
-        expect(onClick).toHaveBeenCalledTimes(1);
+    it('offers the dispute action for charged damages', async () => {
+        const onDispute = vi.fn();
+        const damage = createMockDamage({ status: 'CHARGED' });
+        render(<DamageCard damage={damage} href="/damages/1" onDispute={onDispute} />);
+
+        await userEvent.click(screen.getByRole('button', { name: /dispute charge/i }));
+
+        expect(onDispute).toHaveBeenCalledWith(damage);
+    });
+
+    it('hides the dispute action for damages that are not charged', () => {
+        render(<DamageCard damage={createMockDamage({ status: 'ASSESSED' })} href="/damages/1" onDispute={vi.fn()} />);
+
+        expect(screen.queryByRole('button', { name: /dispute charge/i })).not.toBeInTheDocument();
+    });
+
+    it('shows the liability in the damage currency', () => {
+        render(<DamageCard damage={createMockDamage({ customerLiability: 250, currency: 'EUR' })} />);
+
+        expect(screen.getByText(/€250.00/)).toBeInTheDocument();
     });
 });
