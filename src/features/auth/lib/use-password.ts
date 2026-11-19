@@ -1,12 +1,18 @@
 'use client';
 
 import { useMutation } from '@tanstack/react-query';
-import { clientPost } from '@/shared/api';
+import { clientPost, isApiError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import type { PasswordChangeData, MessageResponse } from '@/features/auth';
 
+const INVALID_PASSWORD_CODE = 'INVALID_PASSWORD';
+
 async function changePasswordApi(data: PasswordChangeData): Promise<MessageResponse> {
     return clientPost<MessageResponse>('/api/users/me/password', data);
+}
+
+export function isWrongCurrentPassword(error: unknown): boolean {
+    return isApiError(error) && error.code === INVALID_PASSWORD_CODE && /\bis incorrect\b/i.test(error.message);
 }
 
 export function useChangePassword() {
@@ -16,9 +22,7 @@ export function useChangePassword() {
             showToast.success(toastMessages.profile?.passwordChangeSuccess ?? 'Password changed successfully');
         },
         onError: (error: Error) => {
-            const message = error.message.toLowerCase();
-
-            if (message.includes('current password') || message.includes('incorrect')) {
+            if (isWrongCurrentPassword(error)) {
                 showToast.error('Incorrect current password', 'Please check your current password and try again');
             } else {
                 showToast.error(
