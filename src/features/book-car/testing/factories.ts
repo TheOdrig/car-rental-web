@@ -2,7 +2,6 @@ import type {
     Addon,
     PriceBreakdown,
     BookingConfirmation,
-    CheckoutFormData,
 } from '@/features/book-car';
 
 let bookingIdCounter = 1;
@@ -25,16 +24,6 @@ export function createMockPriceBreakdown(overrides?: Partial<PriceBreakdown>): P
         dailyRate: 100,
         total: 300,
         currency: 'USD',
-        ...overrides,
-    };
-}
-
-export function createMockCheckoutFormData(overrides?: Partial<CheckoutFormData>): CheckoutFormData {
-    return {
-        firstName: 'John',
-        lastName: 'Doe',
-        email: 'john.doe@example.com',
-        phone: '+1 555 123 4567',
         ...overrides,
     };
 }

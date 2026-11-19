@@ -1,6 +1,11 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { BookingSuccess } from '@/features/book-car';
+import { BookingSuccess, BookingSuccessLoader } from '@/features/book-car';
+const mockUseRental = vi.hoisted(() => vi.fn());
+vi.mock('@/entities/rental', async () => {
+    const actual = await vi.importActual<typeof import('@/entities/rental')>('@/entities/rental');
+    return { ...actual, useRental: mockUseRental };
+});
 vi.mock('next/navigation', () => ({
     useRouter: () => ({
         push: vi.fn(),
@@ -32,16 +37,17 @@ describe('BookingSuccess', () => {
         render(
             <BookingSuccess
                 {...defaultProps}
-                startDate={new Date('2024-01-15')}
-                endDate={new Date('2024-01-20')}
+                startDate="2024-01-15"
+                endDate="2024-01-20"
             />
         );
         expect(screen.getByText(/Jan 15, 2024/)).toBeInTheDocument();
         expect(screen.getByText(/Jan 20, 2024/)).toBeInTheDocument();
     });
-    it('should display pickup location', () => {
-        render(<BookingSuccess {...defaultProps} pickupLocation="Airport Terminal" />);
-        expect(screen.getByText('Airport Terminal')).toBeInTheDocument();
+    it('should not show a made-up pickup location', () => {
+        render(<BookingSuccess {...defaultProps} />);
+        expect(screen.queryByText(/pickup location/i)).not.toBeInTheDocument();
+        expect(screen.queryByText('Main Office')).not.toBeInTheDocument();
     });
     it('should not claim any payment was made', () => {
         render(<BookingSuccess {...defaultProps} />);
@@ -63,5 +69,32 @@ describe('BookingSuccess', () => {
     it('should have Print Receipt button', () => {
         render(<BookingSuccess {...defaultProps} />);
         expect(screen.getByRole('button', { name: /print receipt/i })).toBeInTheDocument();
+    });
+});
+
+describe('BookingSuccessLoader', () => {
+    it('loads the rental by id and shows the real car and dates', () => {
+        mockUseRental.mockReturnValue({
+            data: {
+                id: 42,
+                startDate: '2024-03-01',
+                endDate: '2024-03-04',
+                carSummary: { id: 1, brand: 'Fiat', model: 'Egea', licensePlate: '34ABC34' },
+            },
+        });
+        render(<BookingSuccessLoader referenceNumber="42" />);
+
+        expect(mockUseRental).toHaveBeenCalledWith(42);
+        expect(screen.getByText('Fiat Egea')).toBeInTheDocument();
+        expect(screen.getByText(/Mar 1, 2024 - Mar 4, 2024/)).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: /view booking details/i })).toHaveAttribute('href', '/rentals/42');
+    });
+
+    it('does not query a rental for a non numeric reference', () => {
+        mockUseRental.mockReturnValue({ data: undefined });
+        render(<BookingSuccessLoader referenceNumber="ABC" />);
+
+        expect(mockUseRental).toHaveBeenCalledWith(null);
+        expect(screen.getByText('Your Selected Vehicle')).toBeInTheDocument();
     });
 });

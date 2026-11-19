@@ -1,16 +1,4 @@
-import type { CreateBookingRequest, BookingConfirmation } from '@/features/book-car/model/types';
-export const createMockBookingRequest = (overrides = {}): CreateBookingRequest => ({
-    carId: 1,
-    startDate: '2025-02-01T00:00:00Z',
-    endDate: '2025-02-05T00:00:00Z',
-    pickupLocation: 'Downtown Office',
-    dropoffLocation: 'Airport',
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'john@example.com',
-    phone: '1234567890',
-    ...overrides,
-});
+import type { BookingConfirmation } from '@/features/book-car/model/types';
 export const createMockBooking = (overrides = {}): BookingConfirmation => ({
     referenceNumber: 'BOOK-001',
     status: 'confirmed',

@@ -1,40 +1,44 @@
 import type { Metadata } from 'next';
-import { BookingSuccess } from '@/features/book-car';
+import Link from 'next/link';
+import { BookingSuccessLoader } from '@/features/book-car';
 
 export const metadata: Metadata = {
     title: 'Booking Requested | Car Rental',
     description: 'Your car rental request has been submitted and awaits confirmation.',
+    robots: { index: false, follow: false },
 };
 
 interface SuccessPageProps {
     searchParams: Promise<{
         ref?: string;
-        car?: string;
-        start?: string;
-        end?: string;
-        location?: string;
     }>;
 }
 
 export default async function BookingSuccessPage({ searchParams }: SuccessPageProps) {
-    const params = await searchParams;
-    const {
-        ref = 'UNKNOWN',
-        car,
-        start,
-        end,
-        location,
-    } = params;
+    const { ref } = await searchParams;
+
+    if (!ref || !/^\d+$/.test(ref)) {
+        return (
+            <div className="min-h-[60vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
+                <div className="text-center">
+                    <h1 className="text-2xl font-bold text-foreground mb-4">No booking reference</h1>
+                    <p className="text-muted-foreground mb-6">
+                        This page needs a booking reference. You can find your requests on your rentals page.
+                    </p>
+                    <Link
+                        href="/rentals"
+                        className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
+                    >
+                        My Rentals
+                    </Link>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
-            <BookingSuccess
-                referenceNumber={ref}
-                carName={car}
-                startDate={start ? new Date(start) : undefined}
-                endDate={end ? new Date(end) : undefined}
-                pickupLocation={location}
-            />
-        </main>
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+            <BookingSuccessLoader referenceNumber={ref} />
+        </div>
     );
 }

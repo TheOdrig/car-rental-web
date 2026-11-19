@@ -4,6 +4,7 @@ import { BookingFailure } from '@/features/book-car';
 export const metadata: Metadata = {
     title: 'Booking Failed | Car Rental',
     description: 'Your booking request could not be submitted. Please try again.',
+    robots: { index: false, follow: false },
 };
 
 interface FailurePageProps {
@@ -17,8 +18,8 @@ export default async function BookingFailurePage({ searchParams }: FailurePagePr
     const { error } = params;
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
             <BookingFailure errorMessage={error} />
-        </main>
+        </div>
     );
 }

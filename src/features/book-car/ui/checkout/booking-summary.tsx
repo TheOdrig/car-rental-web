@@ -1,9 +1,9 @@
 'use client';
 
 import { DynamicImage } from '@/shared/ui/dynamic-image';
-import { format } from 'date-fns';
 import { Lock, ArrowRight, Phone, Headphones, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { safeFormatDate } from '@/shared/lib';
 import { useCurrency } from '@/entities/currency';
 import { mapCurrency } from '@/entities/currency';
 import type { PriceBreakdown } from '@/features/book-car';
@@ -13,26 +13,22 @@ interface BookingSummaryProps {
     car: Car;
     startDate: Date;
     endDate: Date;
-    pickupLocation: string;
-    dropoffLocation: string;
     priceBreakdown: PriceBreakdown;
     isPricingLoading?: boolean;
+    isPricingFailed?: boolean;
     isSubmitting: boolean;
-    isFormValid: boolean;
 }
 
 export function BookingSummary({
     car,
     startDate,
     endDate,
-    pickupLocation,
-    dropoffLocation,
     priceBreakdown,
     isPricingLoading = false,
+    isPricingFailed = false,
     isSubmitting,
-    isFormValid,
 }: BookingSummaryProps) {
-    const { format: formatPrice } = useCurrency();
+    const { format: formatPrice, formatSource, isConverted } = useCurrency();
     const sourceCurrency = mapCurrency(priceBreakdown.currency);
 
     return (
@@ -71,11 +67,10 @@ export function BookingSummary({
                         </div>
                         <div className="pb-4">
                             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                                Pick-up
+                                Start date
                             </p>
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{pickupLocation}</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
-                                {format(startDate, 'MMM d, yyyy')} • {format(startDate, 'h:mm a')}
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                {safeFormatDate(startDate, 'EEE, MMM d, yyyy')}
                             </p>
                         </div>
                     </div>
@@ -86,11 +81,10 @@ export function BookingSummary({
                         </div>
                         <div>
                             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                                Drop-off
+                                End date
                             </p>
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">{dropoffLocation}</p>
-                            <p className="text-sm text-slate-600 dark:text-slate-400">
-                                {format(endDate, 'MMM d, yyyy')} • {format(endDate, 'h:mm a')}
+                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                                {safeFormatDate(endDate, 'EEE, MMM d, yyyy')}
                             </p>
                         </div>
                     </div>
@@ -104,7 +98,7 @@ export function BookingSummary({
                                 {priceBreakdown.rentalDays === 1 ? 'day' : 'days'})
                             </span>
                             <span className="font-medium tabular-nums">
-                                {formatPrice(priceBreakdown.originalTotal ?? priceBreakdown.total, sourceCurrency)}
+                                {formatSource(priceBreakdown.originalTotal ?? priceBreakdown.total, sourceCurrency)}
                             </span>
                         </div>
 
@@ -121,7 +115,7 @@ export function BookingSummary({
                         <div className="mb-4">
                             <div className="flex items-center gap-1.5 mb-2">
                                 <Sparkles className="h-4 w-4 text-emerald-500" />
-                                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Discounts Applied</span>
+                                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Price adjustments</span>
                             </div>
                             <div className="space-y-1.5">
                                 {priceBreakdown.appliedDiscounts.map((discount, index) => (
@@ -143,16 +137,16 @@ export function BookingSummary({
                     )}
 
                     <div className="flex justify-between items-end mb-6">
-                        <span className="text-base font-bold text-slate-900 dark:text-slate-100">Total Price</span>
+                        <span className="text-base font-bold text-slate-900 dark:text-slate-100">Estimated total</span>
                         <div className="text-right">
                             {priceBreakdown.originalTotal && priceBreakdown.totalSavings && priceBreakdown.totalSavings > 0 && (
                                 <div className="flex items-center justify-end gap-2 mb-1">
                                     <span className="text-sm line-through text-slate-400 dark:text-slate-500 tabular-nums">
-                                        {formatPrice(priceBreakdown.originalTotal, sourceCurrency)}
+                                        {formatSource(priceBreakdown.originalTotal, sourceCurrency)}
                                     </span>
                                     <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
                                         <Sparkles className="h-3 w-3" />
-                                        Save {formatPrice(priceBreakdown.totalSavings, sourceCurrency)}
+                                        Save {formatSource(priceBreakdown.totalSavings, sourceCurrency)}
                                     </span>
                                 </div>
                             )}
@@ -160,11 +154,18 @@ export function BookingSummary({
                                 {isPricingLoading ? (
                                     <span className="inline-block h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
                                 ) : (
-                                    formatPrice(priceBreakdown.total, sourceCurrency)
+                                    formatSource(priceBreakdown.total, sourceCurrency)
                                 )}
                             </span>
+                            {!isPricingLoading && isConverted(sourceCurrency) && (
+                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                    {formatPrice(priceBreakdown.total, sourceCurrency)} at today&apos;s approximate rate
+                                </p>
+                            )}
                             <p className="text-xs text-slate-500 dark:text-slate-400">
-                                {priceBreakdown.currency}, price from the rental pricing service
+                                Charged in {sourceCurrency}. {isPricingFailed
+                                    ? 'The pricing service is unavailable, so this is calculated from the daily rate. The final price is set when your request is reviewed.'
+                                    : 'Estimated, final price on review.'}
                             </p>
                         </div>
                     </div>
@@ -173,7 +174,7 @@ export function BookingSummary({
                         type="submit"
                         size="lg"
                         className="w-full h-14 text-base font-bold shadow-md group"
-                        disabled={isSubmitting || !isFormValid}
+                        disabled={isSubmitting || isPricingLoading}
                     >
                         {isSubmitting ? (
                             <span className="flex items-center gap-2">
@@ -201,7 +202,7 @@ export function BookingSummary({
                             </span>
                         ) : (
                             <span className="flex items-center gap-2">
-                                Request Booking
+                                Request Rental
                                 <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                         )}
@@ -209,7 +210,7 @@ export function BookingSummary({
 
                     <div className="mt-4 flex justify-center items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
                         <Lock className="h-4 w-4" />
-                        No payment now: pay after confirmation (Stripe test mode demo)
+                        No payment now: an administrator reviews your request and payment comes after approval (Stripe test mode demo)
                     </div>
                 </div>
             </div>

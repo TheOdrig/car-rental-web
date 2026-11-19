@@ -1,5 +1,5 @@
 import { describe, it, expect} from 'vitest';
-import { calculateRentalDays, formatPhoneNumber, validatePhoneNumber } from '@/features/book-car';
+import { calculateRentalDays } from '@/features/book-car';
 describe('checkout-utils', () => {
     describe('calculateRentalDays', () => {
         it('should count calendar days inclusively like the API', () => {
@@ -24,30 +24,6 @@ describe('checkout-utils', () => {
             const start = new Date('2025-01-05');
             const end = new Date('2025-01-01');
             expect(calculateRentalDays(start, end)).toBe(1);
-        });
-    });
-    describe('formatPhoneNumber', () => {
-        it('should format 10-digit US phone numbers', () => {
-            expect(formatPhoneNumber('5551234567')).toBe('(555) 123-4567');
-        });
-        it('should format 11-digit US phone numbers with country code', () => {
-            expect(formatPhoneNumber('15551234567')).toBe('+1 (555) 123-4567');
-        });
-        it('should return original for non-standard formats', () => {
-            expect(formatPhoneNumber('+44 20 1234 5678')).toBe('+44 20 1234 5678');
-        });
-    });
-    describe('validatePhoneNumber', () => {
-        it('should accept valid phone numbers', () => {
-            expect(validatePhoneNumber('5551234567')).toBe(true);
-            expect(validatePhoneNumber('+1-555-123-4567')).toBe(true);
-            expect(validatePhoneNumber('+44 20 1234 5678')).toBe(true);
-        });
-        it('should reject too short phone numbers', () => {
-            expect(validatePhoneNumber('123456')).toBe(false);
-        });
-        it('should reject too long phone numbers', () => {
-            expect(validatePhoneNumber('1234567890123456')).toBe(false);
         });
     });
 });

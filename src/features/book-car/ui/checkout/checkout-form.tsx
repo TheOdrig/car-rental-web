@@ -1,87 +1,77 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { useForm } from 'react-hook-form';
-import { clientPost } from '@/shared/api';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCar } from '@/entities/car';
+import { Clock, FileText } from 'lucide-react';
+import { useCar, usePricingPreview } from '@/entities/car';
 import { parseLocalDate } from '@/entities/rental';
-import { usePricingPreview } from '@/entities/car';
-import { useCurrentUser } from '@/entities/user';
-import { checkoutFormSchema, type CheckoutFormSchema } from '../../lib/validations';
+import { Label } from '@/shared/ui/label';
+import { Textarea } from '@/shared/ui/textarea';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { calculateRentalDays, getBookingErrorMessage } from '../../lib/utils';
-import { PersonalDetails } from './personal-details';
+import { useCreateBooking } from '../../lib/use-checkout';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
 import type { DiscountDetail, PriceBreakdown } from '../../model/types';
+
+const NOTES_MAX_LENGTH = 1000;
 
 interface CheckoutFormProps {
     carId: string;
     startDate: string;
     endDate: string;
-    pickupLocation?: string;
-    dropoffLocation?: string;
 }
 
-export function CheckoutForm({
-    carId,
-    startDate,
-    endDate,
-    pickupLocation = 'Main Office',
-    dropoffLocation,
-}: CheckoutFormProps) {
+export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
     const router = useRouter();
-    const { user } = useCurrentUser();
-    const { data: carData, isLoading: carLoading, error: carError } = useCar(Number(carId));
-    const { data: pricingData, isLoading: pricingLoading } = usePricingPreview(
-        Number(carId),
-        startDate,
-        endDate
-    );
+    const {
+        data: carData,
+        isLoading: carLoading,
+        error: carError,
+        refetch: refetchCar,
+    } = useCar(Number(carId));
+    const {
+        data: pricingData,
+        isLoading: pricingLoading,
+        isError: pricingFailed,
+    } = usePricingPreview(Number(carId), startDate, endDate);
 
-    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [notes, setNotes] = useState('');
+    const [submitError, setSubmitError] = useState<string | null>(null);
+    const submitted = useRef(false);
 
-    const form = useForm<CheckoutFormSchema>({
-        resolver: zodResolver(checkoutFormSchema),
-        defaultValues: {
-            firstName: user?.firstName || '',
-            lastName: user?.lastName || '',
-            email: user?.email || '',
-            phone: '',
+    const booking = useCreateBooking({
+        onSuccess: (created) => {
+            router.push(`/booking/success?ref=${created.id}`);
         },
-        mode: 'onChange',
+        onError: (error) => {
+            submitted.current = false;
+            setSubmitError(getBookingErrorMessage(error));
+        },
     });
 
-    const onSubmit = async (data: CheckoutFormSchema) => {
-        setIsSubmitting(true);
-
-        try {
-            const booking = await clientPost<{ id: number }>('/api/rentals', {
-                carId: Number(carId),
-                startDate,
-                endDate,
-                pickupLocation,
-                dropoffLocation: dropoffLocation || pickupLocation,
-                firstName: data.firstName,
-                lastName: data.lastName,
-                email: data.email,
-                phone: data.phone,
-            });
-            router.push(`/booking/success?ref=${booking.id}`);
-        } catch (error) {
-            const message = getBookingErrorMessage(error);
-            router.push(`/booking/failure?error=${encodeURIComponent(message || 'Booking failed')}`);
-        } finally {
-            setIsSubmitting(false);
-        }
+    const onSubmit = (event: FormEvent) => {
+        event.preventDefault();
+        if (submitted.current || booking.isPending || booking.isSuccess) return;
+        submitted.current = true;
+        setSubmitError(null);
+        const trimmed = notes.trim();
+        booking.mutate({
+            carId: Number(carId),
+            startDate,
+            endDate,
+            ...(trimmed ? { notes: trimmed } : {}),
+        });
     };
 
     const car = carData?.car;
 
     const rentalDays = useMemo(() => {
         if (pricingData?.rentalDays) return pricingData.rentalDays;
-        return calculateRentalDays(parseLocalDate(startDate) ?? new Date(startDate), parseLocalDate(endDate) ?? new Date(endDate));
+        const start = parseLocalDate(startDate);
+        const end = parseLocalDate(endDate);
+        if (!start || !end) return 1;
+        return calculateRentalDays(start, end);
     }, [pricingData?.rentalDays, startDate, endDate]);
 
     const appliedDiscounts: DiscountDetail[] = useMemo(() => {
@@ -109,14 +99,28 @@ export function CheckoutForm({
             originalTotal: pricingData?.baseTotalPrice,
             totalSavings: pricingData?.totalSavings,
             appliedDiscounts: appliedDiscounts.length > 0 ? appliedDiscounts : undefined,
+            isEstimate: !pricingData,
         };
     }, [car, pricingData, rentalDays, appliedDiscounts]);
+
+    const start = parseLocalDate(startDate);
+    const end = parseLocalDate(endDate);
 
     if (carLoading) {
         return <CheckoutSkeleton />;
     }
 
-    if (carError || !car || !priceBreakdown) {
+    if (carError) {
+        return (
+            <ErrorMessage
+                title="Could not load the car"
+                message="The selected car could not be loaded. Check your connection and try again."
+                onRetry={() => void refetchCar()}
+            />
+        );
+    }
+
+    if (!car || !priceBreakdown || !start || !end) {
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="text-center">
@@ -127,29 +131,63 @@ export function CheckoutForm({
         );
     }
 
+    const isSubmitting = booking.isPending || booking.isSuccess;
+
     return (
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={onSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 <div className="lg:col-span-7 xl:col-span-8 space-y-8">
-                    <PersonalDetails
-                        control={form.control}
-                        errors={form.formState.errors}
-                        isLoggedIn={!!user}
-                    />
+                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
+                            <Clock className="h-5 w-5 text-primary" />
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                                How this works
+                            </h2>
+                        </div>
+                        <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-400 list-decimal pl-5">
+                            <li>You send a rental request for the dates shown here.</li>
+                            <li>An administrator reviews it and approves or rejects it.</li>
+                            <li>Payment comes after approval, from your rental page.</li>
+                        </ol>
+                        {submitError && <ErrorMessage className="mt-6" message={submitError} />}
+                    </section>
 
+                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+                        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
+                            <FileText className="h-5 w-5 text-primary" />
+                            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                                Notes for the administrator
+                            </h2>
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="booking-notes" className="text-sm font-medium">
+                                Optional
+                            </Label>
+                            <Textarea
+                                id="booking-notes"
+                                value={notes}
+                                maxLength={NOTES_MAX_LENGTH}
+                                onChange={(event) => setNotes(event.target.value)}
+                                placeholder="Anything the administrator should know about this request"
+                                rows={4}
+                                disabled={isSubmitting}
+                            />
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                {notes.length}/{NOTES_MAX_LENGTH}
+                            </p>
+                        </div>
+                    </section>
                 </div>
 
                 <div className="lg:col-span-5 xl:col-span-4">
                     <BookingSummary
                         car={car}
-                        startDate={new Date(startDate)}
-                        endDate={new Date(endDate)}
-                        pickupLocation={pickupLocation}
-                        dropoffLocation={dropoffLocation || pickupLocation}
+                        startDate={start}
+                        endDate={end}
                         priceBreakdown={priceBreakdown}
                         isPricingLoading={pricingLoading}
+                        isPricingFailed={pricingFailed}
                         isSubmitting={isSubmitting}
-                        isFormValid={form.formState.isValid}
                     />
                 </div>
             </div>

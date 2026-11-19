@@ -8,7 +8,8 @@ import { rentalDatesSchema } from '@/entities/rental';
 
 export const metadata: Metadata = {
     title: 'Checkout | Car Rental',
-    description: 'Complete your car rental booking securely.',
+    description: 'Review and send your car rental request.',
+    robots: { index: false, follow: false },
 };
 
 interface CheckoutPageProps {
@@ -16,14 +17,12 @@ interface CheckoutPageProps {
         carId?: string;
         startDate?: string;
         endDate?: string;
-        pickupLocation?: string;
-        dropoffLocation?: string;
     }>;
 }
 
 export default async function CheckoutPage({ searchParams }: CheckoutPageProps) {
     const params = await searchParams;
-    const { carId, startDate, endDate, pickupLocation, dropoffLocation } = params;
+    const { carId, startDate, endDate } = params;
 
     if (!carId || !startDate || !endDate) {
         return (
@@ -69,7 +68,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     }
 
     return (
-        <main className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 py-8 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <nav className="flex mb-8 text-sm font-medium text-slate-600 dark:text-slate-400">
                     <ol className="flex items-center space-x-2">
@@ -107,11 +106,9 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         carId={carId}
                         startDate={startDate}
                         endDate={endDate}
-                        pickupLocation={pickupLocation}
-                        dropoffLocation={dropoffLocation}
                     />
                 </Suspense>
             </div>
-        </main>
+        </div>
     );
 }

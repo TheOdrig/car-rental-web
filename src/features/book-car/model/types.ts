@@ -1,13 +1,6 @@
 import type { CurrencyType } from '@/shared/types';
 
 
-export interface CheckoutFormData {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-}
-
 export interface Addon {
     id: string;
     name: string;
@@ -33,6 +26,7 @@ export interface PriceBreakdown {
     totalSavings?: number;
     appliedDiscounts?: DiscountDetail[];
     currency: CurrencyType;
+    isEstimate?: boolean;
 }
 
 export interface BookingConfirmation {
@@ -77,18 +71,11 @@ export interface CreateBookingRequest {
     carId: number;
     startDate: string;
     endDate: string;
-    pickupLocation: string;
-    dropoffLocation: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
+    notes?: string;
 }
 
 export interface CheckoutSearchParams {
     carId: string;
     startDate: string;
     endDate: string;
-    pickupLocation?: string;
-    dropoffLocation?: string;
 }

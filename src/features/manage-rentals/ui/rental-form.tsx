@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
-import { CalendarIcon, Loader2, CreditCard, Banknote } from 'lucide-react';
+import { CalendarIcon, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Calendar } from '@/shared/ui/calendar';
 import { Label } from '@/shared/ui/label';
@@ -11,41 +11,28 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/shared/ui/popover';
 import {
     findRentalDateIssue,
     getEndDateRange,
-    getRentalFieldErrors,
-    getRentalRequestErrorMessage,
     isEndDateDisabled,
     isStartDateDisabled,
     rentalLengthInDays,
-    useCreateRental,
 } from '@/entities/rental';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrencyWithDecimals } from '@/shared/lib';
 import { toast } from 'sonner';
 import type { Car as CarType } from '@/entities/car';
 
 function formatPrice(price: number, currency: string): string {
-    return new Intl.NumberFormat('tr-TR', {
-        style: 'currency',
-        currency: currency || 'TRY',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
-    }).format(price);
+    return formatCurrencyWithDecimals(price, currency || 'USD');
 }
 
 interface RentalFormProps {
     car: CarType;
-    onSuccess?: () => void;
     className?: string;
 }
 
-type PaymentMethod = 'online' | 'cash';
-
-export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
+export function RentalForm({ car, className }: RentalFormProps) {
     const router = useRouter();
-    const createRentalMutation = useCreateRental();
 
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('online');
     const [errors, setErrors] = useState<Record<string, string>>({});
 
     const validateForm = (): boolean => {
@@ -70,7 +57,7 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = async (e: FormEvent) => {
+    const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
 
         if (!validateForm()) {
@@ -78,36 +65,11 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
             return;
         }
 
-        if (paymentMethod === 'online') {
-            const startStr = format(startDate!, 'yyyy-MM-dd');
-            const endStr = format(endDate!, 'yyyy-MM-dd');
-
-            const params = new URLSearchParams();
-            params.append('carId', car.id.toString());
-            params.append('startDate', startStr);
-            params.append('endDate', endStr);
-
-            const url = `/checkout?${params.toString()}`;
-            router.push(url);
-            return;
-        }
-
-        try {
-            await createRentalMutation.mutateAsync({
-                carId: car.id,
-                startDate: format(startDate!, 'yyyy-MM-dd'),
-                endDate: format(endDate!, 'yyyy-MM-dd'),
-            });
-
-            onSuccess?.();
-            router.push('/rentals');
-        } catch (error) {
-            const fieldErrors = getRentalFieldErrors(error);
-            setErrors({
-                ...fieldErrors,
-                form: getRentalRequestErrorMessage(error, 'Failed to create rental request. Please try again.'),
-            });
-        }
+        const params = new URLSearchParams();
+        params.append('carId', car.id.toString());
+        params.append('startDate', format(startDate!, 'yyyy-MM-dd'));
+        params.append('endDate', format(endDate!, 'yyyy-MM-dd'));
+        router.push(`/checkout?${params.toString()}`);
     };
 
     const calculateDays = (): number => {
@@ -124,12 +86,6 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-6', className)}>
-            {errors.form && (
-                <div className="rounded-lg bg-destructive/10 p-3 text-sm text-destructive">
-                    {errors.form}
-                </div>
-            )}
-
             <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
                 <div>
                     <p className="font-semibold text-slate-900 dark:text-white">{car.brand} {car.model}</p>
@@ -152,7 +108,6 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                     !startDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.startDate && 'border-destructive'
                                 )}
-                                disabled={createRentalMutation.isPending}
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
                                 {startDate ? format(startDate, 'PPP') : 'Select date'}
@@ -195,7 +150,6 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                                     !endDate && 'text-muted-foreground dark:text-slate-400',
                                     errors.endDate && 'border-destructive'
                                 )}
-                                disabled={createRentalMutation.isPending}
                             >
                                 <CalendarIcon className="mr-2 h-4 w-4" />
                                 {endDate ? format(endDate, 'PPP') : 'Select date'}
@@ -221,54 +175,6 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                 </div>
             </div>
 
-            <div className="space-y-3">
-                <Label>Payment Method</Label>
-                <div className="grid gap-3 sm:grid-cols-2">
-                    <button
-                        type="button"
-                        onClick={() => setPaymentMethod('online')}
-                        className={cn(
-                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
-                            paymentMethod === 'online'
-                                ? 'border-primary bg-primary/5'
-                                : 'border-muted hover:border-muted-foreground/50'
-                        )}
-                    >
-                        <CreditCard className={cn(
-                            'h-5 w-5 mt-0.5 shrink-0',
-                            paymentMethod === 'online' ? 'text-primary' : 'text-muted-foreground'
-                        )} />
-                        <div>
-                            <p className="font-medium">Pay Now</p>
-                            <p className="text-xs text-muted-foreground">
-                                Credit/Debit Card • Instant confirmation
-                            </p>
-                        </div>
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => setPaymentMethod('cash')}
-                        className={cn(
-                            'flex items-start gap-3 p-4 rounded-lg border-2 text-left transition-all cursor-pointer',
-                            paymentMethod === 'cash'
-                                ? 'border-primary bg-primary/5'
-                                : 'border-muted hover:border-muted-foreground/50'
-                        )}
-                    >
-                        <Banknote className={cn(
-                            'h-5 w-5 mt-0.5 shrink-0',
-                            paymentMethod === 'cash' ? 'text-primary' : 'text-muted-foreground'
-                        )} />
-                        <div>
-                            <p className="font-medium">Pay at Pickup</p>
-                            <p className="text-xs text-muted-foreground">
-                                Cash/Card • Requires approval
-                            </p>
-                        </div>
-                    </button>
-                </div>
-            </div>
-
             {days > 0 && (
                 <div className="rounded-lg border p-4 space-y-2">
                     <div className="flex justify-between text-sm">
@@ -280,36 +186,22 @@ export function RentalForm({ car, onSuccess, className }: RentalFormProps) {
                         <span>{days} {days === 1 ? 'day' : 'days'}</span>
                     </div>
                     <div className="border-t pt-2 flex justify-between font-semibold">
-                        <span>Estimated Total</span>
+                        <span>Estimated total</span>
                         <span>{formatPrice(total, car.currencyType)}</span>
                     </div>
+                    <p className="text-xs text-muted-foreground">
+                        Estimated from the daily rate, final price on review. Weekend and demand pricing may apply.
+                    </p>
                 </div>
             )}
 
-            <Button
-                type="submit"
-                className="w-full h-12 font-bold"
-                disabled={createRentalMutation.isPending}
-            >
-                {createRentalMutation.isPending ? (
-                    <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        {paymentMethod === 'online' ? 'Redirecting...' : 'Submitting Request...'}
-                    </>
-                ) : paymentMethod === 'online' ? (
-                    <>
-                        <CreditCard className="mr-2 h-4 w-4" />
-                        Proceed to Payment
-                    </>
-                ) : (
-                    'Request Rental'
-                )}
+            <Button type="submit" className="w-full h-12 font-bold">
+                Request Rental
+                <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
 
             <p className="text-xs text-center text-muted-foreground">
-                {paymentMethod === 'online'
-                    ? 'You will be redirected to secure payment page.'
-                    : 'Your request will be reviewed and confirmed by our team.'}
+                You review the request next. An administrator approves it, and payment comes after approval.
             </p>
         </form>
     );
