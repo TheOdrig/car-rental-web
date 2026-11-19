@@ -49,10 +49,6 @@ export const metadata: Metadata = {
     description:
       "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
 };
 
 export const viewport: Viewport = {
@@ -88,7 +84,7 @@ export default function RootLayout({
           <HideOnAuthRoutes>
             <Header />
           </HideOnAuthRoutes>
-          <main id="main-content" className="flex-1">{children}</main>
+          <main id="main-content" tabIndex={-1} className="flex-1 focus:outline-none">{children}</main>
           <HideOnAuthRoutes>
             <Footer />
           </HideOnAuthRoutes>
