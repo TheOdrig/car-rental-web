@@ -45,7 +45,7 @@ describe('SessionKeeper', () => {
         mockExpired.handler?.();
 
         expect(queryClient.getQueryData(authKeys.me())).toBeNull();
-        expect(assign).toHaveBeenCalledWith('/login?callbackUrl=%2Frentals%3Ftab%3D1');
+        expect(assign).toHaveBeenCalledWith('http://localhost:3000/login?callbackUrl=%2Frentals%3Ftab%3D1');
     });
 
     it('only signs out on public pages', async () => {

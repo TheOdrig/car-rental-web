@@ -44,7 +44,9 @@ function handleSessionExpired(queryClient: QueryClient): void {
     const { pathname, search } = window.location;
     const access = classifyRoute(pathname);
     if (access === 'protected' || access === 'admin') {
-        window.location.assign(`/login?callbackUrl=${encodeURIComponent(`${pathname}${search}`)}`);
+        const login = new URL('/login', window.location.origin);
+        login.searchParams.set('callbackUrl', `${pathname}${search}`);
+        window.location.assign(login.href);
     }
 }
 
