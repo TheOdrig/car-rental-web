@@ -1,6 +1,6 @@
 'use client';
 
-import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar } from '@/features/user-settings';
+import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar, normalizePhone } from '@/features/user-settings';
 import { ProfilePicture, PersonalDetailsForm } from '@/features/user-settings';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -28,7 +28,7 @@ export function ProfileSettingsContent() {
             .mutateAsync({
                 firstName: data.firstName,
                 lastName: data.lastName,
-                phone: data.phone || undefined,
+                phone: normalizePhone(data.phone) || undefined,
             })
             .catch(() => undefined);
     };

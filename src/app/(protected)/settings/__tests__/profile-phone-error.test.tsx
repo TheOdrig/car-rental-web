@@ -46,6 +46,31 @@ describe('profile phone', () => {
         expect(clientPut).not.toHaveBeenCalled();
     });
 
+    it('links the phone message to the field', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<ProfileSettingsContent />);
+
+        const field = await screen.findByLabelText(/phone number/i);
+        await user.type(field, '12345');
+        fireEvent.submit(screen.getByRole('button', { name: /save changes/i }).closest('form')!);
+
+        await screen.findByText(/invalid phone number format/i);
+        expect(field).toHaveAttribute('aria-describedby', 'phone-error phone-hint');
+        expect(document.getElementById('phone-error')).toHaveTextContent(/invalid phone number format/i);
+    });
+
+    it('accepts a spaced number and sends it without spaces or dashes', async () => {
+        clientPut.mockResolvedValue({ ...profile, phone: '+905551112233' });
+        const user = userEvent.setup();
+        renderWithProviders(<ProfileSettingsContent />);
+
+        await user.type(await screen.findByLabelText(/phone number/i), '+90 555 111-22 33');
+        fireEvent.submit(screen.getByRole('button', { name: /save changes/i }).closest('form')!);
+
+        await waitFor(() => expect(clientPut).toHaveBeenCalled());
+        expect(clientPut.mock.calls[0][1]).toMatchObject({ phone: '+905551112233' });
+    });
+
     it('shows the API field error under the phone field', async () => {
         clientPut.mockRejectedValue(
             new ApiError({

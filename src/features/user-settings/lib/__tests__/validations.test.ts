@@ -42,11 +42,11 @@ describe('password schemas', () => {
 describe('profileSchema phone', () => {
     const parse = (phone: string) => profileSchema.safeParse({ firstName: 'Ada', lastName: 'Lovelace', phone }).success;
 
-    it.each(['', '+905551234567', '5551234', '123456789012345', '+1234567'])('accepts %j', (phone) => {
+    it.each(['', '+905551234567', '5551234', '123456789012345', '+1234567', '555 123 4567', '+90 555 111 22 33', '+90-555-111-22-33', '(555) 123.4567'])('accepts %j', (phone) => {
         expect(parse(phone)).toBe(true);
     });
 
-    it.each(['123456', '+12345', '0123456789', '+0123456789', '1234567890123456', '555 123 4567', 'abc', '+'])('rejects %j', (phone) => {
+    it.each(['123456', '+12345', '0123456789', '+0123456789', '1234567890123456', 'abc', '+'])('rejects %j', (phone) => {
         expect(parse(phone)).toBe(false);
     });
 

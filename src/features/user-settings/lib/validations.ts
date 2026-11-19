@@ -12,6 +12,10 @@ function maxPassword(schema: z.ZodString) {
 
 export const PHONE_REGEX = /^\+?[1-9]\d{6,14}$/;
 
+export function normalizePhone(value: string | null | undefined): string {
+    return (value ?? '').replace(/[\s\-().]/g, '');
+}
+
 export const profileSchema = z.object({
     firstName: z
         .string()
@@ -24,7 +28,7 @@ export const profileSchema = z.object({
     phone: z
         .string()
         .refine(
-            (val) => !val || PHONE_REGEX.test(val),
+            (val) => !val || PHONE_REGEX.test(normalizePhone(val)),
             'Invalid phone number format (7 to 15 digits, optional leading +, e.g. +1234567890)'
         )
         .optional()
