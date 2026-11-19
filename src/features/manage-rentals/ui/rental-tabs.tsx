@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { cn } from '@/shared/lib';
 import type { RentalTab, RentalTabCounts } from '@/entities/rental';
 import { RENTAL_TABS } from '@/entities/rental';
@@ -40,7 +40,7 @@ const TabButton = memo(function TabButton({
             id={`tab-${tab}`}
             onClick={handleClick}
             className={cn(
-                'relative flex shrink-0 items-center gap-2 px-4 py-3 text-sm font-medium transition-colors',
+                'relative flex shrink-0 items-center gap-2 px-3 py-3 text-sm font-medium transition-colors sm:px-4',
                 'hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
                 isActive
                     ? 'text-primary after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:bg-primary'
@@ -68,25 +68,51 @@ export const RentalTabs = memo(function RentalTabs({
     counts,
     className,
 }: RentalTabsProps) {
+    const listRef = useRef<HTMLDivElement>(null);
+    const [hasMore, setHasMore] = useState(false);
+
+    const measure = useCallback(() => {
+        const list = listRef.current;
+        if (!list) return;
+        setHasMore(list.scrollWidth - list.clientWidth - list.scrollLeft > 4);
+    }, []);
+
+    useEffect(() => {
+        measure();
+        window.addEventListener('resize', measure);
+        return () => window.removeEventListener('resize', measure);
+    }, [measure, counts]);
+
     return (
-        <div
-            role="tablist"
-            aria-label="Filter rentals by status"
-            className={cn(
-                'flex overflow-x-auto border-b scrollbar-hide',
-                className
-            )}
-        >
-            {RENTAL_TABS.map(({ value, label }) => (
-                <TabButton
-                    key={value}
-                    tab={value}
-                    label={label}
-                    count={counts[value]}
-                    isActive={activeTab === value}
-                    onClick={onTabChange}
+        <div className="relative">
+            <div
+                ref={listRef}
+                role="tablist"
+                aria-label="Filter rentals by status"
+                onScroll={measure}
+                className={cn(
+                    'flex overflow-x-auto border-b scrollbar-hide',
+                    className
+                )}
+            >
+                {RENTAL_TABS.map(({ value, label }) => (
+                    <TabButton
+                        key={value}
+                        tab={value}
+                        label={label}
+                        count={counts[value]}
+                        isActive={activeTab === value}
+                        onClick={onTabChange}
+                    />
+                ))}
+            </div>
+            {hasMore && (
+                <div
+                    aria-hidden="true"
+                    data-testid="tabs-scroll-hint"
+                    className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-background to-transparent"
                 />
-            ))}
+            )}
         </div>
     );
 });

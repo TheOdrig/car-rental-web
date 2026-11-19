@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RentalTabs } from '@/features/manage-rentals';
 import type { RentalTab, RentalTabCounts } from '@/entities/rental';
@@ -234,5 +234,20 @@ describe('RentalTabs', () => {
             expect(screen.getByText('1000')).toBeInTheDocument();
             expect(screen.getByText('500')).toBeInTheDocument();
         });
+    });
+});
+describe('RentalTabs overflow hint', () => {
+    it('shows a fade when more tabs are hidden to the right and hides it at the end', () => {
+        render(<RentalTabs activeTab="all" onTabChange={vi.fn()} counts={mockCounts} />);
+        const list = screen.getByRole('tablist');
+        Object.defineProperty(list, 'scrollWidth', { configurable: true, value: 600 });
+        Object.defineProperty(list, 'clientWidth', { configurable: true, value: 300 });
+
+        fireEvent.scroll(list);
+        expect(screen.getByTestId('tabs-scroll-hint')).toBeInTheDocument();
+
+        list.scrollLeft = 300;
+        fireEvent.scroll(list);
+        expect(screen.queryByTestId('tabs-scroll-hint')).not.toBeInTheDocument();
     });
 });
