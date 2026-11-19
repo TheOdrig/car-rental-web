@@ -10,7 +10,7 @@ The customer and admin web client for the [Car Rental API](https://github.com/Th
 
 Screenshots were taken against the API running from Docker Compose with its seed data.
 
-History: everything up to the tag `v1-learning-baseline` is the original learning build; the 2026-11 refactor follows it.
+History: commits up to `ff7eb77` (tag `v2.0.0`, on GitHub) are the original learning build; the 2026-11 refactor follows it.
 
 ## Stack
 
