@@ -15,7 +15,14 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import type { Rental, ActionButton } from '@/entities/rental';
-import { getActionButtons, getStatusBadgeVariant, RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
+import {
+    getActionButtons,
+    getStatusBadgeVariant,
+    RENTAL_STATUS_LABELS,
+    RentalCancellationNotice,
+    RentalPaymentNote,
+    RentalStatus,
+} from '@/entities/rental';
 
 interface RentalCardProps {
     rental: Rental;
@@ -103,7 +110,7 @@ export const RentalCard = memo(function RentalCard({
     const { carSummary, startDate, endDate, days, totalPrice, currency, status, id, paymentOpensOn } = rental;
     const isActive = status === RentalStatus.IN_USE;
     const isCompleted = status === RentalStatus.RETURNED;
-    const actions = showActions ? getActionButtons(status, { paymentOpensOn }) : [];
+    const actions = showActions ? getActionButtons(status, { paymentOpensOn, paymentStatus: rental.paymentStatus }) : [];
 
     const referenceId = formatRentalReference(id);
 
@@ -166,11 +173,19 @@ export const RentalCard = memo(function RentalCard({
                                 </div>
                             </div>
 
-                            {status === RentalStatus.CANCELLED && rental.cancellationReason && (
-                                <p className="mb-3 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
-                                    Cancelled: {rental.cancellationReason}
-                                </p>
+                            {status === RentalStatus.CANCELLED && (
+                                <RentalCancellationNotice
+                                    className="mb-3"
+                                    cancelledBy={rental.cancelledBy}
+                                    reason={rental.cancellationReason}
+                                />
                             )}
+                            <RentalPaymentNote
+                                className="mb-3"
+                                status={status}
+                                paymentStatus={rental.paymentStatus}
+                                paymentDueBy={rental.paymentDueBy}
+                            />
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <span className="text-xl font-bold text-slate-900 dark:text-white">
@@ -227,11 +242,19 @@ export const RentalCard = memo(function RentalCard({
                             <span>{formatDate(endDate)}</span>
                         </div>
 
-                        {status === RentalStatus.CANCELLED && rental.cancellationReason && (
-                            <p className="mb-2 text-sm text-red-600 dark:text-red-400" data-testid="cancellation-reason">
-                                Cancelled: {rental.cancellationReason}
-                            </p>
+                        {status === RentalStatus.CANCELLED && (
+                            <RentalCancellationNotice
+                                className="mb-2"
+                                cancelledBy={rental.cancelledBy}
+                                reason={rental.cancellationReason}
+                            />
                         )}
+                        <RentalPaymentNote
+                            className="mb-2"
+                            status={status}
+                            paymentStatus={rental.paymentStatus}
+                            paymentDueBy={rental.paymentDueBy}
+                        />
 
                         <div className="flex items-center gap-4 text-sm">
                             <div className="flex items-center gap-1 text-muted-foreground">

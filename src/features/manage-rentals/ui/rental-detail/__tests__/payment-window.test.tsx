@@ -36,4 +36,46 @@ describe('rental detail payment window', () => {
         expect(await screen.findByRole('link', { name: 'Pay now' })).toBeInTheDocument();
         expect(screen.queryByText(/Payment opens on/)).not.toBeInTheDocument();
     });
+
+    it('hides Pay now and says so when the rental is already paid', async () => {
+        renderWithProviders(
+            <RentalDetail
+                rental={createMockRental({ status: RentalStatus.CONFIRMED, paymentOpensOn: '2000-01-01', paymentStatus: 'CAPTURED' })}
+            />
+        );
+
+        expect(await screen.findByTestId('rental-payment-state')).toHaveTextContent('Paid');
+        expect(screen.queryByRole('link', { name: /Pay (now|again)/ })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: 'Pay now' })).not.toBeInTheDocument();
+    });
+
+    it('shows the pay-by time while the payment is outstanding', async () => {
+        renderWithProviders(
+            <RentalDetail
+                rental={createMockRental({
+                    status: RentalStatus.CONFIRMED,
+                    paymentOpensOn: '2000-01-01',
+                    paymentStatus: 'PENDING',
+                    paymentDueBy: '2030-05-06T12:00:00Z',
+                })}
+            />
+        );
+
+        expect(await screen.findByTestId('rental-pay-by')).toHaveTextContent(/^Pay by May [5-7], 2030/);
+    });
+
+    it('says who cancelled and why', async () => {
+        renderWithProviders(
+            <RentalDetail
+                rental={createMockRental({
+                    status: RentalStatus.CANCELLED,
+                    cancelledBy: 'ADMIN',
+                    cancellationReason: 'Vehicle unavailable',
+                })}
+            />
+        );
+
+        expect(await screen.findByTestId('cancellation-by')).toHaveTextContent('Cancelled by our team');
+        expect(screen.getByTestId('cancellation-reason')).toHaveTextContent('Vehicle unavailable');
+    });
 });

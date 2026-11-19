@@ -46,3 +46,7 @@ export {
     rentalKeys,
 } from './lib/use-rentals';
 export { LateReturnStatusBadge } from './ui/late-return-status-badge';
+export * from './lib/rental-payment-state';
+export * from './lib/rental-cancellation';
+export { RentalCancellationNotice } from './ui/rental-cancellation-notice';
+export { RentalPaymentNote } from './ui/rental-payment-note';

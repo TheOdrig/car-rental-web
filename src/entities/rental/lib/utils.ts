@@ -1,6 +1,7 @@
 import { LATE_RETURN_STATUS_LABELS, Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
 import { parseLocalDate } from './rental-rules';
+import { isRentalPaymentSecured } from './rental-payment-state';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.IN_USE;
@@ -104,9 +105,12 @@ const ACTION_BUTTONS_CONFIG: Record<string, ActionButton[]> = {
 
 export function getActionButtons(
     status: RentalStatus,
-    options: { paymentOpensOn?: string; now?: Date } = {}
+    options: { paymentOpensOn?: string; paymentStatus?: string | null; now?: Date } = {}
 ): ActionButton[] {
-    const buttons = ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
+    const configured = ownValue(ACTION_BUTTONS_CONFIG, status as string) ?? [];
+    const buttons = isRentalPaymentSecured(options.paymentStatus)
+        ? configured.filter((button) => button.action !== 'pay')
+        : configured;
     if (status !== RentalStatus.CONFIRMED || !options.paymentOpensOn) return buttons;
     if (isPaymentWindowOpen(options.paymentOpensOn, options.now)) return buttons;
     const opensOn = getPaymentOpensOn(options.paymentOpensOn);

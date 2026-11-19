@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader } from '@/shared/ui/card';
 import { isApiError } from '@/shared/api';
 import { formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
-import { isPaymentWindowOpen, rentalKeys, useRental } from '@/entities/rental';
+import { getPayByLabel, isPaymentWindowOpen, isRentalPaymentSecured, rentalKeys, useRental } from '@/entities/rental';
 import {
     isPaymentSecured,
     paymentKeys,
@@ -170,11 +170,13 @@ function ReadyView({
     rentalId,
     intent,
     publishableKey,
+    payBy,
     onConfirmed,
 }: {
     rentalId: number;
     intent: PaymentIntent;
     publishableKey: string;
+    payBy?: string;
     onConfirmed: () => void;
 }) {
     const amountLabel = formatCurrencyWithDecimals(intent.amount, intent.currency);
@@ -187,6 +189,11 @@ function ReadyView({
                     <span className="text-muted-foreground">Amount to authorize</span>
                     <span className="text-lg font-semibold">{amountLabel}</span>
                 </div>
+                {payBy && (
+                    <p className="text-sm text-muted-foreground" data-testid="pay-by">
+                        {payBy}
+                    </p>
+                )}
                 <Elements
                     key={intent.clientSecret}
                     stripe={getStripe(publishableKey)}
@@ -225,7 +232,8 @@ export function PayRental({
     const rentalQuery = useRental(rentalId);
     const paymentOpensOn = rentalQuery.data?.paymentOpensOn;
     const windowClosed = Boolean(paymentOpensOn) && !isPaymentWindowOpen(paymentOpensOn!);
-    const intentEnabled = !processing && failure === null && !rentalQuery.isPending && !windowClosed;
+    const alreadySecured = isRentalPaymentSecured(rentalQuery.data?.paymentStatus);
+    const intentEnabled = !processing && failure === null && !rentalQuery.isPending && !windowClosed && !alreadySecured;
     const intentQuery = usePaymentIntent(rentalId, attempt, intentEnabled);
     const paymentQuery = useRentalPayment(rentalId, { poll: processing, enabled: processing, runKey: pollRun });
 
@@ -294,6 +302,10 @@ export function PayRental({
         return <ProcessingView rentalId={rentalId} timedOut={paymentQuery.timedOut} onCheckAgain={checkAgain} />;
     }
 
+    if (alreadySecured) {
+        return <AuthorizedView rentalId={rentalId} />;
+    }
+
     if (windowClosed) {
         return <BlockedView rentalId={rentalId} block={describePaymentWindow(paymentOpensOn)} />;
     }
@@ -331,6 +343,7 @@ export function PayRental({
             rentalId={rentalId}
             intent={intent}
             publishableKey={publishableKey}
+            payBy={getPayByLabel(rentalQuery.data?.paymentDueBy)}
             onConfirmed={startProcessing}
         />
     );

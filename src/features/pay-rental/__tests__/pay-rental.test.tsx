@@ -112,6 +112,24 @@ describe('PayRental', () => {
         expect(document.querySelector('h1')).toHaveTextContent('Pay for rental CR-000007');
     });
 
+    it('shows the pay-by time next to the amount', async () => {
+        serveRental({ paymentDueBy: '2030-05-06T12:00:00Z' });
+        clientPost.mockResolvedValue(intent());
+
+        renderPay();
+
+        expect(await screen.findByTestId('pay-by')).toHaveTextContent(/^Pay by May [5-7], 2030/);
+    });
+
+    it('does not start a payment for a rental that is already paid', async () => {
+        serveRental({ paymentStatus: 'CAPTURED' });
+
+        renderPay();
+
+        expect(await screen.findByTestId('payment-state-authorized')).toBeInTheDocument();
+        expect(clientPost).not.toHaveBeenCalled();
+    });
+
     it('waits for the rental before creating a payment intent', async () => {
         clientPost.mockResolvedValue(intent());
 

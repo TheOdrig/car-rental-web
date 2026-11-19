@@ -30,6 +30,31 @@ describe('RentalCard cancellation reason', () => {
         expect(screen.queryByTestId('cancellation-reason')).not.toBeInTheDocument();
     });
 
+    it.each([
+        ['CUSTOMER', 'Cancelled by you'],
+        ['ADMIN', 'Cancelled by our team'],
+        ['SYSTEM', 'Cancelled automatically (payment not completed)'],
+    ] as const)('says who cancelled when %s did', (cancelledBy, label) => {
+        const rental = createMockRental({ status: 'CANCELLED' as RentalStatus, cancelledBy, cancellationReason: 'Any reason text' });
+
+        renderWithProviders(<RentalCard rental={rental} />);
+
+        expect(screen.getByTestId('cancellation-by')).toHaveTextContent(label);
+        expect(screen.getByTestId('cancellation-reason')).toHaveTextContent('Any reason text');
+    });
+
+    it('does not match the reason text to decide the label', () => {
+        const rental = createMockRental({
+            status: 'CANCELLED' as RentalStatus,
+            cancelledBy: 'CUSTOMER',
+            cancellationReason: 'Payment not completed in time',
+        });
+
+        renderWithProviders(<RentalCard rental={rental} />);
+
+        expect(screen.getByTestId('cancellation-by')).toHaveTextContent('Cancelled by you');
+    });
+
     it('hides the line when a cancelled rental has no reason', () => {
         const rental = createMockRental({ status: 'CANCELLED' as RentalStatus });
 

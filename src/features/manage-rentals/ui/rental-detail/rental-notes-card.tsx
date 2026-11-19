@@ -5,13 +5,13 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { Rental } from '@/entities/rental';
 
 interface RentalNotesCardProps {
-    rental: Pick<Rental, 'approvalNotes' | 'cancellationReason' | 'pickupNotes' | 'returnNotes'>;
+    rental: Pick<Rental, 'approvalNotes' | 'pickupNotes' | 'returnNotes'>;
 }
 
 interface NoteBlockProps {
     label: string;
     text: string;
-    tone: 'green' | 'red' | 'purple' | 'slate';
+    tone: 'green' | 'purple' | 'slate';
 }
 
 const TONES: Record<NoteBlockProps['tone'], { box: string; label: string; text: string }> = {
@@ -19,11 +19,6 @@ const TONES: Record<NoteBlockProps['tone'], { box: string; label: string; text: 
         box: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800',
         label: 'text-green-700 dark:text-green-300',
         text: 'text-green-600 dark:text-green-400',
-    },
-    red: {
-        box: 'bg-red-50 dark:bg-red-950 border-red-200 dark:border-red-800',
-        label: 'text-red-700 dark:text-red-300',
-        text: 'text-red-600 dark:text-red-400',
     },
     purple: {
         box: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800',
@@ -49,7 +44,7 @@ function NoteBlock({ label, text, tone }: NoteBlockProps) {
 }
 
 export function hasRentalNotes(rental: RentalNotesCardProps['rental']): boolean {
-    return !!(rental.approvalNotes || rental.cancellationReason || rental.pickupNotes || rental.returnNotes);
+    return !!(rental.approvalNotes || rental.pickupNotes || rental.returnNotes);
 }
 
 export function RentalNotesCard({ rental }: RentalNotesCardProps) {
@@ -63,9 +58,6 @@ export function RentalNotesCard({ rental }: RentalNotesCardProps) {
             </CardHeader>
             <CardContent className="space-y-3">
                 {rental.approvalNotes && <NoteBlock label="Approval Note" text={rental.approvalNotes} tone="green" />}
-                {rental.cancellationReason && (
-                    <NoteBlock label="Cancellation Reason" text={rental.cancellationReason} tone="red" />
-                )}
                 {rental.pickupNotes && <NoteBlock label="Pickup Note" text={rental.pickupNotes} tone="purple" />}
                 {rental.returnNotes && <NoteBlock label="Return Note" text={rental.returnNotes} tone="slate" />}
             </CardContent>

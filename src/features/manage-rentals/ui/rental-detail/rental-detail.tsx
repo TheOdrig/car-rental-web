@@ -7,7 +7,16 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { cn, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
-import { getPaymentOpensOn, isPaymentWindowOpen, RENTAL_STATUS_LABELS, RentalStatus, useCancelRental } from '@/entities/rental';
+import {
+    getPaymentOpensOn,
+    isPaymentWindowOpen,
+    isRentalPaymentSecured,
+    RENTAL_STATUS_LABELS,
+    RentalCancellationNotice,
+    RentalPaymentNote,
+    RentalStatus,
+    useCancelRental,
+} from '@/entities/rental';
 import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
 import type { Rental } from '@/entities/rental';
 import { RentalTimeline } from '../rental-timeline';
@@ -52,6 +61,13 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                         <Badge className={cn('border', getStatusColor(status))}>{RENTAL_STATUS_LABELS[status]}</Badge>
                     </div>
                     <p className="text-muted-foreground">Booked on {formatDateTime(rental.createTime)}</p>
+                    {status === RentalStatus.CANCELLED && (
+                        <RentalCancellationNotice
+                            className="mt-2"
+                            cancelledBy={rental.cancelledBy}
+                            reason={rental.cancellationReason}
+                        />
+                    )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -81,7 +97,13 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                         <RentalPaymentStatus
                             rentalId={rental.id}
                             action={(paymentStatus) => {
-                                if (status !== RentalStatus.CONFIRMED || !isPayableStatus(paymentStatus)) return null;
+                                if (
+                                    status !== RentalStatus.CONFIRMED ||
+                                    isRentalPaymentSecured(rental.paymentStatus) ||
+                                    !isPayableStatus(paymentStatus)
+                                ) {
+                                    return null;
+                                }
                                 if (!isPaymentWindowOpen(paymentOpensOn)) {
                                     const opensOn = getPaymentOpensOn(paymentOpensOn);
                                     return (
@@ -105,6 +127,11 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                             }}
                         />
                     )}
+                    <RentalPaymentNote
+                        status={status}
+                        paymentStatus={rental.paymentStatus}
+                        paymentDueBy={rental.paymentDueBy}
+                    />
                     <PaymentSummaryCard
                         dailyPrice={dailyPrice}
                         days={days}
