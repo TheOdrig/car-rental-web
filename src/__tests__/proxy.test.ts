@@ -44,6 +44,21 @@ describe('proxy', () => {
             expect(location(response)).toBe('/');
         });
 
+        it('sends a signed-in user to a safe callbackUrl', async () => {
+            const token = await createToken();
+            const response = await proxy(requestFor('/login?callbackUrl=%2Frentals%2F5', { access_token: token }));
+
+            expect(response.status).toBe(307);
+            expect(location(response)).toBe('/rentals/5');
+        });
+
+        it('ignores an unsafe callbackUrl for a signed-in user', async () => {
+            const token = await createToken();
+            const response = await proxy(requestFor('/login?callbackUrl=https%3A%2F%2Fevil.example', { access_token: token }));
+
+            expect(location(response)).toBe('/');
+        });
+
         it('shows the login page to anonymous visitors', async () => {
             const response = await proxy(requestFor('/login'));
 

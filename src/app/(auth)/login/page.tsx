@@ -34,7 +34,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
             <OAuthDivider />
 
-            <OAuthButtons />
+            <OAuthButtons callbackUrl={safeRedirectPath(callbackUrl)} />
 
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">

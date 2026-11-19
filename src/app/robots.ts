@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 
 const PRIVATE_PATHS = [
     '/admin',
-    '/api/',
+    '/api',
     '/rentals',
     '/damages',
     '/settings',

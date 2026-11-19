@@ -56,7 +56,7 @@ describe('robots', () => {
         const rules = Array.isArray(result.rules) ? result.rules : [result.rules];
         const disallow = rules.flatMap((rule) => rule.disallow ?? []);
 
-        expect(disallow).toEqual(expect.arrayContaining(['/admin', '/api/', '/rentals', '/damages', '/settings', '/checkout']));
+        expect(disallow).toEqual(expect.arrayContaining(['/admin', '/api', '/rentals', '/damages', '/settings', '/checkout']));
         expect(rules[0].allow).toBe('/');
     });
 });

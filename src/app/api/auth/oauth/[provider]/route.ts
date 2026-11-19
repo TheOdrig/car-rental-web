@@ -1,9 +1,10 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
+import { safeRedirectPath } from '@/shared/lib/safe-redirect';
 import { API, buildUpstreamUrl, clientIpHeaders } from '@/shared/server';
 import { oauthProblemRedirectCode } from '../../_lib/oauth-errors';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
-import { setOAuthStateCookie } from '../../_lib/oauth-state';
+import { setOAuthNextCookie, setOAuthStateCookie } from '../../_lib/oauth-state';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;
@@ -43,6 +44,11 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         const redirect = NextResponse.redirect(target);
         setOAuthStateCookie(redirect, state);
+
+        const next = safeRedirectPath(request.nextUrl.searchParams.get('callbackUrl'));
+        if (next !== '/') {
+            setOAuthNextCookie(redirect, next);
+        }
 
         return redirect;
     } catch (error) {

@@ -13,7 +13,7 @@ const OAUTH_ERROR_MESSAGES: Record<string, string> = {
     account_already_linked: 'That social account is already linked to another user.',
     social_login_required: 'This account signs in with a social provider. Use the provider button below.',
     local_account_unverified:
-        'An account with this email exists but its email is not verified. Log in with your password and link the provider from your account.',
+        'An account with this email exists but its email is not verified. Sign in with your password instead.',
 };
 
 const GENERIC_OAUTH_ERROR = 'Social sign-in failed. Please try again or use your password.';

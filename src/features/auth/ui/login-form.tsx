@@ -36,7 +36,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
     const isUsernameValid = formData.username.trim().length > 0 &&
         (validateEmail(formData.username) || formData.username.length >= 3);
-    const isPasswordValid = formData.password.length >= 6;
+    const isPasswordValid = formData.password.length >= 8;
 
     const usernameValidationState: ValidationState = useMemo(() =>
         determineValidationState({
@@ -71,8 +71,8 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Password must be at least 6 characters';
+        } else if (formData.password.length < 8) {
+            newErrors.password = 'Password must be at least 8 characters';
         }
 
         setErrors(newErrors);

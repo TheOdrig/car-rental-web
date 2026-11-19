@@ -90,7 +90,7 @@ describe('LoginForm - Validation State Integration', () => {
             await user.type(getPasswordInput(), '12345');
             await submitForm();
             await waitFor(() => {
-                expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+                expect(screen.getByText(/password must be at least 8 characters/i)).toBeInTheDocument();
             }, { timeout: 3000 });
         });
     });
@@ -131,4 +131,4 @@ describe('LoginForm - Validation State Integration', () => {
             expect(requiredMarkers.length).toBeGreaterThanOrEqual(2);
         });
     });
-});
+});

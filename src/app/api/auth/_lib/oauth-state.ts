@@ -36,3 +36,25 @@ export function oauthStateMatches(expected: string | undefined, actual: string):
 
     return left.length === right.length && timingSafeEqual(left, right);
 }
+
+export const OAUTH_NEXT_COOKIE = 'oauth_next';
+
+export function setOAuthNextCookie(response: NextResponse, path: string): void {
+    response.cookies.set(OAUTH_NEXT_COOKIE, path, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: OAUTH_STATE_PATH,
+        maxAge: OAUTH_STATE_MAX_AGE_SECONDS,
+    });
+}
+
+export function clearOAuthNextCookie(response: NextResponse): void {
+    response.cookies.set(OAUTH_NEXT_COOKIE, '', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: OAUTH_STATE_PATH,
+        maxAge: 0,
+    });
+}

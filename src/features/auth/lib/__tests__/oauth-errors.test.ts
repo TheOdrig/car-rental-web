@@ -40,4 +40,11 @@ describe('oauthErrorMessage', () => {
         expect(message).toBe('Social sign-in failed. Please try again or use your password.');
         expect(message).not.toContain('<b>');
     });
+
+    it('does not promise a provider linking feature the app does not have', () => {
+        const message = oauthErrorMessage('local_account_unverified');
+
+        expect(message).toMatch(/sign in with your password/i);
+        expect(message).not.toMatch(/link/i);
+    });
 });

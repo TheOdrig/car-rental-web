@@ -3,13 +3,13 @@ import type { Schemas } from '@/shared/api/contract';
 
 export const LoginSchema = z.object({
     username: z.string().min(1, { message: 'Username is required' }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+    password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
 });
 
 export const RegisterSchema = z.object({
     username: z.string().min(3, { message: 'Username must be at least 3 characters' }),
     email: z.email({ message: 'Invalid email address' }),
-    password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+    password: z.string().min(8, { message: 'Password must be at least 8 characters' }),
     firstName: z.string().min(2, { message: 'First name must be at least 2 characters' }).optional(),
     lastName: z.string().min(2, { message: 'Last name must be at least 2 characters' }).optional(),
 });

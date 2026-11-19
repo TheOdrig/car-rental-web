@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { classifyRoute } from '@/shared/config/route-access';
+import { safeRedirectPath } from '@/shared/lib/safe-redirect';
 import {
     ACCESS_COOKIE,
     REFRESH_COOKIE,
@@ -79,7 +80,12 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     let session: Session | null = await verifyAccessToken(accessToken);
 
     if (access === 'guest-only') {
-        return session ? NextResponse.redirect(new URL('/', request.url)) : NextResponse.next();
+        if (!session) {
+            return NextResponse.next();
+        }
+
+        const next = safeRedirectPath(request.nextUrl.searchParams.get('callbackUrl'));
+        return NextResponse.redirect(new URL(next, request.url));
     }
 
     let renewed: AuthResponse | null = null;

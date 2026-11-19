@@ -1,9 +1,16 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
+import { safeRedirectPath } from '@/shared/lib/safe-redirect';
 import { API, authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { oauthRedirectCode } from '../../_lib/oauth-errors';
-import { OAUTH_STATE_COOKIE, clearOAuthStateCookie, oauthStateMatches } from '../../_lib/oauth-state';
+import {
+    OAUTH_NEXT_COOKIE,
+    OAUTH_STATE_COOKIE,
+    clearOAuthNextCookie,
+    clearOAuthStateCookie,
+    oauthStateMatches,
+} from '../../_lib/oauth-state';
 
 interface RouteParams {
     params: Promise<{ provider: string }>;
@@ -11,6 +18,7 @@ interface RouteParams {
 
 function finish(response: NextResponse): NextResponse {
     clearOAuthStateCookie(response);
+    clearOAuthNextCookie(response);
     return response;
 }
 
@@ -46,7 +54,9 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 
         await setAuthTokens(tokens.data);
 
-        return finish(NextResponse.redirect(new URL('/', request.url)));
+        const next = safeRedirectPath(request.cookies.get(OAUTH_NEXT_COOKIE)?.value);
+
+        return finish(NextResponse.redirect(new URL(next, request.url)));
     } catch (error) {
         logger.error('[BFF] OAuth callback failed', error);
         return loginRedirect(request, oauthRedirectCode(error));

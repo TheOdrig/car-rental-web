@@ -106,7 +106,7 @@ describe('LoginForm', () => {
             submitForm();
 
             await waitFor(() => {
-                expect(screen.getByText(/password must be at least 6 characters/i)).toBeInTheDocument();
+                expect(screen.getByText(/password must be at least 8 characters/i)).toBeInTheDocument();
             });
         });
 

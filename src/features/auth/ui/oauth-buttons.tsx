@@ -8,6 +8,7 @@ import { cn } from '@/shared/lib';
 interface OAuthButtonsProps {
     className?: string;
     disabled?: boolean;
+    callbackUrl?: string;
     onError?: (error: string) => void;
 }
 
@@ -42,13 +43,17 @@ function GitHubIcon({ className }: { className?: string }) {
     );
 }
 
-export function OAuthButtons({ className, disabled, onError }: OAuthButtonsProps) {
+export function OAuthButtons({ className, disabled, callbackUrl, onError }: OAuthButtonsProps) {
     const [loadingProvider, setLoadingProvider] = useState<'google' | 'github' | null>(null);
 
     const handleOAuthLogin = (provider: 'google' | 'github') => {
         try {
             setLoadingProvider(provider);
-            window.location.href = new URL(`/api/auth/oauth/${provider}`, window.location.origin).href;
+            const target = new URL(`/api/auth/oauth/${provider}`, window.location.origin);
+            if (callbackUrl && callbackUrl !== '/') {
+                target.searchParams.set('callbackUrl', callbackUrl);
+            }
+            window.location.href = target.href;
         } catch {
             setLoadingProvider(null);
             onError?.(`Failed to connect to ${provider}. Please try again.`);

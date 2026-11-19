@@ -181,3 +181,68 @@ describe('OAuth login flow binding', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 });
+
+describe('OAuth login flow return path', () => {
+    beforeEach(() => {
+        jar.clear();
+        fetchMock.mockReset();
+        global.fetch = fetchMock as unknown as typeof fetch;
+        resetServerEnvForTests();
+    });
+
+    function startWith(callbackUrl: string): NextRequest {
+        return new NextRequest(`http://localhost:3000/api/auth/oauth/google?callbackUrl=${encodeURIComponent(callbackUrl)}`);
+    }
+
+    const tokens = () =>
+        new Response(JSON.stringify({ accessToken: 'a', refreshToken: 'r' }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+
+    it('remembers a safe local callbackUrl in a short-lived httpOnly cookie', async () => {
+        fetchMock.mockResolvedValueOnce(authorizeRedirect('abc123'));
+
+        const response = await start(startWith('/rentals/5?tab=pay'), params('google'));
+        const setCookie = response.headers.get('set-cookie') ?? '';
+
+        expect(setCookie).toContain('oauth_next=%2Frentals%2F5%3Ftab%3Dpay');
+        expect(setCookie.toLowerCase()).toContain('httponly');
+    });
+
+    it.each(['https://evil.example/x', '//evil.example', `/${String.fromCharCode(92)}evil.example`, 'javascript:alert(1)'])(
+        'does not remember the unsafe callbackUrl %s',
+        async (value) => {
+            fetchMock.mockResolvedValueOnce(authorizeRedirect('abc123'));
+
+            const response = await start(startWith(value), params('google'));
+
+            expect(response.headers.get('set-cookie') ?? '').not.toContain('oauth_next=%');
+        }
+    );
+
+    it('sends the user back to the remembered page after the callback', async () => {
+        fetchMock.mockResolvedValueOnce(tokens());
+
+        const response = await callback(
+            callbackRequest('?code=c&state=abc123', 'oauth_state=abc123; oauth_next=%2Frentals%2F5'),
+            params('google')
+        );
+
+        expect(new URL(response.headers.get('location')!).pathname).toBe('/rentals/5');
+        expect(response.headers.get('set-cookie')).toContain('oauth_next=;');
+    });
+
+    it('falls back to the home page when the remembered value was tampered with', async () => {
+        fetchMock.mockResolvedValueOnce(tokens());
+
+        const response = await callback(
+            callbackRequest('?code=c&state=abc123', 'oauth_state=abc123; oauth_next=https%3A%2F%2Fevil.example'),
+            params('google')
+        );
+
+        const location = new URL(response.headers.get('location')!);
+        expect(location.origin).toBe('http://localhost:3000');
+        expect(location.pathname).toBe('/');
+    });
+});
