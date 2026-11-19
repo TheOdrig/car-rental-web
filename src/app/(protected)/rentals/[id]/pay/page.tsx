@@ -30,7 +30,7 @@ export default async function PayRentalPage({ params, searchParams }: PayPagePro
     }
 
     return (
-        <main className="container py-8">
+        <div className="container py-8">
             <PayRental
                 rentalId={Number(id)}
                 fallbackPublishableKey={getServerEnv().STRIPE_PUBLISHABLE_KEY}
@@ -38,6 +38,6 @@ export default async function PayRentalPage({ params, searchParams }: PayPagePro
                 returnedClientSecret={clientSecret}
                 redirectStatus={redirectStatus}
             />
-        </main>
+        </div>
     );
 }

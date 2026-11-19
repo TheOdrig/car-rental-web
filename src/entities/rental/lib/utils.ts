@@ -1,5 +1,6 @@
 import { Rental, RentalStatus, type LateReturnStatus, RentalTab, RentalTabCounts, RentalStats, ActionButton } from '../model/types';
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
+import { parseLocalDate } from './rental-rules';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.ACTIVE;
@@ -61,7 +62,7 @@ export function getRentalsByTab(rentals: Rental[], tab: RentalTab): Rental[] {
         case 'upcoming':
             return rentals.filter((r) => {
                 if (r.status !== RentalStatus.CONFIRMED) return false;
-                const startDate = new Date(r.startDate);
+                const startDate = parseLocalDate(r.startDate) ?? new Date(r.startDate);
                 startDate.setHours(0, 0, 0, 0);
                 return startDate > today;
             });
@@ -83,7 +84,7 @@ export function calculateTabCounts(rentals: Rental[]): RentalTabCounts {
         active: rentals.filter((r) => r.status === RentalStatus.ACTIVE).length,
         upcoming: rentals.filter((r) => {
             if (r.status !== RentalStatus.CONFIRMED) return false;
-            const startDate = new Date(r.startDate);
+            const startDate = parseLocalDate(r.startDate) ?? new Date(r.startDate);
             startDate.setHours(0, 0, 0, 0);
             return startDate > today;
         }).length,
@@ -138,7 +139,7 @@ export function isUpcomingRental(rental: Rental): boolean {
     if (rental.status !== RentalStatus.CONFIRMED) return false;
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    const startDate = new Date(rental.startDate);
+    const startDate = parseLocalDate(rental.startDate) ?? new Date(rental.startDate);
     startDate.setHours(0, 0, 0, 0);
     return startDate > today;
 }

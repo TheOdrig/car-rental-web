@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { differenceInCalendarDays } from 'date-fns';
+import { differenceInCalendarDays, parseISO } from 'date-fns';
 import {
     Dialog,
     DialogContent,
@@ -155,7 +155,7 @@ export function ApproveRentalDialog({
                             <div className="space-y-1.5">
                                 <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Duration</p>
                                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    <span className="text-primary">{differenceInCalendarDays(new Date(item.endDate), new Date(item.startDate))}</span> Days
+                                    <span className="text-primary">{differenceInCalendarDays(parseISO(item.endDate), parseISO(item.startDate))}</span> Days
                                 </div>
                             </div>
                             <div className="space-y-1 ml-auto text-right">

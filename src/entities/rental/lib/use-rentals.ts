@@ -20,6 +20,7 @@ export const rentalKeys = {
     list: (filters?: RentalFilters) => [...rentalKeys.lists(), filters] as const,
     myRentals: () => [...rentalKeys.all, 'my'] as const,
     myList: (filters?: RentalFilters) => [...rentalKeys.myRentals(), filters] as const,
+    myAll: () => [...rentalKeys.myRentals(), 'all'] as const,
     details: () => [...rentalKeys.all, 'detail'] as const,
     detail: (id: number) => [...rentalKeys.details(), id] as const,
 };
@@ -58,6 +59,19 @@ async function fetchMyRentals(filters?: RentalFilters): Promise<PageResponse<Ren
     return clientGet<PageResponse<Rental>>(url);
 }
 
+const ALL_RENTALS_PAGE_SIZE = 100;
+const ALL_RENTALS_MAX_PAGES = 20;
+
+async function fetchAllMyRentals(): Promise<Rental[]> {
+    const rentals: Rental[] = [];
+    for (let page = 0; page < ALL_RENTALS_MAX_PAGES; page += 1) {
+        const result = await fetchMyRentals({ page, size: ALL_RENTALS_PAGE_SIZE });
+        rentals.push(...result.content);
+        if (page + 1 >= result.totalPages) break;
+    }
+    return rentals;
+}
+
 async function fetchRental(id: number): Promise<Rental> {
     return clientGet<Rental>(`/api/rentals/${id}`);
 }
@@ -82,6 +96,14 @@ export function useMyRentals(filters?: RentalFilters) {
     return useQuery({
         queryKey: rentalKeys.myList(filters),
         queryFn: () => fetchMyRentals(filters),
+        staleTime: 2 * 60 * 1000,
+    });
+}
+
+export function useAllMyRentals() {
+    return useQuery({
+        queryKey: rentalKeys.myAll(),
+        queryFn: fetchAllMyRentals,
         staleTime: 2 * 60 * 1000,
     });
 }

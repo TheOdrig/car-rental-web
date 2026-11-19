@@ -35,6 +35,7 @@ export * from './lib/admin-status';
 export {
     useRentals,
     useMyRentals,
+    useAllMyRentals,
     useRental,
     useCreateRental,
     useCancelRental,

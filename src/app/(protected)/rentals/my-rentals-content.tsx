@@ -3,8 +3,10 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { CalendarDays, Car, Wallet } from 'lucide-react';
-import { logger } from '@/shared/lib';
-import { useMyRentals, useCancelRental } from '@/entities/rental';
+import { logger, safeFormatDate, formatCurrencyWithDecimals } from '@/shared/lib';
+import { useAllMyRentals, useCancelRental } from '@/entities/rental';
+import { Pagination } from '@/shared/ui/pagination';
+import { ErrorMessage } from '@/shared/ui/error-message';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import {
@@ -27,15 +29,18 @@ import {
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
 
+const PAGE_SIZE = 10;
+
 export function MyRentalsContent() {
     const router = useRouter();
-    const { data, isLoading, error } = useMyRentals();
+    const { data, isLoading, isError, refetch } = useAllMyRentals();
     const cancelMutation = useCancelRental();
     const [activeTab, setActiveTab] = useState<RentalTab>('all');
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [rentalToCancel, setRentalToCancel] = useState<Rental | null>(null);
+    const [page, setPage] = useState(0);
 
-    const rentals = useMemo(() => data?.content ?? [], [data]);
+    const rentals = useMemo(() => data ?? [], [data]);
 
     const tabCounts = useMemo(() => calculateTabCounts(rentals), [rentals]);
 
@@ -46,8 +51,16 @@ export function MyRentalsContent() {
         [rentals, activeTab]
     );
 
+    const totalPages = Math.max(1, Math.ceil(filteredRentals.length / PAGE_SIZE));
+    const currentPage = Math.min(page, totalPages - 1);
+    const pagedRentals = useMemo(
+        () => filteredRentals.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE),
+        [filteredRentals, currentPage]
+    );
+
     const handleTabChange = useCallback((tab: RentalTab) => {
         setActiveTab(tab);
+        setPage(0);
     }, []);
 
     const handleAction = useCallback((action: string, rental: Rental) => {
@@ -80,13 +93,14 @@ export function MyRentalsContent() {
         }
     }, [rentalToCancel, cancelMutation]);
 
-    if (error) {
+    if (isError) {
         return (
             <div className="container py-8">
-                <div className="rounded-lg bg-destructive/10 p-6 text-center text-destructive">
-                    <h3 className="mb-2 text-lg font-semibold">Failed to load rentals</h3>
-                    <p>Please try again later or contact support if the problem persists.</p>
-                </div>
+                <ErrorMessage
+                    title="Failed to load rentals"
+                    message="Your rentals could not be loaded. Check your connection and try again."
+                    onRetry={() => void refetch()}
+                />
             </div>
         );
     }
@@ -140,12 +154,20 @@ export function MyRentalsContent() {
                     ) : filteredRentals.length === 0 ? (
                         <RentalListEmpty tab={activeTab} showBrowseLink={activeTab === 'all'} />
                     ) : (
-                        <RentalList
-                            rentals={filteredRentals}
-                            variant="detailed"
-                            showActions
-                            onAction={handleAction}
-                        />
+                        <>
+                            <RentalList
+                                rentals={pagedRentals}
+                                variant="detailed"
+                                showActions
+                                onAction={handleAction}
+                            />
+                            <Pagination
+                                className="mt-6"
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setPage}
+                            />
+                        </>
                     )}
                 </div>
 
@@ -167,12 +189,12 @@ export function MyRentalsContent() {
                                 <div className="flex items-center gap-2 text-sm">
                                     <CalendarDays className="h-4 w-4" aria-hidden="true" />
                                     <span className="font-semibold">Dates:</span>
-                                    <span>{new Date(rentalToCancel.startDate).toLocaleDateString()} - {new Date(rentalToCancel.endDate).toLocaleDateString()}</span>
+                                    <span>{safeFormatDate(rentalToCancel.startDate)} - {safeFormatDate(rentalToCancel.endDate)}</span>
                                 </div>
                                 <div className="flex items-center gap-2 text-sm">
                                     <Wallet className="h-4 w-4" aria-hidden="true" />
                                     <span className="font-semibold">Total:</span>
-                                    <span>${rentalToCancel.totalPrice}</span>
+                                    <span>{formatCurrencyWithDecimals(rentalToCancel.totalPrice, rentalToCancel.currency ?? 'USD')}</span>
                                 </div>
                             </div>
                         )}

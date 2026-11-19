@@ -1,7 +1,6 @@
 'use client';
 
 import { memo, type ReactNode } from 'react';
-import { format } from 'date-fns';
 import {
     CheckCircle2,
     Calendar,
@@ -10,7 +9,7 @@ import {
     CheckSquare,
     XCircle,
 } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, safeFormatDate } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import type { RentalStatus } from '@/entities/rental';
 
@@ -137,11 +136,11 @@ function StepContent({
 
         switch (step.id) {
             case 1:
-                return startDate ? `Starts ${format(new Date(startDate), 'MMM d, yyyy')}` : null;
+                return startDate ? `Starts ${safeFormatDate(startDate)}` : null;
             case 2:
-                return pickupLocation || 'San Francisco Airport';
+                return pickupLocation ?? null;
             case 3:
-                return endDate ? `Returns ${format(new Date(endDate), 'MMM d, yyyy')}` : null;
+                return endDate ? `Returns ${safeFormatDate(endDate)}` : null;
             case 4:
                 return 'Thank you for choosing us!';
             default:
