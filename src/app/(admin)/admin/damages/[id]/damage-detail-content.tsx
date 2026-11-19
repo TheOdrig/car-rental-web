@@ -4,6 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Edit2, Camera, CheckCircle, AlertTriangle, CreditCard } from 'lucide-react';
+import { DocumentTitle } from '@/shared/ui/document-title';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
@@ -37,7 +38,8 @@ export function DamageDetailContent({ id }: { id: string }) {
         return (
             <div className="flex flex-col items-center justify-center py-12">
                 <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-                <h2 className="text-lg font-semibold">Damage report not found</h2>
+                <DocumentTitle title="Damage report not found" />
+                <h1 className="text-lg font-semibold">Damage report not found</h1>
                 <Button variant="outline" className="mt-4" onClick={() => router.back()}>
                     Go Back
                 </Button>

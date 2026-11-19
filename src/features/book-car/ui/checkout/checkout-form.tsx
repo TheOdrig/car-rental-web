@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, FileText } from 'lucide-react';
+import { DocumentTitle } from '@/shared/ui/document-title';
 import { toast } from 'sonner';
 import { getCarUnavailableMessage, isAvailable, useBookedDates, useCar, usePricingPreview } from '@/entities/car';
 import { CAR_BOOKED_MESSAGE, findBookedDate, parseLocalDate } from '@/entities/rental';
@@ -136,7 +137,8 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
         return (
             <div className="flex items-center justify-center py-12">
                 <div className="text-center">
-                    <h2 className="text-xl font-bold text-foreground mb-2">Car Not Found</h2>
+                    <DocumentTitle title="Car Not Found" />
+                    <h1 className="text-xl font-bold text-foreground mb-2">Car Not Found</h1>
                     <p className="text-muted-foreground">The selected car could not be loaded.</p>
                 </div>
             </div>

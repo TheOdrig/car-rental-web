@@ -4,10 +4,12 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, AlertTriangle, FileWarning } from 'lucide-react';
+import { DocumentTitle } from '@/shared/ui/document-title';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate, formatRentalReference } from '@/shared/lib';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
@@ -46,7 +48,8 @@ export function MyDamageDetailContent({ id }: { id: string }) {
             <div className="container py-8">
                 <div className="flex flex-col items-center justify-center py-12">
                     <FileWarning className="h-12 w-12 text-muted-foreground mb-4" />
-                    <h2 className="text-lg font-semibold">Damage report not found</h2>
+                    <DocumentTitle title="Damage report not found" />
+                    <h1 className="text-lg font-semibold">Damage report not found</h1>
                     <p className="text-muted-foreground mt-1">
                         This damage report does not exist or it belongs to another account.
                     </p>
@@ -63,6 +66,13 @@ export function MyDamageDetailContent({ id }: { id: string }) {
     return (
         <ErrorBoundary>
             <div className="container py-8">
+                <Breadcrumb
+                    className="mb-4"
+                    items={[
+                        { label: 'My Damages', href: '/damages' },
+                        { label: `Damage report for ${formatRentalReference(damage.rentalId)}` },
+                    ]}
+                />
                 <div className="mb-6 flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="Go back">
                         <ArrowLeft className="h-4 w-4" />
@@ -130,10 +140,10 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                     </p>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-muted-foreground">Rental ID</p>
+                                    <p className="text-sm text-muted-foreground">Rental</p>
                                     <p className="font-medium">
                                         <Link href={`/rentals/${damage.rentalId}`} className="text-primary hover:underline">
-                                            #{damage.rentalId}
+                                            {formatRentalReference(damage.rentalId)}
                                         </Link>
                                     </p>
                                 </div>

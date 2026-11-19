@@ -4,6 +4,7 @@ import { AlertCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib';
+import { DocumentTitle } from '@/shared/ui/document-title';
 
 interface DetailPageErrorProps {
     title?: string;
@@ -37,7 +38,8 @@ export function DetailPageError({
             <div className="rounded-full bg-rose-100 dark:bg-rose-900/30 p-4">
                 <AlertCircle className="h-8 w-8 text-rose-500 dark:text-rose-400" />
             </div>
-            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+            <DocumentTitle title={title} />
+            <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h1>
             <p className="text-sm text-slate-600 dark:text-slate-400 max-w-md text-center">{message}</p>
             <div className="flex gap-3 mt-4">
                 {onRetry && (

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { FileQuestion } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { DocumentTitle } from '@/shared/ui/document-title';
 
 export const metadata: Metadata = {
     title: 'Page Not Found',
@@ -10,6 +11,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
     return (
         <div className="flex min-h-[60vh] flex-col items-center justify-center px-4 text-center">
+            <DocumentTitle title="Page Not Found" />
             <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted mb-6">
                 <FileQuestion className="h-10 w-10 text-muted-foreground" />
             </div>

@@ -24,6 +24,7 @@ import { CancelRentalDialog } from './cancel-rental-dialog';
 import { DriverDetailsCard } from './driver-details-card';
 import { getStatusColor } from './format';
 import { PaymentSummaryCard } from './payment-summary-card';
+import { RentalDamageReports } from './rental-damage-reports';
 import { RentalNotesCard, hasRentalNotes } from './rental-notes-card';
 import { RentalPeriodCard } from './rental-period-card';
 import { VehicleDetailsCard } from './vehicle-details-card';
@@ -90,6 +91,9 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                     <DriverDetailsCard userSummary={rental.userSummary} fullName={driverName} />
                     {hasRentalNotes(rental) && <RentalNotesCard rental={rental} />}
                     <RentalPeriodCard startDate={startDate} endDate={endDate} days={days} />
+                    {(status === RentalStatus.IN_USE || status === RentalStatus.RETURNED) && (
+                        <RentalDamageReports rentalId={rental.id} />
+                    )}
                 </div>
 
                 <div className="space-y-6">

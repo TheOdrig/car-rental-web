@@ -3,6 +3,7 @@
 import React from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
+import { DocumentTitle } from '@/shared/ui/document-title';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -42,7 +43,8 @@ export function EditCarContent() {
     if (!car) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] text-center">
-                <h2 className="text-xl font-semibold mb-2">Car not found</h2>
+                <DocumentTitle title="Car not found" />
+                <h1 className="text-xl font-semibold mb-2">Car not found</h1>
                 <p className="text-muted-foreground mb-4">
                     The car you&apos;re looking for doesn&apos;t exist or has been removed.
                 </p>
