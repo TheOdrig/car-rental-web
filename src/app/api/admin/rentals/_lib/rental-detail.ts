@@ -89,7 +89,7 @@ export function buildRentalDetail({
         },
         customer: {
             id: customer?.id ?? user?.id ?? 0,
-            firstName: customer?.firstName ?? user?.username ?? '',
+            firstName: customer?.firstName ?? user?.fullName ?? user?.username ?? '',
             lastName: customer?.lastName ?? '',
             email: customer?.email ?? user?.email ?? '',
             phone: customer?.phone ?? '',

@@ -142,8 +142,7 @@ interface ApiVehicleRentalHistoryItem {
     id: number;
     userSummary?: {
         id: number;
-        firstName?: string;
-        lastName?: string;
+        fullName?: string;
         username: string;
     };
     carSummary?: {
@@ -169,7 +168,7 @@ async function fetchVehicleRentalHistory(id: number, page: number): Promise<Pagi
         content: data.content.map(rental => ({
             id: rental.id,
             customerId: rental.userSummary?.id,
-            customerName: `${rental.userSummary?.firstName || ''} ${rental.userSummary?.lastName || ''}`.trim()
+            customerName: rental.userSummary?.fullName
                 || rental.userSummary?.username
                 || 'Unknown',
             carId: rental.carSummary?.id,

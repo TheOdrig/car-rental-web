@@ -12,9 +12,9 @@ interface DriverDetailsCardProps {
 export function DriverDetailsCard({ userSummary, fullName }: DriverDetailsCardProps) {
     const email = userSummary?.email;
     const username = userSummary?.username;
-    const name = fullName || (username && username !== email ? username : undefined);
+    const name = fullName || userSummary?.fullName;
 
-    if (!name && !email) return null;
+    if (!name && !username && !email) return null;
 
     return (
         <Card>
@@ -30,6 +30,12 @@ export function DriverDetailsCard({ userSummary, fullName }: DriverDetailsCardPr
                         <div className="min-w-0">
                             <p className="mb-1 text-sm text-muted-foreground">Full Name</p>
                             <p className="break-words font-medium">{name}</p>
+                        </div>
+                    )}
+                    {username && (
+                        <div className="min-w-0">
+                            <p className="mb-1 text-sm text-muted-foreground">Username</p>
+                            <p className="break-all font-medium" data-testid="driver-username">{username}</p>
                         </div>
                     )}
                     {email && (

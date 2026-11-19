@@ -104,17 +104,15 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                             </span>
                         </div>
                     </div>
-                    {customer.lastLoginDate && (
-                        <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4 text-slate-400" />
-                            <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Last Login</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">
-                                    {formatDateTime(customer.lastLoginDate)}
-                                </span>
-                            </div>
+                    <div className="flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-slate-400" />
+                        <div>
+                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Last Login</span>
+                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                                {customer.lastLoginDate ? formatDateTime(customer.lastLoginDate) : 'Never logged in'}
+                            </span>
                         </div>
-                    )}
+                    </div>
                 </div>
             </CardContent>
         </Card>

@@ -75,3 +75,5 @@ export function resolveRoles(user: User): string[] {
 export function resolveStatus(user: User): UserStatus {
     return (user.status?.toUpperCase() || 'ACTIVE') as UserStatus;
 }
+
+export const NEVER_LOGGED_IN_LABEL = 'Never logged in';

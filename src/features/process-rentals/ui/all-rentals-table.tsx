@@ -69,7 +69,7 @@ export function AllRentalsTable({
                                             </Link>
                                         </TableCell>
                                         <TableCell className="max-w-[14rem] truncate">
-                                            {rental.userSummary?.username ?? rental.userSummary?.email ?? 'Unknown'}
+                                            {rental.userSummary?.fullName || rental.userSummary?.username || rental.userSummary?.email || 'Unknown'}
                                         </TableCell>
                                         <TableCell className="max-w-[14rem] truncate">
                                             {rental.carSummary ? `${rental.carSummary.brand} ${rental.carSummary.model}` : 'Unknown vehicle'}

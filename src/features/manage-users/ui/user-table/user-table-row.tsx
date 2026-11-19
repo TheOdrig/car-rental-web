@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Ban, CheckCircle2, Eye, Mail, MoreHorizontal, UserCheck } from 'lucide-react';
+import { Ban, CheckCircle2, CircleAlert, Eye, Mail, MoreHorizontal, UserCheck } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { Button } from '@/shared/ui/button';
 import {
@@ -13,7 +13,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { TableCell, TableRow } from '@/shared/ui/table';
-import { cn, formatDate } from '@/shared/lib';
+import { cn, formatDate, formatDateTime } from '@/shared/lib';
 import type { User } from '../../model/types';
 import {
     ROLE_CONFIG,
@@ -21,6 +21,7 @@ import {
     getDisplayName,
     getInitials,
     getPrimaryRole,
+    NEVER_LOGGED_IN_LABEL,
     resolveRoles,
     resolveStatus,
     type UserForAction,
@@ -66,8 +67,10 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     <span className="max-w-[16rem] truncate text-sm text-slate-900 dark:text-slate-100">
                         {user.email}
                     </span>
-                    {user.isEmailVerified && (
+                    {user.isEmailVerified ? (
                         <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" aria-label="Email verified" />
+                    ) : (
+                        <CircleAlert className="h-4 w-4 shrink-0 text-amber-500" aria-label="Email not verified" />
                     )}
                 </div>
             </TableCell>
@@ -84,6 +87,9 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                         {statusConfig?.label || status}
                     </span>
                 </div>
+            </TableCell>
+            <TableCell className="text-sm text-muted-foreground" data-testid="user-last-login">
+                {user.lastLoginAt ? formatDateTime(user.lastLoginAt) : NEVER_LOGGED_IN_LABEL}
             </TableCell>
             <TableCell className="text-right">
                 <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100">

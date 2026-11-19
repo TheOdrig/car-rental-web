@@ -65,8 +65,7 @@ interface ApiRentalHistoryItem {
     id: number;
     userSummary?: {
         id: number;
-        firstName?: string;
-        lastName?: string;
+        fullName?: string;
         username: string;
     };
     carSummary?: {
@@ -97,7 +96,7 @@ async function fetchCustomerRentalHistory(
         content: data.content.map(rental => ({
             id: rental.id,
             customerId: rental.userSummary?.id,
-            customerName: `${rental.userSummary?.firstName || ''} ${rental.userSummary?.lastName || ''}`.trim()
+            customerName: rental.userSummary?.fullName
                 || rental.userSummary?.username
                 || 'Unknown',
             carId: rental.carSummary?.id,

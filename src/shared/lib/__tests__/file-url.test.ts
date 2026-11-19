@@ -15,6 +15,12 @@ describe('toFileProxyUrl', () => {
         expect(toFileProxyUrl('/uploads/damage-photos/b.png')).toBe('/api/files/damage-photos/b.png');
     });
 
+    it('maps the relative local file URLs the API returns for admin avatars and damage photos', () => {
+        expect(toFileProxyUrl('/api/v1/files/avatars/9-abc.jpg')).toBe('/api/files/avatars/9-abc.jpg');
+        expect(toFileProxyUrl('/api/v1/files/damage-photos/12/photo.png')).toBe('/api/files/damage-photos/12/photo.png');
+        expect(toFileProxyUrl(' /api/v1/files/avatars/9-abc.jpg ')).toBe('/api/files/avatars/9-abc.jpg');
+    });
+
     it('leaves proxied, third-party and empty values alone', () => {
         expect(toFileProxyUrl('/api/files/avatars/a.png')).toBe('/api/files/avatars/a.png');
         expect(toFileProxyUrl('https://lh3.googleusercontent.com/a/photo')).toBe(

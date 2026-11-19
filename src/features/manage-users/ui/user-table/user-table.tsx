@@ -128,13 +128,14 @@ export const UserTable = memo(function UserTable({
                                     <TableHead>Email</TableHead>
                                     <TableHead>Role</TableHead>
                                     <TableHead>Status</TableHead>
+                                    <TableHead>Last login</TableHead>
                                     <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
                                 {users.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-32 text-center">
+                                        <TableCell colSpan={6} className="h-32 text-center">
                                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                                 <User className="h-8 w-8 opacity-50" aria-hidden="true" />
                                                 <p>No users found matching your criteria</p>
