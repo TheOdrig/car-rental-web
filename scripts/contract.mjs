@@ -7,7 +7,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const snapshot = join(root, 'contract', 'openapi.json');
 const generated = join(root, 'src', 'shared', 'api', 'generated', 'openapi.ts');
-const apiSpec = resolve(root, '..', 'car-rental-api', 'openapi', 'openapi.json');
+const apiSpec = process.env.CAR_RENTAL_API_SPEC
+    ? resolve(process.env.CAR_RENTAL_API_SPEC)
+    : resolve(root, '..', 'car-rental-api', 'openapi', 'openapi.json');
 const bin = join(root, 'node_modules', 'openapi-typescript', 'bin', 'cli.js');
 
 function normalize(text) {
