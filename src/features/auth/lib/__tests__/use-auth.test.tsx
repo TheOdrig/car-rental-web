@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import {
     useCurrentUser,
@@ -8,6 +8,7 @@ import {
     authKeys
 } from '@/features/auth';
 import { createQueryWrapper } from '@/app/testing/test-utils';
+import { useSessionKeeper } from '../use-auth';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { type ReactNode } from 'react';
 import type { MeResponse, LoginResponse } from '@/features/auth';
@@ -30,6 +31,7 @@ vi.mock('@/shared/api', async () => {
         ...actual,
         clientGet: vi.fn(),
         clientPost: vi.fn(),
+        onSessionExpired: vi.fn(actual.onSessionExpired),
     };
 });
 vi.mock('@/shared/lib', () => ({
@@ -45,7 +47,7 @@ vi.mock('@/shared/lib', () => ({
         },
     },
 }));
-import { clientGet, clientPost, ApiError } from '@/shared/api';
+import { clientGet, clientPost, ApiError, onSessionExpired } from '@/shared/api';
 const mockMeResponse: MeResponse = {
     id: 1,
     username: 'testuser',
@@ -229,6 +231,80 @@ describe('Auth Hooks', () => {
             await result.current.mutateAsync({ username: 'n', email: 'n@example.com', password: 'Pass123!' });
 
             expect(client.getQueryData(['rentals', 'me'])).toBeUndefined();
+        });
+    });
+    describe('session expiry during logout', () => {
+        const assign = vi.fn();
+
+        function expiryHandler(): () => void {
+            const calls = vi.mocked(onSessionExpired).mock.calls;
+            const handler = [...calls].reverse().map(([fn]) => fn).find((fn) => fn !== null);
+            if (!handler) throw new Error('no expiry handler registered');
+            return handler;
+        }
+
+        beforeEach(() => {
+            assign.mockClear();
+            vi.mocked(onSessionExpired).mockClear();
+            vi.stubGlobal('location', {
+                pathname: '/rentals',
+                search: '?page=2',
+                origin: 'http://localhost',
+                assign,
+            });
+        });
+
+        afterEach(() => {
+            vi.unstubAllGlobals();
+        });
+
+        function mountKeeperAndLogout() {
+            vi.mocked(clientGet).mockResolvedValue(mockMeResponse);
+            return renderHook(
+                () => {
+                    useSessionKeeper();
+                    return useLogout();
+                },
+                { wrapper: createQueryWrapper() }
+            );
+        }
+
+        it('redirects to login when the session expires outside a logout', async () => {
+            mountKeeperAndLogout();
+
+            expiryHandler()();
+
+            expect(assign).toHaveBeenCalledTimes(1);
+            expect(String(assign.mock.calls[0][0])).toContain('/login?callbackUrl=');
+        });
+
+        it('does not redirect to login when a request fails with 401 while logging out', async () => {
+            let finishLogout: (value: { message: string }) => void = () => undefined;
+            vi.mocked(clientPost).mockReturnValueOnce(
+                new Promise((resolve) => {
+                    finishLogout = resolve as typeof finishLogout;
+                })
+            );
+            const { result } = mountKeeperAndLogout();
+
+            const pending = result.current.mutateAsync();
+            await waitFor(() => expect(result.current.isPending).toBe(true));
+            expiryHandler()();
+            finishLogout({ message: 'Logged out' });
+            await pending;
+
+            expect(assign).not.toHaveBeenCalled();
+            expect(mockPush).toHaveBeenCalledWith('/');
+        });
+
+        it('redirects again when logout failed and the session later expires', async () => {
+            vi.mocked(clientPost).mockRejectedValueOnce(new Error('network'));
+            const { result } = mountKeeperAndLogout();
+
+            await expect(result.current.mutateAsync()).rejects.toThrow('network');
+            expiryHandler()();
+
+            expect(assign).toHaveBeenCalledTimes(1);
         });
     });
     describe('authKeys', () => {

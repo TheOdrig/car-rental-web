@@ -34,8 +34,14 @@ async function fetchMe(): Promise<MeResponse | null> {
 
 const SESSION_CHECK_INTERVAL_MS = 10 * 60 * 1000;
 
+let loggingOut = false;
+
 function handleSessionExpired(queryClient: QueryClient): void {
     forgetPrincipal(queryClient);
+
+    if (loggingOut) {
+        return;
+    }
 
     if (typeof window === 'undefined') {
         return;
@@ -75,6 +81,7 @@ function forgetPrincipal(queryClient: QueryClient): void {
 }
 
 async function adoptPrincipal(queryClient: QueryClient): Promise<void> {
+    loggingOut = false;
     queryClient.clear();
     await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: 0 }).catch(() => undefined);
 }
@@ -136,6 +143,12 @@ export function useAuth(): AuthContextValue {
 
     const logoutMutation = useMutation({
         mutationFn: logoutApi,
+        onMutate: () => {
+            loggingOut = true;
+        },
+        onError: () => {
+            loggingOut = false;
+        },
         onSuccess: () => {
             showToast.success(toastMessages.auth.logoutSuccess);
             router.push('/');
@@ -219,6 +232,12 @@ export function useLogout() {
 
     return useMutation({
         mutationFn: logoutApi,
+        onMutate: () => {
+            loggingOut = true;
+        },
+        onError: () => {
+            loggingOut = false;
+        },
         onSuccess: () => {
             router.push('/');
         },
