@@ -65,7 +65,7 @@ function SettingsSidebar() {
     const pathname = usePathname();
 
     return (
-        <nav className="w-full space-y-1 lg:w-64">
+        <nav aria-label="Settings" className="w-full space-y-1 lg:w-64">
             {SETTINGS_TABS.map((tab) => {
                 const isActive = pathname === tab.href;
                 const Icon = tab.icon;

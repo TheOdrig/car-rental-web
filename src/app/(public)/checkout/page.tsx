@@ -70,7 +70,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
     return (
         <div className="container py-8">
             <div>
-                <nav className="flex mb-8 text-sm font-medium text-slate-600 dark:text-slate-400">
+                <nav aria-label="Breadcrumb" className="flex mb-8 text-sm font-medium text-slate-600 dark:text-slate-400">
                     <ol className="flex items-center space-x-2">
                         <li>
                             <Link href="/cars" className="hover:text-primary transition-colors">

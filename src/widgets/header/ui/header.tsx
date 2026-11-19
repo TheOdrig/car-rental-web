@@ -65,7 +65,7 @@ export function Header() {
                     </Link>
                 </div>
 
-                <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+                <nav aria-label="Main" className="hidden md:flex items-center gap-6 text-sm font-medium">
                     <Link href="/cars" className="transition-colors hover:text-primary">
                         Browse Cars
                     </Link>

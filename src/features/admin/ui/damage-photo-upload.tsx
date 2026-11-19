@@ -122,7 +122,7 @@ export function DamagePhotoUpload({
                             uploadPhotos.isPending && 'opacity-50 cursor-not-allowed'
                         )}
                     >
-                        <input {...getInputProps()} />
+                        <input {...getInputProps()} aria-label="Upload damage photos" />
                         {uploadPhotos.isPending ? (
                             <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
                         ) : isDragActive ? (

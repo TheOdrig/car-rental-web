@@ -61,7 +61,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                     </SheetTitle>
                 </SheetHeader>
 
-                <nav className="flex flex-col gap-1 py-4">
+                <nav aria-label="Mobile" className="flex flex-col gap-1 py-4">
                     {publicLinks.map((link) => {
                         const Icon = link.icon;
                         const isActive = pathname === link.href;
