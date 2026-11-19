@@ -8,7 +8,6 @@ import { createBooking } from '@/features/book-car';
 import { getEndDateRange, getStartDateRange, parseLocalDate, toDateInputValue } from '@/entities/rental';
 import { validateDateRange } from '../lib/date-validation';
 import { bookingActions } from '@/features/book-car';
-import { publishBookingCreated } from '@/features/book-car';
 import { getBookingErrorMessage } from '../lib/utils';
 
 interface BookingFormProps {
@@ -66,7 +65,6 @@ export function BookingForm({ carId, onSuccess, onError }: BookingFormProps) {
 
             const booking = await createBooking(request);
             bookingActions.setBooking(booking);
-            publishBookingCreated(booking);
 
             onSuccess?.();
         } catch (err) {

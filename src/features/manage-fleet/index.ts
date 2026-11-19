@@ -31,26 +31,6 @@ export type {
 export { defaultCarFormData } from './model/types';
 
 
-export {
-    FLEET_EVENTS,
-    publishCarAdded,
-    publishCarUpdated,
-    publishCarDeleted,
-    publishCarStatusChanged,
-    subscribeToCarAdded,
-    subscribeToCarUpdated,
-    subscribeToCarDeleted,
-    subscribeToCarStatusChanged,
-} from './model/fleet-events';
-
-export type {
-    FleetEventType,
-    CarAddedPayload,
-    CarUpdatedPayload,
-    CarDeletedPayload,
-    CarStatusChangedPayload,
-} from './model/fleet-events';
-
 
 export { useCarForm } from './lib/use-car-form';
 

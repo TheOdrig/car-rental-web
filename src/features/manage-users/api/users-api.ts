@@ -19,11 +19,6 @@ import type {
     AdminNote,
     AdminRentalStatus,
 } from '../model/types';
-import {
-    publishUserBanned,
-    publishUserUnbanned,
-    publishUserNoteAdded,
-} from '../model/users-events';
 
 
 
@@ -180,15 +175,9 @@ export function useBanUser() {
 
     return useMutation({
         mutationFn: banUser,
-        onSuccess: (result, variables) => {
+        onSuccess: (result) => {
             showToast.success('User banned', `${result.firstName} ${result.lastName} has been banned.`);
             void queryClient.invalidateQueries({ queryKey: usersKeys.all });
-
-
-            publishUserBanned({
-                userId: variables.userId,
-                reason: variables.reason,
-            });
         },
         onError: (error: Error) => {
             showToast.error('Failed to ban user', getApiErrorMessage(error));
@@ -201,15 +190,9 @@ export function useUnbanUser() {
 
     return useMutation({
         mutationFn: unbanUser,
-        onSuccess: (result, variables) => {
+        onSuccess: (result) => {
             showToast.success('User unbanned', `${result.firstName} ${result.lastName} has been unbanned.`);
             void queryClient.invalidateQueries({ queryKey: usersKeys.all });
-
-
-            publishUserUnbanned({
-                userId: variables.userId,
-                note: variables.note,
-            });
         },
         onError: (error: Error) => {
             showToast.error('Failed to unban user', getApiErrorMessage(error));
@@ -226,12 +209,6 @@ export function useAddAdminNote() {
             showToast.success('Note added', 'Admin note has been added successfully.');
             void queryClient.invalidateQueries({ queryKey: usersKeys.detail(variables.userId) });
             void queryClient.invalidateQueries({ queryKey: usersKeys.notes(variables.userId) });
-
-
-            publishUserNoteAdded({
-                userId: variables.userId,
-                note: result,
-            });
         },
         onError: (error: Error) => {
             showToast.error('Failed to add note', error.message);

@@ -7,8 +7,6 @@ export type {
 } from './model/types';
 
 export { rentalActions, rentalStore } from './model/rental-store';
-export { RENTAL_EVENTS } from '@/entities/rental';
-export { publishRentalApproved, publishRentalRejected, publishRentalPickedUp, publishRentalReturned, publishRentalCancelled, publishRentalUpdated } from './model/rental-events';
 
 export { getRentals, getRentalById, performRentalAction, cancelRental } from './api/rental-api';
 

@@ -50,24 +50,3 @@ export type {
     UnbanUserRequest,
     AddNoteRequest,
 } from './model/types';
-
-
-export {
-    USERS_EVENTS,
-    publishUserBanned,
-    publishUserUnbanned,
-    publishUserNoteAdded,
-    publishUserUpdated,
-    subscribeToUserBanned,
-    subscribeToUserUnbanned,
-    subscribeToUserNoteAdded,
-    subscribeToUserUpdated,
-} from './model/users-events';
-
-export type {
-    UsersEventType,
-    UserBannedPayload,
-    UserUnbannedPayload,
-    UserNoteAddedPayload,
-    UserUpdatedPayload,
-} from './model/users-events';

@@ -14,12 +14,6 @@ import type {
     ProcessPickupRequest,
     ProcessReturnRequest,
 } from '../model/types';
-import {
-    publishRentalApproved,
-    publishRentalRejected,
-    publishPickupProcessed,
-    publishReturnProcessed,
-} from '../model/process-events';
 
 
 
@@ -54,17 +48,11 @@ export function useApproveRental() {
 
     return useMutation({
         mutationFn: approveRental,
-        onSuccess: (result, variables) => {
+        onSuccess: () => {
             showToast.success(toastMessages.rental.approveSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
-
-
-            publishRentalApproved({
-                rentalId: variables.rentalId,
-                notes: variables.notes,
-            });
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.approveError, getAdminActionErrorMessage(error));
@@ -77,17 +65,11 @@ export function useProcessPickup() {
 
     return useMutation({
         mutationFn: processPickup,
-        onSuccess: (result, variables) => {
+        onSuccess: () => {
             showToast.success(toastMessages.rental.pickupSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
-
-
-            publishPickupProcessed({
-                rentalId: variables.rentalId,
-                notes: variables.notes,
-            });
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.pickupError, getAdminActionErrorMessage(error));
@@ -100,18 +82,12 @@ export function useProcessReturn() {
 
     return useMutation({
         mutationFn: processReturn,
-        onSuccess: (result, variables) => {
+        onSuccess: () => {
             showToast.success(toastMessages.rental.returnSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
-
-
-            publishReturnProcessed({
-                rentalId: variables.rentalId,
-                hasDamage: typeof variables.data === 'object' ? variables.data.hasDamage : false,
-            });
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.returnError, getAdminActionErrorMessage(error));
@@ -124,17 +100,11 @@ export function useRejectRental() {
 
     return useMutation({
         mutationFn: rejectRental,
-        onSuccess: (result, variables) => {
+        onSuccess: () => {
             showToast.success(toastMessages.rental.rejectSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
-
-
-            publishRentalRejected({
-                rentalId: variables.rentalId,
-                reason: variables.reason,
-            });
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.rejectError, getAdminActionErrorMessage(error));

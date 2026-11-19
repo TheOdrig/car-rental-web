@@ -14,7 +14,6 @@ export type {
 } from './model/types';
 
 export { bookingActions } from './model/booking-store';
-export { BOOKING_EVENTS, publishBookingCreated, publishBookingUpdated, publishBookingCancelled } from './model/booking-events';
 
 export { createBooking } from './api/booking-api';
 

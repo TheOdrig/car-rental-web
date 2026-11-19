@@ -39,24 +39,3 @@ export type {
     ProcessReturnRequest,
     RentalDetailResponse,
 } from './model/types';
-
-
-export {
-    PROCESS_EVENTS,
-    publishRentalApproved,
-    publishRentalRejected,
-    publishPickupProcessed,
-    publishReturnProcessed,
-    subscribeToRentalApproved,
-    subscribeToRentalRejected,
-    subscribeToPickupProcessed,
-    subscribeToReturnProcessed,
-} from './model/process-events';
-
-export type {
-    ProcessEventType,
-    RentalApprovedPayload,
-    RentalRejectedPayload,
-    PickupProcessedPayload,
-    ReturnProcessedPayload,
-} from './model/process-events';

@@ -32,7 +32,6 @@ export * from './lib/utils';
 export * from './lib/rental-rules';
 export * from './lib/rental-errors';
 export * from './lib/admin-status';
-export { RENTAL_EVENTS, type RentalEventType } from './model/events';
 export {
     useRentals,
     useMyRentals,
