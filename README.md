@@ -22,7 +22,7 @@ History: commits up to `ff7eb77` (tag `v2.0.0`, on GitHub) are the original lear
 | Auth | jose 6.1 (JWT verification on the server), httpOnly cookies |
 | Payments | Stripe Elements (`@stripe/react-stripe-js` 7.1, `@stripe/stripe-js` 10.3), test mode |
 | Contract | openapi-typescript 7.13 generating types from a committed OpenAPI snapshot |
-| Tests | Vitest 4, Testing Library, Playwright 1.56 |
+| Tests | Vitest 4, Testing Library, MSW 2, Playwright 1.56 with axe-core |
 | Architecture checks | ESLint 9 with eslint-plugin-boundaries 5.3 |
 
 Node 22 LTS (see [`.nvmrc`](.nvmrc); the Dockerfile builds on a pinned 22 image) is required: `engines` in `package.json` allows only that major, `.npmrc` turns on `engine-strict`, and `scripts/check-node.mjs` repeats the check in `verify`.
@@ -97,11 +97,11 @@ Stop the API and delete its data with `docker compose down -v`.
 bash scripts/verify.sh
 ```
 
-[`scripts/verify.sh`](scripts/verify.sh) checks the Node version, runs [`scripts/check-no-ai-files.mjs`](scripts/check-no-ai-files.mjs) (fails if AI-tooling or planning files are tracked, at any depth), `npm run lint` with zero warnings allowed, `npm run contract:check`, `npm run type-check` and `npm test`, then `npm audit --omit=dev --audit-level=high` and `npm run build`. It also runs `scripts/verify.local.sh` when that file exists, for checks that are not part of the repository, and prints `local checks: none` otherwise. On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). `npm test` runs 1,580 Vitest tests (all passing, none skipped) at the last full run, including the architecture, contract and security-header tests.
+[`scripts/verify.sh`](scripts/verify.sh) checks the Node version, runs [`scripts/check-no-ai-files.mjs`](scripts/check-no-ai-files.mjs) (fails if AI-tooling or planning files are tracked, at any depth), `npm run lint` with zero warnings allowed, `npm run contract:check`, `npm run type-check` and `npm test`, then `npm audit --omit=dev --audit-level=high` and `npm run build`. It also runs `scripts/verify.local.sh` when that file exists, for checks that are not part of the repository, and prints `local checks: none` otherwise. On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). `npm test` runs 1,592 Vitest tests (all passing, none skipped) at the last full run, including the architecture, contract and security-header tests.
 
 The [Husky](.husky) pre-push hook runs `bash scripts/verify.sh --fast`, which skips the audit and the build to stay under about three minutes; the full run, with the build, takes a little longer. There is no hosted CI; this local gate is the check.
 
-With the API running, `npm run test:e2e:stack` starts the web app on port 3100 against `http://localhost:8082` and runs the stack suite; `E2E_API_URL` and `E2E_BASE_URL` override the targets. The suite starts the web app with `TRUSTED_PROXY_HOPS=1` (`E2E_TRUSTED_PROXY_HOPS` overrides it), and the API must trust the web server for the client IP test: set `SECURITY_RATELIMIT_TRUSTEDCLIENTIPHEADER=X-Client-IP` and `SECURITY_RATELIMIT_TRUSTEDPROXYCIDRS` to the range the web server connects from (in the dev profile, which has no env mapping for them; the prod profile reads `TRUSTED_CLIENT_IP_HEADER` and `TRUSTED_PROXY_CIDRS`). `npm run e2e` runs a separate smoke test against an app that is already running.
+With the API running, `npm run test:e2e:stack` starts the web app on port 3100 against `http://localhost:8082` and runs the stack suite; `E2E_API_URL` and `E2E_BASE_URL` override the targets. The suite starts the web app with `TRUSTED_PROXY_HOPS=1` (`E2E_TRUSTED_PROXY_HOPS` overrides it), and the API must trust the web server for the client IP test: set `SECURITY_RATELIMIT_TRUSTEDCLIENTIPHEADER=X-Client-IP` and `SECURITY_RATELIMIT_TRUSTEDPROXYCIDRS` to the range the web server connects from (in the dev profile, which has no env mapping for them; the prod profile reads `TRUSTED_CLIENT_IP_HEADER` and `TRUSTED_PROXY_CIDRS`). `npm run e2e` runs a separate smoke test and an axe accessibility check of the public auth and legal pages against an app that is already running.
 
 ## Configuration
 
