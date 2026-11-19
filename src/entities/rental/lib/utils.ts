@@ -125,6 +125,10 @@ export const RENTAL_TABS: { value: RentalTab; label: string }[] = [
     { value: 'cancelled', label: 'Cancelled' },
 ];
 
+export function parseRentalTab(value: string | null | undefined): RentalTab {
+    return RENTAL_TABS.find((tab) => tab.value === value)?.value ?? 'all';
+}
+
 export function getTabLabel(tab: RentalTab): string {
     const found = RENTAL_TABS.find((t) => t.value === tab);
     return found?.label || 'All';

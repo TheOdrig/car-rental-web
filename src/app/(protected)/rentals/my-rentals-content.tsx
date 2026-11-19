@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CalendarDays, Car, Wallet } from 'lucide-react';
 import { logger, formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import { useAllMyRentals, useCancelRental } from '@/entities/rental';
@@ -17,7 +17,7 @@ import {
     RentalTabs,
 } from '@/features/manage-rentals';
 import type { RentalTab, Rental } from '@/entities/rental';
-import { getRentalsByTab, calculateTabCounts, calculateRentalStats } from '@/entities/rental';
+import { getRentalsByTab, calculateTabCounts, calculateRentalStats, parseRentalTab } from '@/entities/rental';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -33,12 +33,26 @@ const PAGE_SIZE = 10;
 
 export function MyRentalsContent() {
     const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
     const { data, isLoading, isError, refetch } = useAllMyRentals();
     const cancelMutation = useCancelRental();
-    const [activeTab, setActiveTab] = useState<RentalTab>('all');
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [rentalToCancel, setRentalToCancel] = useState<Rental | null>(null);
-    const [page, setPage] = useState(0);
+    const activeTab = parseRentalTab(searchParams?.get('tab'));
+    const pageParam = Number.parseInt(searchParams?.get('page') ?? '', 10);
+    const page = Number.isFinite(pageParam) && pageParam > 1 ? pageParam - 1 : 0;
+
+    const goTo = useCallback(
+        (tab: RentalTab, pageIndex: number) => {
+            const params = new URLSearchParams();
+            if (tab !== 'all') params.set('tab', tab);
+            if (pageIndex > 0) params.set('page', String(pageIndex + 1));
+            const query = params.toString();
+            router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+        },
+        [router, pathname]
+    );
 
     const rentals = useMemo(() => data ?? [], [data]);
 
@@ -58,10 +72,9 @@ export function MyRentalsContent() {
         [filteredRentals, currentPage]
     );
 
-    const handleTabChange = useCallback((tab: RentalTab) => {
-        setActiveTab(tab);
-        setPage(0);
-    }, []);
+    const handleTabChange = useCallback((tab: RentalTab) => goTo(tab, 0), [goTo]);
+
+    const handlePageChange = useCallback((pageIndex: number) => goTo(activeTab, pageIndex), [goTo, activeTab]);
 
     const handleAction = useCallback((action: string, rental: Rental) => {
         switch (action) {
@@ -165,7 +178,7 @@ export function MyRentalsContent() {
                                 className="mt-6"
                                 currentPage={currentPage}
                                 totalPages={totalPages}
-                                onPageChange={setPage}
+                                onPageChange={handlePageChange}
                             />
                         </>
                     )}
