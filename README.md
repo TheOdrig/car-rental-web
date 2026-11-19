@@ -25,7 +25,7 @@ History: commits up to `ff7eb77` (tag `v2.0.0`, on GitHub) are the original lear
 | Tests | Vitest 4, Testing Library, Playwright 1.56 |
 | Architecture checks | ESLint 9 with eslint-plugin-boundaries 5.3 |
 
-Node 20 (see [`.nvmrc`](.nvmrc), the Dockerfile builds on it) or Node 22 is required: `engines` in `package.json` allows only those majors, `.npmrc` turns on `engine-strict`, and `scripts/check-node.mjs` repeats the check in `verify`.
+Node 22 LTS (see [`.nvmrc`](.nvmrc); the Dockerfile builds on a pinned 22 image) is required: `engines` in `package.json` allows only that major, `.npmrc` turns on `engine-strict`, and `scripts/check-node.mjs` repeats the check in `verify`.
 
 ## Architecture
 
@@ -66,7 +66,7 @@ graph LR
 
 ## Quick start
 
-You need Node 20 or 22 and the API running locally. In a checkout of [car-rental](https://github.com/TheOdrig/car-rental):
+You need Node 22 and the API running locally. In a checkout of [car-rental](https://github.com/TheOdrig/car-rental):
 
 ```bash
 docker compose up --build
