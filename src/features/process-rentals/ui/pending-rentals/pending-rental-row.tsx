@@ -17,6 +17,9 @@ interface PendingRentalRowProps {
     onAction: (item: PendingItem, action: PendingAction) => void;
 }
 
+const LABEL = 'max-xl:before:mb-0.5 max-xl:before:block max-xl:before:text-xs max-xl:before:font-medium max-xl:before:text-muted-foreground max-xl:before:content-[attr(data-label)]';
+const CELL = 'max-xl:block max-xl:p-0 max-xl:whitespace-normal';
+
 const LINK_CLASS =
     'block truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
 
@@ -24,8 +27,8 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
     const display = getStatusDisplay(item.status);
 
     return (
-        <TableRow>
-            <TableCell>
+        <TableRow className="max-xl:grid max-xl:grid-cols-2 max-xl:gap-x-4 max-xl:gap-y-3 max-xl:p-3">
+            <TableCell className={`${CELL} max-xl:col-span-2`}>
                 <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted">
                         <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
@@ -42,7 +45,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     </div>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell className={`${CELL} max-xl:col-span-2`}>
                 <div className="flex items-center gap-3">
                     {item.carImage ? (
                         <div className="relative h-10 w-16 shrink-0">
@@ -72,24 +75,24 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     </div>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell className={`${CELL} ${LABEL}`} data-label="Dates">
                 <div className="whitespace-nowrap text-sm">
                     <p>{formatDate(item.startDate)}</p>
                     <p className="text-muted-foreground">to {formatDate(item.endDate)}</p>
                 </div>
             </TableCell>
-            <TableCell className="font-medium">{formatAmount(item.totalAmount, item.currency)}</TableCell>
-            <TableCell>
+            <TableCell className={`${CELL} ${LABEL} font-medium`} data-label="Amount">{formatAmount(item.totalAmount, item.currency)}</TableCell>
+            <TableCell className={`${CELL} ${LABEL}`} data-label="Status">
                 <Badge variant={display.variant} className={display.className}>
                     {display.label}
                 </Badge>
             </TableCell>
             {type === 'overdue' && (
-                <TableCell>
+                <TableCell className={`${CELL} ${LABEL}`} data-label="Late">
                     <Badge variant="destructive">{item.lateHours}h late</Badge>
                 </TableCell>
             )}
-            <TableCell className="text-right">
+            <TableCell className={`${CELL} max-xl:col-span-2 text-right max-xl:text-left`}>
                 <PendingRentalAction item={item} type={type} isProcessing={isProcessing} onAction={onAction} />
             </TableCell>
         </TableRow>

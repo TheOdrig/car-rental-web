@@ -18,7 +18,7 @@ export function PendingRentalAction({ item, type, isProcessing, onAction }: Pend
     switch (type) {
         case 'approvals':
             return (
-                <div className="flex items-center justify-end gap-2">
+                <div className="flex items-center justify-end gap-2 max-xl:justify-start">
                     <Button
                         size="sm"
                         variant="destructive"

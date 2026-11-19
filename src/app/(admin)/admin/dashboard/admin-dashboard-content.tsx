@@ -178,25 +178,6 @@ export function AdminDashboardContent() {
                                 )}
                             </div>
                         )}
-
-                        {tabSources[activeTab].failed ? (
-                            <ErrorMessage
-                                title="Failed to load this list"
-                                message="The list could not be loaded."
-                                onRetry={tabSources[activeTab].retry}
-                            />
-                        ) : (
-                            <PendingRentalsTable
-                                items={tabSources[activeTab].items}
-                                type={activeTab}
-                                isLoading={tabSources[activeTab].loading}
-                                onApprove={actions.approve}
-                                onReject={actions.reject}
-                                onPickup={actions.pickup}
-                                onReturn={actions.processReturn}
-                                actionInProgress={actions.actionInProgress}
-                            />
-                        )}
                     </div>
                     <div className="space-y-6">
                         <QuickActionsCard
@@ -217,6 +198,25 @@ export function AdminDashboardContent() {
                         )}
                     </div>
                 </div>
+
+                {tabSources[activeTab].failed ? (
+                    <ErrorMessage
+                        title="Failed to load this list"
+                        message="The list could not be loaded."
+                        onRetry={tabSources[activeTab].retry}
+                    />
+                ) : (
+                    <PendingRentalsTable
+                        items={tabSources[activeTab].items}
+                        type={activeTab}
+                        isLoading={tabSources[activeTab].loading}
+                        onApprove={actions.approve}
+                        onReject={actions.reject}
+                        onPickup={actions.pickup}
+                        onReturn={actions.processReturn}
+                        actionInProgress={actions.actionInProgress}
+                    />
+                )}
             </div>
         </ErrorBoundary>
     );

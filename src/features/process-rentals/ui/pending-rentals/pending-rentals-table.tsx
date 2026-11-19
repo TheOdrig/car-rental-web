@@ -98,9 +98,9 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="overflow-x-auto">
-                        <Table>
-                            <TableHeader>
+                    <div>
+                        <Table className="max-xl:block">
+                            <TableHeader className="max-xl:sr-only">
                                 <TableRow className="border-b border-slate-200 dark:border-slate-700">
                                     <TableHead className={HEAD_CLASS}>Customer</TableHead>
                                     <TableHead className={HEAD_CLASS}>Vehicle</TableHead>
@@ -111,7 +111,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                                     <TableHead className={`text-right ${HEAD_CLASS}`}>Action</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
+                            <TableBody className="max-xl:block">
                                 {items.map((item) => (
                                     <PendingRentalRow
                                         key={item.rentalId}
