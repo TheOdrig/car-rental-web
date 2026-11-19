@@ -1,8 +1,9 @@
+import { NextResponse } from 'next/server';
 import { ApiError } from '@/shared/api';
-import { getAccessToken, renewAccessToken, route, verifyAccessToken } from '@/shared/server';
+import { getAccessToken, renewAccessToken, route, searchParamsOf, verifyAccessToken } from '@/shared/server';
 
 export const GET = route(
-    async () => {
+    async (request) => {
         let session = await verifyAccessToken(await getAccessToken());
 
         if (!session) {
@@ -10,6 +11,9 @@ export const GET = route(
         }
 
         if (!session) {
+            if (searchParamsOf(request).get('optional') === 'true') {
+                return NextResponse.json(null);
+            }
             throw new ApiError(401, 'Not authenticated');
         }
 

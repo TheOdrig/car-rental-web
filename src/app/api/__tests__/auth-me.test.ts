@@ -23,8 +23,8 @@ import { GET as me } from '../auth/me/route';
 const fetchMock = vi.fn();
 const context = { params: Promise.resolve({}) };
 
-function get(): NextRequest {
-    return new NextRequest('http://localhost:3000/api/auth/me');
+function get(query = ''): NextRequest {
+    return new NextRequest(`http://localhost:3000/api/auth/me${query}`);
 }
 
 function jsonResponse(status: number, body: unknown): Response {
@@ -56,6 +56,15 @@ describe('GET /api/auth/me', () => {
         const response = await me(get(), context);
 
         expect(response.status).toBe(401);
+        expect(fetchMock).not.toHaveBeenCalled();
+    });
+
+    it('answers 200 with null for an anonymous visitor who asks for an optional session', async () => {
+        const response = await me(get('?optional=true'), context);
+
+        expect(response.status).toBe(200);
+        expect(await response.json()).toBeNull();
+        expect(response.headers.get('cache-control')).toBe('private, no-store');
         expect(fetchMock).not.toHaveBeenCalled();
     });
 

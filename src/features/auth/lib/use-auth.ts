@@ -23,7 +23,7 @@ export const authKeys = {
 
 async function fetchMe(): Promise<MeResponse | null> {
     try {
-        return await clientGet<MeResponse>('/api/auth/me');
+        return await clientGet<MeResponse | null>('/api/auth/me?optional=true');
     } catch (error) {
         if (isApiError(error) && error.status === 401) {
             return null;
