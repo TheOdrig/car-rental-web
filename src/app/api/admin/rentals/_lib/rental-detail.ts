@@ -25,19 +25,25 @@ const STATUS_EVENTS: Record<string, { type: TimelineEventType; title: string; no
     CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => rental.cancellationReason },
 };
 
+const PROGRESS = ['CONFIRMED', 'IN_USE', 'RETURNED'];
+
 function timeline(rental: Rental): RentalDetailResponse['timeline'] {
     const created = rental.createTime ?? rental.startDate ?? '';
     const events: RentalDetailResponse['timeline'] = [{ type: 'created', timestamp: created, title: 'Rental requested' }];
-    const current = ownValue(STATUS_EVENTS, rental.status);
+    const reached = rental.status ? PROGRESS.indexOf(rental.status) : -1;
+    const stages = reached >= 0 ? PROGRESS.slice(0, reached + 1) : rental.status ? [rental.status] : [];
 
-    if (current) {
+    stages.forEach((status, index) => {
+        const stage = ownValue(STATUS_EVENTS, status);
+        if (!stage) return;
+        const isCurrent = index === stages.length - 1;
         events.push({
-            type: current.type,
-            timestamp: rental.updateTime ?? created,
-            title: current.title,
-            description: current.note(rental) ?? '',
+            type: stage.type,
+            timestamp: isCurrent ? (rental.updateTime ?? created) : '',
+            title: stage.title,
+            description: stage.note(rental) ?? '',
         });
-    }
+    });
 
     return events;
 }

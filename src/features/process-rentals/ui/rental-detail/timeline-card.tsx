@@ -42,9 +42,7 @@ const eventLabels: Record<TimelineEventType, string> = {
 };
 
 export function TimelineCard({ events }: TimelineCardProps) {
-    const sortedEvents = [...events].sort(
-        (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
-    );
+    const sortedEvents = [...events].reverse();
 
     return (
         <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
@@ -80,9 +78,11 @@ export function TimelineCard({ events }: TimelineCardProps) {
                                             <span className="font-medium text-slate-900 dark:text-slate-100">
                                                 {label}
                                             </span>
-                                            <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
-                                                {formatDateTime(event.timestamp)}
-                                            </span>
+                                            {event.timestamp && (
+                                                <span className="text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
+                                                    {formatDateTime(event.timestamp)}
+                                                </span>
+                                            )}
                                         </div>
 
                                         {event.adminName && (

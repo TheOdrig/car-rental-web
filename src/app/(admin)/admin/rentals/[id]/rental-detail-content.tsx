@@ -73,9 +73,8 @@ export function RentalDetailContent({ id }: { id: string }) {
     const [confirming, setConfirming] = useState<'approve' | 'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn');
-    const paymentQuery = useRentalPayment(rentalId, {
-        enabled: !isNaN(rentalId) && !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED',
-    });
+    const paymentExpected = !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED';
+    const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
@@ -280,6 +279,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     pricing={rental.pricing}
                     penaltyAmount={rentalWithPenalty.penaltyAmount}
                     lateReturnStatus={rentalWithPenalty.lateReturnStatus}
+                    paymentEnabled={paymentExpected}
                 />
                 <TimelineCard events={timelineEvents} />
             </div>

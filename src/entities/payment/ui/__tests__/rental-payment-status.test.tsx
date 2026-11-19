@@ -88,3 +88,18 @@ describe('RentalPaymentStatus', () => {
         expect(screen.queryByRole('button', { name: 'Pay now' })).not.toBeInTheDocument();
     });
 });
+
+describe('RentalPaymentStatus when no payment can exist yet', () => {
+    it('does not request the payment and says none was started', () => {
+        clientGet.mockReset();
+        const client = new QueryClient();
+        render(
+            <QueryClientProvider client={client}>
+                <RentalPaymentStatus rentalId={3} enabled={false} />
+            </QueryClientProvider>
+        );
+
+        expect(clientGet).not.toHaveBeenCalled();
+        expect(screen.getByText('No payment has been started for this rental yet.')).toBeInTheDocument();
+    });
+});

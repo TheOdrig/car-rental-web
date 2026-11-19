@@ -13,9 +13,10 @@ interface PaymentInfoCardProps {
     pricing: RentalPricing;
     penaltyAmount?: number;
     lateReturnStatus?: LateReturnStatus;
+    paymentEnabled?: boolean;
 }
 
-export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnStatus }: PaymentInfoCardProps) {
+export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnStatus, paymentEnabled = true }: PaymentInfoCardProps) {
     const hasPenalty = (penaltyAmount ?? 0) > 0;
     const grandTotal = pricing.finalTotal + (penaltyAmount ?? 0);
 
@@ -101,7 +102,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                 )}
             </CardContent>
         </Card>
-        <RentalPaymentStatus rentalId={rentalId} className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm" />
+        <RentalPaymentStatus rentalId={rentalId} enabled={paymentEnabled} className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm" />
         </div>
     );
 }

@@ -15,6 +15,7 @@ interface RentalPaymentStatusProps {
     action?: (status: PaymentStatusValue | undefined) => ReactNode;
     emptyMessage?: string;
     className?: string;
+    enabled?: boolean;
 }
 
 export function RentalPaymentStatus({
@@ -22,9 +23,10 @@ export function RentalPaymentStatus({
     action,
     emptyMessage = 'No payment has been started for this rental yet.',
     className,
+    enabled = true,
 }: RentalPaymentStatusProps) {
-    const { data, isLoading, error } = useRentalPayment(rentalId);
-    const missing = isApiError(error) && error.status === 404;
+    const { data, isLoading, error } = useRentalPayment(rentalId, { enabled });
+    const missing = !enabled || (isApiError(error) && error.status === 404);
     const refunded = data?.refundedAmount ?? 0;
     const loadFailed = !isLoading && !!error && !missing;
 
@@ -37,7 +39,7 @@ export function RentalPaymentStatus({
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-                {isLoading && <Skeleton className="h-10 w-full" />}
+                {enabled && isLoading && <Skeleton className="h-10 w-full" />}
 
                 {loadFailed && (
                     <p className="text-sm text-destructive" role="alert">
@@ -45,7 +47,7 @@ export function RentalPaymentStatus({
                     </p>
                 )}
 
-                {!isLoading && missing && <p className="text-sm text-muted-foreground">{emptyMessage}</p>}
+                {(!enabled || !isLoading) && missing && <p className="text-sm text-muted-foreground">{emptyMessage}</p>}
 
                 {data && (
                     <div className="space-y-2 text-sm">

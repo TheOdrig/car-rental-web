@@ -413,8 +413,24 @@ describe('admin BFF routes', () => {
         const detail = buildRentalDetail({ rental: { id: 1, status: 'RETURNED', returnNotes: 'clean' } });
 
         expect(detail.status).toBe('COMPLETED');
-        expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'returned']);
-        expect(detail.timeline[1].description).toBe('clean');
+        expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'approved', 'picked_up', 'returned']);
+        expect(detail.timeline[3].description).toBe('clean');
         expect(detail.pricing.currency).toBe('USD');
+    });
+
+    it('keeps the earlier milestones on the timeline once the rental moved on', () => {
+        const detail = buildRentalDetail({
+            rental: { id: 2, status: 'IN_USE', createTime: '2026-11-01T10:00:00Z', updateTime: '2026-11-05T09:00:00Z', pickupNotes: 'keys handed over' },
+        });
+
+        expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'approved', 'picked_up']);
+        expect(detail.timeline[1].timestamp).toBe('');
+        expect(detail.timeline[2]).toMatchObject({ timestamp: '2026-11-05T09:00:00Z', description: 'keys handed over' });
+    });
+
+    it('shows a cancelled rental without inventing earlier milestones', () => {
+        const detail = buildRentalDetail({ rental: { id: 3, status: 'CANCELLED', cancellationReason: 'changed plans' } });
+
+        expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'cancelled']);
     });
 });
