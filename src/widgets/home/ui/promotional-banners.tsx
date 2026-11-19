@@ -111,15 +111,16 @@ export function PromotionalBanners({
                                             </span>
                                         ))}
                                     </p>
-                                    <Link href={deal.ctaLink}>
-                                        <Button
-                                            variant="secondary"
-                                            className="bg-white/10 hover:bg-white/20 text-white border border-white/30 rounded-2xl backdrop-blur-md transition-all duration-300 py-6 px-8 group-hover:border-white/50"
-                                        >
+                                    <Button
+                                        asChild
+                                        variant="secondary"
+                                        className="bg-white/10 hover:bg-white/20 text-white border border-white/30 rounded-2xl backdrop-blur-md transition-all duration-300 py-6 px-8 group-hover:border-white/50"
+                                    >
+                                        <Link href={deal.ctaLink}>
                                             {deal.ctaText}
-                                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                                        </Button>
-                                    </Link>
+                                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                                        </Link>
+                                    </Button>
                                 </div>
                             </div>
                         </div>
