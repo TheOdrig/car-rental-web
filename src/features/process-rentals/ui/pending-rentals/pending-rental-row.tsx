@@ -21,7 +21,7 @@ const LABEL = 'max-xl:before:mb-0.5 max-xl:before:block max-xl:before:text-xs ma
 const CELL = 'max-xl:block max-xl:p-0 max-xl:whitespace-normal';
 
 const LINK_CLASS =
-    'block truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
+    'flex min-h-6 items-center truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
 
 export function PendingRentalRow({ item, type, isProcessing, onAction }: PendingRentalRowProps) {
     const display = getStatusDisplay(item.status);
@@ -68,7 +68,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                         </Link>
                         <Link
                             href={`/admin/rentals/${item.rentalId}`}
-                            className="block text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
+                            className="flex min-h-6 items-center text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
                         >
                             {item.licensePlate} • {formatRentalReference(item.rentalId)}
                         </Link>
