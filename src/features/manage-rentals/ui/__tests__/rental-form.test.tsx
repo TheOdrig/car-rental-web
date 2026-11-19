@@ -72,4 +72,32 @@ describe('RentalForm', () => {
 
         await waitFor(() => expect(document.querySelector(`[data-day="${key}"] button`)).toBeDisabled());
     });
+
+    it('closes the date popover once a date was picked', async () => {
+        const user = userEvent.setup();
+        const day = new Date();
+        day.setDate(day.getDate() + 3);
+        const key = toDateInputValue(day);
+
+        renderWithProviders(<RentalForm car={car} />);
+        await user.click(screen.getAllByRole('button', { name: /select date/i })[0]);
+        await waitFor(() => expect(document.querySelector(`[data-day="${key}"] button`)).not.toBeNull());
+        await user.click(document.querySelector(`[data-day="${key}"] button`) as HTMLElement);
+
+        await waitFor(() => expect(screen.queryByRole('grid')).not.toBeInTheDocument());
+    });
+
+    it('does not let the calendar move into past months or request them', async () => {
+        const user = userEvent.setup();
+        renderWithProviders(<RentalForm car={car} />);
+
+        await user.click(screen.getAllByRole('button', { name: /select date/i })[0]);
+
+        const previous = await screen.findByRole('button', { name: /previous month/i });
+        expect(previous).toHaveAttribute('aria-disabled', 'true');
+        await user.click(previous);
+        const months = clientGet.mock.calls.map(([url]) => String(url));
+        expect(months.every((url) => url.includes(new Date().toISOString().slice(0, 4)))).toBe(true);
+        expect(months).toHaveLength(1);
+    });
 });

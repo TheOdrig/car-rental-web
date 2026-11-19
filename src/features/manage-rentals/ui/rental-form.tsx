@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState, type FormEvent } from 'react';
+import { startOfMonth } from 'date-fns';
 import { useRouter } from 'next/navigation';
 import { CalendarIcon, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -51,10 +52,14 @@ export function RentalForm({ car, className }: RentalFormProps) {
     const [startDate, setStartDate] = useState<Date | undefined>();
     const [endDate, setEndDate] = useState<Date | undefined>();
     const [errors, setErrors] = useState<Record<string, string>>({});
+    const [startOpen, setStartOpen] = useState(false);
+    const [endOpen, setEndOpen] = useState(false);
     const [months, setMonths] = useState<string[]>(() => [monthKey(new Date())]);
     const { booked } = useBookedDates(car.id, months);
+    const firstMonth = useMemo(() => startOfMonth(new Date()), []);
 
     const watchMonth = (date: Date) => {
+        if (date < firstMonth) return;
         const key = monthKey(date);
         setMonths((current) => (current.includes(key) ? current : [...current, key]));
     };
@@ -127,7 +132,7 @@ export function RentalForm({ car, className }: RentalFormProps) {
             <div className="grid gap-4 sm:grid-cols-2">
                 <div className="flex flex-col gap-2">
                     <Label>Start Date</Label>
-                    <Popover>
+                    <Popover open={startOpen} onOpenChange={setStartOpen}>
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
@@ -146,9 +151,11 @@ export function RentalForm({ car, className }: RentalFormProps) {
                             <Calendar
                                 mode="single"
                                 selected={startDate}
+                                startMonth={firstMonth}
                                 onSelect={(date) => {
                                     setStartDate(date);
                                     if (date) {
+                                        setStartOpen(false);
                                         watchMonth(date);
                                         watchMonth(addCalendarDays(date, 30));
                                     }
@@ -172,7 +179,7 @@ export function RentalForm({ car, className }: RentalFormProps) {
 
                 <div className="flex flex-col gap-2">
                     <Label>End Date</Label>
-                    <Popover>
+                    <Popover open={endOpen} onOpenChange={setEndOpen}>
                         <PopoverTrigger asChild>
                             <Button
                                 variant="outline"
@@ -191,8 +198,10 @@ export function RentalForm({ car, className }: RentalFormProps) {
                             <Calendar
                                 mode="single"
                                 selected={endDate}
+                                startMonth={firstMonth}
                                 onSelect={(date) => {
                                     setEndDate(date);
+                                    if (date) setEndOpen(false);
                                     setErrors(prev => ({ ...prev, endDate: '', range: '' }));
                                 }}
                                 disabled={(date) =>
