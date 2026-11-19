@@ -38,8 +38,9 @@ export function UnbanCustomerDialog({
     const unbanCustomer = useUnbanUser();
 
     const handleConfirm = () => {
+        if (unbanCustomer.isPending) return;
         unbanCustomer.mutate(
-            { userId: customerId, note: note.trim() || undefined },
+            { userId: customerId, note: note.trim() || undefined, displayName: customerName },
             {
                 onSuccess: () => {
                     setNote('');

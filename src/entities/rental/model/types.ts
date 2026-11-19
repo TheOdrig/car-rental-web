@@ -95,6 +95,7 @@ export interface RentalHistoryItem {
     endDate: string;
     duration: number;
     totalAmount: number;
+    currency?: string;
     status: AdminRentalStatus;
 }
 

@@ -35,8 +35,8 @@ describe('ApproveRentalDialog', () => {
         expect(screen.getByText(/ABC-1234/i)).toBeInTheDocument();
         expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
         expect(screen.getByText(/john@example.com/i)).toBeInTheDocument();
-        expect(screen.getByText(/VERIFIED IDENTITY/i)).toBeInTheDocument();
-        expect(screen.getByText('4')).toBeInTheDocument();
+        expect(screen.queryByText(/VERIFIED IDENTITY/i)).not.toBeInTheDocument();
+        expect(screen.getByText('5')).toBeInTheDocument();
         expect(screen.getByText('480')).toBeInTheDocument();
     });
     it('should call onApprove with notes when approve button is clicked', async () => {

@@ -1,8 +1,8 @@
 import { toast } from 'sonner';
 
 export const showToast = {
-    success: (message: string, description?: string) => {
-        toast.success(message, { description });
+    success: (message: string, description?: string, action?: { label: string; onClick: () => void }) => {
+        toast.success(message, { description, action });
     },
 
     error: (message: string, description?: string, onRetry?: () => void) => {

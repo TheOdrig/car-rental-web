@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
-import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
@@ -35,7 +35,7 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
                     <div className="flex items-center gap-3 text-sm">
                         <DamageSeverityBadge severity={damage.severity} />
                         <span className="text-muted-foreground">
-                            {new Date(damage.reportedAt).toLocaleDateString()}
+                            {formatDate(damage.reportedAt)}
                         </span>
                     </div>
                     {damage.customerLiability !== undefined && damage.customerLiability > 0 && (

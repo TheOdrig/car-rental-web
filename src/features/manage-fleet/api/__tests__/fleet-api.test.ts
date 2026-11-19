@@ -45,7 +45,8 @@ describe('fleet mutations', () => {
         expect(mockClientDelete).toHaveBeenCalledWith('/api/admin/cars/12');
         expect(mockToast.success).toHaveBeenCalledWith(
             'Car removed from fleet',
-            'The vehicle has been permanently deleted.'
+            'The vehicle was archived and can be restored.',
+            expect.objectContaining({ label: 'Undo' })
         );
     });
 
@@ -74,5 +75,49 @@ describe('fleet mutations', () => {
         await waitFor(() => expect(mockToast.error).toHaveBeenCalled());
         expect(mockToast.error).toHaveBeenCalledWith('Failed to change status', expect.any(String));
         expect(mockToast.success).not.toHaveBeenCalled();
+    });
+});
+
+describe('vehicle detail', () => {
+    it('reads the flat admin car and invents no weekly rate or deposit', async () => {
+        const { clientGet } = await import('@/shared/api');
+        vi.mocked(clientGet).mockResolvedValueOnce({
+            id: 22,
+            brand: 'Toyota',
+            model: 'QA-TRY',
+            productionYear: 2022,
+            licensePlate: '34QA22',
+            carStatusType: 'Maintenance',
+            price: 1500.5,
+            currencyType: 'TRY',
+            imageUrl: 'https://cdn.example.com/a.jpg',
+        });
+        const { useVehicleDetail } = await import('../fleet-api');
+        const { result } = renderHook(() => useVehicleDetail(22), { wrapper: createQueryWrapper() });
+
+        await waitFor(() => expect(result.current.isSuccess).toBe(true));
+
+        expect(vi.mocked(clientGet)).toHaveBeenCalledWith('/api/admin/cars/22');
+        expect(result.current.data).toMatchObject({
+            brand: 'Toyota',
+            year: 2022,
+            status: 'Maintenance',
+            pricing: { dailyRate: 1500.5, currency: 'TRY' },
+        });
+        expect(result.current.data?.pricing).not.toHaveProperty('weeklyRate');
+        expect(result.current.data?.pricing).not.toHaveProperty('depositAmount');
+    });
+});
+
+describe('restoring a car', () => {
+    it('posts to the restore route', async () => {
+        mockClientPost.mockResolvedValueOnce(undefined);
+        const { useRestoreCar } = await import('../fleet-api');
+        const { result } = renderHook(() => useRestoreCar(), { wrapper: createQueryWrapper() });
+
+        result.current.mutate(12);
+
+        await waitFor(() => expect(mockToast.success).toHaveBeenCalledWith('Car restored', expect.any(String)));
+        expect(mockClientPost).toHaveBeenCalledWith('/api/admin/cars/12/restore');
     });
 });

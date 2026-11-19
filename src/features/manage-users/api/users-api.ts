@@ -78,6 +78,7 @@ interface ApiRentalHistoryItem {
     endDate: string;
     days: number;
     totalPrice: number;
+    currency?: string;
     status: string;
 }
 
@@ -106,9 +107,15 @@ async function fetchCustomerRentalHistory(
             endDate: rental.endDate,
             duration: rental.days,
             totalAmount: rental.totalPrice,
+            currency: rental.currency,
             status: toAdminRentalStatus(rental.status),
         })),
     };
+}
+
+function displayName(result: Partial<User> | undefined, fallback?: string): string {
+    const full = [result?.firstName, result?.lastName].filter(Boolean).join(' ');
+    return full || fallback || result?.email || 'The user';
 }
 
 async function banUser(params: BanUserRequest): Promise<User> {
@@ -175,8 +182,8 @@ export function useBanUser() {
 
     return useMutation({
         mutationFn: banUser,
-        onSuccess: (result) => {
-            showToast.success('User banned', `${result.firstName} ${result.lastName} has been banned.`);
+        onSuccess: (result, variables) => {
+            showToast.success('User banned', `${displayName(result, variables.displayName)} has been banned.`);
             void queryClient.invalidateQueries({ queryKey: usersKeys.all });
         },
         onError: (error: Error) => {
@@ -190,8 +197,8 @@ export function useUnbanUser() {
 
     return useMutation({
         mutationFn: unbanUser,
-        onSuccess: (result) => {
-            showToast.success('User unbanned', `${result.firstName} ${result.lastName} has been unbanned.`);
+        onSuccess: (result, variables) => {
+            showToast.success('User unbanned', `${displayName(result, variables.displayName)} has been unbanned.`);
             void queryClient.invalidateQueries({ queryKey: usersKeys.all });
         },
         onError: (error: Error) => {

@@ -10,6 +10,7 @@ import { DamageStatusBadge } from '@/entities/damage';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
 import { useVehicleDamages } from '@/entities/damage';
+import { formatDate } from '@/shared/lib';
 
 interface VehicleDamageHistoryProps {
     carId: number;
@@ -99,7 +100,7 @@ export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHisto
                                             {damage.description}
                                         </p>
                                         <p className="text-xs text-muted-foreground">
-                                            {new Date(damage.reportedAt).toLocaleDateString()}
+                                            {formatDate(damage.reportedAt)}
                                         </p>
                                     </div>
                                 </div>

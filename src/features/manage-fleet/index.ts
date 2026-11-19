@@ -5,6 +5,7 @@ export {
     useCreateCar,
     useUpdateCar,
     useDeleteCar,
+    useRestoreCar,
     useChangeCarStatus,
     useVehicleDetail,
     useVehicleRentalHistory,
@@ -32,7 +33,7 @@ export { defaultCarFormData } from './model/types';
 
 
 
-export { useCarForm } from './lib/use-car-form';
+export { useCarForm, carFormFieldErrors, validateCarForm } from './lib/use-car-form';
 
 
 export * from './ui';

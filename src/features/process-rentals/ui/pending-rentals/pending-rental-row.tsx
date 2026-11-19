@@ -5,9 +5,9 @@ import { Car, User } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { TableCell, TableRow } from '@/shared/ui/table';
-import { formatDate, formatRentalReference } from '@/shared/lib';
+import { formatDate, formatRentalReference, formatAmount } from '@/shared/lib';
 import type { PendingItem } from '@/entities/rental';
-import { formatCurrency, getStatusDisplay, type PendingRentalsType } from './format';
+import { getStatusDisplay, type PendingRentalsType } from './format';
 import { PendingRentalAction, type PendingAction } from './pending-rental-action';
 
 interface PendingRentalRowProps {
@@ -78,7 +78,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     <p className="text-muted-foreground">to {formatDate(item.endDate)}</p>
                 </div>
             </TableCell>
-            <TableCell className="font-medium">{formatCurrency(item.totalAmount)}</TableCell>
+            <TableCell className="font-medium">{formatAmount(item.totalAmount)}</TableCell>
             <TableCell>
                 <Badge variant={display.variant} className={display.className}>
                     {display.label}

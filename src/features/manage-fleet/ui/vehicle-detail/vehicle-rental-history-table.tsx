@@ -9,7 +9,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
-import { formatCurrency, formatDate, formatRentalReference } from '@/shared/lib';
+import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
 import type { AdminRentalStatus } from '@/entities/rental';
 
 interface VehicleRentalHistoryTableProps {
@@ -96,7 +96,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                                 {rental.duration} days
                                             </td>
                                             <td className="py-3 px-2 font-medium text-slate-900 dark:text-slate-100">
-                                                {formatCurrency(rental.totalAmount, 'USD')}
+                                                {formatAmount(rental.totalAmount, rental.currency)}
                                             </td>
                                             <td className="py-3 px-2">
                                                 <Badge variant={statusVariants[rental.status as AdminRentalStatus] || 'outline'}>

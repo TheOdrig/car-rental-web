@@ -173,6 +173,9 @@ export function getApiErrorMessage(error: unknown): string {
         if (error.status === 413) {
             return API_ERROR_MESSAGES.PAYLOAD_TOO_LARGE;
         }
+        if (error.status === 400 && error.errors && error.errors.length > 0) {
+            return error.errors.map(({ field, message }) => `${field}: ${message}`).join('; ');
+        }
         if (isRateLimited(error)) {
             return rateLimitMessage(error.retryAfter);
         }

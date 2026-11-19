@@ -1,5 +1,5 @@
 import { API, created, proxy, readJson, route, upstream } from '@/shared/server';
-import { DEFAULT_CAR_IMAGE, toBackendCar, type CarFormBody } from './_lib/to-backend-car';
+import { carCreateRequest, type CarFormBody } from './_lib/to-backend-car';
 
 export const GET = proxy({
     target: () => API.cars.list.resolve(),
@@ -10,7 +10,7 @@ export const GET = proxy({
 export const POST = route(
     async (request) => {
         const body = await readJson<CarFormBody>(request);
-        const data = await upstream.post(API.cars.create.resolve(), toBackendCar(body, DEFAULT_CAR_IMAGE), {
+        const data = await upstream.post(API.cars.create.resolve(), carCreateRequest(body), {
             cache: 'no-store',
         });
         return created(data);

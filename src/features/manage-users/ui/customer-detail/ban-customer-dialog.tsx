@@ -37,10 +37,10 @@ export function BanCustomerDialog({
     const banCustomer = useBanUser();
 
     const handleConfirm = () => {
-        if (reason.length < 10) return;
+        if (reason.length < 10 || banCustomer.isPending) return;
 
         banCustomer.mutate(
-            { userId: customerId, reason },
+            { userId: customerId, reason, displayName: customerName },
             {
                 onSuccess: () => {
                     setReason('');
@@ -65,7 +65,7 @@ export function BanCustomerDialog({
                         Ban Customer
                     </DialogTitle>
                     <DialogDescription>
-                        You are about to ban <strong>{customerName}</strong>. This action will prevent the customer from making new rentals.
+                        You are about to ban <strong>{customerName}</strong>. This blocks the customer from logging in and from making new rentals.
                     </DialogDescription>
                 </DialogHeader>
 

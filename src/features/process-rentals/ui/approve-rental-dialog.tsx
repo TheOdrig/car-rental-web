@@ -12,14 +12,13 @@ import {
 } from '@/shared/ui/dialog';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
-import { Badge } from '@/shared/ui/badge';
 import {
     Calendar,
     User,
     Car,
     CheckCircle2
 } from 'lucide-react';
-import { formatDate } from '@/shared/lib';
+import { formatDate, formatAmount } from '@/shared/lib';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import type { PendingItem } from '@/entities/rental';
 
@@ -121,9 +120,6 @@ export function ApproveRentalDialog({
                                     <p className="text-xs text-slate-500 dark:text-slate-400 truncate">
                                         {item.customerEmail}
                                     </p>
-                                    <Badge className="bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-none text-[10px] h-5 font-bold">
-                                        VERIFIED IDENTITY
-                                    </Badge>
                                 </div>
                             </div>
                         </div>
@@ -155,14 +151,13 @@ export function ApproveRentalDialog({
                             <div className="space-y-1.5">
                                 <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Duration</p>
                                 <div className="text-sm font-semibold text-slate-900 dark:text-white">
-                                    <span className="text-primary">{differenceInCalendarDays(parseISO(item.endDate), parseISO(item.startDate))}</span> Days
+                                    <span className="text-primary">{differenceInCalendarDays(parseISO(item.endDate), parseISO(item.startDate)) + 1}</span> Days
                                 </div>
                             </div>
                             <div className="space-y-1 ml-auto text-right">
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Amount</p>
                                 <div className="text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-1">
-                                    <span className="text-xl text-primary font-bold">$</span>
-                                    {item.totalAmount.toLocaleString()}
+                                    {formatAmount(item.totalAmount)}
                                 </div>
                             </div>
                         </div>

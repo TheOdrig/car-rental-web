@@ -44,3 +44,19 @@ describe('getApiErrorMessage', () => {
         expect(getApiErrorMessage(problem(500, code, 'kept'))).toBe('kept');
     });
 });
+
+describe('getApiErrorMessage field problems', () => {
+    it('lists each rejected field with its message instead of a generic summary', () => {
+        const error = new ApiError({
+            status: 400,
+            message: 'Validation failed',
+            timestamp: new Date().toISOString(),
+            errors: [
+                { field: 'imageUrl', message: 'Image URL format is invalid' },
+                { field: 'vinNumber', message: 'VIN must be 17 characters' },
+            ],
+        });
+
+        expect(getApiErrorMessage(error)).toBe('imageUrl: Image URL format is invalid; vinNumber: VIN must be 17 characters');
+    });
+});

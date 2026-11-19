@@ -11,6 +11,7 @@ import { FleetStatusCard } from '@/features/manage-fleet';
 import { PendingRentalsTable } from '@/features/process-rentals';
 import type { RevenuePeriod } from '@/features/admin';
 import { useRentalActions } from '@/features/process-rentals';
+import { formatTime } from '@/shared/lib';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -28,11 +29,7 @@ const EMPTY_FLEET_STATUS = {
 function formatUpdatedTime(generatedAt: string | undefined): string | null {
     if (!generatedAt) return null;
 
-    return new Date(generatedAt).toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true,
-    });
+    return formatTime(generatedAt);
 }
 
 export function AdminDashboardContent() {

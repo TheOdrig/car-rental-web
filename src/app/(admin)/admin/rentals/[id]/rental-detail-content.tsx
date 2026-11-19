@@ -21,10 +21,35 @@ import {
     useRejectRental,
     useProcessPickup,
     useProcessReturn,
+    useProcessEarlyReturn,
+    ConfirmActionDialog,
 } from '@/features/process-rentals';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
-import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
-import { formatRentalReference } from '@/shared/lib';
+import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, useCancelRental } from '@/entities/rental';
+import { formatRentalReference, useSingleFlight } from '@/shared/lib';
+
+const CONFIRM_COPY = {
+    pickup: {
+        title: 'Hand the vehicle over?',
+        description: 'This records the pickup and captures the customer payment that was authorized for this rental.',
+        confirm: 'Confirm Pickup',
+    },
+    return: {
+        title: 'Record the return?',
+        description: 'This closes the rental and makes the vehicle available again. Late penalties, if any, are calculated from the return time.',
+        confirm: 'Confirm Return',
+    },
+    earlyReturn: {
+        title: 'Return the vehicle early?',
+        description: 'The rental ends today and the unused days are refunded to the customer according to the rental rules. This cannot be undone.',
+        confirm: 'Return Early',
+    },
+    cancel: {
+        title: 'Cancel this rental?',
+        description: 'The customer is notified and any authorized payment is released. This cannot be undone.',
+        confirm: 'Cancel Rental',
+    },
+} as const;
 
 export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
@@ -34,6 +59,10 @@ export function RentalDetailContent({ id }: { id: string }) {
     const rejectRental = useRejectRental();
     const processPickup = useProcessPickup();
     const processReturn = useProcessReturn();
+    const earlyReturn = useProcessEarlyReturn();
+    const cancelRental = useCancelRental();
+    const singleFlight = useSingleFlight();
+    const [confirming, setConfirming] = useState<'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
@@ -44,7 +73,9 @@ export function RentalDetailContent({ id }: { id: string }) {
         approveRental.isPending ||
         rejectRental.isPending ||
         processPickup.isPending ||
-        processReturn.isPending;
+        processReturn.isPending ||
+        earlyReturn.isPending ||
+        cancelRental.isPending;
 
     if (isLoading) {
         return (
@@ -88,10 +119,8 @@ export function RentalDetailContent({ id }: { id: string }) {
     const referenceNumber = formatRentalReference(rentalId);
 
     const handleApprove = () => {
-        approveRental.mutate({ rentalId }, {
-            onSuccess: () => {
-                void refetch();
-            }
+        void singleFlight(async () => {
+            await approveRental.mutateAsync({ rentalId }).then(() => refetch(), () => undefined);
         });
     };
 
@@ -100,28 +129,32 @@ export function RentalDetailContent({ id }: { id: string }) {
     };
 
     const confirmReject = () => {
-        if (rejectionReason.trim()) {
-            rejectRental.mutate({ rentalId, reason: rejectionReason }, {
-                onSuccess: () => {
-                    setRejectDialogOpen(false);
-                    setRejectionReason('');
-                    void refetch();
-                }
-            });
-        }
-    };
-
-    const handlePickup = () => {
-        processPickup.mutate({ rentalId }, {
-            onSuccess: () => {
+        if (!rejectionReason.trim()) return;
+        void singleFlight(async () => {
+            const done = await rejectRental.mutateAsync({ rentalId, reason: rejectionReason }).then(() => true, () => false);
+            if (done) {
+                setRejectDialogOpen(false);
+                setRejectionReason('');
                 void refetch();
             }
         });
     };
 
-    const handleReturn = () => {
-        processReturn.mutate({ rentalId }, {
-            onSuccess: () => {
+    const runConfirmed = () => {
+        const action = confirming;
+        if (!action) return;
+        void singleFlight(async () => {
+            const request =
+                action === 'pickup'
+                    ? processPickup.mutateAsync({ rentalId })
+                    : action === 'return'
+                      ? processReturn.mutateAsync({ rentalId })
+                      : action === 'earlyReturn'
+                        ? earlyReturn.mutateAsync({ rentalId })
+                        : cancelRental.mutateAsync(rentalId);
+            const done = await request.then(() => true, () => false);
+            if (done) {
+                setConfirming(null);
                 void refetch();
             }
         });
@@ -194,8 +227,10 @@ export function RentalDetailContent({ id }: { id: string }) {
                         status={rental.status}
                         onApprove={handleApprove}
                         onReject={handleReject}
-                        onPickup={handlePickup}
-                        onReturn={handleReturn}
+                        onPickup={() => setConfirming('pickup')}
+                        onReturn={() => setConfirming('return')}
+                        onEarlyReturn={() => setConfirming('earlyReturn')}
+                        onCancel={() => setConfirming('cancel')}
                         pickupBlockedReason={pickupBlockedReason}
                         isLoading={isActionLoading}
                     />
@@ -258,6 +293,17 @@ export function RentalDetailContent({ id }: { id: string }) {
                     />
                 </>
             )}
+
+            <ConfirmActionDialog
+                open={confirming !== null}
+                onOpenChange={(open) => !open && setConfirming(null)}
+                title={CONFIRM_COPY[confirming ?? 'pickup'].title}
+                description={CONFIRM_COPY[confirming ?? 'pickup'].description}
+                confirmLabel={CONFIRM_COPY[confirming ?? 'pickup'].confirm}
+                destructive={confirming === 'cancel'}
+                isPending={isActionLoading}
+                onConfirm={runConfirmed}
+            />
 
             <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
                 <DialogContent className="sm:max-w-md">

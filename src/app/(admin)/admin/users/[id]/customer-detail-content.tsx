@@ -17,6 +17,7 @@ import {
     UnbanCustomerDialog,
     useCustomerDetail,
 } from '@/features/manage-users';
+import { formatDate } from '@/shared/lib';
 
 export function CustomerDetailContent({ id }: { id: string }) {
     const customerId = parseInt(id, 10);
@@ -94,7 +95,7 @@ export function CustomerDetailContent({ id }: { id: string }) {
                         </h1>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {customer.email} • Member since {customer.registrationDate ? new Date(customer.registrationDate).toLocaleDateString() : 'N/A'}
+                        {customer.email} • Member since {customer.registrationDate ? formatDate(customer.registrationDate) : 'N/A'}
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

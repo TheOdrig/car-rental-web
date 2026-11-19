@@ -53,6 +53,7 @@ export interface RentalHistoryItem {
     endDate: string;
     duration: number;
     totalAmount: number;
+    currency?: string;
     status: AdminRentalStatus;
 }
 
@@ -65,11 +66,13 @@ export type PaginatedResponse<T> = PageResponse<T>;
 export interface BanUserRequest {
     userId: number;
     reason: string;
+    displayName?: string;
 }
 
 export interface UnbanUserRequest {
     userId: number;
     note?: string;
+    displayName?: string;
 }
 
 export interface AddNoteRequest {

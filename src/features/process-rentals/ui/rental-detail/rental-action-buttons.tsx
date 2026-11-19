@@ -1,6 +1,6 @@
 'use client';
 
-import { CheckCircle, XCircle, Car, CalendarCheck, Ban } from 'lucide-react';
+import { CheckCircle, XCircle, Car, CalendarCheck, Ban, Undo2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import type { AdminRentalStatus } from '@/entities/rental';
 import type { LucideIcon } from 'lucide-react';
@@ -12,6 +12,7 @@ interface RentalActionButtonsProps {
     onPickup?: () => void;
     onReturn?: () => void;
     onCancel?: () => void;
+    onEarlyReturn?: () => void;
     pickupBlockedReason?: string;
     isLoading?: boolean;
 }
@@ -20,7 +21,7 @@ interface ActionConfig {
     label: string;
     icon: LucideIcon;
     variant: 'default' | 'destructive' | 'outline' | 'secondary';
-    action: 'approve' | 'reject' | 'pickup' | 'return' | 'cancel';
+    action: 'approve' | 'reject' | 'pickup' | 'return' | 'earlyReturn' | 'cancel';
 }
 
 const statusActions: Record<AdminRentalStatus, ActionConfig[]> = {
@@ -34,6 +35,7 @@ const statusActions: Record<AdminRentalStatus, ActionConfig[]> = {
     ],
     ACTIVE: [
         { label: 'Process Return', icon: CalendarCheck, variant: 'default', action: 'return' },
+        { label: 'Return Early', icon: Undo2, variant: 'outline', action: 'earlyReturn' },
     ],
     COMPLETED: [],
     CANCELLED: [],
@@ -50,6 +52,7 @@ export function RentalActionButtons({
     onPickup,
     onReturn,
     onCancel,
+    onEarlyReturn,
     pickupBlockedReason,
     isLoading,
 }: RentalActionButtonsProps) {
@@ -73,6 +76,9 @@ export function RentalActionButtons({
             case 'return':
                 onReturn?.();
                 break;
+            case 'earlyReturn':
+                onEarlyReturn?.();
+                break;
             case 'cancel':
                 onCancel?.();
                 break;
@@ -90,7 +96,7 @@ export function RentalActionButtons({
                         key={action.action}
                         variant={action.variant}
                         onClick={() => handleAction(action.action)}
-                        disabled={isLoading || (action.action === 'pickup' && !!pickupBlockedReason)}
+                        disabled={isLoading || (action.action === 'pickup' && !!pickupBlockedReason) || (action.action === 'earlyReturn' && !onEarlyReturn) || (action.action === 'cancel' && !onCancel)}
                     >
                         <Icon className="h-4 w-4 mr-2" />
                         {action.label}

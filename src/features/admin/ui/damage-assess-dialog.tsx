@@ -24,7 +24,9 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
-import { useAssessDamage } from '@/entities/damage';
+import { useAssessDamage, useReassessDamage } from '@/entities/damage';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { getCurrencySymbol } from '@/shared/lib';
 import type { DamageSeverity, DamageCategory } from '@/entities/damage';
 import type { CurrencyType } from '@/shared/types';
 
@@ -41,6 +43,8 @@ interface DamageAssessDialogProps {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     onSuccess?: () => void;
+    mode?: 'assess' | 'reassess';
+    rentalCurrency?: CurrencyType;
     defaultValues?: {
         severity?: DamageSeverity;
         category?: DamageCategory;
@@ -73,13 +77,17 @@ export function DamageAssessDialog({
     open,
     onOpenChange,
     onSuccess,
+    mode = 'assess',
+    rentalCurrency,
     defaultValues,
 }: DamageAssessDialogProps) {
-    const assessDamage = useAssessDamage();
+    const assessMutation = useAssessDamage();
+    const reassessMutation = useReassessDamage();
+    const assessDamage = mode === 'reassess' ? reassessMutation : assessMutation;
     const [severity, setSeverity] = useState<DamageSeverity>(defaultValues?.severity || 'MODERATE');
     const [category, setCategory] = useState<DamageCategory>(defaultValues?.category || 'SCRATCH');
     const [insuranceCoverage, setInsuranceCoverage] = useState(defaultValues?.insuranceCoverage || false);
-    const [currency, setCurrency] = useState<CurrencyType>(defaultValues?.currency ?? 'USD');
+    const [currency, setCurrency] = useState<CurrencyType>(defaultValues?.currency ?? rentalCurrency ?? DEFAULT_CURRENCY);
 
     const {
         register,
@@ -120,7 +128,7 @@ export function DamageAssessDialog({
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border dark:border-slate-700">
                 <DialogHeader>
-                    <DialogTitle className="text-slate-900 dark:text-white">Assess Damage</DialogTitle>
+                    <DialogTitle className="text-slate-900 dark:text-white">{mode === 'reassess' ? 'Update Assessment' : 'Assess Damage'}</DialogTitle>
                     <DialogDescription className="text-slate-600 dark:text-slate-400">
                         Evaluate the damage and provide repair cost estimate.
                     </DialogDescription>
@@ -213,7 +221,7 @@ export function DamageAssessDialog({
 
                     {insuranceCoverage && (
                         <div className="space-y-2">
-                            <Label htmlFor="insuranceDeductible" className="text-slate-700 dark:text-slate-300">Insurance Deductible ($)</Label>
+                            <Label htmlFor="insuranceDeductible" className="text-slate-700 dark:text-slate-300">Insurance Deductible ({getCurrencySymbol(currency)})</Label>
                             <Input
                                 id="insuranceDeductible"
                                 type="number"

@@ -14,6 +14,7 @@ import {
     useVehicleDetail,
     useUpdateCar,
     useCarForm,
+    carFormFieldErrors,
     type CarFormData,
 } from '@/features/manage-fleet';
 import type { VehicleDetailResponse } from '@/entities/car';
@@ -57,14 +58,12 @@ export function EditCarContent() {
         year: car.year || new Date().getFullYear(),
         licensePlate: car.licensePlate || '',
         vin: car.vin || '',
-        fuelType: car.fuelType?.toLowerCase() || '',
-        transmissionType: car.transmissionType?.toLowerCase() || '',
-        bodyType: car.bodyType?.toLowerCase() || '',
+        fuelType: car.fuelType || '',
+        transmissionType: car.transmissionType || '',
+        bodyType: car.bodyType || '',
         seats: car.seats || 5,
-        color: car.color?.toLowerCase() || '',
+        color: car.color || '',
         dailyRate: car.pricing?.dailyRate || 0,
-        weeklyRate: car.pricing?.weeklyRate || 0,
-        depositAmount: car.pricing?.depositAmount || 0,
         currencyType: mapCurrency(car.pricing?.currency),
         imageUrl: car.images?.primary || '',
     };
@@ -93,6 +92,7 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
     const {
         formData,
         errors,
+        setErrors,
         updateField,
         validateForm,
     } = useCarForm(initialFormData);
@@ -109,6 +109,7 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
             onSuccess: () => {
                 router.push('/admin/fleet');
             },
+            onError: (error) => setErrors(carFormFieldErrors(error)),
         });
     };
 
@@ -180,7 +181,7 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
                             <CardHeader>
                                 <CardTitle>Pricing</CardTitle>
                                 <CardDescription>
-                                    Update rental rates and deposit
+                                    Update the daily rate and currency
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -206,7 +207,6 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
                     <Button type="submit" disabled={updateCar.isPending} className="gap-2">
                         {updateCar.isPending ? (
                             <>
-                                <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                                 <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
                                 Saving...
                             </>

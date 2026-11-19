@@ -7,12 +7,14 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { useRental } from '@/entities/rental';
+import type { CurrencyType } from '@/shared/types';
 
 export function DamageDetailContent({ id }: { id: string }) {
     const damageId = parseInt(id, 10);
@@ -23,6 +25,7 @@ export function DamageDetailContent({ id }: { id: string }) {
     const [showChargeDialog, setShowChargeDialog] = useState(false);
 
     const { data: damage, isLoading, refetch } = useDamageDetail(damageId);
+    const rentalQuery = useRental(damage?.rentalId);
 
     if (isLoading) {
         return <DamageDetailSkeleton />;
@@ -41,6 +44,7 @@ export function DamageDetailContent({ id }: { id: string }) {
     }
 
     const canAssess = damage.status === 'REPORTED' || damage.status === 'UNDER_ASSESSMENT';
+    const canReassess = damage.status === 'ASSESSED';
     const canResolve = damage.status === 'DISPUTED';
     const liability = damage.customerLiability ?? 0;
     const canCharge = damage.status === 'ASSESSED' && liability > 0;
@@ -64,7 +68,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                     <div>
                         <h1 className="text-2xl font-bold">Damage Report #{damage.id}</h1>
                         <p className="text-sm text-muted-foreground">
-                            Reported on {new Date(damage.reportedAt).toLocaleDateString()}
+                            Reported on {formatDate(damage.reportedAt)}
                         </p>
                     </div>
                 </div>
@@ -73,6 +77,12 @@ export function DamageDetailContent({ id }: { id: string }) {
                         <Button onClick={() => setShowAssessDialog(true)} className="gap-2">
                             <Edit2 className="h-4 w-4" />
                             Assess Damage
+                        </Button>
+                    )}
+                    {canReassess && (
+                        <Button variant="outline" onClick={() => setShowAssessDialog(true)} className="gap-2">
+                            <Edit2 className="h-4 w-4" />
+                            Update Assessment
                         </Button>
                     )}
                     {canCharge && (
@@ -165,7 +175,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                                 {damage.assessedAt && (
                                     <div>
                                         <p className="text-sm text-muted-foreground">Assessed On</p>
-                                        <p className="font-medium">{new Date(damage.assessedAt).toLocaleDateString()}</p>
+                                        <p className="font-medium">{formatDate(damage.assessedAt)}</p>
                                     </div>
                                 )}
                             </div>
@@ -195,6 +205,8 @@ export function DamageDetailContent({ id }: { id: string }) {
                 open={showAssessDialog}
                 onOpenChange={setShowAssessDialog}
                 onSuccess={() => refetch()}
+                mode={canReassess ? 'reassess' : 'assess'}
+                rentalCurrency={rentalQuery.data?.currency as CurrencyType | undefined}
                 defaultValues={{
                     severity: damage.severity,
                     category: damage.category,

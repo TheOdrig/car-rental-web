@@ -17,6 +17,7 @@ import {
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
 import type { Car, CarStatus } from '@/entities/car';
+import { formatTime } from '@/shared/lib';
 
 type StatusFilter = 'all' | CarStatus;
 
@@ -83,11 +84,7 @@ export function FleetManagementContent() {
     };
 
     const lastUpdated = fleetStatus?.generatedAt
-        ? new Date(fleetStatus.generatedAt).toLocaleTimeString('en-US', {
-            hour: 'numeric',
-            minute: '2-digit',
-            hour12: true
-        })
+        ? formatTime(fleetStatus.generatedAt)
         : null;
 
     const isLoading = isLoadingStats || isLoadingCars;

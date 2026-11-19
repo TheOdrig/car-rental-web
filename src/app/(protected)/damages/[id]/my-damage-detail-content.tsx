@@ -6,7 +6,7 @@ import { ArrowLeft, AlertTriangle, FileWarning } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
@@ -71,7 +71,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                             <h1 className="text-2xl font-bold">Damage Report</h1>
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">
-                            Reported on {new Date(damage.reportedAt).toLocaleDateString()}
+                            Reported on {formatDate(damage.reportedAt)}
                         </p>
                     </div>
                     {canDispute && (
@@ -157,7 +157,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                     {damage.assessedAt && (
                                         <div>
                                             <p className="text-sm text-muted-foreground">Assessed On</p>
-                                            <p className="font-medium">{new Date(damage.assessedAt).toLocaleDateString()}</p>
+                                            <p className="font-medium">{formatDate(damage.assessedAt)}</p>
                                         </div>
                                     )}
                                 </div>

@@ -4,7 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
-import { carKeys, type Car, type CarStatus, type VehicleDetailResponse } from '@/entities/car';
+import { carKeys, type Car, type VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
@@ -25,8 +25,6 @@ export interface CreateCarRequest {
     seats: number;
     color?: string;
     dailyRate: number;
-    weeklyRate?: number;
-    depositAmount?: number;
     currencyType: CurrencyType;
 }
 
@@ -51,6 +49,7 @@ export interface RentalHistoryItem {
     endDate: string;
     duration: number;
     totalAmount: number;
+    currency?: string;
     status: string;
 }
 
@@ -101,6 +100,10 @@ async function deleteCar(carId: number): Promise<void> {
     return clientDelete<void>(`/api/admin/cars/${carId}`);
 }
 
+async function restoreCar(carId: number): Promise<void> {
+    return clientPost<void>(`/api/admin/cars/${carId}/restore`);
+}
+
 async function changeCarStatus(params: { id: number; status: string; reason?: string }): Promise<Car> {
     return clientPost<Car>(`/api/admin/cars/${params.id}/status`, {
         status: params.status,
@@ -109,24 +112,7 @@ async function changeCarStatus(params: { id: number; status: string; reason?: st
 }
 
 async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
-    const response = await clientGet<{
-        id: number;
-        brand: string;
-        model: string;
-        productionYear: number;
-        licensePlate: string;
-        vinNumber?: string;
-        carStatusType: string;
-        fuelType: string;
-        transmissionType: string;
-        bodyType: string;
-        seats: number;
-        color: string;
-        price: number;
-        currencyType: string;
-        imageUrl?: string;
-        thumbnailUrl?: string;
-    }>(`/api/cars/${id}`);
+    const response = await clientGet<Car>(`/api/admin/cars/${id}`);
 
     return {
         id: response.id,
@@ -135,17 +121,15 @@ async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
         year: response.productionYear,
         licensePlate: response.licensePlate,
         vin: response.vinNumber,
-        status: response.carStatusType as CarStatus,
-        fuelType: response.fuelType,
-        transmissionType: response.transmissionType,
-        bodyType: response.bodyType,
-        seats: response.seats,
-        color: response.color,
+        status: response.carStatusType,
+        fuelType: response.fuelType ?? '',
+        transmissionType: response.transmissionType ?? '',
+        bodyType: response.bodyType ?? '',
+        seats: response.seats ?? 0,
+        color: response.color ?? '',
         pricing: {
             dailyRate: response.price,
-            weeklyRate: response.price * 6,
-            depositAmount: response.price * 3,
-            currency: response.currencyType as CurrencyType,
+            currency: response.currencyType,
         },
         images: {
             primary: response.imageUrl || '',
@@ -171,6 +155,7 @@ interface ApiVehicleRentalHistoryItem {
     endDate: string;
     days: number;
     totalPrice: number;
+    currency?: string;
     status: string;
 }
 
@@ -194,6 +179,7 @@ async function fetchVehicleRentalHistory(id: number, page: number): Promise<Pagi
             endDate: rental.endDate,
             duration: rental.days,
             totalAmount: rental.totalPrice,
+            currency: rental.currency,
             status: toAdminRentalStatus(rental.status),
         })),
     };
@@ -231,7 +217,7 @@ export function useCreateCar() {
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to add car', error.message);
+            showToast.error('Failed to add car', getApiErrorMessage(error));
         },
     });
 }
@@ -252,18 +238,38 @@ export function useUpdateCar() {
     });
 }
 
-export function useDeleteCar() {
+export function useRestoreCar() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: deleteCar,
+        mutationFn: restoreCar,
         onSuccess: () => {
-            showToast.success('Car removed from fleet', 'The vehicle has been permanently deleted.');
+            showToast.success('Car restored', 'The vehicle is back in the fleet.');
             void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to remove car', error.message);
+            showToast.error('Failed to restore car', getApiErrorMessage(error));
+        },
+    });
+}
+
+export function useDeleteCar() {
+    const queryClient = useQueryClient();
+    const restore = useRestoreCar();
+
+    return useMutation({
+        mutationFn: deleteCar,
+        onSuccess: (_result, carId) => {
+            showToast.success('Car removed from fleet', 'The vehicle was archived and can be restored.', {
+                label: 'Undo',
+                onClick: () => restore.mutate(carId),
+            });
+            void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to remove car', getApiErrorMessage(error));
         },
     });
 }

@@ -25,8 +25,6 @@ export interface CarFormData {
     seats: number;
     color: string;
     dailyRate: number;
-    weeklyRate: number;
-    depositAmount: number;
     currencyType: CurrencyType;
     imageUrl: string;
 }
@@ -43,8 +41,6 @@ export const defaultCarFormData: CarFormData = {
     seats: 5,
     color: '',
     dailyRate: 0,
-    weeklyRate: 0,
-    depositAmount: 0,
     currencyType: DEFAULT_CURRENCY,
     imageUrl: '',
 };

@@ -60,13 +60,15 @@ export const UserTable = memo(function UserTable({
 
     const handleBanConfirm = (reason: string) => {
         if (selectedUser) {
-            banMutation.mutate({ userId: selectedUser.id, reason }, { onSuccess: closeDialogs });
+            if (banMutation.isPending) return;
+            banMutation.mutate({ userId: selectedUser.id, reason, displayName: selectedUser.name }, { onSuccess: closeDialogs });
         }
     };
 
     const handleUnbanConfirm = () => {
         if (selectedUser) {
-            unbanMutation.mutate({ userId: selectedUser.id }, { onSuccess: closeDialogs });
+            if (unbanMutation.isPending) return;
+            unbanMutation.mutate({ userId: selectedUser.id, displayName: selectedUser.name }, { onSuccess: closeDialogs });
         }
     };
 

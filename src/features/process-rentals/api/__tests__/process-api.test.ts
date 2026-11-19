@@ -180,3 +180,30 @@ describe('pickup refused by the API on the rental dates', () => {
         errorLog.mockRestore();
     });
 });
+
+describe('early return', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('posts to the early-return route and tells the admin about the refund', async () => {
+        mockClientPost.mockResolvedValueOnce({ success: true, message: 'ok' });
+        const { useProcessEarlyReturn } = await import('../process-api');
+        const { result } = renderHook(() => useProcessEarlyReturn(), { wrapper: createQueryWrapper() });
+
+        result.current.mutate({ rentalId: 7 });
+
+        await waitFor(() => expect(mockToast.success).toHaveBeenCalledWith('Early return recorded', expect.stringMatching(/refund/i)));
+        expect(mockClientPost).toHaveBeenCalledWith('/api/admin/rentals/7/early-return', undefined);
+    });
+
+    it('shows the failure toast with the API message', async () => {
+        mockClientPost.mockRejectedValueOnce(new ApiError({ status: 400, message: 'Not in use', timestamp: new Date().toISOString() }));
+        const { useProcessEarlyReturn } = await import('../process-api');
+        const { result } = renderHook(() => useProcessEarlyReturn(), { wrapper: createQueryWrapper() });
+
+        result.current.mutate({ rentalId: 7 });
+
+        await waitFor(() => expect(mockToast.error).toHaveBeenCalledWith('Failed to record the early return', 'Not in use'));
+    });
+});

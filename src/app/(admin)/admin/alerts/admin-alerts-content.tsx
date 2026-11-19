@@ -31,6 +31,7 @@ export function AdminAlertsContent() {
     };
 
     const handleDismiss = async (alertId: string) => {
+        if (dismissMutation.isPending) return;
         try {
             await dismissMutation.mutateAsync(alertId);
         } catch {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, clientDelete, getApiErrorMessage, getSafeErrorMessage } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, clientPut, clientDelete, getApiErrorMessage, getSafeErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type {
     DamageReport,
@@ -113,6 +113,13 @@ async function createDamage(
     request: DamageReportRequest
 ): Promise<DamageReport> {
     return clientPost<DamageReport>(`/api/admin/damages?rentalId=${rentalId}`, request);
+}
+
+async function reassessDamage(
+    damageId: number,
+    request: DamageAssessmentRequest
+): Promise<DamageReport> {
+    return clientPut<DamageReport>(`/api/admin/damages/${damageId}/assess`, request);
 }
 
 async function assessDamage(
@@ -269,7 +276,24 @@ export function useAssessDamage() {
             void queryClient.invalidateQueries({ queryKey: damageKeys.lists() });
         },
         onError: (error: Error) => {
-            showToast.error('Failed to assess damage', error.message);
+            showToast.error('Failed to assess damage', getApiErrorMessage(error));
+        },
+    });
+}
+
+export function useReassessDamage() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ damageId, request }: { damageId: number; request: DamageAssessmentRequest }) =>
+            reassessDamage(damageId, request),
+        onSuccess: (_, variables) => {
+            showToast.success('Assessment updated');
+            void queryClient.invalidateQueries({ queryKey: damageKeys.detail(variables.damageId) });
+            void queryClient.invalidateQueries({ queryKey: damageKeys.lists() });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to update the assessment', getApiErrorMessage(error));
         },
     });
 }

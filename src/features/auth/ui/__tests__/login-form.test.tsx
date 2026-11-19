@@ -245,6 +245,36 @@ describe('LoginForm', () => {
     });
 
     describe('Unsafe callback URL', () => {
+        it('should land an administrator on the admin dashboard when no return page was requested', async () => {
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: vi.fn().mockResolvedValue({ principal: { roles: ['ADMIN'] } }),
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm />);
+
+            await user.type(getUsernameInput(), 'admin');
+            await user.type(getPasswordInput(), 'password123');
+            submitForm();
+
+            await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/admin/dashboard'));
+        });
+
+        it('should keep an explicit return page for an administrator', async () => {
+            vi.mocked(useLogin).mockReturnValue({
+                mutateAsync: vi.fn().mockResolvedValue({ principal: { roles: ['ADMIN'] } }),
+                isPending: false,
+            } as unknown as ReturnType<typeof useLogin>);
+
+            renderWithProviders(<LoginForm callbackUrl="/admin/users" />);
+
+            await user.type(getUsernameInput(), 'admin');
+            await user.type(getPasswordInput(), 'password123');
+            submitForm();
+
+            await waitFor(() => expect(mockPush).toHaveBeenCalledWith('/admin/users'));
+        });
+
         it('should ignore an external callback URL after login', async () => {
             const mockMutateAsync = vi.fn().mockResolvedValue({});
             vi.mocked(useLogin).mockReturnValue({

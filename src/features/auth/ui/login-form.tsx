@@ -93,11 +93,13 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
         if (!validateForm()) return;
 
         try {
-            await loginMutation.mutateAsync({
+            const result = await loginMutation.mutateAsync({
                 username: formData.username,
                 password: formData.password,
             });
-            router.push(safeRedirectPath(callbackUrl));
+            const isAdmin = result?.principal?.roles?.includes('ADMIN') ?? false;
+            const target = safeRedirectPath(callbackUrl);
+            router.push(isAdmin && target === '/' ? '/admin/dashboard' : target);
         } catch (error) {
             setFormError(getFormErrorMessage(error, 'Invalid credentials. Please try again.'));
         }

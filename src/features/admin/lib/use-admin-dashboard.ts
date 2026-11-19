@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, type PendingFilters, type Schemas } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, isApiError, type PendingFilters, type Schemas } from '@/shared/api';
 import { carKeys } from '@/entities/car';
 import { showToast } from '@/shared/lib';
 import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAlert } from '@/features/admin';
@@ -200,8 +200,14 @@ export function useDismissAlert() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: acknowledgeAlert,
-        onSuccess: () => {
+        mutationFn: async (alertId: string) => {
+            try {
+                await acknowledgeAlert(alertId);
+            } catch (error) {
+                if (!isApiError(error) || error.status !== 409) throw error;
+            }
+        },
+        onSettled: () => {
             void queryClient.invalidateQueries({ queryKey: adminKeys.alerts() });
         },
     });

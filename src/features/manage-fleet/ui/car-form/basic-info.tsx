@@ -141,8 +141,9 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     onChange={(e) => onUpdate('vin', e.target.value.toUpperCase())}
                     placeholder="17-character VIN"
                     maxLength={17}
-                    className="font-mono uppercase"
+                    className={cn('font-mono uppercase', errors.vin && 'border-destructive')}
                 />
+                {errors.vin && <p className="text-sm text-destructive">{errors.vin}</p>}
                 <p className="text-xs text-muted-foreground">
                     Optional: 17-character vehicle identification number
                 </p>

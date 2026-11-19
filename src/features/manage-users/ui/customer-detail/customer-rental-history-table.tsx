@@ -16,7 +16,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { useCustomerRentalHistory } from '../../api/users-api';
-import { formatCurrency, formatDate, formatRentalReference } from '@/shared/lib';
+import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
 import type { AdminRentalStatus } from '@/entities/rental';
 
 interface CustomerRentalHistoryTableProps {
@@ -140,7 +140,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                                                 {rental.duration} days
                                             </td>
                                             <td className="py-3 px-2 font-medium text-slate-900 dark:text-slate-100">
-                                                {formatCurrency(rental.totalAmount, 'USD')}
+                                                {formatAmount(rental.totalAmount, rental.currency)}
                                             </td>
                                             <td className="py-3 px-2">
                                                 <Badge variant={statusVariants[rental.status]}>

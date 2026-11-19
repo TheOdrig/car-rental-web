@@ -12,7 +12,7 @@ import {
     Percent,
 } from 'lucide-react';
 import type { LateReturnStatistics } from '@/entities/rental';
-import { formatCurrency } from '@/shared/lib';
+import { formatAmount } from '@/shared/lib';
 
 interface LateReturnStatsProps {
     data?: LateReturnStatistics;
@@ -45,21 +45,21 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
         },
         {
             label: 'Total Penalties',
-            value: formatCurrency(data.totalPenaltyAmount, 'USD'),
+            value: formatAmount(data.totalPenaltyAmount),
             icon: DollarSign,
             color: 'text-orange-600 dark:text-orange-400',
             bgColor: 'bg-orange-100 dark:bg-orange-900/30',
         },
         {
             label: 'Collected',
-            value: formatCurrency(data.collectedPenaltyAmount, 'USD'),
+            value: formatAmount(data.collectedPenaltyAmount),
             icon: CheckCircle,
             color: 'text-green-600 dark:text-green-400',
             bgColor: 'bg-green-100 dark:bg-green-900/30',
         },
         {
             label: 'Pending',
-            value: formatCurrency(data.pendingPenaltyAmount, 'USD'),
+            value: formatAmount(data.pendingPenaltyAmount),
             icon: Timer,
             color: 'text-yellow-600 dark:text-yellow-400',
             bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',

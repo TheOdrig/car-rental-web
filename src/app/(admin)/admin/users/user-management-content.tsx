@@ -15,6 +15,7 @@ import { Breadcrumb } from '@/widgets/layout';
 import { UserStatsCards, UserTable, useUserStats, useInvalidateUsers } from '@/features/manage-users';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { formatTime } from '@/shared/lib';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
 type UserStatus = 'all' | 'ACTIVE' | 'BANNED';
@@ -32,11 +33,7 @@ export function UserManagementContent() {
         toast.success('User data refreshed');
     };
 
-    const lastUpdated = new Date().toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-    });
+    const lastUpdated = formatTime(new Date());
 
     const statsData = {
         totalUsers: stats?.totalUsers ?? 0,

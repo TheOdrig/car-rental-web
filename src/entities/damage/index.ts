@@ -31,6 +31,7 @@ export {
     useUploadPhotos,
     useDeletePhoto,
     useAssessDamage,
+    useReassessDamage,
     useResolveDamage,
     useChargeDamage,
     useInvalidateDamages,

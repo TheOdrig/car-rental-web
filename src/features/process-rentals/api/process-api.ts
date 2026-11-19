@@ -31,6 +31,10 @@ async function processReturn({ rentalId, data }: ProcessReturnRequest): Promise<
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
 }
 
+async function processEarlyReturn({ rentalId, data }: ProcessReturnRequest): Promise<QuickActionResult> {
+    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/early-return`, data);
+}
+
 async function rejectRental({ rentalId, reason }: RejectRentalRequest): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
 }
@@ -96,6 +100,24 @@ export function useProcessReturn() {
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.returnError, getAdminActionErrorMessage(error));
+        },
+    });
+}
+
+export function useProcessEarlyReturn() {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: processEarlyReturn,
+        onSuccess: () => {
+            showToast.success('Early return recorded', 'Unused days are refunded to the customer.');
+            void queryClient.invalidateQueries({ queryKey: processKeys.all });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: carKeys.all });
+            void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
+        },
+        onError: (error: Error) => {
+            showToast.error('Failed to record the early return', getAdminActionErrorMessage(error));
         },
     });
 }

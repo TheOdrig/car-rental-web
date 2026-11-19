@@ -223,7 +223,7 @@ export const FleetTable = memo(function FleetTable({
                                                 {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}
                                             </TableCell>
                                             <TableCell className="text-right">
-                                                <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
+                                                <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 md:focus-within:opacity-100">
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
@@ -286,16 +286,8 @@ export const FleetTable = memo(function FleetTable({
 
                     <div className="flex items-center justify-between pt-4 border-t mt-4">
                         <p className="text-sm text-muted-foreground">
-                            Showing 1-{cars.length} of {totalCars} results
+                            Showing {cars.length} of {totalCars} vehicles
                         </p>
-                        <div className="flex gap-1">
-                            <Button variant="outline" size="sm" disabled>
-                                Previous
-                            </Button>
-                            <Button variant="outline" size="sm" disabled>
-                                Next
-                            </Button>
-                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -309,7 +301,7 @@ export const FleetTable = memo(function FleetTable({
                             <span className="font-semibold">
                                 {selectedCar?.brand} {selectedCar?.model}
                             </span>{' '}
-                            ({selectedCar?.licensePlate}) from the fleet? This action cannot be undone.
+                            ({selectedCar?.licensePlate}) from the fleet? The vehicle is archived and can be restored right after removal.
                         </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>

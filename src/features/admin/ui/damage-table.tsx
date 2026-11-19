@@ -13,6 +13,7 @@ import {
 import { Skeleton } from '@/shared/ui/skeleton';
 import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
 import type { DamageReport } from '@/entities/damage';
+import { formatDate } from '@/shared/lib';
 
 interface DamageTableProps {
     damages: DamageReport[];
@@ -94,11 +95,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                 <DamageStatusBadge status={damage.status} />
                             </TableCell>
                             <TableCell className="text-slate-600 dark:text-slate-400">
-                                {new Date(damage.reportedAt).toLocaleDateString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric'
-                                })}
+                                {formatDate(damage.reportedAt)}
                             </TableCell>
                         </TableRow>
                     ))}

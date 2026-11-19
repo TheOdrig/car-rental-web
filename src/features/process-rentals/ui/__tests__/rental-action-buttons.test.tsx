@@ -1,5 +1,6 @@
 'use client';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { RentalActionButtons } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
@@ -45,5 +46,31 @@ describe('RentalActionButtons', () => {
         renderWithProviders(<RentalActionButtons {...defaultProps} status="PENDING" isLoading={true} />);
         expect(screen.getByRole('button', { name: /Approve/i })).toBeDisabled();
         expect(screen.getByRole('button', { name: /Reject/i })).toBeDisabled();
+    });
+});describe('RentalActionButtons early return and cancel', () => {
+    const noop = () => { };
+
+    it('offers Return Early for an ACTIVE rental and calls its handler', async () => {
+        const onEarlyReturn = vi.fn();
+        renderWithProviders(<RentalActionButtons status="ACTIVE" onReturn={noop} onEarlyReturn={onEarlyReturn} />);
+
+        await userEvent.setup().click(screen.getByRole('button', { name: /Return Early/i }));
+
+        expect(onEarlyReturn).toHaveBeenCalledTimes(1);
+    });
+
+    it('runs the cancel handler for a CONFIRMED rental instead of doing nothing', async () => {
+        const onCancel = vi.fn();
+        renderWithProviders(<RentalActionButtons status="CONFIRMED" onPickup={noop} onCancel={onCancel} />);
+
+        await userEvent.setup().click(screen.getByRole('button', { name: /^Cancel$/i }));
+
+        expect(onCancel).toHaveBeenCalledTimes(1);
+    });
+
+    it('disables an action that has no handler', () => {
+        renderWithProviders(<RentalActionButtons status="CONFIRMED" onPickup={noop} />);
+
+        expect(screen.getByRole('button', { name: /^Cancel$/i })).toBeDisabled();
     });
 });

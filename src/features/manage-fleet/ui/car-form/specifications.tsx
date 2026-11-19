@@ -10,6 +10,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { cn } from '@/shared/lib';
+import { uniqueOptions, useFilterOptions } from '@/entities/car';
 import type { CarFormData } from '../../model/types';
 
 interface SpecificationsSectionProps {
@@ -18,47 +19,36 @@ interface SpecificationsSectionProps {
     onUpdate: (field: keyof CarFormData, value: string | number) => void;
 }
 
-const fuelTypes = [
-    { value: 'gasoline', label: 'Gasoline' },
-    { value: 'diesel', label: 'Diesel' },
-    { value: 'electric', label: 'Electric' },
-    { value: 'hybrid', label: 'Hybrid' },
-    { value: 'plugin_hybrid', label: 'Plug-in Hybrid' },
-];
+const BASE_FUEL_TYPES = ['Gasoline', 'Diesel', 'Electric', 'Hybrid', 'Plug-in Hybrid'];
+const BASE_TRANSMISSIONS = ['Automatic', 'Manual', 'CVT'];
+const BASE_BODY_TYPES = ['Sedan', 'SUV', 'Hatchback', 'Coupe', 'Convertible', 'Wagon', 'Pickup', 'Van'];
+const BASE_COLORS = ['Black', 'White', 'Silver', 'Gray', 'Red', 'Blue', 'Green', 'Brown', 'Beige', 'Other'];
 
-const transmissionTypes = [
-    { value: 'automatic', label: 'Automatic' },
-    { value: 'manual', label: 'Manual' },
-    { value: 'cvt', label: 'CVT' },
-];
+interface OptionSet {
+    options: { value: string; label: string }[];
+    selected: string;
+}
 
-const bodyTypes = [
-    { value: 'sedan', label: 'Sedan' },
-    { value: 'suv', label: 'SUV' },
-    { value: 'hatchback', label: 'Hatchback' },
-    { value: 'coupe', label: 'Coupe' },
-    { value: 'convertible', label: 'Convertible' },
-    { value: 'wagon', label: 'Wagon' },
-    { value: 'pickup', label: 'Pickup Truck' },
-    { value: 'van', label: 'Van' },
-];
-
-const colors = [
-    { value: 'black', label: 'Black' },
-    { value: 'white', label: 'White' },
-    { value: 'silver', label: 'Silver' },
-    { value: 'gray', label: 'Gray' },
-    { value: 'red', label: 'Red' },
-    { value: 'blue', label: 'Blue' },
-    { value: 'green', label: 'Green' },
-    { value: 'brown', label: 'Brown' },
-    { value: 'beige', label: 'Beige' },
-    { value: 'other', label: 'Other' },
-];
+export function buildOptions(base: readonly string[], fromApi: readonly string[] | undefined, current: string): OptionSet {
+    const merged = uniqueOptions([...base, ...(fromApi ?? [])]);
+    const key = current.trim().toLowerCase();
+    const match = merged.find((option) => option.toLowerCase() === key);
+    const list = match || !key ? merged : [...merged, current];
+    return {
+        options: list.map((value) => ({ value, label: value })),
+        selected: match ?? current,
+    };
+}
 
 const seatOptions = [2, 4, 5, 6, 7, 8];
 
 export function SpecificationsSection({ data, errors, onUpdate }: SpecificationsSectionProps) {
+    const { data: filterOptions } = useFilterOptions();
+    const fuel = buildOptions(BASE_FUEL_TYPES, filterOptions?.fuelTypes, data.fuelType);
+    const transmission = buildOptions(BASE_TRANSMISSIONS, filterOptions?.transmissionTypes, data.transmissionType);
+    const body = buildOptions(BASE_BODY_TYPES, filterOptions?.bodyTypes, data.bodyType);
+    const color = buildOptions(BASE_COLORS, undefined, data.color);
+
     return (
         <div className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
@@ -67,7 +57,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         Fuel Type <span className="text-destructive">*</span>
                     </Label>
                     <Select
-                        value={data.fuelType}
+                        value={fuel.selected}
                         onValueChange={(value) => onUpdate('fuelType', value)}
                     >
                         <SelectTrigger
@@ -81,7 +71,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                             <SelectValue placeholder="Select fuel type" />
                         </SelectTrigger>
                         <SelectContent>
-                            {fuelTypes.map((type) => (
+                            {fuel.options.map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                     {type.label}
                                 </SelectItem>
@@ -98,7 +88,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         Transmission <span className="text-destructive">*</span>
                     </Label>
                     <Select
-                        value={data.transmissionType}
+                        value={transmission.selected}
                         onValueChange={(value) => onUpdate('transmissionType', value)}
                     >
                         <SelectTrigger
@@ -112,7 +102,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                             <SelectValue placeholder="Select transmission" />
                         </SelectTrigger>
                         <SelectContent>
-                            {transmissionTypes.map((type) => (
+                            {transmission.options.map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                     {type.label}
                                 </SelectItem>
@@ -129,14 +119,14 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                 <div className="space-y-2">
                     <Label htmlFor="bodyType">Body Type</Label>
                     <Select
-                        value={data.bodyType}
+                        value={body.selected}
                         onValueChange={(value) => onUpdate('bodyType', value)}
                     >
                         <SelectTrigger id="bodyType" aria-label="Select body type" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                             <SelectValue placeholder="Select body type" />
                         </SelectTrigger>
                         <SelectContent>
-                            {bodyTypes.map((type) => (
+                            {body.options.map((type) => (
                                 <SelectItem key={type.value} value={type.value}>
                                     {type.label}
                                 </SelectItem>
@@ -168,23 +158,23 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
             <div className="space-y-2">
                 <Label htmlFor="color">Color</Label>
                 <Select
-                    value={data.color}
+                    value={color.selected}
                     onValueChange={(value) => onUpdate('color', value)}
                 >
                     <SelectTrigger id="color" aria-label="Select color" className="bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
                         <SelectValue placeholder="Select color" />
                     </SelectTrigger>
                     <SelectContent>
-                        {colors.map((color) => (
-                            <SelectItem key={color.value} value={color.value}>
+                        {color.options.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
                                 <div className="flex items-center gap-2">
                                     <div
                                         className="h-3 w-3 rounded-full border"
                                         style={{
-                                            backgroundColor: color.value === 'other' ? 'transparent' : color.value,
+                                            backgroundColor: option.value === 'Other' ? 'transparent' : option.value.toLowerCase(),
                                         }}
                                     />
-                                    {color.label}
+                                    {option.label}
                                 </div>
                             </SelectItem>
                         ))}

@@ -105,8 +105,6 @@ export interface VehicleDetailResponse {
     images: VehicleImages;
     pricing: {
         dailyRate: number;
-        weeklyRate: number;
-        depositAmount: number;
         currency: string;
     };
     statistics?: VehicleStatistics;

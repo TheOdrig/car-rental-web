@@ -80,10 +80,10 @@ function forgetPrincipal(queryClient: QueryClient): void {
     queryClient.setQueryData(authKeys.me(), null);
 }
 
-async function adoptPrincipal(queryClient: QueryClient): Promise<void> {
+async function adoptPrincipal(queryClient: QueryClient): Promise<MeResponse | null> {
     loggingOut = false;
     queryClient.clear();
-    await queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: 0 }).catch(() => undefined);
+    return queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: 0 }).catch(() => null);
 }
 
 async function loginApi(credentials: LoginRequest): Promise<LoginResponse> {
@@ -219,9 +219,10 @@ export function useLogin() {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: loginApi,
-        onSuccess: async () => {
-            await adoptPrincipal(queryClient);
+        mutationFn: async (credentials: LoginRequest) => {
+            const response = await loginApi(credentials);
+            const principal = await adoptPrincipal(queryClient);
+            return { ...response, principal };
         },
     });
 }

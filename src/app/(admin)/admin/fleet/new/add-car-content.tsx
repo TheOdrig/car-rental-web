@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -10,30 +10,21 @@ import {
     BasicInfoSection,
     SpecificationsSection,
     PricingSection,
-    ImagesSection,
     useCreateCar,
     useCarForm,
+    carFormFieldErrors,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
-
-interface ImageFile {
-    id: string;
-    file?: File;
-    url: string;
-    name: string;
-    isExisting?: boolean;
-}
 
 export function AddCarContent() {
     const router = useRouter();
     const {
         formData,
         errors,
+        setErrors,
         updateField,
         validateForm,
     } = useCarForm();
-
-    const [images, setImages] = useState<ImageFile[]>([]);
     const createCar = useCreateCar();
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -48,6 +39,7 @@ export function AddCarContent() {
             onSuccess: () => {
                 router.push('/admin/fleet');
             },
+            onError: (error) => setErrors(carFormFieldErrors(error)),
         });
     };
 
@@ -119,7 +111,7 @@ export function AddCarContent() {
                             <CardHeader>
                                 <CardTitle>Pricing</CardTitle>
                                 <CardDescription>
-                                    Set rental rates and deposit
+                                    Set the daily rate and currency
                                 </CardDescription>
                             </CardHeader>
                             <CardContent>
@@ -131,21 +123,6 @@ export function AddCarContent() {
                             </CardContent>
                         </Card>
 
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Vehicle Images</CardTitle>
-                                <CardDescription>
-                                    Upload photos of the vehicle
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <ImagesSection
-                                    images={images}
-                                    onImagesChange={setImages}
-                                    maxImages={10}
-                                />
-                            </CardContent>
-                        </Card>
                     </div>
                 </div>
 
