@@ -25,6 +25,21 @@ describe('getApiErrorMessage', () => {
         expect(message).not.toContain('between 1 and 100');
     });
 
+    it('lists the offending fields of an invalid parameter', () => {
+        const error = new ApiError({
+            status: 400,
+            message: 'Invalid value for status',
+            timestamp: new Date().toISOString(),
+            code: 'INVALID_PARAMETER',
+            errors: [{ field: 'status', message: 'must be one of REQUESTED, CONFIRMED' }],
+        });
+
+        const message = getApiErrorMessage(error);
+
+        expect(message).toMatch(/not valid/i);
+        expect(message).toContain('status: must be one of REQUESTED, CONFIRMED');
+    });
+
     it('says the account is suspended on a banned login', () => {
         const message = getApiErrorMessage(problem(403, 'ACCOUNT_BANNED', 'Account is banned'));
 

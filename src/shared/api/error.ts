@@ -176,6 +176,10 @@ const API_ERROR_MESSAGES: Readonly<Record<string, string>> = {
 
 export function getApiErrorMessage(error: unknown): string {
     if (isApiError(error)) {
+        if (error.code === 'INVALID_PARAMETER' && error.errors && error.errors.length > 0) {
+            const fields = error.errors.map(({ field, message }) => `${field}: ${message}`).join('; ');
+            return `${API_ERROR_MESSAGES.INVALID_PARAMETER} (${fields})`;
+        }
         if (error.code && Object.hasOwn(API_ERROR_MESSAGES, error.code)) {
             return API_ERROR_MESSAGES[error.code];
         }

@@ -13,6 +13,7 @@ export type {
     DamageStatistics,
     DamageListResponse,
 } from './model/types';
+export { DAMAGE_STATUSES, DAMAGE_SEVERITIES, DAMAGE_CATEGORIES } from './model/types';
 
 
 export {

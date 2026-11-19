@@ -37,6 +37,9 @@ export type LateReturnStatus =
     | 'GRACE_PERIOD'
     | 'LATE'
     | 'SEVERELY_LATE';
+export const LATE_RETURN_STATUSES = ['ON_TIME', 'GRACE_PERIOD', 'LATE', 'SEVERELY_LATE'] as const satisfies readonly LateReturnStatus[];
+export const LATE_RETURN_SORT_FIELDS = ['endDate', 'penaltyAmount', 'lateHours'] as const satisfies readonly NonNullable<LateReturnFilters['sortBy']>[];
+export const LATE_RETURN_SORT_DIRECTIONS = ['ASC', 'DESC'] as const satisfies readonly NonNullable<LateReturnFilters['sortDirection']>[];
 export const LATE_RETURN_STATUS_LABELS: Record<LateReturnStatus, string> = {
     ON_TIME: 'On time',
     GRACE_PERIOD: 'Grace period',

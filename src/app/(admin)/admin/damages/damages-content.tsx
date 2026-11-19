@@ -11,7 +11,8 @@ import { Pagination } from '@/shared/ui/pagination';
 import { useDamages, useCustomerDamages } from '@/features/manage-damages';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { toast } from 'sonner';
-import type { DamageSearchFilters } from '@/entities/damage';
+import { DAMAGE_CATEGORIES, DAMAGE_SEVERITIES, DAMAGE_STATUSES, type DamageSearchFilters } from '@/entities/damage';
+import { pickCode } from '@/shared/lib';
 
 function parsePositiveInt(value: string | null | undefined): number | undefined {
     if (!value || !/^[0-9]+$/.test(value)) return undefined;
@@ -25,9 +26,9 @@ function DamagesList() {
 
     const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: DamageSearchFilters = {
-        severity: searchParams?.get('severity') as DamageSearchFilters['severity'] || undefined,
-        category: searchParams?.get('category') as DamageSearchFilters['category'] || undefined,
-        status: searchParams?.get('status') as DamageSearchFilters['status'] || undefined,
+        severity: pickCode(searchParams?.get('severity'), DAMAGE_SEVERITIES),
+        category: pickCode(searchParams?.get('category'), DAMAGE_CATEGORIES),
+        status: pickCode(searchParams?.get('status'), DAMAGE_STATUSES),
         startDate: searchParams?.get('startDate') || undefined,
         endDate: searchParams?.get('endDate') || undefined,
         carId: parsePositiveInt(searchParams?.get('carId')),

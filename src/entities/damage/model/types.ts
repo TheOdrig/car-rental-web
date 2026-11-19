@@ -51,3 +51,16 @@ export interface DamageSearchFilters {
 export type DamageStatistics = Required<Schemas['DamageStatisticsDto']>;
 
 export type DamageListResponse = PageResponse<DamageReport>;
+
+export const DAMAGE_STATUSES = ['REPORTED', 'UNDER_ASSESSMENT', 'ASSESSED', 'CHARGED', 'DISPUTED', 'RESOLVED'] as const satisfies readonly DamageStatus[];
+
+export const DAMAGE_SEVERITIES = ['MINOR', 'MODERATE', 'MAJOR', 'TOTAL_LOSS'] as const satisfies readonly DamageSeverity[];
+
+export const DAMAGE_CATEGORIES = [
+    'SCRATCH',
+    'DENT',
+    'GLASS_DAMAGE',
+    'TIRE_DAMAGE',
+    'INTERIOR_DAMAGE',
+    'MECHANICAL_DAMAGE',
+] as const satisfies readonly DamageCategory[];

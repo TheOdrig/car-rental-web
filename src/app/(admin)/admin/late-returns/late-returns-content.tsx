@@ -10,7 +10,13 @@ import { LateReturnsTable, LateReturnFilters } from '@/features/admin';
 import { useLateReturns } from '@/features/admin';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/shared/ui/error-message';
-import type { LateReturnFilters as LateReturnFiltersType, LateReturnStatus } from '@/entities/rental';
+import {
+    LATE_RETURN_SORT_DIRECTIONS,
+    LATE_RETURN_SORT_FIELDS,
+    LATE_RETURN_STATUSES,
+    type LateReturnFilters as LateReturnFiltersType,
+} from '@/entities/rental';
+import { pickCode } from '@/shared/lib';
 
 function LateReturnsList() {
     const searchParams = useSearchParams();
@@ -18,11 +24,11 @@ function LateReturnsList() {
 
     const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: LateReturnFiltersType = {
-        status: searchParams?.get('status') as LateReturnStatus || undefined,
+        status: pickCode(searchParams?.get('status'), LATE_RETURN_STATUSES),
         startDate: searchParams?.get('startDate') || undefined,
         endDate: searchParams?.get('endDate') || undefined,
-        sortBy: searchParams?.get('sortBy') as LateReturnFiltersType['sortBy'] || 'endDate',
-        sortDirection: searchParams?.get('sortDirection') as LateReturnFiltersType['sortDirection'] || 'DESC',
+        sortBy: pickCode(searchParams?.get('sortBy'), LATE_RETURN_SORT_FIELDS) ?? 'endDate',
+        sortDirection: pickCode(searchParams?.get('sortDirection'), LATE_RETURN_SORT_DIRECTIONS) ?? 'DESC',
     };
 
     const { data, isLoading, isFetching, isError, refetch } = useLateReturns(filters, page, 20);

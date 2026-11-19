@@ -56,6 +56,18 @@ describe('Admin DamagesContent', () => {
         expect(screen.queryByTestId('damage-filters')).not.toBeInTheDocument();
     });
 
+    it('forwards exact enum codes and drops labels or lower-case values', () => {
+        search = 'severity=MAJOR&category=dent&status=Under%20Assessment';
+        render(<DamagesContent />);
+
+        expect(mockUseDamages).toHaveBeenCalledWith(
+            expect.objectContaining({ severity: 'MAJOR', category: undefined, status: undefined }),
+            0,
+            20,
+            true
+        );
+    });
+
     it('ignores malformed ids', () => {
         search = 'carId=abc&userId=-3';
         render(<DamagesContent />);
