@@ -40,7 +40,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrencyWithDecimals } from '@/shared/lib';
 import type { Car as CarType, CarStatus } from '@/entities/car';
 
 const statusConfig: Record<CarStatus, { label: string; dotColor: string; textColor: string }> = {
@@ -220,7 +220,7 @@ export const FleetTable = memo(function FleetTable({
                                                 </div>
                                             </TableCell>
                                             <TableCell className="text-sm font-medium">
-                                                ${car.price?.toFixed(2) || '0.00'}
+                                                {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-end gap-1">
