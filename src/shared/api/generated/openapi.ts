@@ -605,6 +605,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/admin/rentals/{id}/early-return/preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Preview early return refund
+         * @description Returns the amount that an early return of this IN_USE rental would refund if it happened now. It uses the same calculation as the early return itself and changes nothing.
+         */
+        get: operations["previewEarlyReturn"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/admin/rentals/{id}/penalty/history": {
         parameters: {
             query?: never;
@@ -1756,7 +1776,7 @@ export interface paths {
         };
         /**
          * Get all rentals (Admin)
-         * @description Get all rentals (admin only) with optional currency conversion
+         * @description Get all rentals (admin only) with optional currency conversion and an optional status filter. The status parameter may be repeated or given as a comma separated list of RentalStatus codes; an unknown value is rejected with INVALID_PARAMETER.
          */
         get: operations["getAllRentals"];
         put?: never;
@@ -2622,6 +2642,15 @@ export interface components {
             /** @enum {string} */
             status?: "AVAILABLE" | "UNAVAILABLE";
         };
+        EarlyReturnPreview: {
+            amount?: number;
+            /** @enum {string} */
+            currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** Format: int64 */
+            rentalId?: number;
+            /** Format: int32 */
+            unusedDays?: number;
+        };
         ExchangeRate: {
             fallback?: boolean;
             /** @enum {string} */
@@ -3119,6 +3148,8 @@ export interface components {
             /** Format: int64 */
             id?: number;
             originalPrice?: number;
+            /** Format: date */
+            paymentOpensOn?: string;
             pickupNotes?: string;
             rateSource?: string;
             returnNotes?: string;
@@ -3193,6 +3224,7 @@ export interface components {
             admin?: boolean;
             avatarUrl?: string;
             email?: string;
+            emailVerified?: boolean;
             firstName?: string;
             /** Format: int64 */
             id?: number;
@@ -5366,6 +5398,74 @@ export interface operations {
             };
             /** @description JSON request body exceeds the size limit (PAYLOAD_TOO_LARGE) */
             413: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Unexpected error */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+        };
+    };
+    previewEarlyReturn: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description Rental ID */
+                id: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Refund preview */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EarlyReturnPreview"];
+                };
+            };
+            /** @description Rental is not in use */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Authentication required */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Access denied - Admin role required */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/problem+json": components["schemas"]["ProblemDetail"];
+                };
+            };
+            /** @description Rental or its payment not found */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -8934,6 +9034,8 @@ export interface operations {
                 sort?: string[];
                 /** @description Target currency for price conversion */
                 currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+                /** @description Rental status codes to include; repeat the parameter or use a comma separated list */
+                status?: string[];
             };
             header?: never;
             path?: never;
