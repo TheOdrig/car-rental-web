@@ -7,7 +7,8 @@ import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
 import { useFilterStore } from '@/widgets/car-filters';
 import { PriceRangeSlider } from './price-range-slider';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrency } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface FilterSidebarProps {
     className?: string;
@@ -97,14 +98,14 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             </div>
 
             <div className="space-y-6">
-                <FilterSection title="Price Range ($/day)">
+                <FilterSection title={`Price Range (${DEFAULT_CURRENCY}/day)`}>
                     <PriceRangeSlider
                         min={0}
                         max={500}
                         step={10}
                         defaultValue={[filters.minPrice ?? 0, filters.maxPrice ?? 500]}
                         onValueCommit={handlePriceRangeCommit}
-                        formatPrice={(v) => `$${v}`}
+                        formatPrice={(v) => formatCurrency(v, DEFAULT_CURRENCY)}
                     />
                 </FilterSection>
 

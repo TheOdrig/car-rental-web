@@ -3,17 +3,19 @@
 import React from 'react';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { DollarSign } from 'lucide-react';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrencyWithDecimals, getCurrencySymbol } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import type { CarFormData } from '../../model/types';
 
 interface PricingSectionProps {
     data: CarFormData;
     errors: Partial<Record<keyof CarFormData, string>>;
     onUpdate: (field: keyof CarFormData, value: string | number) => void;
+    currency?: string;
 }
 
-export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) {
+export function PricingSection({ data, errors, onUpdate, currency = DEFAULT_CURRENCY }: PricingSectionProps) {
+    const symbol = getCurrencySymbol(currency);
     const handleNumberChange = (field: keyof CarFormData, value: string) => {
         const numValue = parseFloat(value) || 0;
         onUpdate(field, numValue);
@@ -26,7 +28,7 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
                     Daily Rate <span className="text-destructive">*</span>
                 </Label>
                 <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden="true">{symbol}</span>
                     <Input
                         id="dailyRate"
                         type="number"
@@ -52,7 +54,7 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
             <div className="space-y-2">
                 <Label htmlFor="weeklyRate">Weekly Rate</Label>
                 <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden="true">{symbol}</span>
                     <Input
                         id="weeklyRate"
                         type="number"
@@ -72,7 +74,7 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
             <div className="space-y-2">
                 <Label htmlFor="depositAmount">Security Deposit</Label>
                 <div className="relative">
-                    <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden="true">{symbol}</span>
                     <Input
                         id="depositAmount"
                         type="number"
@@ -94,18 +96,18 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
                 <div className="space-y-1 text-sm">
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Daily Rate</span>
-                        <span className="font-medium">${(data.dailyRate || 0).toFixed(2)}</span>
+                        <span className="font-medium">{formatCurrencyWithDecimals(data.dailyRate || 0, currency)}</span>
                     </div>
                     {data.weeklyRate > 0 && (
                         <div className="flex justify-between">
                             <span className="text-muted-foreground">Weekly Rate</span>
-                            <span className="font-medium">${data.weeklyRate.toFixed(2)}</span>
+                            <span className="font-medium">{formatCurrencyWithDecimals(data.weeklyRate, currency)}</span>
                         </div>
                     )}
                     {data.depositAmount > 0 && (
                         <div className="flex justify-between">
                             <span className="text-muted-foreground">Deposit</span>
-                            <span className="font-medium">${data.depositAmount.toFixed(2)}</span>
+                            <span className="font-medium">{formatCurrencyWithDecimals(data.depositAmount, currency)}</span>
                         </div>
                     )}
                 </div>

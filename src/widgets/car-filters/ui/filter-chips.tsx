@@ -4,7 +4,8 @@ import { X } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { useFilterStore } from '@/widgets/car-filters';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrency } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import type { CarFilters } from '@/entities/car';
 
 interface ActiveFiltersProps {
@@ -30,9 +31,7 @@ const FILTER_LABELS: Record<FilterKey, string> = {
 function formatFilterValue(key: FilterKey, value: string | number | undefined): string {
     if (value === undefined || value === null) return '';
 
-    if (key === 'minPrice' || key === 'maxPrice') {
-        return `$${value}`;
-    }
+    if (key === 'minPrice' || key === 'maxPrice') return formatCurrency(Number(value), DEFAULT_CURRENCY);
 
     if (key === 'minSeats') {
         return `${value}+`;

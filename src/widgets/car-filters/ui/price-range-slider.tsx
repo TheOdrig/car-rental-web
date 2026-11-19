@@ -2,7 +2,8 @@
 
 import { useState, useCallback, useMemo } from 'react';
 import { Slider } from '@/shared/ui/slider';
-import { cn } from '@/shared/lib';
+import { cn, formatCurrency } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface PriceRangeSliderProps {
     min?: number;
@@ -16,7 +17,7 @@ interface PriceRangeSliderProps {
     className?: string;
 }
 
-const defaultFormatPrice = (value: number) => `$${value}`;
+const defaultFormatPrice = (value: number) => formatCurrency(value, DEFAULT_CURRENCY);
 
 export function PriceRangeSlider({
     min = 0,
