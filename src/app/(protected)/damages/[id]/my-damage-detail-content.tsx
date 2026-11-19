@@ -196,6 +196,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                                 src={photo.secureUrl}
                                                 alt={photo.fileName}
                                                 fill
+                                                unoptimized
                                                 className="object-cover"
                                             />
                                         </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, clientPut, clientDelete, getApiErrorMessage, getSafeErrorMessage } from '@/shared/api';
+import { adminKeys, clientGet, clientPost, clientPut, clientDelete, getApiErrorMessage, getSafeErrorMessage, isNotFoundError } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type {
     DamageReport,
@@ -56,17 +56,14 @@ async function fetchMyDamages(page = 0, size = 20): Promise<DamageListResponse> 
     return clientGet<DamageListResponse>(url);
 }
 
-const MY_DAMAGE_LOOKUP_PAGE_SIZE = 50;
-const MY_DAMAGE_LOOKUP_MAX_PAGES = 20;
-
 async function fetchMyDamageById(id: number): Promise<DamageReport | null> {
-    for (let page = 0; page < MY_DAMAGE_LOOKUP_MAX_PAGES; page += 1) {
-        const result = await fetchMyDamages(page, MY_DAMAGE_LOOKUP_PAGE_SIZE);
-        const match = result.content.find((damage) => damage.id === id);
-        if (match) return match;
-        if (page + 1 >= result.totalPages) return null;
+    try {
+        const damage = await clientGet<DamageReport>(`/api/damages/${id}`);
+        return { ...damage, photos: damage.photos ?? [] };
+    } catch (error) {
+        if (isNotFoundError(error)) return null;
+        throw error;
     }
-    return null;
 }
 
 async function fetchDamageDetail(id: number): Promise<DamageReport> {

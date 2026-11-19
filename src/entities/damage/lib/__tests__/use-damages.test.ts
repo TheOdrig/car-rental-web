@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
 import { useDamages, useDamageDetail, useMyDamageDetail, useCreateDamage, useAssessDamage, useDisputeDamage, useResolveDamage, useChargeDamage, damageKeys } from '../use-damages';
-import { clientGet, clientPost } from '@/shared/api';
+import { ApiError, clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 vi.mock('@/shared/api', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/shared/api')>();
@@ -41,33 +41,23 @@ describe('use-damages hooks', () => {
         });
     });
     describe('useMyDamageDetail', () => {
-        it('selects the damage from the customer list without calling an admin endpoint', async () => {
-            const target = createMockDamage({ id: 7 });
-            mockClientGet.mockResolvedValueOnce(createMockDamageListResponse([createMockDamage({ id: 3 }), target]));
+        it('loads the report, with its photos, from the owner-only endpoint', async () => {
+            const target = createMockDamage({
+                id: 7,
+                photos: [{ id: 1, fileName: 'a.png', secureUrl: '/api/v1/files/damage-photos/a.png', fileSize: 10, uploadedAt: '2026-11-19T10:00:00Z' }],
+            });
+            mockClientGet.mockResolvedValueOnce(target);
 
             const { result } = renderHook(() => useMyDamageDetail(7), { wrapper: createQueryWrapper() });
 
             await waitFor(() => expect(result.current.isSuccess).toBe(true));
             expect(result.current.data).toEqual(target);
             expect(mockClientGet).toHaveBeenCalledTimes(1);
-            expect(mockClientGet.mock.calls[0][0]).toBe('/api/damages/me?page=0&size=50');
-            expect(mockClientGet.mock.calls.some(([url]) => String(url).includes('/admin/'))).toBe(false);
+            expect(mockClientGet.mock.calls[0][0]).toBe('/api/damages/7');
         });
 
-        it('keeps looking on later pages', async () => {
-            const target = createMockDamage({ id: 99 });
-            mockClientGet
-                .mockResolvedValueOnce({ ...createMockDamageListResponse([createMockDamage({ id: 1 })]), totalPages: 2 })
-                .mockResolvedValueOnce({ ...createMockDamageListResponse([target]), totalPages: 2, page: 1 });
-
-            const { result } = renderHook(() => useMyDamageDetail(99), { wrapper: createQueryWrapper() });
-
-            await waitFor(() => expect(result.current.data).toEqual(target));
-            expect(mockClientGet.mock.calls[1][0]).toBe('/api/damages/me?page=1&size=50');
-        });
-
-        it('resolves to null when the damage is not in the customer list', async () => {
-            mockClientGet.mockResolvedValueOnce(createMockDamageListResponse([createMockDamage({ id: 1 })]));
+        it('resolves to null when the API answers 404', async () => {
+            mockClientGet.mockRejectedValueOnce(new ApiError({ status: 404, message: 'Not found', timestamp: new Date().toISOString() }));
 
             const { result } = renderHook(() => useMyDamageDetail(500), { wrapper: createQueryWrapper() });
 

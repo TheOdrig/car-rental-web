@@ -82,6 +82,7 @@ export const API = {
     },
     damages: {
         me: endpoint('GET', `${V1}/damages/me`),
+        byId: endpoint('GET', `${V1}/damages/{id}`),
         dispute: endpoint('POST', `${V1}/damages/{id}/dispute`),
     },
     files: {

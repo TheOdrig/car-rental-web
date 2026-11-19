@@ -85,4 +85,23 @@ describe('MyDamageDetailContent', () => {
 
         expect(mockUseMyDamageDetail).toHaveBeenCalledWith(null);
     });
+
+    it('shows the reference, the breadcrumb and the photos through the file proxy', () => {
+        mockUseMyDamageDetail.mockReturnValue({
+            data: createMockDamage({
+                id: 12,
+                rentalId: 16,
+                photos: [{ id: 1, fileName: 'dent.png', secureUrl: '/api/v1/files/damage-photos/dent.png', fileSize: 10, uploadedAt: '2026-11-19T10:00:00Z' }],
+            }),
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        render(<MyDamageDetailContent id="12" />);
+
+        expect(screen.getByRole('link', { name: 'CR-000016' })).toHaveAttribute('href', '/rentals/16');
+        expect(screen.getByRole('navigation', { name: 'Breadcrumb' })).toHaveTextContent('My Damages');
+        expect(screen.getByAltText('dent.png')).toHaveAttribute('src', '/api/files/damage-photos/dent.png');
+    });
 });
