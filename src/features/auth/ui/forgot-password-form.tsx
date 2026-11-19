@@ -99,7 +99,8 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                         id="email"
                         autoComplete="email"
                         name="email"
-                        type="email"
+                        type="text"
+                        inputMode="email"
                         ref={emailRef}
                         aria-invalid={formError ? true : undefined}
                         aria-describedby={formError ? 'forgot-email-error' : undefined}

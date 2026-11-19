@@ -183,7 +183,8 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     id="email"
                     autoComplete="email"
                     name="email"
-                    type="email"
+                    type="text"
+                    inputMode="email"
                     placeholder="name@example.com"
                     value={formData.email}
                     onChange={handleChange}

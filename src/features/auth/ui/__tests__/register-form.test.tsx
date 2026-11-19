@@ -330,3 +330,15 @@ describe('RegisterForm', () => {
         });
     });
 });
+describe('RegisterForm email field', () => {
+    it('leaves validation to the app so the browser shows no second message', () => {
+        vi.mocked(useRegister).mockReturnValue({ mutateAsync: vi.fn(), isPending: false } as unknown as ReturnType<typeof useRegister>);
+        renderWithProviders(<RegisterForm />);
+
+        const email = screen.getByLabelText(/Email Address/);
+
+        expect(email).not.toHaveAttribute('type', 'email');
+        expect(email).toHaveAttribute('inputmode', 'email');
+        expect(email).toHaveAttribute('autocomplete', 'email');
+    });
+});
