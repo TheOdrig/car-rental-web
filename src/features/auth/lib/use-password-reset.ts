@@ -3,6 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { clientPost, isRateLimited } from '@/shared/api';
 import { showToast } from '@/shared/lib';
+import { describeResetLinkError } from './reset-errors';
 import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
 
 async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<MessageResponse> {
@@ -46,12 +47,10 @@ export function useResetPassword() {
                 return;
             }
 
-            const message = error.message.toLowerCase();
+            const described = describeResetLinkError(error.message);
 
-            if (message.includes('expired')) {
-                showToast.error('Token expired', 'This password reset link has expired. Please request a new one.');
-            } else if (message.includes('invalid') || message.includes('used')) {
-                showToast.error('Invalid token', 'This password reset link is invalid or has already been used.');
+            if (described) {
+                showToast.error(described.title, described.detail);
             } else {
                 showToast.error('Failed to reset password', error.message);
             }

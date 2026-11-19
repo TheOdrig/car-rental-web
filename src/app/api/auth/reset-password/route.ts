@@ -1,18 +1,11 @@
 import { ApiError, isApiError } from '@/shared/api';
+import { describeResetLinkError } from '@/features/auth/lib/reset-errors';
 import { API, readJson, route, upstream } from '@/shared/server';
 
 function mapResetError(error: ApiError): ApiError {
-    const message = error.message.toLowerCase();
+    const described = describeResetLinkError(error.message);
 
-    if (message.includes('expired')) {
-        return new ApiError(400, 'This password reset link has expired. Please request a new one.');
-    }
-
-    if (message.includes('invalid') || message.includes('used')) {
-        return new ApiError(400, 'This password reset link is invalid or has already been used.');
-    }
-
-    return error;
+    return described ? new ApiError(400, described.detail) : error;
 }
 
 export const POST = route(

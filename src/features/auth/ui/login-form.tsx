@@ -119,7 +119,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
 
     return (
-        <form onSubmit={handleSubmit} className={cn('space-y-5', className)}>
+        <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
