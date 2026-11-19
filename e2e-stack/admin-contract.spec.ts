@@ -4,7 +4,7 @@ import { ADMIN_PASSWORD, ADMIN_USERNAME, loginViaUi } from './support';
 test.describe('admin BFF routes against the real API', () => {
     test('dashboard, alerts, users and rental detail answer through the BFF', async ({ page }) => {
         await loginViaUi(page, ADMIN_USERNAME, ADMIN_PASSWORD);
-        await expect(page).toHaveURL(/\/$/);
+        await expect(page).toHaveURL(/\/admin\/dashboard$/);
 
         const summary = await page.request.get('/api/admin/dashboard');
         expect(summary.status()).toBe(200);

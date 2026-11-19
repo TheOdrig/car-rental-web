@@ -28,7 +28,7 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
         adminContext = await browser.newContext();
         adminPage = await adminContext.newPage();
         await loginViaUi(adminPage, ADMIN_USERNAME, ADMIN_PASSWORD);
-        await expect(adminPage).toHaveURL(/\/$/);
+        await expect(adminPage).toHaveURL(/\/admin\/dashboard$/);
     });
 
     test.afterAll(async () => {

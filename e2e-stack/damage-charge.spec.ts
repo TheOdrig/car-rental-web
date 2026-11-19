@@ -26,7 +26,7 @@ test.describe.serial('damage charge through the BFF and the admin UI', () => {
         adminContext = await browser.newContext();
         adminPage = await adminContext.newPage();
         await loginViaUi(adminPage, ADMIN_USERNAME, ADMIN_PASSWORD);
-        await expect(adminPage).toHaveURL(/\/$/);
+        await expect(adminPage).toHaveURL(/\/admin\/dashboard$/);
     });
 
     test.afterAll(async () => {
