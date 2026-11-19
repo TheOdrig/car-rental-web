@@ -52,7 +52,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                     <SheetTitle className="flex items-center gap-2">
                         <Image
                             src="/images/logo.svg"
-                            alt="Car Rental"
+                            alt=""
                             width={40}
                             height={40}
                             className="h-10 w-auto dark:invert"

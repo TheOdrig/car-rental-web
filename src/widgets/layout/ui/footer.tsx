@@ -20,7 +20,7 @@ export function Footer() {
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                             <Image
                                 src="/images/logo.svg"
-                                alt="Car Rental"
+                                alt=""
                                 width={48}
                                 height={48}
                                 className="h-12 w-auto dark:invert"

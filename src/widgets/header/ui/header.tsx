@@ -53,13 +53,13 @@ export function Header() {
                             </Button>
                         }
                     />
-                    <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+                    <Link href="/" className="flex items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
                         <Image
                             src="/images/logo.svg"
-                            alt="Car Rental"
+                            alt=""
                             width={48}
                             height={48}
-                            className="h-12 w-auto dark:invert"
+                            className="h-9 w-auto sm:h-12 dark:invert"
                         />
                         <span>Car Rental</span>
                     </Link>

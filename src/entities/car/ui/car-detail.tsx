@@ -46,7 +46,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
     const isAvailable = car.carStatusType === CAR_STATUS.AVAILABLE;
 
     return (
-        <div className={cn('grid gap-6 lg:grid-cols-2 lg:items-start', className)}>
+        <div className={cn('grid grid-cols-1 gap-6 lg:grid-cols-2 lg:items-start', className)}>
             <div className="relative aspect-video overflow-hidden rounded-xl lg:col-start-1 lg:row-start-1">
                 <DynamicImage
                     src={car.imageUrl ?? '/images/car-placeholder.svg'}
@@ -59,7 +59,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
             </div>
 
             {calendar && (
-                <Card className="order-3 lg:order-none lg:col-start-1 lg:row-start-2">
+                <Card className="order-3 min-w-0 lg:order-none lg:col-start-1 lg:row-start-2">
                     <CardHeader className="pb-3">
                         <CardTitle className="text-lg">Availability</CardTitle>
                     </CardHeader>
@@ -73,7 +73,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
                 </Card>
             )}
 
-            <div className="order-2 space-y-6 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1">
+            <div className="order-2 min-w-0 space-y-6 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-1">
                 <div>
                     <h1 className="text-3xl font-bold">
                         {car.brand} {car.model}
@@ -190,11 +190,11 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
     return (
         <div className="space-y-4">
             <div className="flex items-center justify-between">
-                <div className="flex flex-col">
+                <div className="flex min-w-0 flex-col">
                     <span className="text-sm font-semibold text-slate-900 dark:text-white">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
-                    <div className="flex items-center gap-3 mt-1 text-[10px] uppercase tracking-wider text-muted-foreground">
+                    <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-wider text-muted-foreground">
                         <div className="flex items-center gap-1">
                             <div className="h-2 w-2 rounded-full bg-green-500" />
                             <span>Available</span>
@@ -209,7 +209,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                         </div>
                     </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex shrink-0 items-center gap-1 pl-2">
                     <Button
                         type="button"
                         variant="outline"
