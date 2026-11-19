@@ -106,6 +106,13 @@ const ALERT_VARIANTS: Record<NonNullable<AlertDto['severity']>, AlertVariant> = 
 
 type AlertDto = Schemas['AlertDto'];
 
+const ADMIN_PATH = /^\/admin(?:\/[A-Za-z0-9_~-]+)*\/?$/;
+
+export function safeAlertTarget(actionUrl: string | undefined): string | undefined {
+    const value = actionUrl?.trim();
+    return value && ADMIN_PATH.test(value) ? value : undefined;
+}
+
 export function toAdminAlert(alert: AlertDto): AdminAlert {
     return {
         id: String(alert.id ?? ''),
@@ -113,6 +120,7 @@ export function toAdminAlert(alert: AlertDto): AdminAlert {
         title: alert.title ?? 'Alert',
         description: alert.message ?? '',
         timestamp: alert.createdAt ?? new Date().toISOString(),
+        actionUrl: safeAlertTarget(alert.actionUrl),
         dismissible: true,
     };
 }

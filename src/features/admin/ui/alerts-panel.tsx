@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { AlertTriangle, AlertCircle, Info, CheckCircle2, X, ExternalLink
 } from 'lucide-react';
 import { cn, formatRelativeTime } from '@/shared/lib';
@@ -61,7 +62,16 @@ export function AlertsPanel({
 
                             <div className="flex-1 min-w-0 pr-6">
                                 <h2 className={cn('text-sm font-semibold', styles.text)}>
-                                    {alert.title}
+                                    {alert.actionUrl ? (
+                                        <Link
+                                            href={alert.actionUrl}
+                                            className="underline-offset-2 after:absolute after:inset-0 after:content-[''] hover:underline focus-visible:underline"
+                                        >
+                                            {alert.title}
+                                        </Link>
+                                    ) : (
+                                        alert.title
+                                    )}
                                 </h2>
                                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">
                                     {alert.description}
@@ -79,7 +89,7 @@ export function AlertsPanel({
                                                     key={idx}
                                                     variant={action.variant || 'ghost'}
                                                     size="sm"
-                                                    className="h-7 text-[11px] px-2.5"
+                                                    className="relative z-10 h-7 text-[11px] px-2.5"
                                                     onClick={() => onAction?.(alert.id, action.action)}
                                                 >
                                                     {action.label}
@@ -95,7 +105,7 @@ export function AlertsPanel({
                                 <Button
                                     variant="ghost"
                                     size="icon"
-                                    className="absolute top-2 right-2 h-6 w-6 text-muted-foreground hover:text-foreground"
+                                    className="absolute top-2 right-2 z-10 h-6 w-6 text-muted-foreground hover:text-foreground"
                                     onClick={() => onDismiss?.(alert.id)}
                                 >
                                     <X className="h-3.5 w-3.5" />

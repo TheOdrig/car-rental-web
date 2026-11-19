@@ -113,6 +113,7 @@ export interface AdminAlert {
     title: string;
     description: string;
     timestamp: string;
+    actionUrl?: string;
     actions?: AdminAlertAction[];
     dismissible?: boolean;
 }

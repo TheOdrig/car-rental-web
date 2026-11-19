@@ -86,3 +86,23 @@ describe('AlertsPanel', () => {
         expect(times).toHaveLength(3);
     });
 });
+describe('AlertsPanel links', () => {
+    it('links an alert title to its action url', () => {
+        renderWithProviders(
+            <AlertsPanel
+                alerts={[
+                    {
+                        id: '9',
+                        type: 'warning',
+                        title: 'Late return',
+                        description: 'Rental 12 is late',
+                        timestamp: new Date().toISOString(),
+                        actionUrl: '/admin/rentals/12',
+                    },
+                ]}
+            />
+        );
+
+        expect(screen.getByRole('link', { name: 'Late return' })).toHaveAttribute('href', '/admin/rentals/12');
+    });
+});

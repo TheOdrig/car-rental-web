@@ -146,3 +146,16 @@ describe('use-admin-dashboard hooks', () => {
         });
     });
 });
+describe('alert targets', () => {
+    it('keeps admin paths from the API and drops anything else', async () => {
+        const { safeAlertTarget } = await import('../use-admin-dashboard');
+
+        expect(safeAlertTarget('/admin/rentals/12')).toBe('/admin/rentals/12');
+        expect(safeAlertTarget('/admin/fleet')).toBe('/admin/fleet');
+        expect(safeAlertTarget('https://evil.example/admin')).toBeUndefined();
+        expect(safeAlertTarget('//evil.example')).toBeUndefined();
+        expect(safeAlertTarget('/rentals/1')).toBeUndefined();
+        expect(safeAlertTarget('/admin/../x')).toBeUndefined();
+        expect(safeAlertTarget(undefined)).toBeUndefined();
+    });
+});
