@@ -36,4 +36,12 @@ describe('monthKeysBetween', () => {
         expect(monthKeysBetween(new Date(2026, 10, 28), new Date(2027, 0, 3), now)).toEqual(['2026-11', '2026-12', '2027-01']);
         expect(monthKeysBetween(new Date(2026, 8, 1), new Date(2026, 10, 3), now)).toEqual(['2026-11']);
     });
+
+    it('never asks for a month beyond the calendar horizon', async () => {
+        const { monthKeysBetween } = await import('../utils');
+        const now = new Date(2026, 10, 15);
+
+        expect(monthKeysBetween(new Date(2027, 1, 20), new Date(2027, 4, 5), now)).toEqual(['2027-02']);
+        expect(monthKeysBetween(new Date(2027, 4, 2), new Date(2027, 4, 5), now)).toEqual([]);
+    });
 });
