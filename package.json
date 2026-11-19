@@ -2,6 +2,7 @@
   "name": "car-rental-web",
   "version": "1.0.0",
   "private": true,
+  "sideEffects": ["*.css"],
   "engines": {
     "node": "^22.0.0"
   },

@@ -133,6 +133,7 @@ export const RentalCard = memo(function RentalCard({
                                 alt={`${carSummary?.brand} ${carSummary?.model}`}
                                 fill
                                 priority={priority}
+                                fetchPriority={priority ? "high" : undefined}
                                 sizes="(min-width: 768px) 320px, 100vw"
                                 className={cn(
                                     'object-cover transition-all duration-300',

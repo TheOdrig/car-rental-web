@@ -74,7 +74,7 @@ export function RentalList({
             {rentals.map((rental, index) => (
                 <RentalCard
                     key={rental.id}
-                    priority={index === 0}
+                    priority={index < 3}
                     rental={rental}
                     variant={variant}
                     showActions={showActions}
