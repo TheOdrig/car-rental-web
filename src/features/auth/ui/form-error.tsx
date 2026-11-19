@@ -4,16 +4,18 @@ import { AlertCircle, X } from 'lucide-react';
 import { cn } from '@/shared/lib';
 
 interface FormErrorProps {
+    id?: string;
     message: string;
     onDismiss?: () => void;
     className?: string;
 }
 
-export function FormError({ message, onDismiss, className }: FormErrorProps) {
+export function FormError({ id, message, onDismiss, className }: FormErrorProps) {
     if (!message) return null;
 
     return (
         <div
+            id={id}
             role="alert"
             aria-live="assertive"
             className={cn(

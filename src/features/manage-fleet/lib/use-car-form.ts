@@ -25,6 +25,24 @@ const BACKEND_FIELD_TO_FORM: Record<string, keyof CarFormData> = {
 
 const VIN_LENGTH = 17;
 
+const FIELD_ORDER: (keyof CarFormData)[] = [
+    'brand',
+    'model',
+    'licensePlate',
+    'vin',
+    'imageUrl',
+    'fuelType',
+    'transmissionType',
+    'dailyRate',
+];
+
+export function focusFirstInvalidField(errors: CarFormErrors): void {
+    const first = FIELD_ORDER.find((field) => errors[field]);
+    if (first) {
+        document.getElementById(first)?.focus();
+    }
+}
+
 export function carFormFieldErrors(error: unknown): CarFormErrors {
     const result: CarFormErrors = {};
     for (const [field, message] of Object.entries(fieldErrorMap(error))) {
@@ -69,7 +87,9 @@ export function useCarForm(initialData: CarFormData = defaultCarFormData) {
     const validateForm = useCallback((): boolean => {
         const newErrors = validateCarForm(formData);
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+        const valid = Object.keys(newErrors).length === 0;
+        if (!valid) focusFirstInvalidField(newErrors);
+        return valid;
     }, [formData]);
 
     return {

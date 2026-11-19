@@ -62,6 +62,8 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                     >
                         <SelectTrigger
                             id="fuelType"
+                            aria-invalid={errors.fuelType ? true : undefined}
+                            aria-describedby={errors.fuelType ? 'fuelType-error' : undefined}
                             className={cn(
                                 'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
                                 errors.fuelType && 'border-destructive'
@@ -79,7 +81,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         </SelectContent>
                     </Select>
                     {errors.fuelType && (
-                        <p className="text-sm text-destructive">{errors.fuelType}</p>
+                        <p id="fuelType-error" role="alert" className="text-sm text-destructive">{errors.fuelType}</p>
                     )}
                 </div>
 
@@ -93,6 +95,8 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                     >
                         <SelectTrigger
                             id="transmissionType"
+                            aria-invalid={errors.transmissionType ? true : undefined}
+                            aria-describedby={errors.transmissionType ? 'transmissionType-error' : undefined}
                             className={cn(
                                 'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
                                 errors.transmissionType && 'border-destructive'
@@ -110,7 +114,7 @@ export function SpecificationsSection({ data, errors, onUpdate }: Specifications
                         </SelectContent>
                     </Select>
                     {errors.transmissionType && (
-                        <p className="text-sm text-destructive">{errors.transmissionType}</p>
+                        <p id="transmissionType-error" role="alert" className="text-sm text-destructive">{errors.transmissionType}</p>
                     )}
                 </div>
             </div>

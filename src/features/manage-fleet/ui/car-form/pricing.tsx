@@ -51,6 +51,8 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground" aria-hidden="true">{symbol}</span>
                     <Input
                         id="dailyRate"
+                        aria-invalid={errors.dailyRate ? true : undefined}
+                        aria-describedby={errors.dailyRate ? 'dailyRate-error' : undefined}
                         type="number"
                         min="0"
                         step="0.01"
@@ -64,7 +66,7 @@ export function PricingSection({ data, errors, onUpdate }: PricingSectionProps) 
                     />
                 </div>
                 {errors.dailyRate && (
-                    <p className="text-sm text-destructive">{errors.dailyRate}</p>
+                    <p id="dailyRate-error" role="alert" className="text-sm text-destructive">{errors.dailyRate}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
                     Standard daily rental rate

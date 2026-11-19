@@ -53,6 +53,8 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     >
                         <SelectTrigger
                             id="brand"
+                            aria-invalid={errors.brand ? true : undefined}
+                            aria-describedby={errors.brand ? 'brand-error' : undefined}
                             className={cn(
                                 'bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100',
                                 errors.brand && 'border-destructive'
@@ -70,7 +72,7 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                         </SelectContent>
                     </Select>
                     {errors.brand && (
-                        <p className="text-sm text-destructive">{errors.brand}</p>
+                        <p id="brand-error" role="alert" className="text-sm text-destructive">{errors.brand}</p>
                     )}
                 </div>
 
@@ -80,13 +82,15 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     </Label>
                     <Input
                         id="model"
+                        aria-invalid={errors.model ? true : undefined}
+                        aria-describedby={errors.model ? 'model-error' : undefined}
                         value={data.model}
                         onChange={(e) => onUpdate('model', e.target.value)}
                         placeholder="e.g., Camry, Model 3"
                         className={cn(errors.model && 'border-destructive')}
                     />
                     {errors.model && (
-                        <p className="text-sm text-destructive">{errors.model}</p>
+                        <p id="model-error" role="alert" className="text-sm text-destructive">{errors.model}</p>
                     )}
                 </div>
             </div>
@@ -119,6 +123,8 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                     </Label>
                     <Input
                         id="licensePlate"
+                        aria-invalid={errors.licensePlate ? true : undefined}
+                        aria-describedby={errors.licensePlate ? 'licensePlate-error' : undefined}
                         value={data.licensePlate}
                         onChange={(e) => onUpdate('licensePlate', e.target.value.toUpperCase())}
                         placeholder="e.g., ABC-1234"
@@ -128,7 +134,7 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                         )}
                     />
                     {errors.licensePlate && (
-                        <p className="text-sm text-destructive">{errors.licensePlate}</p>
+                        <p id="licensePlate-error" role="alert" className="text-sm text-destructive">{errors.licensePlate}</p>
                     )}
                 </div>
             </div>
@@ -137,13 +143,15 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                 <Label htmlFor="vin">VIN (Vehicle Identification Number)</Label>
                 <Input
                     id="vin"
+                    aria-invalid={errors.vin ? true : undefined}
+                    aria-describedby={errors.vin ? 'vin-error' : undefined}
                     value={data.vin}
                     onChange={(e) => onUpdate('vin', e.target.value.toUpperCase())}
                     placeholder="17-character VIN"
                     maxLength={17}
                     className={cn('font-mono uppercase', errors.vin && 'border-destructive')}
                 />
-                {errors.vin && <p className="text-sm text-destructive">{errors.vin}</p>}
+                {errors.vin && <p id="vin-error" role="alert" className="text-sm text-destructive">{errors.vin}</p>}
                 <p className="text-xs text-muted-foreground">
                     Optional: 17-character vehicle identification number
                 </p>
@@ -153,13 +161,15 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                 <Label htmlFor="imageUrl">Image URL</Label>
                 <Input
                     id="imageUrl"
+                    aria-invalid={errors.imageUrl ? true : undefined}
+                    aria-describedby={errors.imageUrl ? 'imageUrl-error' : undefined}
                     value={data.imageUrl}
                     onChange={(e) => onUpdate('imageUrl', e.target.value)}
                     placeholder="https://example.com/car-image.jpg"
                     className={cn(errors.imageUrl && 'border-destructive')}
                 />
                 {errors.imageUrl && (
-                    <p className="text-sm text-destructive">{errors.imageUrl}</p>
+                    <p id="imageUrl-error" role="alert" className="text-sm text-destructive">{errors.imageUrl}</p>
                 )}
                 <p className="text-xs text-muted-foreground">
                     Optional: Direct URL to a car image

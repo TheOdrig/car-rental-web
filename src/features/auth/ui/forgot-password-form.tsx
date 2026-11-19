@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useRef, useState, type FormEvent } from 'react';
 import { Loader2, Mail, CheckCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -20,6 +20,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
     const [email, setEmail] = useState('');
     const [formError, setFormError] = useState<string | null>(null);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const emailRef = useRef<HTMLInputElement>(null);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
@@ -27,12 +28,14 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
 
         if (!email.trim()) {
             setFormError('Email is required');
+            emailRef.current?.focus();
             return;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
             setFormError('Please enter a valid email address');
+            emailRef.current?.focus();
             return;
         }
 
@@ -83,6 +86,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
     return (
         <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError
+                id="forgot-email-error"
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
             />
@@ -96,6 +100,9 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                         autoComplete="email"
                         name="email"
                         type="email"
+                        ref={emailRef}
+                        aria-invalid={formError ? true : undefined}
+                        aria-describedby={formError ? 'forgot-email-error' : undefined}
                         placeholder="name@example.com"
                         value={email}
                         onChange={(e) => {
