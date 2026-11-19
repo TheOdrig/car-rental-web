@@ -10,7 +10,7 @@ test.describe('security headers against the running app', () => {
         expect(headers['content-security-policy']).toContain('https://js.stripe.com');
         expect(headers['content-security-policy']).toContain('https://*.js.stripe.com');
         expect(headers['content-security-policy']).toContain('https://*.link.com');
-        expect(headers['content-security-policy']).toContain('https://maps.googleapis.com');
+        expect(headers['content-security-policy']).not.toContain('maps.googleapis.com');
         expect(headers['x-frame-options']).toBe('DENY');
         expect(headers['x-content-type-options']).toBe('nosniff');
         expect(headers['referrer-policy']).toBe('strict-origin-when-cross-origin');

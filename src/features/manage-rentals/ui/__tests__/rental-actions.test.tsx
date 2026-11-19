@@ -122,27 +122,34 @@ describe('RentalActions', () => {
     describe('loading states', () => {
         it('should show loading spinner during async action', async () => {
             const user = userEvent.setup();
+            let finish: () => void = () => undefined;
             const asyncAction = vi.fn(
-                (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 100))
+                (): Promise<void> => new Promise((resolve) => { finish = resolve; })
             );
             const rental = createMockRental(RentalStatus.ACTIVE);
             render(<RentalActions rental={rental} onAction={asyncAction} />);
             const button = screen.getByRole('button', { name: /view details/i });
             await user.click(button);
             expect(button).toBeDisabled();
+            finish();
             await waitFor(() => {
                 expect(button).not.toBeDisabled();
             });
         });
         it('should disable button while loading', async () => {
             const user = userEvent.setup();
+            let finish: () => void = () => undefined;
             const asyncAction = vi.fn(
-                (): Promise<void> => new Promise((resolve) => setTimeout(resolve, 50))
+                (): Promise<void> => new Promise((resolve) => { finish = resolve; })
             );
             const rental = createMockRental(RentalStatus.ACTIVE);
             render(<RentalActions rental={rental} onAction={asyncAction} />);
             await user.click(screen.getByRole('button', { name: /view details/i }));
             expect(screen.getByRole('button', { name: /view details/i })).toBeDisabled();
+            finish();
+            await waitFor(() => {
+                expect(screen.getByRole('button', { name: /view details/i })).not.toBeDisabled();
+            });
         });
         it('should re-enable button after action completes', async () => {
             const user = userEvent.setup();

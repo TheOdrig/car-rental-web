@@ -2,10 +2,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { CalendarIcon, MapPin, Car, Search } from 'lucide-react';
+import { CalendarIcon, Car, Search } from 'lucide-react';
 import { format } from 'date-fns';
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
 import {
     Select,
     SelectContent,
@@ -37,7 +36,6 @@ interface SearchWidgetProps {
 
 export function SearchWidget({ className }: SearchWidgetProps) {
     const router = useRouter();
-    const [location, setLocation] = useState('');
     const [pickupDate, setPickupDate] = useState<Date>();
     const [returnDate, setReturnDate] = useState<Date>();
     const [vehicleType, setVehicleType] = useState('all');
@@ -65,9 +63,6 @@ export function SearchWidget({ className }: SearchWidgetProps) {
 
         const params = new URLSearchParams();
 
-        if (location) {
-            params.set('location', location);
-        }
         if (pickupDate) {
             params.set('startDate', format(pickupDate, 'yyyy-MM-dd'));
         }
@@ -89,22 +84,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 className
             )}
         >
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-                <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
-                        Location
-                    </label>
-                    <div className="relative">
-                        <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400" />
-                        <Input
-                            placeholder="City or airport"
-                            value={location}
-                            onChange={(e) => setLocation(e.target.value)}
-                            className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700"
-                        />
-                    </div>
-                </div>
-
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-1">
                     <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
                         Pickup Date

@@ -11,7 +11,6 @@ export function buildContentSecurityPolicy({ isDevelopment }: Pick<HeaderEnviron
     "'unsafe-inline'",
     "https://js.stripe.com",
     "https://*.js.stripe.com",
-    "https://maps.googleapis.com",
   ];
   if (isDevelopment) {
     scriptSources.push("'unsafe-eval'");
@@ -20,7 +19,6 @@ export function buildContentSecurityPolicy({ isDevelopment }: Pick<HeaderEnviron
   const connectSources = [
     "'self'",
     "https://api.stripe.com",
-    "https://maps.googleapis.com",
     "https://link.com",
     "https://*.link.com",
   ];

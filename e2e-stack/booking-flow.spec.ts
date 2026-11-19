@@ -55,7 +55,8 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
         const early = await customerPage.request.post(`/api/rentals/${rental.id}/payment-intent`, {
             headers: JSON_HEADERS,
         });
-        expect(early.ok()).toBe(false);
+        expect(early.status()).toBe(400);
+        expect((await early.json()).code).toBe('INVALID_RENTAL_STATE');
 
         await adminPage.goto(`/admin/rentals/${rental.id}`);
         await adminPage.getByRole('button', { name: 'Approve' }).click();
@@ -65,9 +66,8 @@ test.describe.serial('booking, admin confirmation and the pay page', () => {
             .toBe('Confirmed');
 
         await customerPage.goto(`/rentals/${rental.id}/pay`);
-        await expect(
-            customerPage.locator('[data-testid^="payment-state-"], form, iframe[name^="__privateStripeFrame"]').first()
-        ).toBeVisible();
+        await expect(customerPage).toHaveURL(new RegExp(`/rentals/${rental.id}/pay$`));
+        await expect(customerPage.getByTestId('payment-state-ready')).toBeVisible();
         await expect(customerPage.getByText('Rental not found')).toHaveCount(0);
         expect(cspViolations).toEqual([]);
     });

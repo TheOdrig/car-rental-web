@@ -18,15 +18,15 @@ describe('SearchWidget', () => {
     describe('rendering', () => {
         it('should render all form fields', () => {
             render(<SearchWidget />);
-            expect(screen.getByText('Location')).toBeInTheDocument();
             expect(screen.getByText('Pickup Date')).toBeInTheDocument();
             expect(screen.getByText('Return Date')).toBeInTheDocument();
             expect(screen.getByText('Vehicle Type')).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /search/i })).toBeInTheDocument();
         });
-        it('should render location input with placeholder', () => {
+        it('should not offer a location field that filters nothing', () => {
             render(<SearchWidget />);
-            expect(screen.getByPlaceholderText('City or airport')).toBeInTheDocument();
+            expect(screen.queryByText('Location')).not.toBeInTheDocument();
+            expect(screen.queryByPlaceholderText('City or airport')).not.toBeInTheDocument();
         });
         it('should render date placeholders', () => {
             render(<SearchWidget />);
@@ -57,15 +57,6 @@ describe('SearchWidget', () => {
             expect(mockPush).not.toHaveBeenCalled();
         });
     });
-    describe('location input', () => {
-        it('should allow typing in location field', async () => {
-            const user = userEvent.setup();
-            render(<SearchWidget />);
-            const locationInput = screen.getByPlaceholderText('City or airport');
-            await user.type(locationInput, 'Istanbul');
-            expect(locationInput).toHaveValue('Istanbul');
-        });
-    });
     describe('vehicle type dropdown', () => {
         it('should have vehicle type dropdown', () => {
             render(<SearchWidget />);
@@ -87,7 +78,6 @@ describe('SearchWidget', () => {
     describe('accessibility', () => {
         it('should have labels for all form fields', () => {
             render(<SearchWidget />);
-            expect(screen.getByText('Location')).toBeInTheDocument();
             expect(screen.getByText('Pickup Date')).toBeInTheDocument();
             expect(screen.getByText('Return Date')).toBeInTheDocument();
             expect(screen.getByText('Vehicle Type')).toBeInTheDocument();

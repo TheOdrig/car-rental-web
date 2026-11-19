@@ -21,12 +21,10 @@ describe('security headers', () => {
             "'unsafe-inline'",
             'https://js.stripe.com',
             'https://*.js.stripe.com',
-            'https://maps.googleapis.com',
         ]);
         expect(directive(csp, 'connect-src')).toEqual([
             "'self'",
             'https://api.stripe.com',
-            'https://maps.googleapis.com',
             'https://link.com',
             'https://*.link.com',
         ]);

@@ -199,9 +199,10 @@ describe('usePaymentIntent', () => {
     it('does not post while disabled', async () => {
         const { Wrapper } = makeWrapper();
 
-        renderHook(() => usePaymentIntent(9, 0, false), { wrapper: Wrapper });
-        await new Promise((resolve) => setTimeout(resolve, 20));
+        const { result } = renderHook(() => usePaymentIntent(9, 0, false), { wrapper: Wrapper });
 
+        expect(result.current.fetchStatus).toBe('idle');
+        expect(result.current.isPending).toBe(true);
         expect(clientPost).not.toHaveBeenCalled();
     });
 });
