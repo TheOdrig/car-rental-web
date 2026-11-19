@@ -27,3 +27,13 @@ describe('checkout-utils', () => {
         });
     });
 });
+
+describe('monthKeysBetween', () => {
+    it('lists every month in the range and drops past months', async () => {
+        const { monthKeysBetween } = await import('../utils');
+        const now = new Date(2026, 10, 15);
+
+        expect(monthKeysBetween(new Date(2026, 10, 28), new Date(2027, 0, 3), now)).toEqual(['2026-11', '2026-12', '2027-01']);
+        expect(monthKeysBetween(new Date(2026, 8, 1), new Date(2026, 10, 3), now)).toEqual(['2026-11']);
+    });
+});

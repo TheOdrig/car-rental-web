@@ -23,6 +23,7 @@ const mockCar = vi.hoisted(() => ({
         carStatusType: 'AVAILABLE',
     } as Record<string, unknown>,
 }));
+const mockBooked = vi.hoisted(() => ({ value: { booked: new Set<string>(), blockedReason: null as string | null } }));
 const mockPricing = vi.hoisted(() => ({
     value: {
         data: {
@@ -74,6 +75,7 @@ vi.mock('@/entities/car', () => ({
         refetch: vi.fn(),
     })),
     usePricingPreview: vi.fn(() => mockPricing.value),
+    useBookedDates: vi.fn(() => mockBooked.value),
     pricingKeys: {
         preview: (carId: number, start: string, end: string) => ['pricing', 'preview', carId, start, end],
     },
@@ -112,6 +114,7 @@ describe('Checkout Flow Integration', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockPost.mockResolvedValue({ id: 42 });
+        mockBooked.value = { booked: new Set<string>(), blockedReason: null };
         mockCar.value = {
             id: 1,
             brand: 'BMW',
@@ -169,8 +172,8 @@ describe('Checkout Flow Integration', () => {
 
         it('should show the requested dates without a shifted day', () => {
             renderWithProviders(<CheckoutForm {...defaultProps} />);
-            expect(screen.getByText('Mon, Jan 15, 2024')).toBeInTheDocument();
-            expect(screen.getByText('Thu, Jan 18, 2024')).toBeInTheDocument();
+            expect(screen.getByText('Jan 15, 2024')).toBeInTheDocument();
+            expect(screen.getByText('Jan 18, 2024')).toBeInTheDocument();
         });
 
         it('should render a single Request Rental button', () => {
@@ -250,6 +253,26 @@ describe('Checkout Flow Integration', () => {
             expect(screen.getAllByText(/₺/).length).toBeGreaterThan(0);
             expect(await screen.findByText(/approximate rate/)).toBeInTheDocument();
             expect(screen.queryByText(/^€4,500/)).not.toBeInTheDocument();
+        });
+    });
+
+    describe('Availability before submitting', () => {
+        it('should show the conflict and block the request when a day in the range is booked', () => {
+            mockBooked.value = { booked: new Set(['2024-01-16']), blockedReason: null };
+
+            renderWithProviders(<CheckoutForm {...defaultProps} />);
+
+            expect(screen.getByRole('alert')).toHaveTextContent(/no longer available for the selected dates/i);
+            expect(screen.getByRole('button', { name: /request rental/i })).toBeDisabled();
+        });
+
+        it('should ignore booked days outside the requested range', () => {
+            mockBooked.value = { booked: new Set(['2024-01-25']), blockedReason: null };
+
+            renderWithProviders(<CheckoutForm {...defaultProps} />);
+
+            expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /request rental/i })).toBeEnabled();
         });
     });
 

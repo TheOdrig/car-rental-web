@@ -3,9 +3,9 @@
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Lock, ArrowRight, Sparkles, Tag } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { formatWeekdayDate } from '@/shared/lib';
+import { formatDate } from '@/shared/lib';
 import { useCurrency } from '@/entities/currency';
-import { mapCurrency } from '@/entities/currency';
+import { describeRateBasis, mapCurrency } from '@/entities/currency';
 import type { PriceBreakdown } from '@/features/book-car';
 import type { Car } from '@/entities/car';
 
@@ -32,7 +32,7 @@ export function BookingSummary({
     submitError = null,
     unavailableMessage = null,
 }: BookingSummaryProps) {
-    const { format: formatPrice, formatSource, isConverted } = useCurrency();
+    const { format: formatPrice, formatSource, isConverted, rateSource } = useCurrency();
     const sourceCurrency = mapCurrency(priceBreakdown.currency);
 
     return (
@@ -70,11 +70,11 @@ export function BookingSummary({
                             <div className="w-0.5 h-full bg-border my-1" />
                         </div>
                         <div className="pb-4">
-                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                                Start date
+                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                                Start Date
                             </p>
                             <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                {formatWeekdayDate(startDate)}
+                                {formatDate(startDate)}
                             </p>
                         </div>
                     </div>
@@ -84,11 +84,11 @@ export function BookingSummary({
                             <div className="w-2.5 h-2.5 rounded-full border-2 border-primary bg-white dark:bg-slate-900" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                                End date
+                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                                End Date
                             </p>
                             <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
-                                {formatWeekdayDate(endDate)}
+                                {formatDate(endDate)}
                             </p>
                         </div>
                     </div>
@@ -163,7 +163,7 @@ export function BookingSummary({
                             </span>
                             {!isPricingLoading && isConverted(sourceCurrency) && (
                                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                                    {formatPrice(priceBreakdown.total, sourceCurrency)} at today&apos;s approximate rate
+                                    {formatPrice(priceBreakdown.total, sourceCurrency)} {describeRateBasis(rateSource)}
                                 </p>
                             )}
                             <p className="text-xs text-slate-500 dark:text-slate-400">

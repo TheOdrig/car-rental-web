@@ -4,12 +4,12 @@ import { useMemo, useRef, useState, type FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { Clock, FileText } from 'lucide-react';
 import { toast } from 'sonner';
-import { getCarUnavailableMessage, isAvailable, useCar, usePricingPreview } from '@/entities/car';
-import { parseLocalDate } from '@/entities/rental';
+import { getCarUnavailableMessage, isAvailable, useBookedDates, useCar, usePricingPreview } from '@/entities/car';
+import { CAR_BOOKED_MESSAGE, findBookedDate, parseLocalDate } from '@/entities/rental';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { ErrorMessage } from '@/shared/ui/error-message';
-import { calculateRentalDays, getBookingErrorMessage } from '../../lib/utils';
+import { calculateRentalDays, getBookingErrorMessage, monthKeysBetween } from '../../lib/utils';
 import { useCreateBooking } from '../../lib/use-checkout';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
@@ -36,6 +36,15 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
         isLoading: pricingLoading,
         isError: pricingFailed,
     } = usePricingPreview(Number(carId), startDate, endDate);
+
+    const rangeStart = parseLocalDate(startDate);
+    const rangeEnd = parseLocalDate(endDate);
+    const months = useMemo(
+        () => (rangeStart && rangeEnd ? monthKeysBetween(rangeStart, rangeEnd) : []),
+        [rangeStart, rangeEnd]
+    );
+    const { booked, blockedReason } = useBookedDates(Number(carId), months);
+    const bookedConflict = rangeStart && rangeEnd ? findBookedDate(rangeStart, rangeEnd, booked) : null;
 
     const [notes, setNotes] = useState('');
     const [submitError, setSubmitError] = useState<string | null>(null);
@@ -135,7 +144,9 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
     }
 
     const isSubmitting = booking.isPending || booking.isSuccess;
-    const unavailableMessage = isAvailable(car) ? null : getCarUnavailableMessage(car.carStatusType);
+    const unavailableMessage = isAvailable(car)
+        ? (blockedReason ?? (bookedConflict ? CAR_BOOKED_MESSAGE : null))
+        : getCarUnavailableMessage(car.carStatusType);
 
     return (
         <form onSubmit={onSubmit}>
