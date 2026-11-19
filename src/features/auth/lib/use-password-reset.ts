@@ -2,8 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { clientPost, isRateLimited } from '@/shared/api';
-import { showToast } from '@/shared/lib';
-import { describeResetLinkError } from './reset-errors';
+import { showToast, describeResetLinkError } from '@/shared/lib';
 import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
 
 async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<MessageResponse> {

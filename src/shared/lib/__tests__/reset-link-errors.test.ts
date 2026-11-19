@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { RESET_LINK_EXPIRED, RESET_LINK_INVALID, describeResetLinkError } from '../reset-errors';
+import { RESET_LINK_EXPIRED, RESET_LINK_INVALID, describeResetLinkError } from '../reset-link-errors';
 
 describe('describeResetLinkError', () => {
     it('does not claim an unknown token expired', () => {

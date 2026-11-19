@@ -1,5 +1,5 @@
 import { ApiError, isApiError } from '@/shared/api';
-import { describeResetLinkError } from '@/features/auth/lib/reset-errors';
+import { describeResetLinkError } from '@/shared/lib';
 import { API, readJson, route, upstream } from '@/shared/server';
 
 function mapResetError(error: ApiError): ApiError {
