@@ -27,11 +27,14 @@ const PROBLEM_DEFAULTS: Record<number, { title: string; code: string }> = {
     404: { title: 'Not Found', code: 'NOT_FOUND' },
     405: { title: 'Method Not Allowed', code: 'METHOD_NOT_ALLOWED' },
     409: { title: 'Conflict', code: 'CONFLICT' },
+    413: { title: 'Payload Too Large', code: 'PAYLOAD_TOO_LARGE' },
     415: { title: 'Unsupported Media Type', code: 'UNSUPPORTED_MEDIA_TYPE' },
     429: { title: 'Too Many Requests', code: 'RATE_LIMITED' },
     503: { title: 'Service Unavailable', code: 'SERVICE_UNAVAILABLE' },
 };
 const FALLBACK_PROBLEM = { title: 'Internal Server Error', code: 'INTERNAL_SERVER_ERROR' };
+
+export const MAX_BODY_BYTES = 10 * 1024 * 1024;
 
 function mediaType(value: string | null): string {
     return (value ?? '').split(';')[0].trim().toLowerCase();
@@ -98,6 +101,14 @@ function guardRequest(request: NextRequest, options: RouteOptions): NextResponse
     }
 
     if (BODY_METHODS.has(request.method)) {
+        const declared = Number(request.headers.get('content-length'));
+        if (Number.isFinite(declared) && declared > MAX_BODY_BYTES) {
+            return problemResponse(413, 'The request body is too large', {
+                title: 'Payload Too Large',
+                code: 'PAYLOAD_TOO_LARGE',
+            });
+        }
+
         const allowed = options.contentTypes ?? [JSON_CONTENT_TYPE];
         if (!allowed.includes(mediaType(request.headers.get('content-type')))) {
             return problemResponse(415, 'Unsupported media type', {
@@ -188,7 +199,10 @@ export function parseIdParam(value: string | undefined, label: string): number {
 export async function readJson<T = Record<string, unknown>>(request: NextRequest): Promise<T> {
     try {
         return (await request.json()) as T;
-    } catch {
+    } catch (error) {
+        if (error instanceof Error && /exceeded|too large/i.test(error.message)) {
+            throw new ApiError(413, 'The request body is too large');
+        }
         throw new ApiError(400, 'Invalid JSON body');
     }
 }

@@ -11,7 +11,7 @@ vi.mock('next/headers', () => ({
 
 import { ApiError } from '@/shared/api/error';
 import { resetServerEnvForTests } from '../env';
-import { parseIdParam, proxy, route } from '../route';
+import { MAX_BODY_BYTES, parseIdParam, proxy, route } from '../route';
 
 const request = (url = 'http://localhost:3000/api/x', init?: ConstructorParameters<typeof NextRequest>[1]) =>
     new NextRequest(url, init);
@@ -39,6 +39,21 @@ describe('route request guards', () => {
 
         const missing = await ok(request(undefined, { method: 'POST' }), context({}));
         expect(missing.status).toBe(415);
+    });
+
+    it('answers a body over the limit with 413 problem+json', async () => {
+        const response = await ok(
+            request(undefined, {
+                method: 'POST',
+                headers: { 'content-type': 'application/json', 'content-length': String(MAX_BODY_BYTES + 1) },
+                body: '{}',
+            }),
+            context({})
+        );
+
+        expect(response.status).toBe(413);
+        expect(response.headers.get('content-type')).toContain('application/problem+json');
+        expect(await response.json()).toMatchObject({ status: 413, code: 'PAYLOAD_TOO_LARGE' });
     });
 
     it('accepts JSON with a charset parameter', async () => {

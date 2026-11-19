@@ -70,6 +70,14 @@ export function buildSecurityHeaders(environment: HeaderEnvironment): Array<{ ke
   return headers;
 }
 
+export const FILE_ROUTE_CSP = "default-src 'none'; sandbox";
+
+export function buildFileHeaders(environment: HeaderEnvironment): Array<{ key: string; value: string }> {
+  return buildSecurityHeaders(environment).map((header) =>
+    header.key === "Content-Security-Policy" ? { ...header, value: FILE_ROUTE_CSP } : header
+  );
+}
+
 const nextConfig: NextConfig = {
   output: "standalone",
   poweredByHeader: false,
@@ -81,14 +89,14 @@ const nextConfig: NextConfig = {
     ];
   },
   async headers() {
+    const environment = {
+      isDevelopment: process.env.NODE_ENV === "development",
+      isProduction: process.env.NODE_ENV === "production",
+    };
+
     return [
-      {
-        source: "/:path*",
-        headers: buildSecurityHeaders({
-          isDevelopment: process.env.NODE_ENV === "development",
-          isProduction: process.env.NODE_ENV === "production",
-        }),
-      },
+      { source: "/((?!api/files/).*)", headers: buildSecurityHeaders(environment) },
+      { source: "/api/files/:path*", headers: buildFileHeaders(environment) },
     ];
   },
   images: {

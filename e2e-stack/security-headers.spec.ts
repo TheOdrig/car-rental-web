@@ -17,6 +17,13 @@ test.describe('security headers against the running app', () => {
         expect(headers['permissions-policy']).toContain('camera=()');
     });
 
+    test('the file proxy sandboxes its responses with its own CSP', async ({ request }) => {
+        const response = await request.get('/api/files/avatars/00000000-0000-0000-0000-000000000000.png');
+
+        expect(response.headers()['content-security-policy']).toBe("default-src 'none'; sandbox");
+        expect(response.headers()['x-content-type-options']).toBe('nosniff');
+    });
+
     test('public pages render without CSP violations', async ({ page }) => {
         const violations = collectCspViolations(page);
 

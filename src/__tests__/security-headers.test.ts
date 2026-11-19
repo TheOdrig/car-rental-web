@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import nextConfig, { buildContentSecurityPolicy, buildSecurityHeaders } from '../../next.config';
+import nextConfig, { buildContentSecurityPolicy, buildSecurityHeaders, FILE_ROUTE_CSP } from '../../next.config';
 
 function valueOf(headers: Array<{ key: string; value: string }>, key: string): string | undefined {
     return headers.find((header) => header.key === key)?.value;
@@ -90,8 +90,21 @@ describe('security headers', () => {
     it('applies the headers to every route through next.config', async () => {
         const rules = await nextConfig.headers?.();
 
-        expect(rules).toHaveLength(1);
-        expect(rules?.[0].source).toBe('/:path*');
-        expect(rules?.[0].headers.map((header) => header.key)).toContain('Content-Security-Policy');
+        const global = rules?.find((rule) => rule.source !== '/api/files/:path*');
+        const matches = (path: string) => new RegExp('^' + global!.source + '$').test(path);
+
+        expect(global?.headers.map((header) => header.key)).toContain('Content-Security-Policy');
+        expect(matches('/')).toBe(true);
+        expect(matches('/api/cars')).toBe(true);
+        expect(matches('/api/files/avatars/a.png')).toBe(false);
+    });
+
+    it('gives the file proxy its own sandboxing CSP instead of the site-wide one', async () => {
+        const rules = await nextConfig.headers?.();
+        const fileRule = rules?.find((rule) => rule.source === '/api/files/:path*');
+        const csp = fileRule?.headers.filter((header) => header.key === 'Content-Security-Policy');
+
+        expect(csp).toEqual([{ key: 'Content-Security-Policy', value: FILE_ROUTE_CSP }]);
+        expect(fileRule?.headers.map((header) => header.key)).toContain('X-Content-Type-Options');
     });
 });
