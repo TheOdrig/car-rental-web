@@ -16,6 +16,22 @@ describe('describeResetLinkError', () => {
         });
     });
 
+    it('tells an unknown token from an expired one by the wording the API uses', () => {
+        expect(describeResetLinkError('Invalid password reset token')).toEqual({
+            title: 'Link not valid',
+            detail: RESET_LINK_INVALID,
+        });
+        expect(describeResetLinkError('Password reset token has expired')).toEqual({
+            title: 'Link expired',
+            detail: RESET_LINK_EXPIRED,
+        });
+    });
+
+    it('maps its own invalid copy back to the invalid message', () => {
+        expect(describeResetLinkError(RESET_LINK_INVALID)?.title).toBe('Link not valid');
+        expect(describeResetLinkError(RESET_LINK_EXPIRED)?.title).toBe('Link expired');
+    });
+
     it('leaves other errors alone', () => {
         expect(describeResetLinkError('Service unavailable')).toBeNull();
     });

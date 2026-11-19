@@ -13,6 +13,7 @@ import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
 import { useWaivePenalty } from '@/features/admin';
 import { formatCurrency } from '@/shared/lib';
+import { fieldErrorMap } from '@/shared/api';
 
 export function createWaiverSchema(originalPenalty: number, currency: string) {
     return z
@@ -62,6 +63,7 @@ export function PenaltyWaiveDialog({
 }: PenaltyWaiveDialogProps) {
     const [isFullWaiver, setIsFullWaiver] = useState(false);
     const waivePenalty = useWaivePenalty();
+    const apiErrors = fieldErrorMap(waivePenalty.error);
     const schema = useMemo(() => createWaiverSchema(originalPenalty, currency), [originalPenalty, currency]);
 
     const {
@@ -96,6 +98,7 @@ export function PenaltyWaiveDialog({
     const handleOpenChange = (newOpen: boolean) => {
         onOpenChange(newOpen);
         if (!newOpen) {
+            waivePenalty.reset();
             reset();
             setIsFullWaiver(false);
         }
@@ -170,7 +173,11 @@ export function PenaltyWaiveDialog({
                                 {...register('waiverAmount', { valueAsNumber: true })}
                                 className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
                             />
-                            {exceedsPenalty ? (
+                            {apiErrors.waiverAmount && !exceedsPenalty ? (
+                                <p className="text-sm text-red-600 dark:text-red-400" role="alert" data-testid="waiver-amount-api-error">
+                                    {apiErrors.waiverAmount}
+                                </p>
+                            ) : exceedsPenalty ? (
                                 <p className="text-sm text-red-600 dark:text-red-400" role="alert">
                                     The waiver cannot be more than the penalty of {formatCurrency(originalPenalty, currency)}
                                 </p>
@@ -192,8 +199,8 @@ export function PenaltyWaiveDialog({
                             {...register('reason')}
                             className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 min-h-[100px]"
                         />
-                        {errors.reason && (
-                            <p className="text-sm text-red-500">{errors.reason.message}</p>
+                        {(errors.reason?.message ?? apiErrors.reason) && (
+                            <p className="text-sm text-red-500">{errors.reason?.message ?? apiErrors.reason}</p>
                         )}
                     </div>
 
