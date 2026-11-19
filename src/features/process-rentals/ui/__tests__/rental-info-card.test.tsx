@@ -95,4 +95,12 @@ describe('RentalInfoCard', () => {
         expect(screen.getByTestId('cancellation-by')).toHaveTextContent(label);
         expect(screen.getByTestId('cancellation-reason')).toHaveTextContent('Payment not completed');
     });
+    it('shows the notes the customer left with the booking', () => {
+        renderWithProviders(<RentalInfoCard {...defaultProps} bookingNotes={'Child seat please'} />);
+        expect(screen.getByTestId('booking-notes')).toHaveTextContent('Child seat please');
+    });
+    it('shows no customer notes block without notes', () => {
+        renderWithProviders(<RentalInfoCard {...defaultProps} />);
+        expect(screen.queryByTestId('booking-notes')).not.toBeInTheDocument();
+    });
 });

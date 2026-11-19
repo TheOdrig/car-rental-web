@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { Rental } from '@/entities/rental';
 
 interface RentalNotesCardProps {
-    rental: Pick<Rental, 'approvalNotes' | 'pickupNotes' | 'returnNotes'>;
+    rental: Pick<Rental, 'approvalNotes' | 'pickupNotes' | 'returnNotes' | 'notes'>;
 }
 
 interface NoteBlockProps {
@@ -44,7 +44,7 @@ function NoteBlock({ label, text, tone }: NoteBlockProps) {
 }
 
 export function hasRentalNotes(rental: RentalNotesCardProps['rental']): boolean {
-    return !!(rental.approvalNotes || rental.pickupNotes || rental.returnNotes);
+    return !!(rental.notes || rental.approvalNotes || rental.pickupNotes || rental.returnNotes);
 }
 
 export function RentalNotesCard({ rental }: RentalNotesCardProps) {
@@ -57,6 +57,7 @@ export function RentalNotesCard({ rental }: RentalNotesCardProps) {
                 </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
+                {rental.notes && <NoteBlock label="Your Booking Note" text={rental.notes} tone="slate" />}
                 {rental.approvalNotes && <NoteBlock label="Approval Note" text={rental.approvalNotes} tone="green" />}
                 {rental.pickupNotes && <NoteBlock label="Pickup Note" text={rental.pickupNotes} tone="purple" />}
                 {rental.returnNotes && <NoteBlock label="Return Note" text={rental.returnNotes} tone="slate" />}

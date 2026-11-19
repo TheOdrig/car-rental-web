@@ -37,6 +37,7 @@ export {
 export * from './lib/utils';
 export * from './lib/rental-rules';
 export * from './lib/rental-errors';
+export * from './lib/damage-reporting';
 export * from './lib/admin-status';
 export {
     useMyRentals,

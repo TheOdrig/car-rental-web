@@ -138,3 +138,34 @@ describe('admin rental return before the end date', () => {
         expect(screen.queryByTestId('early-return-warning')).toBeNull();
     });
 });
+
+describe('admin rental damage reporting entry', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it.each(['ACTIVE', 'COMPLETED'])('offers Report Damage for a %s rental and opens the form', async (status) => {
+        detail.current = rental(status);
+        const user = userEvent.setup();
+        renderWithProviders(
+            <main>
+                <RentalDetailContent id="7" />
+            </main>
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Report Damage' }));
+
+        expect(await screen.findByRole('dialog')).toBeInTheDocument();
+    });
+
+    it.each(['CONFIRMED', 'CANCELLED'])('does not offer Report Damage for a %s rental', (status) => {
+        detail.current = rental(status);
+        renderWithProviders(
+            <main>
+                <RentalDetailContent id="7" />
+            </main>
+        );
+
+        expect(screen.queryByRole('button', { name: 'Report Damage' })).not.toBeInTheDocument();
+    });
+});

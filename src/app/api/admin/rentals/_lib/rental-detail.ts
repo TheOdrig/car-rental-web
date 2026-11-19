@@ -122,6 +122,7 @@ export function buildRentalDetail({
         timeline: timeline(rental),
         damages,
         notes: {
+            booking: rental.notes ?? undefined,
             approval: rental.approvalNotes,
             pickup: rental.pickupNotes,
             return: rental.returnNotes,

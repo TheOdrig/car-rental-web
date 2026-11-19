@@ -23,6 +23,7 @@ interface RentalInfoCardProps {
     pickupLocation?: string;
     dropoffLocation?: string;
     notes?: string;
+    bookingNotes?: string;
     cancellationReason?: string;
     cancelledBy?: string;
 }
@@ -48,6 +49,7 @@ export function RentalInfoCard({
     pickupLocation,
     dropoffLocation,
     notes,
+    bookingNotes,
     cancellationReason,
     cancelledBy,
 }: RentalInfoCardProps) {
@@ -167,6 +169,13 @@ export function RentalInfoCard({
                 {(cancelledBy || cancellationReason) && (
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
                         <RentalCancellationNotice audience="admin" cancelledBy={cancelledBy} reason={cancellationReason} />
+                    </div>
+                )}
+
+                {bookingNotes && (
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4" data-testid="booking-notes">
+                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Customer Notes</span>
+                        <p className="whitespace-pre-wrap break-words text-sm text-slate-700 dark:text-slate-300">{bookingNotes}</p>
                     </div>
                 )}
 

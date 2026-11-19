@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, DollarSign } from 'lucide-react';
+import { ArrowLeft, DollarSign, TriangleAlert } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import {
@@ -29,7 +29,8 @@ import {
 } from '@/features/process-rentals';
 import { fieldErrorMessages } from '@/shared/api';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
-import { isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
+import { DamageReportForm } from '@/entities/damage';
+import { canReportDamage, isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
 import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
@@ -79,6 +80,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
+    const [damageDialogOpen, setDamageDialogOpen] = useState(false);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
     const [cancelReason, setCancelReason] = useState('');
@@ -132,6 +134,10 @@ export function RentalDetailContent({ id }: { id: string }) {
     const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
     const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE', 'OVERDUE'].includes(rental.status);
     const referenceNumber = formatRentalReference(rentalId);
+    const showReportDamage = canReportDamage(
+        rental.status,
+        rental.timeline.find((event) => event.type === 'returned')?.timestamp
+    );
 
     const focusHeading = () => headingRef.current?.focus();
 
@@ -247,6 +253,12 @@ export function RentalDetailContent({ id }: { id: string }) {
                         pickupBlockedReason={pickupBlockedReason}
                         isLoading={isActionLoading}
                     />
+                    {showReportDamage && (
+                        <Button variant="outline" size="sm" className="gap-2" onClick={() => setDamageDialogOpen(true)}>
+                            <TriangleAlert className="h-4 w-4" aria-hidden="true" />
+                            Report Damage
+                        </Button>
+                    )}
                     {hasPenalty && (
                         <Button
                             variant="destructive"
@@ -271,6 +283,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     duration={rental.duration}
                     pricing={rental.pricing}
                     notes={rental.notes.approval}
+                    bookingNotes={rental.notes.booking}
                     cancellationReason={rental.notes.cancellation}
                     cancelledBy={rental.cancelledBy}
                 />
@@ -315,6 +328,15 @@ export function RentalDetailContent({ id }: { id: string }) {
                         currency={rental.pricing.currency}
                     />
                 </>
+            )}
+
+            {showReportDamage && (
+                <DamageReportForm
+                    rentalId={rentalId}
+                    open={damageDialogOpen}
+                    onOpenChange={setDamageDialogOpen}
+                    onSuccess={() => void refetch()}
+                />
             )}
 
             <ConfirmActionDialog

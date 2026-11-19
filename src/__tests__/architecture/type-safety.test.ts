@@ -12,6 +12,7 @@ const CONTRACT_STATUS_LITERAL_FILES = [
   'src/entities/payment/model/rental-payment.ts',
   'src/entities/payment/ui/payment-status-badge.tsx',
   'src/entities/rental/lib/admin-status.ts',
+  'src/entities/rental/lib/damage-reporting.ts',
   'src/entities/rental/model/types.ts',
   'src/features/manage-rentals/ui/rental-detail/rental-detail.tsx',
   'src/features/manage-users/ui/customer-detail/customer-rental-history-table.tsx',

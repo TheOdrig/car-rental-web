@@ -244,6 +244,7 @@ export interface RentalDetailResponse {
     }[];
     damages: Schemas['DamageReportDto'][];
     notes: {
+        booking?: string;
         approval?: string;
         pickup?: string;
         return?: string;

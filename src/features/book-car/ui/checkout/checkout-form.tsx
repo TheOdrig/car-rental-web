@@ -191,6 +191,9 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
                             <p className="text-xs text-slate-500 dark:text-slate-400">
                                 {notes.length}/{NOTES_MAX_LENGTH}
                             </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                                The administrator sees this note with your request, and it stays on your rental page.
+                            </p>
                         </div>
                     </section>
                 </div>
