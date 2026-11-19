@@ -21,6 +21,7 @@ export { RejectRentalDialog } from './ui/reject-rental-dialog';
 export { ProcessPickupDialog } from './ui/process-pickup-dialog';
 export { ProcessReturnDialog } from './ui/process-return-dialog';
 export { ConfirmActionDialog } from './ui/confirm-action-dialog';
+export { CancelReasonField } from './ui/cancel-reason-field';
 export { EarlyReturnPreviewPanel } from './ui/early-return-preview-panel';
 export { AllRentalsTable } from './ui/all-rentals-table';
 export { PendingRentalsTable, PendingRentalsSkeleton } from './ui/pending-rentals';

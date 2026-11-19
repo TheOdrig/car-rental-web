@@ -27,7 +27,7 @@ vi.mock('@/features/process-rentals', async (importOriginal) => {
 });
 vi.mock('@/entities/rental', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/entities/rental')>();
-    return { ...original, useCancelRental: () => ({ mutateAsync: vi.fn(), isPending: false }) };
+    return { ...original, useCancelRental: () => ({ mutateAsync: vi.fn(), isPending: false, reset: vi.fn() }) };
 });
 vi.mock('@/entities/payment', async (importOriginal) => {
     const original = await importOriginal<typeof import('@/entities/payment')>();

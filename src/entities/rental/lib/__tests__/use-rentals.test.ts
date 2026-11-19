@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { createQueryWrapper } from '@/app/testing/test-utils';
 import { useMyRentals, useAllMyRentals, useRental, useCreateRental, useCancelRental, rentalKeys } from '../use-rentals';
-import { ApiError, clientGet, clientPost, clientDelete } from '@/shared/api';
+import { ApiError, clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { createMockRental, createMockRentals } from '@/entities/rental/lib/testing/factories';
 vi.mock('@/shared/api', async (importOriginal) => {
@@ -11,7 +11,6 @@ vi.mock('@/shared/api', async (importOriginal) => {
         ...original,
         clientGet: vi.fn(),
         clientPost: vi.fn(),
-        clientDelete: vi.fn(),
     };
 });
 vi.mock('@/shared/lib', async (importOriginal) => {
@@ -26,7 +25,6 @@ vi.mock('@/shared/lib', async (importOriginal) => {
 });
 const mockClientGet = vi.mocked(clientGet);
 const mockClientPost = vi.mocked(clientPost);
-const mockClientDelete = vi.mocked(clientDelete);
 const mockToast = vi.mocked(showToast);
 describe('use-rentals hooks', () => {
     beforeEach(() => {
@@ -132,16 +130,26 @@ describe('use-rentals hooks', () => {
     });
     describe('useCancelRental', () => {
         it('should cancel rental and show toast', async () => {
-            mockClientDelete.mockResolvedValueOnce({});
+            mockClientPost.mockResolvedValueOnce({});
             const { result } = renderHook(() => useCancelRental(), {
                 wrapper: createQueryWrapper(),
             });
             await result.current.mutateAsync(1);
-            expect(mockClientDelete).toHaveBeenCalledWith('/api/rentals/1');
+            expect(mockClientPost).toHaveBeenCalledWith('/api/rentals/1/cancel', undefined);
             expect(mockToast.success).toHaveBeenCalled();
         });
+        it('sends a trimmed reason and leaves a blank one out', async () => {
+            mockClientPost.mockResolvedValue({});
+            const { result } = renderHook(() => useCancelRental(), {
+                wrapper: createQueryWrapper(),
+            });
+            await result.current.mutateAsync({ rentalId: 4, reason: '  Car is in the workshop  ' });
+            expect(mockClientPost).toHaveBeenLastCalledWith('/api/rentals/4/cancel', { reason: 'Car is in the workshop' });
+            await result.current.mutateAsync({ rentalId: 4, reason: '   ' });
+            expect(mockClientPost).toHaveBeenLastCalledWith('/api/rentals/4/cancel', undefined);
+        });
         it('explains a cancel the API no longer allows', async () => {
-            mockClientDelete.mockRejectedValue(
+            mockClientPost.mockRejectedValue(
                 new ApiError({ status: 400, message: 'nope', timestamp: new Date().toISOString(), code: 'RENTAL_CANCEL_NOT_ALLOWED' })
             );
             const { result } = renderHook(() => useCancelRental(), {
@@ -152,7 +160,7 @@ describe('use-rentals hooks', () => {
             expect(mockToast.error).toHaveBeenCalledWith(expect.any(String), expect.stringContaining('can no longer be cancelled'));
         });
         it('should handle cancel error', async () => {
-            mockClientDelete.mockRejectedValue(new Error('Cancel failed'));
+            mockClientPost.mockRejectedValue(new Error('Cancel failed'));
             const { result } = renderHook(() => useCancelRental(), {
                 wrapper: createQueryWrapper(),
             });

@@ -1,6 +1,6 @@
 import type { Schemas } from '@/shared/api';
 import { ownValue } from '@/shared/lib/utils';
-import { toAdminRentalStatus, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
+import { getCancelledByLabel, toAdminRentalStatus, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
 
 type Rental = Schemas['RentalResponse'];
 type Customer = Schemas['AdminUserDetailResponse'];
@@ -22,8 +22,14 @@ const STATUS_EVENTS: Record<string, { type: TimelineEventType; title: string; no
     CONFIRMED: { type: 'approved', title: 'Rental confirmed', note: (rental) => rental.approvalNotes },
     IN_USE: { type: 'picked_up', title: 'Vehicle picked up', note: (rental) => rental.pickupNotes },
     RETURNED: { type: 'returned', title: 'Vehicle returned', note: (rental) => rental.returnNotes },
-    CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => rental.cancellationReason },
+    CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => cancellationNote(rental) },
 };
+
+function cancellationNote(rental: Rental): string {
+    const who = getCancelledByLabel(rental.cancelledBy, 'admin');
+    const reason = rental.cancellationReason?.trim();
+    return reason ? `${who}: ${reason}` : who;
+}
 
 const PROGRESS = ['CONFIRMED', 'IN_USE', 'RETURNED'];
 
@@ -122,5 +128,8 @@ export function buildRentalDetail({
         },
         penaltyAmount: lateReturn?.penaltyAmount,
         lateReturnStatus: lateReturn?.status,
+        cancelledBy: rental.cancelledBy,
+        paymentDueBy: rental.paymentDueBy,
+        paymentStatus: rental.paymentStatus,
     };
 }

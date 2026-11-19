@@ -6,10 +6,3 @@ export const GET = proxy<{ id: string }>({
     errorMessage: 'Failed to fetch rental',
     errorStatus: 503,
 });
-
-export const DELETE = proxy<{ id: string }>({
-    target: ({ id }) => API.rentals.cancel.resolve({ id: parseIdParam(id, 'rental ID') }),
-    body: 'none',
-    errorMessage: 'Failed to cancel rental',
-    errorStatus: 503,
-});

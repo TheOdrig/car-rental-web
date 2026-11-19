@@ -25,9 +25,11 @@ import {
     useEarlyReturnPreview,
     EarlyReturnPreviewPanel,
     ConfirmActionDialog,
+    CancelReasonField,
 } from '@/features/process-rentals';
+import { fieldErrorMessages } from '@/shared/api';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
-import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, useCancelRental } from '@/entities/rental';
+import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
 import { formatRentalReference } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
@@ -79,6 +81,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
     const [rejectDialogOpen, setRejectDialogOpen] = useState(false);
     const [rejectionReason, setRejectionReason] = useState('');
+    const [cancelReason, setCancelReason] = useState('');
 
     const isActionLoading =
         approveRental.isPending ||
@@ -162,10 +165,11 @@ export function RentalDetailContent({ id }: { id: string }) {
                       ? processReturn.mutateAsync({ rentalId })
                       : action === 'earlyReturn'
                         ? earlyReturn.mutateAsync({ rentalId })
-                        : cancelRental.mutateAsync(rentalId);
+                        : cancelRental.mutateAsync({ rentalId, reason: cancelReason });
             const done = await request.then(() => true, () => false);
             if (done) {
                 setConfirming(null);
+                setCancelReason('');
                 await refetch();
                 focusHeading();
             }
@@ -268,6 +272,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     pricing={rental.pricing}
                     notes={rental.notes.approval}
                     cancellationReason={rental.notes.cancellation}
+                    cancelledBy={rental.cancelledBy}
                 />
                 <CustomerInfoCard customer={customerInfo} />
                 <VehicleInfoCard vehicle={vehicleInfo} />
@@ -280,6 +285,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     penaltyAmount={rentalWithPenalty.penaltyAmount}
                     lateReturnStatus={rentalWithPenalty.lateReturnStatus}
                     paymentEnabled={paymentExpected}
+                    paymentDueBy={rental.paymentDueBy}
                 />
                 <TimelineCard events={timelineEvents} />
             </div>
@@ -313,16 +319,33 @@ export function RentalDetailContent({ id }: { id: string }) {
 
             <ConfirmActionDialog
                 open={confirming !== null}
-                onOpenChange={(open) => !open && setConfirming(null)}
+                onOpenChange={(open) => {
+                    if (open) return;
+                    setConfirming(null);
+                    setCancelReason('');
+                    cancelRental.reset();
+                }}
                 title={CONFIRM_COPY[confirming ?? 'approve'].title}
                 description={CONFIRM_COPY[confirming ?? 'approve'].description}
                 confirmLabel={CONFIRM_COPY[confirming ?? 'approve'].confirm}
                 destructive={confirming === 'cancel'}
                 isPending={isActionLoading}
-                confirmDisabled={confirming === 'earlyReturn' && !earlyReturnPreview.data}
+                confirmDisabled={
+                    (confirming === 'earlyReturn' && !earlyReturnPreview.data) ||
+                    (confirming === 'cancel' && cancelReason.length > CANCEL_REASON_MAX_LENGTH)
+                }
                 onConfirm={runConfirmed}
             >
                 {confirming === 'earlyReturn' && <EarlyReturnPreviewPanel query={earlyReturnPreview} />}
+                {confirming === 'cancel' && (
+                    <CancelReasonField
+                        value={cancelReason}
+                        onChange={setCancelReason}
+                        maxLength={CANCEL_REASON_MAX_LENGTH}
+                        error={fieldErrorMessages(cancelRental.error, 'reason')[0]}
+                        disabled={isActionLoading}
+                    />
+                )}
             </ConfirmActionDialog>
 
             <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>

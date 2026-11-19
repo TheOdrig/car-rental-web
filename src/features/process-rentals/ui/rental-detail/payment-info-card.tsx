@@ -2,7 +2,7 @@
 
 import { DollarSign, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { formatCurrency } from '@/shared/lib';
+import { formatCurrency, formatDateTime, parseApiDate } from '@/shared/lib';
 import type { RentalPricing } from '@/entities/rental';
 import { RentalPaymentStatus } from '@/entities/payment';
 import type { LateReturnStatus } from '@/entities/rental';
@@ -14,9 +14,10 @@ interface PaymentInfoCardProps {
     penaltyAmount?: number;
     lateReturnStatus?: LateReturnStatus;
     paymentEnabled?: boolean;
+    paymentDueBy?: string;
 }
 
-export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnStatus, paymentEnabled = true }: PaymentInfoCardProps) {
+export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnStatus, paymentEnabled = true, paymentDueBy }: PaymentInfoCardProps) {
     const hasPenalty = (penaltyAmount ?? 0) > 0;
     const grandTotal = pricing.finalTotal + (penaltyAmount ?? 0);
 
@@ -102,6 +103,11 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                 )}
             </CardContent>
         </Card>
+        {parseApiDate(paymentDueBy) && (
+            <p className="text-sm text-slate-600 dark:text-slate-400" data-testid="payment-due-by">
+                Pay by {formatDateTime(paymentDueBy)}
+            </p>
+        )}
         <RentalPaymentStatus rentalId={rentalId} enabled={paymentEnabled} className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm" />
         </div>
     );

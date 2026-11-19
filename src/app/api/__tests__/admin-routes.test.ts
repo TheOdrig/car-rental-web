@@ -433,4 +433,27 @@ describe('admin BFF routes', () => {
 
         expect(detail.timeline.map((event) => event.type)).toEqual(['created', 'cancelled']);
     });
+
+    it.each([
+        ['CUSTOMER', 'Cancelled by the customer: changed plans'],
+        ['ADMIN', 'Cancelled by an admin: changed plans'],
+        ['SYSTEM', 'Cancelled automatically (payment not completed): changed plans'],
+    ])('says who cancelled on the timeline when %s did', (cancelledBy, description) => {
+        const detail = buildRentalDetail({
+            rental: { id: 3, status: 'CANCELLED', cancelledBy: cancelledBy as 'CUSTOMER', cancellationReason: 'changed plans' },
+        });
+
+        expect(detail.cancelledBy).toBe(cancelledBy);
+        expect(detail.timeline[1].description).toBe(description);
+        expect(detail.notes.cancellation).toBe('changed plans');
+    });
+
+    it('carries the pay-by instant and the payment status of the rental', () => {
+        const detail = buildRentalDetail({
+            rental: { id: 4, status: 'CONFIRMED', paymentDueBy: '2030-05-06T12:00:00Z', paymentStatus: 'PENDING' },
+        });
+
+        expect(detail.paymentDueBy).toBe('2030-05-06T12:00:00Z');
+        expect(detail.paymentStatus).toBe('PENDING');
+    });
 });

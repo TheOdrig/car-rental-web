@@ -79,4 +79,20 @@ describe('RentalInfoCard', () => {
         expect(screen.getByText('Drop-off')).toBeInTheDocument();
         expect(screen.getByText('Downtown Office')).toBeInTheDocument();
     });
+    it.each([
+        ['CUSTOMER', 'Cancelled by the customer'],
+        ['ADMIN', 'Cancelled by an admin'],
+        ['SYSTEM', 'Cancelled automatically (payment not completed)'],
+    ])('shows who cancelled and the reason when %s did', (cancelledBy, label) => {
+        renderWithProviders(
+            <RentalInfoCard
+                {...defaultProps}
+                status="CANCELLED"
+                cancelledBy={cancelledBy}
+                cancellationReason="Payment not completed"
+            />
+        );
+        expect(screen.getByTestId('cancellation-by')).toHaveTextContent(label);
+        expect(screen.getByTestId('cancellation-reason')).toHaveTextContent('Payment not completed');
+    });
 });

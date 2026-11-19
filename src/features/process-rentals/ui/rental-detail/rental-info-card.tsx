@@ -5,7 +5,12 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency, formatDateTime, formatDate, formatRentalReference } from '@/shared/lib';
-import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus, type RentalPricing } from '@/entities/rental';
+import {
+    ADMIN_RENTAL_STATUS_LABELS,
+    RentalCancellationNotice,
+    type AdminRentalStatus,
+    type RentalPricing,
+} from '@/entities/rental';
 
 interface RentalInfoCardProps {
     rentalId: number;
@@ -19,6 +24,7 @@ interface RentalInfoCardProps {
     dropoffLocation?: string;
     notes?: string;
     cancellationReason?: string;
+    cancelledBy?: string;
 }
 
 const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
@@ -43,6 +49,7 @@ export function RentalInfoCard({
     dropoffLocation,
     notes,
     cancellationReason,
+    cancelledBy,
 }: RentalInfoCardProps) {
     const referenceNumber = formatRentalReference(rentalId);
 
@@ -157,10 +164,9 @@ export function RentalInfoCard({
                     </div>
                 )}
 
-                {cancellationReason && (
+                {status === 'CANCELLED' && (cancelledBy || cancellationReason) && (
                     <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Cancellation Reason</span>
-                        <p className="text-sm text-red-600 dark:text-red-400">{cancellationReason}</p>
+                        <RentalCancellationNotice audience="admin" cancelledBy={cancelledBy} reason={cancellationReason} />
                     </div>
                 )}
 

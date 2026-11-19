@@ -246,6 +246,9 @@ export interface RentalDetailResponse {
     };
     penaltyAmount?: number;
     lateReturnStatus?: LateReturnStatus;
+    cancelledBy?: string;
+    paymentDueBy?: string;
+    paymentStatus?: string;
 }
 
 export type PendingItem = WithRequired<

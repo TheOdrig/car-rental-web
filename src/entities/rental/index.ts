@@ -41,6 +41,8 @@ export {
     useRental,
     useCreateRental,
     useCancelRental,
+    CANCEL_REASON_MAX_LENGTH,
+    type CancelRentalInput,
     usePrefetchRental,
     useInvalidateRentals,
     rentalKeys,

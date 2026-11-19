@@ -1,7 +1,7 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { clientGet, clientPost, clientDelete, isNotFoundError } from '@/shared/api';
+import { clientGet, clientPost, isNotFoundError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './rental-errors';
 import type { Rental, RentalRequest } from '@/entities/rental';
@@ -61,8 +61,19 @@ async function createRental(data: RentalRequest): Promise<Rental> {
     return clientPost<Rental>('/api/rentals', data);
 }
 
-async function cancelRental(id: number): Promise<Rental> {
-    return clientDelete<Rental>(`/api/rentals/${id}`);
+export const CANCEL_REASON_MAX_LENGTH = 500;
+
+export type CancelRentalInput = number | { rentalId: number; reason?: string };
+
+function normalizeCancel(input: CancelRentalInput): { rentalId: number; reason?: string } {
+    const { rentalId, reason } = typeof input === 'number' ? { rentalId: input, reason: undefined } : input;
+    const trimmed = reason?.trim();
+    return { rentalId, reason: trimmed ? trimmed : undefined };
+}
+
+async function cancelRental(input: CancelRentalInput): Promise<Rental> {
+    const { rentalId, reason } = normalizeCancel(input);
+    return clientPost<Rental>(`/api/rentals/${rentalId}/cancel`, reason ? { reason } : undefined);
 }
 
 export function useMyRentals(filters?: RentalFilters) {
@@ -111,10 +122,10 @@ export function useCancelRental() {
 
     return useMutation({
         mutationFn: cancelRental,
-        onSuccess: (_data, rentalId) => {
+        onSuccess: (_data, input) => {
             showToast.success(toastMessages.rental.cancelSuccess);
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
-            void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(rentalId) });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.detail(normalizeCancel(input).rentalId) });
         },
         onError: (error: Error) => {
             showToast.error(toastMessages.rental.cancelError, getRentalCancelErrorMessage(error));
