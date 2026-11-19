@@ -283,6 +283,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                     repairCostEstimate: damage.repairCostEstimate,
                     currency: damage.currency,
                     insuranceCoverage: damage.insuranceCoverage,
+                    insuranceDeductible: damage.insuranceCoverage ? damage.customerLiability : undefined,
                 }}
             />
 

@@ -51,6 +51,8 @@ interface DamageAssessDialogProps {
         repairCostEstimate?: number;
         currency?: CurrencyType;
         insuranceCoverage?: boolean;
+        insuranceDeductible?: number;
+        assessmentNotes?: string;
     };
 }
 
@@ -72,9 +74,28 @@ const CATEGORY_OPTIONS: { value: DamageCategory; label: string }[] = [
     { value: 'MECHANICAL_DAMAGE', label: 'Mechanical Damage' },
 ];
 
-export function DamageAssessDialog({
+export function DamageAssessDialog(props: DamageAssessDialogProps) {
+    const { open, onOpenChange, mode = 'assess' } = props;
+
+    return (
+        <Dialog open={open} onOpenChange={onOpenChange}>
+            <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border dark:border-slate-700">
+                <DialogHeader>
+                    <DialogTitle className="text-slate-900 dark:text-white">{mode === 'reassess' ? 'Update Assessment' : 'Assess Damage'}</DialogTitle>
+                    <DialogDescription className="text-slate-600 dark:text-slate-400">
+                        {mode === 'reassess'
+                            ? 'Saving replaces the current assessment, including its notes.'
+                            : 'Evaluate the damage and provide repair cost estimate.'}
+                    </DialogDescription>
+                </DialogHeader>
+                <AssessmentForm {...props} />
+            </DialogContent>
+        </Dialog>
+    );
+}
+
+function AssessmentForm({
     damageId,
-    open,
     onOpenChange,
     onSuccess,
     mode = 'assess',
@@ -87,19 +108,20 @@ export function DamageAssessDialog({
     const [severity, setSeverity] = useState<DamageSeverity>(defaultValues?.severity || 'MODERATE');
     const [category, setCategory] = useState<DamageCategory>(defaultValues?.category || 'SCRATCH');
     const [insuranceCoverage, setInsuranceCoverage] = useState(defaultValues?.insuranceCoverage || false);
-    const [currency, setCurrency] = useState<CurrencyType>(defaultValues?.currency ?? rentalCurrency ?? DEFAULT_CURRENCY);
+    const [chosenCurrency, setCurrency] = useState<CurrencyType | undefined>();
+    const currency = chosenCurrency ?? rentalCurrency ?? defaultValues?.currency ?? DEFAULT_CURRENCY;
+    const currencyOptions = rentalCurrency ? [rentalCurrency] : CURRENCY_OPTIONS;
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset,
     } = useForm({
         resolver: zodResolver(assessmentSchema),
         defaultValues: {
             repairCostEstimate: defaultValues?.repairCostEstimate || 0,
-            insuranceDeductible: 0,
-            assessmentNotes: '',
+            insuranceDeductible: defaultValues?.insuranceDeductible ?? 0,
+            assessmentNotes: defaultValues?.assessmentNotes ?? '',
         },
     });
 
@@ -117,7 +139,6 @@ export function DamageAssessDialog({
                     assessmentNotes: data.assessmentNotes,
                 },
             });
-            reset();
             onOpenChange(false);
             onSuccess?.();
         } catch {
@@ -125,143 +146,132 @@ export function DamageAssessDialog({
     };
 
     return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border dark:border-slate-700">
-                <DialogHeader>
-                    <DialogTitle className="text-slate-900 dark:text-white">{mode === 'reassess' ? 'Update Assessment' : 'Assess Damage'}</DialogTitle>
-                    <DialogDescription className="text-slate-600 dark:text-slate-400">
-                        Evaluate the damage and provide repair cost estimate.
-                    </DialogDescription>
-                </DialogHeader>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300">Severity *</Label>
+                    <Select
+                        value={severity}
+                        onValueChange={(value) => setSeverity(value as DamageSeverity)}
+                    >
+                        <SelectTrigger aria-label="Severity" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">
+                            {SEVERITY_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value} className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
 
-                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label className="text-slate-700 dark:text-slate-300">Severity *</Label>
-                            <Select
-                                value={severity}
-                                onValueChange={(value) => setSeverity(value as DamageSeverity)}
-                            >
-                                <SelectTrigger aria-label="Severity" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">
-                                    {SEVERITY_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value} className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
+                <div className="space-y-2">
+                    <Label className="text-slate-700 dark:text-slate-300">Category *</Label>
+                    <Select
+                        value={category}
+                        onValueChange={(value) => setCategory(value as DamageCategory)}
+                    >
+                        <SelectTrigger aria-label="Damage category" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">
+                            {CATEGORY_OPTIONS.map((option) => (
+                                <SelectItem key={option.value} value={option.value} className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
+                                    {option.label}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            </div>
 
-                        <div className="space-y-2">
-                            <Label className="text-slate-700 dark:text-slate-300">Category *</Label>
-                            <Select
-                                value={category}
-                                onValueChange={(value) => setCategory(value as DamageCategory)}
-                            >
-                                <SelectTrigger aria-label="Damage category" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent className="bg-white dark:bg-slate-800 border dark:border-slate-700">
-                                    {CATEGORY_OPTIONS.map((option) => (
-                                        <SelectItem key={option.value} value={option.value} className="text-slate-900 dark:text-white hover:bg-slate-100 dark:hover:bg-slate-700">
-                                            {option.label}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                    </div>
+            <div className="space-y-2">
+                <Label className="text-slate-700 dark:text-slate-300">Currency</Label>
+                <Select value={currency} onValueChange={(value) => setCurrency(value as CurrencyType)}>
+                    <SelectTrigger aria-label="Currency" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
+                        <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {currencyOptions.map((option) => (
+                            <SelectItem key={option} value={option}>
+                                {option}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
 
-                    <div className="space-y-2">
-                        <Label className="text-slate-700 dark:text-slate-300">Currency</Label>
-                        <Select value={currency} onValueChange={(value) => setCurrency(value as CurrencyType)}>
-                            <SelectTrigger aria-label="Currency" className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600">
-                                <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                                {CURRENCY_OPTIONS.map((option) => (
-                                    <SelectItem key={option} value={option}>
-                                        {option}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                    </div>
+            <div className="space-y-2">
+                <Label htmlFor="repairCostEstimate" className="text-slate-700 dark:text-slate-300">Repair Cost Estimate ({currency}) *</Label>
+                <Input
+                    id="repairCostEstimate"
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    placeholder="0.00"
+                    className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                    {...register('repairCostEstimate')}
+                />
+                {errors.repairCostEstimate && (
+                    <p className="text-sm text-destructive">{errors.repairCostEstimate.message}</p>
+                )}
+            </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="repairCostEstimate" className="text-slate-700 dark:text-slate-300">Repair Cost Estimate ({currency}) *</Label>
-                        <Input
-                            id="repairCostEstimate"
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                            {...register('repairCostEstimate')}
-                        />
-                        {errors.repairCostEstimate && (
-                            <p className="text-sm text-destructive">{errors.repairCostEstimate.message}</p>
-                        )}
-                    </div>
+            <div className="flex items-center space-x-2">
+                <Checkbox
+                    id="insuranceCoverage"
+                    checked={insuranceCoverage}
+                    onCheckedChange={(checked) => setInsuranceCoverage(checked === true)}
+                    className="border-slate-400 dark:border-slate-500"
+                />
+                <Label htmlFor="insuranceCoverage" className="font-normal text-slate-700 dark:text-slate-300">
+                    Covered by insurance
+                </Label>
+            </div>
 
-                    <div className="flex items-center space-x-2">
-                        <Checkbox
-                            id="insuranceCoverage"
-                            checked={insuranceCoverage}
-                            onCheckedChange={(checked) => setInsuranceCoverage(checked === true)}
-                            className="border-slate-400 dark:border-slate-500"
-                        />
-                        <Label htmlFor="insuranceCoverage" className="font-normal text-slate-700 dark:text-slate-300">
-                            Covered by insurance
-                        </Label>
-                    </div>
+            {insuranceCoverage && (
+                <div className="space-y-2">
+                    <Label htmlFor="insuranceDeductible" className="text-slate-700 dark:text-slate-300">Insurance Deductible ({getCurrencySymbol(currency)})</Label>
+                    <Input
+                        id="insuranceDeductible"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="0.00"
+                        className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                        {...register('insuranceDeductible')}
+                    />
+                </div>
+            )}
 
-                    {insuranceCoverage && (
-                        <div className="space-y-2">
-                            <Label htmlFor="insuranceDeductible" className="text-slate-700 dark:text-slate-300">Insurance Deductible ({getCurrencySymbol(currency)})</Label>
-                            <Input
-                                id="insuranceDeductible"
-                                type="number"
-                                step="0.01"
-                                min="0"
-                                placeholder="0.00"
-                                className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                                {...register('insuranceDeductible')}
-                            />
-                        </div>
-                    )}
+            <div className="space-y-2">
+                <Label htmlFor="assessmentNotes" className="text-slate-700 dark:text-slate-300">Assessment Notes</Label>
+                <Textarea
+                    id="assessmentNotes"
+                    placeholder="Additional notes about the assessment..."
+                    className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                    {...register('assessmentNotes')}
+                />
+                {errors.assessmentNotes && (
+                    <p className="text-sm text-destructive">{errors.assessmentNotes.message}</p>
+                )}
+            </div>
 
-                    <div className="space-y-2">
-                        <Label htmlFor="assessmentNotes" className="text-slate-700 dark:text-slate-300">Assessment Notes</Label>
-                        <Textarea
-                            id="assessmentNotes"
-                            placeholder="Additional notes about the assessment..."
-                            className="bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
-                            {...register('assessmentNotes')}
-                        />
-                        {errors.assessmentNotes && (
-                            <p className="text-sm text-destructive">{errors.assessmentNotes.message}</p>
-                        )}
-                    </div>
-
-                    <DialogFooter>
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={() => onOpenChange(false)}
-                            className="cursor-pointer border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
-                        >
-                            Cancel
-                        </Button>
-                        <Button type="submit" disabled={assessDamage.isPending} className="cursor-pointer">
-                            {assessDamage.isPending ? 'Saving...' : 'Save Assessment'}
-                        </Button>
-                    </DialogFooter>
-                </form>
-            </DialogContent>
-        </Dialog>
+            <DialogFooter>
+                <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => onOpenChange(false)}
+                    className="cursor-pointer border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                >
+                    Cancel
+                </Button>
+                <Button type="submit" disabled={assessDamage.isPending} className="cursor-pointer">
+                    {assessDamage.isPending ? 'Saving...' : 'Save Assessment'}
+                </Button>
+            </DialogFooter>
+        </form>
     );
 }
