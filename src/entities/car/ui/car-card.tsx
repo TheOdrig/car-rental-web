@@ -18,6 +18,7 @@ interface CarCardProps {
     className?: string;
     showStatus?: boolean;
     priority?: boolean;
+    headingLevel?: 'h2' | 'h3';
     onSelect?: (car: Car | AvailableCar) => void;
 }
 
@@ -49,6 +50,7 @@ export const CarCard = memo(function CarCard({
     className,
     showStatus = false,
     priority = false,
+    headingLevel: Heading = 'h3',
     onSelect,
 }: CarCardProps) {
     const { format } = useCurrency();
@@ -107,9 +109,9 @@ export const CarCard = memo(function CarCard({
             </div>
 
             <CardContent className={cn('p-4', variant === 'compact' && 'p-3')}>
-                <h3 className="font-semibold text-lg leading-tight mb-1 line-clamp-2 break-words" title={`${brand} ${model}`}>
+                <Heading className="font-semibold text-lg leading-tight mb-1 line-clamp-2 break-words" title={`${brand} ${model}`}>
                     {brand} {model}
-                </h3>
+                </Heading>
                 <p className="text-muted-foreground text-sm mb-3">{year}</p>
 
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mb-4">

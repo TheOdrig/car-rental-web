@@ -71,9 +71,10 @@ export function RentalList({
 
     return (
         <div className={cn('flex flex-col gap-4', className)}>
-            {rentals.map((rental) => (
+            {rentals.map((rental, index) => (
                 <RentalCard
                     key={rental.id}
+                    priority={index === 0}
                     rental={rental}
                     variant={variant}
                     showActions={showActions}

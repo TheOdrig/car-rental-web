@@ -11,6 +11,7 @@ interface CarGridProps {
     className?: string;
     showStatus?: boolean;
     priorityCount?: number;
+    headingLevel?: 'h2' | 'h3';
     onCarSelect?: (car: Car | AvailableCar) => void;
 }
 
@@ -32,6 +33,7 @@ export function CarGrid({
     className,
     showStatus = false,
     priorityCount = 0,
+    headingLevel,
     onCarSelect,
 }: CarGridProps) {
     if (cars.length === 0) {
@@ -50,6 +52,7 @@ export function CarGrid({
                 <CarCard
                     key={car.id}
                     priority={index < priorityCount}
+                    headingLevel={headingLevel}
                     car={car}
                     variant={variant}
                     showStatus={showStatus}

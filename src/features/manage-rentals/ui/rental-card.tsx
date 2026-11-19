@@ -22,6 +22,7 @@ interface RentalCardProps {
     variant?: 'default' | 'compact' | 'detailed';
     showActions?: boolean;
     className?: string;
+    priority?: boolean;
     onClick?: (rental: Rental) => void;
     onAction?: (action: string, rental: Rental) => void;
 }
@@ -95,6 +96,7 @@ export const RentalCard = memo(function RentalCard({
     variant = 'default',
     showActions = false,
     className,
+    priority = false,
     onClick,
     onAction,
 }: RentalCardProps) {
@@ -124,6 +126,8 @@ export const RentalCard = memo(function RentalCard({
                                 src={carSummary?.thumbnailUrl || '/images/car-placeholder.svg'}
                                 alt={`${carSummary?.brand} ${carSummary?.model}`}
                                 fill
+                                priority={priority}
+                                sizes="(min-width: 768px) 320px, 100vw"
                                 className={cn(
                                     'object-cover transition-all duration-300',
                                     isCompleted && 'grayscale group-hover:grayscale-0'
@@ -135,9 +139,9 @@ export const RentalCard = memo(function RentalCard({
                             <div className="mb-3 flex items-start justify-between gap-2">
                                 <div className="min-w-0">
                                     <p className="text-xs text-muted-foreground">{referenceId}</p>
-                                    <h3 className="truncate text-lg font-semibold" title={`${carSummary?.brand} ${carSummary?.model}`}>
+                                    <h2 className="truncate text-lg font-semibold" title={`${carSummary?.brand} ${carSummary?.model}`}>
                                         {carSummary?.brand} {carSummary?.model}
-                                    </h3>
+                                    </h2>
                                 </div>
                                 <Badge
                                     variant={getStatusBadgeVariant(status)}
@@ -212,9 +216,9 @@ export const RentalCard = memo(function RentalCard({
                     <div className="min-w-0 flex-1">
                         <div className="mb-2 flex items-center gap-2">
                             <Car className="h-4 w-4 shrink-0 text-muted-foreground" />
-                            <h3 className="truncate text-lg font-semibold leading-tight">
+                            <h2 className="truncate text-lg font-semibold leading-tight">
                                 {carSummary?.brand} {carSummary?.model}
-                            </h3>
+                            </h2>
                         </div>
 
                         <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">

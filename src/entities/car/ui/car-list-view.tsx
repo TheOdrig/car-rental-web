@@ -15,6 +15,7 @@ interface CarListItemProps {
     car: Car | AvailableCar;
     className?: string;
     priority?: boolean;
+    headingLevel?: 'h2' | 'h3';
 }
 
 function getCarDisplayData(car: Car | AvailableCar) {
@@ -36,7 +37,7 @@ function getCarDisplayData(car: Car | AvailableCar) {
     };
 }
 
-export function CarListItem({ car, className, priority = false }: CarListItemProps) {
+export function CarListItem({ car, className, priority = false, headingLevel: Heading = 'h3' }: CarListItemProps) {
     const data = getCarDisplayData(car);
 
     return (
@@ -71,9 +72,9 @@ export function CarListItem({ car, className, priority = false }: CarListItemPro
                         <div className="flex items-start justify-between gap-4 mb-3">
                             <div>
                                 <Link href={`/cars/${data.id}`}>
-                                    <h3 className="text-lg font-semibold hover:text-primary transition-colors">
+                                    <Heading className="text-lg font-semibold hover:text-primary transition-colors">
                                         {data.brand} {data.model}
-                                    </h3>
+                                    </Heading>
                                 </Link>
                                 <p className="text-sm text-muted-foreground">
                                     {data.year}
@@ -135,9 +136,10 @@ export function CarListItem({ car, className, priority = false }: CarListItemPro
 interface CarListViewProps {
     cars: (Car | AvailableCar)[];
     className?: string;
+    headingLevel?: 'h2' | 'h3';
 }
 
-export function CarListView({ cars, className }: CarListViewProps) {
+export function CarListView({ cars, className, headingLevel }: CarListViewProps) {
     if (cars.length === 0) {
         return (
             <div className="text-center py-12">
@@ -149,7 +151,7 @@ export function CarListView({ cars, className }: CarListViewProps) {
     return (
         <div className={cn('space-y-4', className)}>
             {cars.map((car, index) => (
-                <CarListItem key={car.id} car={car} priority={index === 0} />
+                <CarListItem key={car.id} car={car} priority={index === 0} headingLevel={headingLevel} />
             ))}
         </div>
     );

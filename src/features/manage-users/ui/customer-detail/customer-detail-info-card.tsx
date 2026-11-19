@@ -38,9 +38,9 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                        <h3 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+                        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
                             {customer.firstName} {customer.lastName}
-                        </h3>
+                        </h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="text-sm text-slate-500 dark:text-slate-400">
                                 ID: {customer.id}
