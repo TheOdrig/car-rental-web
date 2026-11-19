@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { passwordChangeSchema, resetPasswordSchema } from '../validations';
+import spec from '../../../../../contract/openapi.json';
+import { PHONE_REGEX, passwordChangeSchema, profileSchema, resetPasswordSchema } from '../validations';
 
 const long = 'a'.repeat(73);
 
@@ -35,5 +36,27 @@ describe('password schemas', () => {
         const ok = 'a'.repeat(72);
         expect(resetPasswordSchema.safeParse({ newPassword: ok, confirmPassword: ok }).success).toBe(true);
         expect(resetPasswordSchema.safeParse({ newPassword: 'short', confirmPassword: 'short' }).success).toBe(false);
+    });
+});
+
+describe('profileSchema phone', () => {
+    const parse = (phone: string) => profileSchema.safeParse({ firstName: 'Ada', lastName: 'Lovelace', phone }).success;
+
+    it.each(['', '+905551234567', '5551234', '123456789012345', '+1234567'])('accepts %j', (phone) => {
+        expect(parse(phone)).toBe(true);
+    });
+
+    it.each(['123456', '+12345', '0123456789', '+0123456789', '1234567890123456', '555 123 4567', 'abc', '+'])('rejects %j', (phone) => {
+        expect(parse(phone)).toBe(false);
+    });
+
+    it('uses the same rule as the API contract', () => {
+        const contract = (spec as unknown as { components: { schemas: Record<string, { properties: Record<string, { pattern: string }> }> } })
+            .components.schemas.ProfileUpdateRequest.properties.phone.pattern;
+        const server = new RegExp(contract);
+
+        for (const phone of ['', '+905551234567', '5551234', '123456', '+12345', '0123456789', '1234567890123456', 'abc']) {
+            expect(server.test(phone), phone).toBe(phone === '' || PHONE_REGEX.test(phone));
+        }
     });
 });

@@ -7,6 +7,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
+import { fieldErrorMap } from '@/shared/api';
 import type { ProfileFormData } from '@/features/user-settings';
 
 function initialsOf(...parts: (string | undefined)[]): string {
@@ -23,11 +24,13 @@ export function ProfileSettingsContent() {
     const deleteAvatar = useDeleteAvatar();
 
     const handleProfileUpdate = async (data: ProfileFormData) => {
-        await updateProfile.mutateAsync({
-            firstName: data.firstName,
-            lastName: data.lastName,
-            phone: data.phone || undefined,
-        });
+        await updateProfile
+            .mutateAsync({
+                firstName: data.firstName,
+                lastName: data.lastName,
+                phone: data.phone || undefined,
+            })
+            .catch(() => undefined);
     };
 
     const handleAvatarUpload = async (file: File) => {
@@ -95,6 +98,7 @@ export function ProfileSettingsContent() {
                 email={profile?.email}
                 emailVerified={profile?.emailVerified}
                 onSubmit={handleProfileUpdate}
+                fieldErrors={fieldErrorMap(updateProfile.error)}
                 isSubmitting={updateProfile.isPending}
             />
         </div>

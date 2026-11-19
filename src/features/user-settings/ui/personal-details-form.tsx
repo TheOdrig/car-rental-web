@@ -24,6 +24,7 @@ interface PersonalDetailsFormProps {
     email?: string;
     emailVerified?: boolean;
     onSubmit: (data: ProfileFormData) => Promise<void>;
+    fieldErrors?: Partial<Record<keyof ProfileFormData, string>>;
     isSubmitting?: boolean;
     className?: string;
 }
@@ -33,6 +34,7 @@ export function PersonalDetailsForm({
     email,
     emailVerified,
     onSubmit,
+    fieldErrors,
     isSubmitting = false,
     className,
 }: PersonalDetailsFormProps) {
@@ -66,12 +68,12 @@ export function PersonalDetailsForm({
                                 id="firstName"
                                 autoComplete="given-name"
                                 {...register('firstName')}
-                                aria-invalid={!!errors.firstName}
+                                aria-invalid={!!(errors.firstName || fieldErrors?.firstName)}
                                 disabled={isSubmitting}
                             />
-                            {errors.firstName && (
+                            {(errors.firstName?.message ?? fieldErrors?.firstName) && (
                                 <p className="text-sm text-destructive">
-                                    {errors.firstName.message}
+                                    {errors.firstName?.message ?? fieldErrors?.firstName}
                                 </p>
                             )}
                         </div>
@@ -81,12 +83,12 @@ export function PersonalDetailsForm({
                                 id="lastName"
                                 autoComplete="family-name"
                                 {...register('lastName')}
-                                aria-invalid={!!errors.lastName}
+                                aria-invalid={!!(errors.lastName || fieldErrors?.lastName)}
                                 disabled={isSubmitting}
                             />
-                            {errors.lastName && (
+                            {(errors.lastName?.message ?? fieldErrors?.lastName) && (
                                 <p className="text-sm text-destructive">
-                                    {errors.lastName.message}
+                                    {errors.lastName?.message ?? fieldErrors?.lastName}
                                 </p>
                             )}
                         </div>
@@ -128,16 +130,16 @@ export function PersonalDetailsForm({
                             type="tel"
                             placeholder="+1234567890"
                             {...register('phone')}
-                            aria-invalid={!!errors.phone}
+                            aria-invalid={!!(errors.phone || fieldErrors?.phone)}
                             disabled={isSubmitting}
                         />
-                        {errors.phone && (
-                            <p className="text-sm text-destructive">
-                                {errors.phone.message}
+                        {(errors.phone?.message ?? fieldErrors?.phone) && (
+                            <p className="text-sm text-destructive" role="alert">
+                                {errors.phone?.message ?? fieldErrors?.phone}
                             </p>
                         )}
                         <p className="text-xs text-muted-foreground">
-                            Use international format (e.g., +1234567890)
+                            Use international format with 7 to 15 digits (e.g., +1234567890)
                         </p>
                     </div>
                 </CardContent>
