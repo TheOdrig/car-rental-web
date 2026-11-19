@@ -26,7 +26,8 @@ import {
 } from '@/features/process-rentals';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
 import { isAfterRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, useCancelRental } from '@/entities/rental';
-import { formatRentalReference, useSingleFlight } from '@/shared/lib';
+import { formatRentalReference } from '@/shared/lib';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 const CONFIRM_COPY = {
     pickup: {
