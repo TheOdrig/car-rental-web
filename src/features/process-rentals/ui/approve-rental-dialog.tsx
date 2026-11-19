@@ -49,7 +49,7 @@ export function ApproveRentalDialog({
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+            <DialogContent className="sm:max-w-2xl bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
                 <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600" />
 
                 <DialogHeader className="pt-2">
@@ -61,10 +61,8 @@ export function ApproveRentalDialog({
                     </DialogDescription>
                 </DialogHeader>
 
-                <div className="grid gap-6 py-4">
-                    { }
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        { }
+                <div className="grid min-w-0 gap-6 py-4">
+                    <div className="grid grid-cols-1 gap-4 min-[640px]:grid-cols-2">
                         <div className="group relative p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 transition-all hover:bg-slate-100 dark:hover:bg-slate-900 overflow-hidden">
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <Car className="h-12 w-12" />
@@ -100,7 +98,6 @@ export function ApproveRentalDialog({
                             </div>
                         </div>
 
-                        { }
                         <div className="group relative p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 transition-all hover:bg-slate-100 dark:hover:bg-slate-900 overflow-hidden">
                             <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:opacity-10 transition-opacity">
                                 <User className="h-12 w-12" />
@@ -125,11 +122,10 @@ export function ApproveRentalDialog({
                         </div>
                     </div>
 
-                    { }
                     <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 shadow-inner">
                         <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl bg-blue-500 rounded-full -mr-4 -mt-4 w-32 h-32" />
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 items-center relative z-10">
+                        <div className="relative z-10 grid grid-cols-3 gap-x-4 gap-y-5">
                             <div className="space-y-1.5">
                                 <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest flex items-center gap-1.5">
                                     <Calendar className="h-3 w-3" />
@@ -154,16 +150,15 @@ export function ApproveRentalDialog({
                                     <span className="text-primary">{differenceInCalendarDays(parseISO(item.endDate), parseISO(item.startDate)) + 1}</span> Days
                                 </div>
                             </div>
-                            <div className="space-y-1 ml-auto text-right">
+                            <div className="col-span-3 space-y-1 border-t border-slate-200 pt-4 dark:border-slate-800">
                                 <p className="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">Total Amount</p>
-                                <div className="text-3xl font-black text-slate-900 dark:text-white flex items-baseline gap-1">
+                                <div className="flex min-w-[8ch] items-baseline gap-1 text-3xl font-black text-slate-900 dark:text-white">
                                     {formatAmount(item.totalAmount, item.currency)}
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    { }
                     <div className="space-y-3">
                         <div className="flex items-center justify-between">
                             <label htmlFor="notes" className="text-sm font-bold text-slate-700 dark:text-slate-300">

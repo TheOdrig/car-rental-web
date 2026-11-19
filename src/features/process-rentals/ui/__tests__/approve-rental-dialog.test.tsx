@@ -39,6 +39,20 @@ describe('ApproveRentalDialog', () => {
         expect(screen.getByText('5')).toBeInTheDocument();
         expect(screen.getByText('480')).toBeInTheDocument();
     });
+    it('keeps the dialog wide enough at the sm breakpoint and shows the total with its currency', () => {
+        renderWithProviders(
+            <ApproveRentalDialog
+                open={true}
+                onOpenChange={() => { }}
+                item={{ ...mockItem, currency: 'EUR', totalAmount: 245.79 }}
+                onApprove={() => { }}
+            />
+        );
+        const dialog = screen.getByRole('dialog');
+        expect(dialog.className).toContain('sm:max-w-2xl');
+        expect(dialog.className).not.toMatch(/(^|s)max-w-2xl/);
+        expect(screen.getByText('€245.79')).toBeInTheDocument();
+    });
     it('should call onApprove with notes when approve button is clicked', async () => {
         const onApprove = vi.fn();
         renderWithProviders(
