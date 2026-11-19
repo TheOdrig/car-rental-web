@@ -7,6 +7,13 @@ interface FocusHandlers {
     onCloseAutoFocus?: (event: Event) => void
 }
 
+function focusPageAnchor(): void {
+    const anchor = document.querySelector<HTMLElement>("main h1") ?? document.querySelector<HTMLElement>("main")
+    if (!anchor) return
+    if (!anchor.hasAttribute("tabindex")) anchor.setAttribute("tabindex", "-1")
+    anchor.focus()
+}
+
 export function useRestoreFocus({ onOpenAutoFocus, onCloseAutoFocus }: FocusHandlers) {
     const opener = React.useRef<HTMLElement | null>(null)
 
@@ -24,9 +31,13 @@ export function useRestoreFocus({ onOpenAutoFocus, onCloseAutoFocus }: FocusHand
             onCloseAutoFocus?.(event)
             const target = opener.current
             opener.current = null
-            if (!event.defaultPrevented && target?.isConnected) {
+            if (event.defaultPrevented) return
+            if (target?.isConnected) {
                 event.preventDefault()
                 target.focus()
+            } else if (target) {
+                event.preventDefault()
+                focusPageAnchor()
             }
         },
         [onCloseAutoFocus]

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, DollarSign } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
@@ -32,6 +32,11 @@ import { formatRentalReference } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 const CONFIRM_COPY = {
+    approve: {
+        title: 'Approve this rental request?',
+        description: 'The customer is notified and can pay once the payment window opens. This cannot be undone.',
+        confirm: 'Approve Rental',
+    },
     pickup: {
         title: 'Hand the vehicle over?',
         description: 'This records the pickup and captures the customer payment that was authorized for this rental.',
@@ -65,7 +70,8 @@ export function RentalDetailContent({ id }: { id: string }) {
     const earlyReturn = useProcessEarlyReturn();
     const cancelRental = useCancelRental();
     const singleFlight = useSingleFlight();
-    const [confirming, setConfirming] = useState<'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
+    const [confirming, setConfirming] = useState<'approve' | 'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
+    const headingRef = useRef<HTMLHeadingElement>(null);
     const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn');
     const paymentQuery = useRentalPayment(rentalId, {
         enabled: !isNaN(rentalId) && !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED',
@@ -125,11 +131,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE', 'OVERDUE'].includes(rental.status);
     const referenceNumber = formatRentalReference(rentalId);
 
-    const handleApprove = () => {
-        void singleFlight(async () => {
-            await approveRental.mutateAsync({ rentalId }).then(() => refetch(), () => undefined);
-        });
-    };
+    const focusHeading = () => headingRef.current?.focus();
 
     const handleReject = () => {
         setRejectDialogOpen(true);
@@ -142,7 +144,8 @@ export function RentalDetailContent({ id }: { id: string }) {
             if (done) {
                 setRejectDialogOpen(false);
                 setRejectionReason('');
-                void refetch();
+                await refetch();
+                focusHeading();
             }
         });
     };
@@ -152,9 +155,11 @@ export function RentalDetailContent({ id }: { id: string }) {
         if (!action) return;
         void singleFlight(async () => {
             const request =
-                action === 'pickup'
-                    ? processPickup.mutateAsync({ rentalId })
-                    : action === 'return'
+                action === 'approve'
+                    ? approveRental.mutateAsync({ rentalId })
+                    : action === 'pickup'
+                      ? processPickup.mutateAsync({ rentalId })
+                      : action === 'return'
                       ? processReturn.mutateAsync({ rentalId })
                       : action === 'earlyReturn'
                         ? earlyReturn.mutateAsync({ rentalId })
@@ -162,7 +167,8 @@ export function RentalDetailContent({ id }: { id: string }) {
             const done = await request.then(() => true, () => false);
             if (done) {
                 setConfirming(null);
-                void refetch();
+                await refetch();
+                focusHeading();
             }
         });
     };
@@ -212,7 +218,7 @@ export function RentalDetailContent({ id }: { id: string }) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm bg-white/30 dark:bg-slate-900/30 p-6 rounded-3xl border border-white/50 dark:border-white/5 shadow-sm">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white focus:outline-none">
                             {referenceNumber}
                         </h1>
                     </div>
@@ -229,7 +235,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     </Button>
                     <RentalActionButtons
                         status={rental.status}
-                        onApprove={handleApprove}
+                        onApprove={() => setConfirming('approve')}
                         onReject={handleReject}
                         onPickup={() => setConfirming('pickup')}
                         onReturn={() => setConfirming('return')}
@@ -308,9 +314,9 @@ export function RentalDetailContent({ id }: { id: string }) {
             <ConfirmActionDialog
                 open={confirming !== null}
                 onOpenChange={(open) => !open && setConfirming(null)}
-                title={CONFIRM_COPY[confirming ?? 'pickup'].title}
-                description={CONFIRM_COPY[confirming ?? 'pickup'].description}
-                confirmLabel={CONFIRM_COPY[confirming ?? 'pickup'].confirm}
+                title={CONFIRM_COPY[confirming ?? 'approve'].title}
+                description={CONFIRM_COPY[confirming ?? 'approve'].description}
+                confirmLabel={CONFIRM_COPY[confirming ?? 'approve'].confirm}
                 destructive={confirming === 'cancel'}
                 isPending={isActionLoading}
                 confirmDisabled={confirming === 'earlyReturn' && !earlyReturnPreview.data}

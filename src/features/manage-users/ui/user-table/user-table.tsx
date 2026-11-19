@@ -5,6 +5,7 @@ import { AlertCircle, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { cn } from '@/shared/lib';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { useBanUser, useUnbanUser, useUserList } from '../../api/users-api';
 import { BanUserDialog, UnbanUserDialog } from '../user-actions-dialog';
 import type { UserForAction } from './user-display';
@@ -47,6 +48,7 @@ export const UserTable = memo(function UserTable({
 
     const banMutation = useBanUser();
     const unbanMutation = useUnbanUser();
+    const singleFlight = useSingleFlight();
 
     const users = data?.content || [];
     const totalUsers = data?.totalElements || 0;
@@ -59,17 +61,29 @@ export const UserTable = memo(function UserTable({
     };
 
     const handleBanConfirm = (reason: string) => {
-        if (selectedUser) {
-            if (banMutation.isPending) return;
-            banMutation.mutate({ userId: selectedUser.id, reason, displayName: selectedUser.name }, { onSuccess: closeDialogs });
-        }
+        if (!selectedUser) return;
+
+        void singleFlight(async () => {
+            try {
+                await banMutation.mutateAsync({ userId: selectedUser.id, reason, displayName: selectedUser.name });
+            } catch {
+                return;
+            }
+            closeDialogs();
+        });
     };
 
     const handleUnbanConfirm = () => {
-        if (selectedUser) {
-            if (unbanMutation.isPending) return;
-            unbanMutation.mutate({ userId: selectedUser.id, displayName: selectedUser.name }, { onSuccess: closeDialogs });
-        }
+        if (!selectedUser) return;
+
+        void singleFlight(async () => {
+            try {
+                await unbanMutation.mutateAsync({ userId: selectedUser.id, displayName: selectedUser.name });
+            } catch {
+                return;
+            }
+            closeDialogs();
+        });
     };
 
     if (isLoading || isDataLoading) {

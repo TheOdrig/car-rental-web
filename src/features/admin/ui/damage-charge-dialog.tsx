@@ -11,6 +11,7 @@ import {
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { useChargeDamage } from '@/entities/damage';
 
 interface DamageChargeDialogProps {
@@ -31,15 +32,19 @@ export function DamageChargeDialog({
     onSuccess,
 }: DamageChargeDialogProps) {
     const chargeDamage = useChargeDamage();
+    const singleFlight = useSingleFlight();
 
     const handleCharge = async (event: React.MouseEvent) => {
         event.preventDefault();
-        try {
-            await chargeDamage.mutateAsync(damageId);
+        await singleFlight(async () => {
+            try {
+                await chargeDamage.mutateAsync(damageId);
+            } catch {
+                return;
+            }
             onOpenChange(false);
             onSuccess?.();
-        } catch {
-        }
+        });
     };
 
     return (

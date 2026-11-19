@@ -13,6 +13,7 @@ import {
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { useBanUser } from '../../api/users-api';
 import type { CustomerStatistics } from '../../model/types';
 
@@ -35,20 +36,21 @@ export function BanCustomerDialog({
 }: BanCustomerDialogProps) {
     const [reason, setReason] = useState('');
     const banCustomer = useBanUser();
+    const singleFlight = useSingleFlight();
 
     const handleConfirm = () => {
-        if (reason.length < 10 || banCustomer.isPending) return;
+        if (reason.length < 10) return;
 
-        banCustomer.mutate(
-            { userId: customerId, reason, displayName: customerName },
-            {
-                onSuccess: () => {
-                    setReason('');
-                    onOpenChange(false);
-                    onSuccess?.();
-                },
+        void singleFlight(async () => {
+            try {
+                await banCustomer.mutateAsync({ userId: customerId, reason, displayName: customerName });
+            } catch {
+                return;
             }
-        );
+            setReason('');
+            onOpenChange(false);
+            onSuccess?.();
+        });
     };
 
     const handleClose = () => {

@@ -13,6 +13,7 @@ import {
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
 import { Label } from '@/shared/ui/label';
+import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { useUnbanUser } from '../../api/users-api';
 import { formatDateTime } from '@/shared/lib';
 import type { CustomerAccountStatus } from '@/entities/user';
@@ -36,19 +37,23 @@ export function UnbanCustomerDialog({
 }: UnbanCustomerDialogProps) {
     const [note, setNote] = useState('');
     const unbanCustomer = useUnbanUser();
+    const singleFlight = useSingleFlight();
 
     const handleConfirm = () => {
-        if (unbanCustomer.isPending) return;
-        unbanCustomer.mutate(
-            { userId: customerId, note: note.trim() || undefined, displayName: customerName },
-            {
-                onSuccess: () => {
-                    setNote('');
-                    onOpenChange(false);
-                    onSuccess?.();
-                },
+        void singleFlight(async () => {
+            try {
+                await unbanCustomer.mutateAsync({
+                    userId: customerId,
+                    note: note.trim() || undefined,
+                    displayName: customerName,
+                });
+            } catch {
+                return;
             }
-        );
+            setNote('');
+            onOpenChange(false);
+            onSuccess?.();
+        });
     };
 
     const handleClose = () => {

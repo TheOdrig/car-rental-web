@@ -1,6 +1,6 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useRef, useState } from 'react';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import Link from 'next/link';
 import { MoreHorizontal, Edit, RefreshCcw, Car, Trash2, Eye } from 'lucide-react';
@@ -95,9 +95,20 @@ export const FleetTable = memo(function FleetTable({
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [statusDialogOpen, setStatusDialogOpen] = useState(false);
     const [selectedCar, setSelectedCar] = useState<CarType | null>(null);
+    const lastActionCarId = useRef<number | null>(null);
     const [newStatus, setNewStatus] = useState<CarStatus | null>(null);
 
+    const returnFocusToRowMenu = (event: Event) => {
+        const carId = lastActionCarId.current;
+        const trigger = carId === null ? null : document.querySelector<HTMLElement>(`[data-car-actions="${carId}"]`);
+        if (trigger) {
+            event.preventDefault();
+            trigger.focus();
+        }
+    };
+
     const handleDeleteClick = (car: CarType) => {
+        lastActionCarId.current = car.id;
         setSelectedCar(car);
         setDeleteDialogOpen(true);
     };
@@ -111,6 +122,7 @@ export const FleetTable = memo(function FleetTable({
     };
 
     const handleStatusClick = (car: CarType) => {
+        lastActionCarId.current = car.id;
         setSelectedCar(car);
         setNewStatus(car.carStatusType);
         setStatusDialogOpen(true);
@@ -240,6 +252,7 @@ export const FleetTable = memo(function FleetTable({
                                                                 size="sm"
                                                                 className="h-8 w-8 p-0"
                                                                 aria-label={`More actions for ${car.brand} ${car.model}`}
+                                                                data-car-actions={car.id}
                                                             >
                                                                 <MoreHorizontal className="h-4 w-4" />
                                                             </Button>
@@ -294,7 +307,7 @@ export const FleetTable = memo(function FleetTable({
             </Card>
 
             <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent onCloseAutoFocus={returnFocusToRowMenu}>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Remove Vehicle from Fleet</AlertDialogTitle>
                         <AlertDialogDescription>
@@ -319,7 +332,7 @@ export const FleetTable = memo(function FleetTable({
             </AlertDialog>
 
             <AlertDialog open={statusDialogOpen} onOpenChange={setStatusDialogOpen}>
-                <AlertDialogContent>
+                <AlertDialogContent onCloseAutoFocus={returnFocusToRowMenu}>
                     <AlertDialogHeader>
                         <AlertDialogTitle>Change Vehicle Status</AlertDialogTitle>
                         <AlertDialogDescription className="space-y-4">
