@@ -3,6 +3,19 @@ import type { ClientRequestOptions } from './types';
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
+let sessionExpiredHandler: (() => void) | null = null;
+
+export function onSessionExpired(handler: (() => void) | null): void {
+    sessionExpiredHandler = handler;
+}
+
+function isAuthEndpoint(url: string): boolean {
+    return (
+        url.includes('/api/auth/refresh') ||
+        url.includes('/api/auth/login') ||
+        url.includes('/api/auth/me')
+    );
+}
 
 async function refreshToken(): Promise<boolean> {
     try {
@@ -76,11 +89,14 @@ export async function clientFetch<T>(
 
     const response = await fetch(fullUrl.toString(), fetchOptions);
 
-    if (response.status === 401 && !isRetry && !url.includes('/api/auth/refresh') && !url.includes('/api/auth/login')) {
-        const refreshed = await handleTokenRefresh();
-        if (refreshed) {
-            return clientFetch<T>(url, options, true);
+    if (response.status === 401 && !isAuthEndpoint(url)) {
+        if (!isRetry) {
+            const refreshed = await handleTokenRefresh();
+            if (refreshed) {
+                return clientFetch<T>(url, options, true);
+            }
         }
+        sessionExpiredHandler?.();
     }
 
     if (!response.ok) {

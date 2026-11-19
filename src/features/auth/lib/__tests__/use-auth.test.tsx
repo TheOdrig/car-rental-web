@@ -24,10 +24,14 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
     usePathname: () => '/',
 }));
-vi.mock('@/shared/api', () => ({
-    clientGet: vi.fn(),
-    clientPost: vi.fn(),
-}));
+vi.mock('@/shared/api', async () => {
+    const actual = await vi.importActual<typeof import('@/shared/api')>('@/shared/api');
+    return {
+        ...actual,
+        clientGet: vi.fn(),
+        clientPost: vi.fn(),
+    };
+});
 vi.mock('@/shared/lib', () => ({
     showToast: {
         success: vi.fn(),
@@ -41,7 +45,7 @@ vi.mock('@/shared/lib', () => ({
         },
     },
 }));
-import { clientGet, clientPost } from '@/shared/api';
+import { clientGet, clientPost, ApiError } from '@/shared/api';
 const mockMeResponse: MeResponse = {
     id: 1,
     username: 'testuser',
@@ -92,6 +96,18 @@ describe('Auth Hooks', () => {
             await waitFor(() => expect(result.current.isLoading).toBe(false), { timeout: 3000 });
             expect(result.current.user).toBeNull();
             expect(result.current.isAuthenticated).toBe(false);
+        });
+    });
+    describe('useCurrentUser when the session is gone', () => {
+        it('treats a 401 from /api/auth/me as signed out without retrying', async () => {
+            vi.mocked(clientGet).mockRejectedValue(new ApiError(401, 'Not authenticated'));
+            const { result } = renderHook(() => useCurrentUser(), {
+                wrapper: createQueryWrapper()
+            });
+            await waitFor(() => expect(result.current.isLoading).toBe(false));
+            expect(result.current.user).toBeNull();
+            expect(result.current.error).toBeNull();
+            expect(clientGet).toHaveBeenCalledTimes(1);
         });
     });
     describe('useLogin', () => {

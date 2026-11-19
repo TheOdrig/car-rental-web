@@ -36,7 +36,7 @@ export { OAuthButtons, OAuthDivider } from './ui/oauth-buttons';
 export { FormError } from './ui/form-error';
 export { FormSuccess } from './ui/form-success';
 export { PasswordStrengthIndicator } from './ui/password-strength-indicator';
-export { AuthProvider, useAuthContext } from './ui/auth-provider';
+export { SessionKeeper } from './ui/session-keeper';
 
 export { useAuth, useCurrentUser, useLogin, useLogout, useRefreshToken, useRegister, authKeys } from './lib/use-auth';
 export { oauthErrorMessage, isKnownOAuthErrorCode } from './lib/oauth-errors';

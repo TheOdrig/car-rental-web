@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { ThemeProvider } from 'next-themes';
 import { type ReactNode } from 'react';
-import { AuthProvider } from '@/features/auth';
+import { SessionKeeper } from '@/features/auth';
 import { CurrencyProvider } from '@/entities/currency';
 
 function makeQueryClient() {
@@ -48,11 +48,10 @@ export function Providers({ children }: ProvidersProps) {
                 enableSystem
                 disableTransitionOnChange
             >
-                <AuthProvider>
-                    <CurrencyProvider>
-                        {children}
-                    </CurrencyProvider>
-                </AuthProvider>
+                <SessionKeeper />
+                <CurrencyProvider>
+                    {children}
+                </CurrencyProvider>
             </ThemeProvider>
             <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>

@@ -2,8 +2,9 @@
 
 import { useQuery, useMutation, useQueryClient, type QueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
-import { useCallback } from 'react';
-import { clientPost, clientGet } from '@/shared/api';
+import { useCallback, useEffect } from 'react';
+import { clientPost, clientGet, isApiError, onSessionExpired } from '@/shared/api';
+import { classifyRoute } from '@/shared/config/route-access';
 import { showToast, toastMessages } from '@/shared/lib';
 import type {
     User,
@@ -20,8 +21,50 @@ export const authKeys = {
     me: () => [...authKeys.all, 'me'] as const,
 };
 
-async function fetchMe(): Promise<MeResponse> {
-    return clientGet<MeResponse>('/api/auth/me');
+async function fetchMe(): Promise<MeResponse | null> {
+    try {
+        return await clientGet<MeResponse>('/api/auth/me');
+    } catch (error) {
+        if (isApiError(error) && error.status === 401) {
+            return null;
+        }
+        throw error;
+    }
+}
+
+const SESSION_CHECK_INTERVAL_MS = 10 * 60 * 1000;
+
+function handleSessionExpired(queryClient: QueryClient): void {
+    forgetPrincipal(queryClient);
+
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    const { pathname, search } = window.location;
+    const access = classifyRoute(pathname);
+    if (access === 'protected' || access === 'admin') {
+        window.location.assign(`/login?callbackUrl=${encodeURIComponent(`${pathname}${search}`)}`);
+    }
+}
+
+export function useSessionKeeper(): void {
+    const queryClient = useQueryClient();
+
+    useQuery({
+        queryKey: authKeys.me(),
+        queryFn: fetchMe,
+        retry: 1,
+        staleTime: 5 * 60 * 1000,
+        refetchOnWindowFocus: (query) => Boolean(query.state.data),
+        refetchInterval: (query) => (query.state.data ? SESSION_CHECK_INTERVAL_MS : false),
+        refetchIntervalInBackground: false,
+    });
+
+    useEffect(() => {
+        onSessionExpired(() => handleSessionExpired(queryClient));
+        return () => onSessionExpired(null);
+    }, [queryClient]);
 }
 
 function forgetPrincipal(queryClient: QueryClient): void {
@@ -64,11 +107,6 @@ export function useAuth(): AuthContextValue {
         queryFn: fetchMe,
         retry: 1,
         staleTime: 5 * 60 * 1000,
-        refetchOnWindowFocus: true,
-        refetchOnMount: true,
-
-        refetchInterval: 10 * 60 * 1000,
-        refetchIntervalInBackground: false,
     });
 
     const user: User | null = meData
