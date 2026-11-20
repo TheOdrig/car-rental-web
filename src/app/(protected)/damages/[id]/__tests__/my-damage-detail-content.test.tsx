@@ -59,6 +59,60 @@ describe('MyDamageDetailContent', () => {
         expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 
+    it('shows the customer how a resolved dispute ended', () => {
+        mockUseMyDamageDetail.mockReturnValue({
+            data: createMockDamage({
+                id: 12,
+                status: 'RESOLVED',
+                currency: 'EUR',
+                repairCostEstimate: 300,
+                customerLiability: 80,
+                originalLiability: 180.4,
+                refundAmount: 100.4,
+                disputeReason: 'It was already there at pickup',
+                disputedAt: '2030-01-02T10:00:00Z',
+                resolutionNotes: 'Partly accepted after photo review',
+                resolvedAt: '2030-01-03T10:00:00Z',
+            }),
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        render(<MyDamageDetailContent id="12" />);
+
+        const outcome = screen.getByTestId('dispute-outcome');
+        expect(outcome).toHaveTextContent('How your dispute ended');
+        expect(outcome).toHaveTextContent('Original liability€180.40');
+        expect(outcome).toHaveTextContent('Final liability€80.00');
+        expect(outcome).toHaveTextContent('Refunded to you€100.40');
+        expect(outcome).toHaveTextContent('Partly accepted after photo review');
+        expect(outcome).toHaveTextContent('It was already there at pickup');
+    });
+
+    it('shows an open dispute without a final liability', () => {
+        mockUseMyDamageDetail.mockReturnValue({
+            data: createMockDamage({ id: 12, status: 'DISPUTED', currency: 'EUR', customerLiability: 180.4, originalLiability: 180.4, disputedAt: '2030-01-02T10:00:00Z' }),
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        render(<MyDamageDetailContent id="12" />);
+
+        const outcome = screen.getByTestId('dispute-outcome');
+        expect(outcome).toHaveTextContent('Your dispute');
+        expect(outcome).not.toHaveTextContent('Final liability');
+    });
+
+    it('has no dispute card for an undisputed damage', () => {
+        mockUseMyDamageDetail.mockReturnValue({ data: createMockDamage({ id: 12, status: 'CHARGED' }), isLoading: false, isError: false, refetch: vi.fn() });
+
+        render(<MyDamageDetailContent id="12" />);
+
+        expect(screen.queryByTestId('dispute-outcome')).not.toBeInTheDocument();
+    });
+
     it('shows not found only when the list does not contain the damage', () => {
         mockUseMyDamageDetail.mockReturnValue({ data: null, isLoading: false, isError: false, refetch: vi.fn() });
 
