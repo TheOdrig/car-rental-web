@@ -88,13 +88,13 @@ export function CustomerDetailContent({ id }: { id: string }) {
             />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="min-w-0 space-y-1">
+                <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="break-words text-3xl font-bold tracking-tight text-gray-900 [overflow-wrap:anywhere] dark:text-white">
+                        <h1 className="break-words text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
                             {customerName}
                         </h1>
                     </div>
-                    <p className="break-words text-sm text-gray-600 [overflow-wrap:anywhere] dark:text-gray-400">
+                    <p className="break-words text-sm text-gray-600 dark:text-gray-400">
                         {customer.email} • Member since {customer.registrationDate ? formatDate(customer.registrationDate) : 'N/A'}
                     </p>
                 </div>

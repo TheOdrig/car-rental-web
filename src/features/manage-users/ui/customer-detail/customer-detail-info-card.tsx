@@ -39,7 +39,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                         </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                        <h2 className="break-words text-xl [overflow-wrap:anywhere] font-semibold text-slate-900 dark:text-slate-100">
+                        <h2 className="text-xl font-semibold [overflow-wrap:anywhere] text-slate-900 dark:text-slate-100">
                             {name}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">

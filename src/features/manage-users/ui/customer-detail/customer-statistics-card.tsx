@@ -20,7 +20,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                 </CardTitle>
             </CardHeader>
             <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                     <StatCard
                         label="Total Rentals"
                         value={statistics.totalRentals}
@@ -80,7 +80,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                     {statistics.spentByCurrency.length === 0 ? (
                         <p className="text-sm text-muted-foreground">No completed rentals yet.</p>
                     ) : (
-                        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <ul className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {statistics.spentByCurrency.map((entry) => (
                                 <li key={entry.currency}>
                                     <StatCard
@@ -101,7 +101,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                     {statistics.damageCostByCurrency.length === 0 ? (
                         <p className="text-sm text-muted-foreground">No assessed damage costs.</p>
                     ) : (
-                        <ul className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+                        <ul className="grid grid-cols-2 md:grid-cols-3 gap-3">
                             {statistics.damageCostByCurrency.map((entry) => (
                                 <li key={entry.currency}>
                                     <StatCard
