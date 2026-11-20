@@ -16,7 +16,7 @@ import {
     useChangeCarStatus,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
-import { CAR_OCCUPANCIES, CAR_OCCUPANCY_LABELS, CAR_STATUSES, CAR_STATUS_LABELS, useFilterOptions, type CarOccupancy, type CarStatus } from '@/entities/car';
+import { CAR_OCCUPANCIES, CAR_OCCUPANCY_LABELS, CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, useFilterOptions, type CarOccupancy, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
 
 type StatusFilter = 'all' | CarStatus;
@@ -166,13 +166,13 @@ export function FleetManagementContent() {
                             aria-label="Filter by status"
                         >
                             <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
-                            <SelectValue placeholder="Status" />
+                            <SelectValue placeholder="Service" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">All Status</SelectItem>
+                            <SelectItem value="all">Any service status</SelectItem>
                             {CAR_STATUSES.map((status) => (
                                 <SelectItem key={status} value={status}>
-                                    {CAR_STATUS_LABELS[status]}
+                                    {CAR_SERVICE_STATUS_LABELS[status]}
                                 </SelectItem>
                             ))}
                         </SelectContent>

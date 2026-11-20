@@ -37,4 +37,26 @@ describe('FleetTable occupancy', () => {
         expect(screen.getAllByText('Free')).toHaveLength(2);
         expect(screen.getByRole('columnheader', { name: 'Occupancy' })).toBeInTheDocument();
     });
+
+    it('labels the service status so an occupied car never reads as Available', () => {
+        render(
+            <FleetTable
+                cars={[car(1, { occupancy: 'IN_USE', currentRentalId: 9 })]}
+                totalCars={1}
+                onDeleteCar={vi.fn()}
+                onUpdateStatus={vi.fn()}
+            />
+        );
+
+        expect(screen.getByRole('columnheader', { name: 'Service' })).toBeInTheDocument();
+        expect(screen.getByText('In service')).toBeInTheDocument();
+        expect(screen.queryByText('Available')).not.toBeInTheDocument();
+    });
+
+    it('keeps the row actions visible without hover or focus', () => {
+        render(<FleetTable cars={[car(1, {})]} totalCars={1} onDeleteCar={vi.fn()} onUpdateStatus={vi.fn()} />);
+
+        const edit = screen.getByRole('link', { name: 'Edit Honda Civic 1' });
+        expect(edit.parentElement?.className).not.toMatch(/opacity/);
+    });
 });

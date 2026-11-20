@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { formatDateTime } from '@/shared/lib';
 import type { VehicleCurrentStatus } from '@/entities/car';
-import { carStatusLabel, type CarStatus } from '@/entities/car';
+import { carServiceStatusLabel, type CarStatus } from '@/entities/car';
 
 interface VehicleStatusCardProps {
     currentStatus: VehicleCurrentStatus;
@@ -37,7 +37,7 @@ export function VehicleStatusCard({ currentStatus }: VehicleStatusCardProps) {
             <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
                     <Badge className={`${statusColors[currentStatus.status as CarStatus]} text-base px-4 py-1`} variant="outline">
-                        {carStatusLabel(currentStatus.status)}
+                        {carServiceStatusLabel(currentStatus.status)}
                     </Badge>
                 </div>
 

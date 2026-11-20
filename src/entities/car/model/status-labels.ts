@@ -8,6 +8,11 @@ export const CAR_STATUS_LABELS: Record<CarStatus, string> = {
     INSPECTION: 'Inspection',
 };
 
+export const CAR_SERVICE_STATUS_LABELS: Record<CarStatus, string> = {
+    ...CAR_STATUS_LABELS,
+    AVAILABLE: 'In service',
+};
+
 export const CAR_STATUSES = Object.keys(CAR_STATUS_LABELS) as CarStatus[];
 
 export const CAR_OCCUPANCY_LABELS: Record<CarOccupancy, string> = {
@@ -29,6 +34,10 @@ export const AVAILABILITY_STATUS_LABELS: Record<DayAvailabilityStatus, string> =
 
 export function carStatusLabel(status: string | null | undefined): string {
     return ownValue(CAR_STATUS_LABELS, status) ?? status ?? '';
+}
+
+export function carServiceStatusLabel(status: string | null | undefined): string {
+    return ownValue(CAR_SERVICE_STATUS_LABELS, status) ?? status ?? '';
 }
 
 export const CAR_STATUS = {

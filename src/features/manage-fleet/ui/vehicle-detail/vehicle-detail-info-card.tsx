@@ -6,7 +6,7 @@ import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency } from '@/shared/lib';
 import type { VehicleDetailResponse } from '@/entities/car';
-import { carStatusLabel, type CarStatus } from '@/entities/car';
+import { carServiceStatusLabel, type CarStatus } from '@/entities/car';
 
 interface VehicleDetailInfoCardProps {
     vehicle: VehicleDetailResponse;
@@ -42,7 +42,7 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
                     <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                        {carStatusLabel(vehicle.status)}
+                        {carServiceStatusLabel(vehicle.status)}
                     </Badge>
                 </div>
 

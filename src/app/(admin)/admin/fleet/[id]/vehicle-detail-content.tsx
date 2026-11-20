@@ -21,9 +21,9 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/shared/ui/select';
-import { CAR_STATUSES, CAR_STATUS_LABELS, type CarStatus } from '@/entities/car';
+import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, type CarStatus } from '@/entities/car';
 
-const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_STATUS_LABELS[value] }));
+const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_SERVICE_STATUS_LABELS[value] }));
 
 export function VehicleDetailContent({ id }: { id: string }) {
     const vehicleId = parseInt(id, 10);

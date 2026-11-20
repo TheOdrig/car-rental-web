@@ -28,6 +28,8 @@ export {
 } from './model/types';
 export {
     CAR_STATUS_LABELS,
+    CAR_SERVICE_STATUS_LABELS,
+    carServiceStatusLabel,
     CAR_STATUSES,
     CAR_OCCUPANCY_LABELS,
     CAR_OCCUPANCIES,

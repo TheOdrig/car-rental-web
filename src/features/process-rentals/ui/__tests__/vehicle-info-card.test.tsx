@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 import { VehicleInfoCard } from '@/features/process-rentals';
 import { renderWithProviders } from '@/app/testing/test-utils';
 import type { RentalVehicleInfo } from '@/entities/rental';
-import { CAR_STATUS_LABELS, type CarStatus } from '@/entities/car';
+import { CAR_SERVICE_STATUS_LABELS, type CarStatus } from '@/entities/car';
 describe('VehicleInfoCard', () => {
     const mockVehicle: RentalVehicleInfo = {
         id: 101,
@@ -52,7 +52,7 @@ describe('VehicleInfoCard', () => {
         statuses.forEach(status => {
             const vehicleWithStatus = { ...mockVehicle, status: status as RentalVehicleInfo['status'] };
             const { unmount } = renderWithProviders(<VehicleInfoCard vehicle={vehicleWithStatus} />);
-            expect(screen.getByText(CAR_STATUS_LABELS[status as CarStatus])).toBeInTheDocument();
+            expect(screen.getByText(CAR_SERVICE_STATUS_LABELS[status as CarStatus])).toBeInTheDocument();
             unmount();
         });
     });

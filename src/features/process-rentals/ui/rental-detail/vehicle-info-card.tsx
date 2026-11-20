@@ -8,7 +8,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { CopyButton } from '@/shared/ui/copy-button';
 import type { RentalVehicleInfo } from '@/entities/rental';
-import { carStatusLabel, type CarStatus } from '@/entities/car';
+import { carServiceStatusLabel, type CarStatus } from '@/entities/car';
 
 interface VehicleInfoCardProps {
     vehicle: RentalVehicleInfo;
@@ -63,7 +63,7 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                             <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                 <span>Fleet status</span>
                                 <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                                    {carStatusLabel(vehicle.status)}
+                                    {carServiceStatusLabel(vehicle.status)}
                                 </Badge>
                             </div>
                         )}

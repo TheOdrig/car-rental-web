@@ -41,7 +41,7 @@ import {
 } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { cn, formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
-import { CAR_STATUSES, CAR_STATUS_LABELS, carOccupancyLabel, type AdminCar as CarType, type CarStatus } from '@/entities/car';
+import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, carOccupancyLabel, type AdminCar as CarType, type CarStatus } from '@/entities/car';
 import { Pagination } from '@/shared/ui/pagination';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
@@ -63,7 +63,7 @@ const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> =
     },
 };
 
-const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_STATUS_LABELS[value] }));
+const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_SERVICE_STATUS_LABELS[value] }));
 
 interface FleetTableProps {
     cars: CarType[];
@@ -162,7 +162,7 @@ export const FleetTable = memo(function FleetTable({
                                 <TableRow className="border-b border-slate-200 dark:border-slate-700">
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Car Details</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">License Plate</TableHead>
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Status</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Service</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Occupancy</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Price/Day</TableHead>
                                     <TableHead className="text-right text-slate-600 dark:text-slate-300 font-semibold">Actions</TableHead>
@@ -215,7 +215,7 @@ export const FleetTable = memo(function FleetTable({
                                                     {car.licensePlate}
                                                 </code>
                                             </TableCell>
-                                            <TableCell data-label="Status">
+                                            <TableCell data-label="Service">
                                                 <div
                                                     className={cn(
                                                         "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium",
@@ -228,7 +228,7 @@ export const FleetTable = memo(function FleetTable({
                                                         "w-2 h-2 rounded-full mr-2",
                                                         statusConfig[car.carStatusType]?.dotColor
                                                     )} />
-                                                    {CAR_STATUS_LABELS[car.carStatusType] ?? car.carStatusType}
+                                                    {CAR_SERVICE_STATUS_LABELS[car.carStatusType] ?? car.carStatusType}
                                                 </div>
                                             </TableCell>
                                             <TableCell data-label="Occupancy" className="text-sm">
@@ -248,7 +248,7 @@ export const FleetTable = memo(function FleetTable({
                                                 {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}
                                             </TableCell>
                                             <TableCell data-wide className="text-right">
-                                                <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:group-focus-within:opacity-100 md:focus-within:opacity-100">
+                                                <div className="flex items-center justify-end gap-1">
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
