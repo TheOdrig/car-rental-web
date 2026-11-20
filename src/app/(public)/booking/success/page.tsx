@@ -38,7 +38,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
     }
 
     return (
-        <div className="min-h-screen bg-raised">
+        <div className="min-h-dvh bg-raised">
             <BookingSuccessLoader referenceNumber={ref} />
         </div>
     );

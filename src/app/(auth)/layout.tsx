@@ -15,7 +15,7 @@ interface AuthLayoutProps {
 
 export default function AuthLayout({ children }: AuthLayoutProps) {
     return (
-        <div className="min-h-screen flex flex-col lg:flex-row">
+        <div className="min-h-dvh flex flex-col lg:flex-row">
             <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden">
                 <DynamicImage
                     src={AUTH_IMAGE_URL}
@@ -50,7 +50,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                 </div>
             </div>
 
-            <div className="w-full lg:w-1/2 flex flex-col min-h-screen bg-card">
+            <div className="w-full lg:w-1/2 flex flex-col min-h-dvh bg-card">
                 <div className="p-6 flex justify-between items-center">
                     <Link href={ROUTES.home} className="text-foreground">
                         <span className="font-bold text-lg">{APP_NAME}</span>

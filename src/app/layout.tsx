@@ -56,6 +56,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#ffffff" },
     { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
@@ -73,7 +74,7 @@ export default function RootLayout({
         <link rel="icon" href="/icon.svg" type="image/svg+xml" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-dvh flex flex-col pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)]`}
         suppressHydrationWarning
       >
         <Providers>
@@ -91,7 +92,7 @@ export default function RootLayout({
             <Footer />
           </HideOnAuthRoutes>
         </Providers>
-        <Toaster richColors position="top-right" offset={76} mobileOffset={76} duration={3000} />
+        <Toaster richColors position="top-right" offset="calc(76px + env(safe-area-inset-top))" mobileOffset="calc(76px + env(safe-area-inset-top))" duration={3000} />
       </body>
     </html>
   );

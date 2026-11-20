@@ -47,7 +47,7 @@ function SelectTrigger({
         "data-[placeholder]:text-muted-foreground [&_svg:not([class*='text-'])]:text-muted-foreground",
         "dark:bg-input/30 dark:hover:bg-input/50",
         "flex w-fit items-center justify-between gap-2 rounded-md border bg-transparent",
-        "px-3 py-2 text-sm whitespace-nowrap shadow-xs transition-all duration-200 outline-none",
+        "px-3 py-2 text-base md:text-sm whitespace-nowrap shadow-xs transition-all duration-200 outline-none",
         "text-foreground",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[size=default]:h-9 data-[size=sm]:h-8",

@@ -27,7 +27,7 @@ export function AdminTopBar({ username }: { username: string }) {
     };
 
     return (
-        <div className="sticky top-0 z-40 flex h-14 items-center justify-between gap-2 border-b border-border bg-background/95 px-4 backdrop-blur md:px-6">
+        <div className="sticky top-0 z-40 flex h-[calc(3.5rem+env(safe-area-inset-top))] items-center pt-[env(safe-area-inset-top)] justify-between gap-2 border-b border-border bg-background/95 px-4 backdrop-blur md:px-6">
             <div className="flex items-center gap-2 md:hidden">
                 <AdminMobileMenu username={username} />
                 <Link href={ROUTES.admin.dashboard} className="font-semibold">

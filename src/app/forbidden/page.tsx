@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function ForbiddenPage() {
     return (
-        <div className="flex min-h-screen flex-col items-center justify-center">
+        <div className="flex min-h-dvh flex-col items-center justify-center">
             <div className="text-center">
                 <h1 className="text-6xl font-bold text-destructive">403</h1>
                 <h2 className="mt-4 text-2xl font-semibold">Access Denied</h2>

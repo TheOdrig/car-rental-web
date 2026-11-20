@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     }
 
     return (
-        <div className="flex min-h-screen flex-col md:flex-row">
+        <div className="flex min-h-dvh flex-col md:flex-row">
             <AdminSidebar username={session.username} />
             <div className="min-w-0 flex-1 bg-background">
                 <AdminTopBar username={session.username} />
