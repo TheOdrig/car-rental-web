@@ -11,6 +11,8 @@ import {
     TableRow,
 } from '@/shared/ui/table';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { AlertTriangle } from 'lucide-react';
+import { EmptyState } from '@/shared/ui/empty-state';
 import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
 import { VehicleLabel } from '@/entities/car';
 import type { DamageReport } from '@/entities/damage';
@@ -39,12 +41,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
 
     if (damages.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-                <p className="text-muted-foreground">No damage reports found</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                    Damage reports will appear here when created
-                </p>
-            </div>
+            <EmptyState icon={AlertTriangle} title="No damage reports found" description="Damage reports will appear here when created" />
         );
     }
 

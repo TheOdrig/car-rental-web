@@ -29,6 +29,8 @@ interface HelpLink {
 
 interface EmptyStateProps {
     type?: EmptyStateType;
+    icon?: LucideIcon;
+    size?: 'default' | 'compact';
     title: string;
     description?: string;
     illustration?: string;
@@ -53,6 +55,8 @@ const iconMap: Record<EmptyStateType, LucideIcon> = {
 
 export function EmptyState({
     type = 'default',
+    icon,
+    size = 'default',
     title,
     description,
     illustration,
@@ -61,12 +65,14 @@ export function EmptyState({
     className,
     children,
 }: EmptyStateProps) {
-    const Icon = iconMap[type];
+    const Icon = icon ?? iconMap[type];
+    const compact = size === 'compact';
 
     return (
         <div
             className={cn(
-                'flex flex-col items-center justify-center px-4 py-12 text-center',
+                'flex flex-col items-center justify-center px-4 text-center',
+                compact ? 'py-8' : 'py-12',
                 className
             )}
         >
@@ -81,12 +87,17 @@ export function EmptyState({
                     />
                 </div>
             ) : (
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                    <Icon className="h-8 w-8 text-muted-foreground" />
+                <div
+                    className={cn(
+                        'mb-4 flex items-center justify-center rounded-full bg-muted',
+                        compact ? 'h-12 w-12' : 'h-16 w-16'
+                    )}
+                >
+                    <Icon className={cn('text-muted-foreground', compact ? 'h-6 w-6' : 'h-8 w-8')} aria-hidden="true" />
                 </div>
             )}
 
-            <h3 className="text-lg font-semibold">{title}</h3>
+            <h3 className={cn("font-semibold", compact ? "text-base" : "text-lg")}>{title}</h3>
 
             {description && (
                 <p className="mt-2 max-w-sm text-sm text-muted-foreground">

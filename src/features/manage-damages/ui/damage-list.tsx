@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { DamageCard, DamageCardSkeleton } from './damage-card';
 import { DamageDisputeForm } from './damage-dispute-form';
 import type { DamageReport } from '@/entities/damage';
+import { AlertTriangle } from 'lucide-react';
+import { EmptyState } from '@/shared/ui/empty-state';
 
 interface DamageListProps {
     damages: DamageReport[];
@@ -25,12 +27,7 @@ export function DamageList({ damages, isLoading }: DamageListProps) {
 
     if (damages.length === 0) {
         return (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-                <p className="text-muted-foreground">No damage reports found</p>
-                <p className="text-sm text-muted-foreground mt-1">
-                    Any damages associated with your rentals will appear here
-                </p>
-            </div>
+            <EmptyState icon={AlertTriangle} title="No damage reports found" description="Any damages associated with your rentals will appear here" />
         );
     }
 

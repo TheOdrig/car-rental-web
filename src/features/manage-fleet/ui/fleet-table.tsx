@@ -43,6 +43,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { cn, formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
 import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, carOccupancyLabel, type AdminCar as CarType, type CarStatus } from '@/entities/car';
 import { Pagination } from '@/shared/ui/pagination';
+import { EmptyState } from '@/shared/ui/empty-state';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
     AVAILABLE: {
@@ -171,11 +172,8 @@ export const FleetTable = memo(function FleetTable({
                             <TableBody>
                                 {cars.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="h-32 text-center">
-                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                                <Car className="h-8 w-8 opacity-50" />
-                                                <p>No vehicles found matching your criteria</p>
-                                            </div>
+                                        <TableCell colSpan={6}>
+                                            <EmptyState size="compact" icon={Car} title="No vehicles found" description="No vehicles match your criteria" />
                                         </TableCell>
                                     </TableRow>
                                 ) : (

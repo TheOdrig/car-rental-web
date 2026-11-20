@@ -5,6 +5,7 @@ import { MessageSquare, Plus, User, Clock, Send } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Textarea } from '@/shared/ui/textarea';
+import { EmptyState } from '@/shared/ui/empty-state';
 import { useAddAdminNote } from '../../api/users-api';
 import { formatDateTime } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
@@ -93,10 +94,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                 )}
 
                 {sortedNotes.length === 0 ? (
-                    <div className="text-center py-8">
-                        <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-                        <p className="text-sm text-muted-foreground">No admin notes yet</p>
-                    </div>
+                    <EmptyState size="compact" icon={MessageSquare} title="No admin notes yet" />
                 ) : (
                     <div className="space-y-3">
                         {sortedNotes.map((note) => (

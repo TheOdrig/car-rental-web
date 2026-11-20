@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { EmptyState } from '@/shared/ui/empty-state';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
 import { AdminRentalStatusBadge } from '@/entities/rental';
@@ -41,10 +42,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                         ))}
                     </div>
                 ) : !data || data.content.length === 0 ? (
-                    <div className="text-center py-8">
-                        <History className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-                        <p className="text-sm text-muted-foreground">No rental history for this vehicle</p>
-                    </div>
+                    <EmptyState size="compact" icon={History} title="No rental history for this vehicle" />
                 ) : (
                     <>
                         <div className="overflow-x-auto">

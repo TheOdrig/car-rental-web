@@ -5,6 +5,7 @@ import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
+import { EmptyState } from '@/shared/ui/empty-state';
 import type { VehicleImages } from '@/entities/car';
 
 interface VehicleImagesCardProps {
@@ -34,10 +35,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-col items-center justify-center py-12 bg-muted rounded-lg">
-                        <ImageIcon className="h-12 w-12 text-muted-foreground mb-3" />
-                        <p className="text-sm text-muted-foreground">No images available</p>
-                    </div>
+                    <EmptyState icon={ImageIcon} title="No images available" className="rounded-lg bg-muted" />
                 </CardContent>
             </Card>
         );

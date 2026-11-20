@@ -11,7 +11,8 @@ import {
 } from '@/shared/ui/table';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { ChevronLeft, ChevronRight, Clock, AlertTriangle } from 'lucide-react';
+import { EmptyState } from '@/shared/ui/empty-state';
+import { ChevronLeft, ChevronRight, Clock, CheckCircle } from 'lucide-react';
 import { LateReturnStatusBadge, formatLateTime, type LateReturnReport } from '@/entities/rental';
 import { formatCurrency, formatDate } from '@/shared/lib';
 
@@ -41,7 +42,7 @@ export function LateReturnsTable({
     }
 
     if (data.length === 0) {
-        return <LateReturnsEmptyState />;
+        return <EmptyState icon={CheckCircle} title="No Late Returns" description="All rentals are being returned on time. Great job!" />;
     }
 
     return (
@@ -179,18 +180,3 @@ function LateReturnsTableSkeleton() {
     );
 }
 
-function LateReturnsEmptyState() {
-    return (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="rounded-full bg-success-subtle p-3 mb-4">
-                <AlertTriangle className="h-6 w-6 text-success-subtle-foreground" />
-            </div>
-            <h3 className="text-lg font-medium text-foreground">
-                No Late Returns
-            </h3>
-            <p className="text-sm text-muted-foreground mt-1">
-                All rentals are being returned on time. Great job!
-            </p>
-        </div>
-    );
-}

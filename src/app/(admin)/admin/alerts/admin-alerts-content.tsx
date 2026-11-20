@@ -15,6 +15,7 @@ import { AlertVariant } from '@/features/admin';
 import { toast } from 'sonner';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { EmptyState } from '@/shared/ui/empty-state';
 
 export function AdminAlertsContent() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -136,20 +137,19 @@ export function AdminAlertsContent() {
                         ))}
                     </div>
                 ) : filteredAlerts.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
-                        <div className="h-16 w-16 rounded-full bg-background flex items-center justify-center shadow-sm">
-                            <AlertTriangle className="h-8 w-8 text-muted-foreground" />
-                        </div>
-                        <h3 className="text-lg font-semibold mt-4">No alerts found</h3>
-                        <p className="text-muted-foreground text-sm max-w-xs text-center mt-2">
-                            {searchQuery || typeFilter !== 'all'
+                    <EmptyState
+                        icon={AlertTriangle}
+                        title="No alerts found"
+                        description={
+                            searchQuery || typeFilter !== 'all'
                                 ? "We couldn't find any alerts matching your current filters."
-                                : "No alerts have been raised."}
-                        </p>
+                                : 'No alerts have been raised.'
+                        }
+                        className="rounded-lg border-2 border-dashed border-muted bg-muted/30 py-20"
+                    >
                         {(searchQuery || typeFilter !== 'all') && (
                             <Button
                                 variant="link"
-                                className="mt-2"
                                 onClick={() => {
                                     setSearchQuery('');
                                     setTypeFilter('all');
@@ -158,7 +158,7 @@ export function AdminAlertsContent() {
                                 Clear all filters
                             </Button>
                         )}
-                    </div>
+                    </EmptyState>
                 ) : (
                     <AlertsPanel
                         alerts={filteredAlerts}

@@ -4,6 +4,7 @@ import { memo, useState } from 'react';
 import { AlertCircle, User } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
+import { EmptyState } from '@/shared/ui/empty-state';
 import { cn } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { useBanUser, useUnbanUser, useUserList } from '../../api/users-api';
@@ -135,11 +136,8 @@ export const UserTable = memo(function UserTable({
                             <TableBody>
                                 {users.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={6} className="h-32 text-center">
-                                            <div className="flex flex-col items-center gap-2 text-muted-foreground">
-                                                <User className="h-8 w-8 opacity-50" aria-hidden="true" />
-                                                <p>No users found matching your criteria</p>
-                                            </div>
+                                        <TableCell colSpan={6}>
+                                            <EmptyState size="compact" icon={User} title="No users found" description="No users match your criteria" />
                                         </TableCell>
                                     </TableRow>
                                 ) : (

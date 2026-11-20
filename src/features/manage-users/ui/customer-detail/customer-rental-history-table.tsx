@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { EmptyState } from '@/shared/ui/empty-state';
 import {
     Select,
     SelectContent,
@@ -79,15 +80,11 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                         ))}
                     </div>
                 ) : !data || data.content.length === 0 ? (
-                    <div className="text-center py-8">
-                        <History className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
-                        <p className="text-sm text-muted-foreground">
-                            {statusFilter === 'all'
-                                ? 'No rental history for this customer'
-                                : `No ${statusFilter.toLowerCase()} rentals found`
-                            }
-                        </p>
-                    </div>
+                    <EmptyState
+ size="compact"
+ icon={History}
+ title={statusFilter === 'all' ? 'No rental history for this customer' : `No ${statusFilter.toLowerCase()} rentals found`}
+ />
                 ) : (
                     <>
                         <div className="overflow-x-auto">

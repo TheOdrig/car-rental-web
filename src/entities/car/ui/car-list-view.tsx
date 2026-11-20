@@ -7,6 +7,7 @@ import { Card } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { EmptyState } from '@/shared/ui/empty-state';
 import { cn } from '@/shared/lib';
 import { formatCurrency } from '@/shared/lib';
 import type { Car, AvailableCar } from '@/entities/car';
@@ -142,9 +143,7 @@ interface CarListViewProps {
 export function CarListView({ cars, className, headingLevel }: CarListViewProps) {
     if (cars.length === 0) {
         return (
-            <div className="text-center py-12">
-                <p className="text-muted-foreground">No cars found matching your criteria.</p>
-            </div>
+            <EmptyState type="cars" title="No cars found matching your criteria." />
         );
     }
 
