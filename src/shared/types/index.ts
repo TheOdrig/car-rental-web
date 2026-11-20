@@ -5,3 +5,4 @@ export type {
     FormFieldState,
     ValidationDisplayProps,
 } from './validation';
+export { STATUS_TONES, type StatusTone, type StatusPresentation } from './status';
