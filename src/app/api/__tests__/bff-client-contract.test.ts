@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 const SRC = join(process.cwd(), 'src');
 const API_DIR = join(SRC, 'app', 'api');
@@ -71,8 +72,33 @@ function matches(route: BffRoute, segments: string[]): boolean {
     });
 }
 
+function endpointUrls(): Map<string, string> {
+    const urls = new Map<string, string>();
+    const visit = (node: unknown, path: string[]) => {
+        if (typeof node === 'string') urls.set(path.join('.'), node);
+        else if (typeof node === 'function') urls.set(path.join('.'), node('${id}', '${id}'));
+        else if (node && typeof node === 'object') {
+            for (const [key, value] of Object.entries(node)) visit(value, [...path, key]);
+        }
+    };
+    visit(ENDPOINTS, []);
+    return urls;
+}
+
 function clientCalls(): ClientCall[] {
     const calls: ClientCall[] = [];
+    const urls = endpointUrls();
+    for (const [key, url] of urls) {
+        calls.push({ file: `shared/api/endpoints.ts#${key}`, url });
+    }
+    const usage = /client(Get|Post|Put|Patch|Delete)\b(?:<[^()]*>)?\(\s*(?:withQuery\(\s*)?ENDPOINTS\.([\w.]+)/g;
+    for (const { rel, source } of sourceFiles()) {
+        if (rel.startsWith('app/api/') || rel.startsWith('shared/server/')) continue;
+        for (const match of source.matchAll(usage)) {
+            const url = urls.get(match[2]);
+            if (url) calls.push({ file: rel, url, method: match[1].toUpperCase() });
+        }
+    }
     const literal = /(['"`])(\/api\/(?:[^'"`$]|\$\{[^}]*\})*)\1/g;
 
     for (const { rel, source } of sourceFiles()) {
@@ -120,7 +146,7 @@ describe('browser calls map to BFF route handlers', () => {
     it('never calls the API through a path that is not under /api', () => {
         const offenders: string[] = [];
         const apiClientCall =
-            /apiClient\.(?:get|post|put|patch|delete)(?:<[^()]*>)?\(\s*(?!['"`]\/api\/)([A-Za-z_.]+|['"`][^'"`]*['"`])/g;
+            /apiClient\.(?:get|post|put|patch|delete)(?:<[^()]*>)?\(\s*(?!['"`]\/api\/|ENDPOINTS\.)([A-Za-z_.]+|['"`][^'"`]*['"`])/g;
 
         for (const { rel, source } of sourceFiles()) {
             if (rel.startsWith('app/api/') || rel.startsWith('shared/server/')) continue;

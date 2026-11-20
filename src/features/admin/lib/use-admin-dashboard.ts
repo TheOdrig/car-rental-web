@@ -8,13 +8,15 @@ import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAle
 import type { PageResponse } from '@/shared/types';
 import type { AlertVariant } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 async function fetchDashboardSummary(): Promise<DailySummary> {
-    return clientGet<DailySummary>('/api/admin/dashboard');
+    return clientGet<DailySummary>(ENDPOINTS.admin.dashboard);
 }
 
 async function fetchFleetStatus(): Promise<FleetStatus> {
-    return clientGet<FleetStatus>('/api/admin/fleet');
+    return clientGet<FleetStatus>(ENDPOINTS.admin.fleet);
 }
 
 async function fetchPendingApprovals(filters?: PendingFilters): Promise<PageResponse<PendingItem>> {
@@ -29,9 +31,7 @@ async function fetchPendingApprovals(filters?: PendingFilters): Promise<PageResp
     }
 
     const queryString = params.toString();
-    const url = queryString
-        ? `/api/admin/dashboard/pending/approvals?${queryString}`
-        : '/api/admin/dashboard/pending/approvals';
+    const url = withQuery(ENDPOINTS.admin.pendingApprovals, queryString);
 
     return clientGet<PageResponse<PendingItem>>(url);
 }
@@ -48,9 +48,7 @@ async function fetchPendingPickups(filters?: PendingFilters): Promise<PageRespon
     }
 
     const queryString = params.toString();
-    const url = queryString
-        ? `/api/admin/dashboard/pending/pickups?${queryString}`
-        : '/api/admin/dashboard/pending/pickups';
+    const url = withQuery(ENDPOINTS.admin.pendingPickups, queryString);
 
     return clientGet<PageResponse<PendingItem>>(url);
 }
@@ -67,9 +65,7 @@ async function fetchPendingReturns(filters?: PendingFilters): Promise<PageRespon
     }
 
     const queryString = params.toString();
-    const url = queryString
-        ? `/api/admin/dashboard/pending/returns?${queryString}`
-        : '/api/admin/dashboard/pending/returns';
+    const url = withQuery(ENDPOINTS.admin.pendingReturns, queryString);
 
     return clientGet<PageResponse<PendingItem>>(url);
 }
@@ -86,15 +82,13 @@ async function fetchOverdueRentals(filters?: PendingFilters): Promise<PageRespon
     }
 
     const queryString = params.toString();
-    const url = queryString
-        ? `/api/admin/dashboard/pending/overdue?${queryString}`
-        : '/api/admin/dashboard/pending/overdue';
+    const url = withQuery(ENDPOINTS.admin.pendingOverdue, queryString);
 
     return clientGet<PageResponse<PendingItem>>(url);
 }
 
 async function fetchRevenueAnalytics(): Promise<RevenueAnalytics> {
-    return clientGet<RevenueAnalytics>('/api/admin/dashboard/revenue');
+    return clientGet<RevenueAnalytics>(ENDPOINTS.admin.revenue);
 }
 
 const ALERT_VARIANTS: Record<NonNullable<AlertDto['severity']>, AlertVariant> = {
@@ -127,16 +121,16 @@ export function toAdminAlert(alert: AlertDto): AdminAlert {
 }
 
 async function fetchAlerts(): Promise<AdminAlert[]> {
-    const alerts = await clientGet<AlertDto[]>('/api/admin/alerts');
+    const alerts = await clientGet<AlertDto[]>(ENDPOINTS.admin.alerts);
     return alerts.filter((alert) => !alert.acknowledged).map(toAdminAlert);
 }
 
 async function acknowledgeAlert(alertId: string): Promise<void> {
-    await clientPost<AlertDto>(`/api/admin/alerts/${alertId}/acknowledge`);
+    await clientPost<AlertDto>(ENDPOINTS.admin.alertAcknowledge(alertId));
 }
 
 async function acknowledgeAllAlerts(): Promise<void> {
-    const alerts = await clientGet<AlertDto[]>('/api/admin/alerts');
+    const alerts = await clientGet<AlertDto[]>(ENDPOINTS.admin.alerts);
     await Promise.all(alerts.filter((alert) => !alert.acknowledged).map((alert) => acknowledgeAlert(String(alert.id))));
 }
 

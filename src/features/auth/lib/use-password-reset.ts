@@ -4,13 +4,14 @@ import { useMutation } from '@tanstack/react-query';
 import { clientPost, isRateLimited } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<MessageResponse> {
-    return clientPost<MessageResponse>('/api/auth/forgot-password', data);
+    return clientPost<MessageResponse>(ENDPOINTS.auth.forgotPassword, data);
 }
 
 async function resetPasswordApi(data: ResetPasswordRequest): Promise<MessageResponse> {
-    return clientPost<MessageResponse>('/api/auth/reset-password', data);
+    return clientPost<MessageResponse>(ENDPOINTS.auth.resetPassword, data);
 }
 
 export function useForgotPassword() {

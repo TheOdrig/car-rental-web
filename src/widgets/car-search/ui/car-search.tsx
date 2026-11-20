@@ -12,7 +12,8 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/shared/ui/popover';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 interface CarSearchProps {
     className?: string;

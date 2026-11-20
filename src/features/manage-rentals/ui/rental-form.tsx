@@ -24,7 +24,8 @@ import { toast } from 'sonner';
 import { useBookedDates } from '@/entities/car';
 import type { Car as CarType } from '@/entities/car';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 function formatPrice(price: number, currency: string): string {
     return formatCurrency(price, currency || DEFAULT_CURRENCY);

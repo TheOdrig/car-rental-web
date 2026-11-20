@@ -14,7 +14,8 @@ import { PageHeader } from '@/shared/ui/page-header';
 import { toast } from 'sonner';
 import { DAMAGE_CATEGORIES, DAMAGE_SEVERITIES, DAMAGE_STATUSES, type DamageSearchFilters } from '@/entities/damage';
 import { pickCode } from '@/shared/lib';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 function parsePositiveInt(value: string | null | undefined): number | undefined {
     if (!value || !/^[0-9]+$/.test(value)) return undefined;

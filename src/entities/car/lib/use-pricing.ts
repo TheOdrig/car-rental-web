@@ -4,6 +4,8 @@ import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
 import type { PricingResponse } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 export const pricingKeys = {
     all: ['pricing'] as const,
@@ -21,7 +23,7 @@ async function fetchPricingPreview(
         startDate,
         endDate,
     });
-    return clientGet<PricingResponse>(`/api/pricing/preview?${params.toString()}`);
+    return clientGet<PricingResponse>(withQuery(ENDPOINTS.pricing.preview, params.toString()));
 }
 
 export function usePricingPreview(

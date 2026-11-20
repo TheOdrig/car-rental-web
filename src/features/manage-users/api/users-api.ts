@@ -5,6 +5,7 @@ import { clientGet, clientPost, getApiErrorMessage } from '@/shared/api';
 import { personFullName, showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
+import type { Schemas, WithRequired } from '@/shared/api/contract';
 import { usersKeys } from './users-keys';
 import type { UserFilters } from './users-keys';
 import type {
@@ -20,6 +21,8 @@ import type {
     AdminRentalStatus,
 } from '../model/types';
 import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 
 
@@ -45,42 +48,27 @@ async function fetchUserList(filters?: UserFilters): Promise<PageResponse<User>>
     }
 
     const queryString = params.toString();
-    const url = queryString ? `/api/admin/users?${queryString}` : '/api/admin/users';
+    const url = withQuery(ENDPOINTS.admin.users, queryString);
 
     return clientGet<PageResponse<User>>(url);
 }
 
 async function fetchUserStats(): Promise<UserStats> {
-    return clientGet<UserStats>('/api/admin/users/stats');
+    return clientGet<UserStats>(ENDPOINTS.admin.userStats);
 }
 
 async function fetchUser(id: number): Promise<User> {
-    return clientGet<User>(`/api/admin/users/${id}`);
+    return clientGet<User>(ENDPOINTS.admin.user(id));
 }
 
 async function fetchCustomerDetail(id: number): Promise<CustomerDetailResponse> {
-    return clientGet<CustomerDetailResponse>(`/api/admin/users/${id}`);
+    return clientGet<CustomerDetailResponse>(ENDPOINTS.admin.user(id));
 }
 
-interface ApiRentalHistoryItem {
-    id: number;
-    userSummary?: {
-        id: number;
-        fullName?: string;
-        username: string;
-    };
-    carSummary?: {
-        id: number;
-        brand: string;
-        model: string;
-    };
-    startDate: string;
-    endDate: string;
-    days: number;
-    totalPrice: number;
-    currency?: string;
-    status: string;
-}
+type ApiRentalHistoryItem = WithRequired<
+    Pick<Schemas['RentalResponse'], 'id' | 'userSummary' | 'carSummary' | 'startDate' | 'endDate' | 'days' | 'totalPrice' | 'currency' | 'status'>,
+    'id' | 'startDate' | 'endDate' | 'days' | 'totalPrice'
+>;
 
 async function fetchCustomerRentalHistory(
     id: number,
@@ -89,7 +77,7 @@ async function fetchCustomerRentalHistory(
 ): Promise<PaginatedResponse<RentalHistoryItem>> {
     const statusParam = status ? `&status=${status}` : '';
     const data = await clientGet<PaginatedResponse<ApiRentalHistoryItem>>(
-        `/api/admin/users/${id}/rentals?page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}${statusParam}`
+        withQuery(ENDPOINTS.admin.userRentals(id), `page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}${statusParam}`)
     );
 
     return {
@@ -118,15 +106,15 @@ function displayName(result: Partial<User> | undefined, fallback?: string): stri
 }
 
 async function banUser(params: BanUserRequest): Promise<User> {
-    return clientPost<User>(`/api/admin/users/${params.userId}/ban`, { reason: params.reason });
+    return clientPost<User>(ENDPOINTS.admin.userBan(params.userId), { reason: params.reason });
 }
 
 async function unbanUser(params: UnbanUserRequest): Promise<User> {
-    return clientPost<User>(`/api/admin/users/${params.userId}/unban`, { note: params.note });
+    return clientPost<User>(ENDPOINTS.admin.userUnban(params.userId), { note: params.note });
 }
 
 async function addAdminNote(params: AddNoteRequest): Promise<AdminNote> {
-    return clientPost<AdminNote>(`/api/admin/users/${params.userId}/notes`, { text: params.text });
+    return clientPost<AdminNote>(ENDPOINTS.admin.userNotes(params.userId), { text: params.text });
 }
 
 

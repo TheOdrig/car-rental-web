@@ -5,6 +5,7 @@ import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 interface OAuthButtonsProps {
     className?: string;
@@ -50,7 +51,7 @@ export function OAuthButtons({ className, disabled, callbackUrl, onError }: OAut
     const handleOAuthLogin = (provider: 'google' | 'github') => {
         try {
             setLoadingProvider(provider);
-            const target = new URL(`/api/auth/oauth/${provider}`, window.location.origin);
+            const target = new URL(ENDPOINTS.auth.oauth(provider), window.location.origin);
             if (callbackUrl && callbackUrl !== ROUTES.home) {
                 target.searchParams.set('callbackUrl', callbackUrl);
             }

@@ -22,6 +22,7 @@ import {
     getCurrencyByCode,
     type RateSource,
 } from '@/entities/currency';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 interface CurrencyContextValue {
     currency: CurrencyCode;
@@ -85,7 +86,7 @@ export function CurrencyProvider({
         }
 
         try {
-            const data = await clientGet<ExchangeRatesResponse>('/api/exchange-rates');
+            const data = await clientGet<ExchangeRatesResponse>(ENDPOINTS.exchangeRates.list);
             setRates(data.rates);
             setRateSource(data.source);
             if (typeof window !== 'undefined') {

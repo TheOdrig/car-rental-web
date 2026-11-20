@@ -1,3 +1,4 @@
+import type { RentalRequest } from '@/entities/rental';
 import type { CurrencyType } from '@/shared/types';
 
 
@@ -67,12 +68,7 @@ export interface BookingPaymentInfo {
     last4: string;
 }
 
-export interface CreateBookingRequest {
-    carId: number;
-    startDate: string;
-    endDate: string;
-    notes?: string;
-}
+export type CreateBookingRequest = RentalRequest;
 
 export interface CheckoutSearchParams {
     carId: string;

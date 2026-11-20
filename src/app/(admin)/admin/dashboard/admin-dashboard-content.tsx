@@ -13,6 +13,7 @@ import type { RevenuePeriod } from '@/features/admin';
 import { useRentalActions } from '@/features/process-rentals';
 import { formatTime } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -68,7 +69,7 @@ export function AdminDashboardContent() {
     const handleRefreshRates = async () => {
         setRefreshingRates(true);
         try {
-            await clientPost('/api/exchange-rates/refresh');
+            await clientPost(ENDPOINTS.exchangeRates.refresh);
             toast.success('Exchange rates refreshed');
             window.location.reload();
         } catch {

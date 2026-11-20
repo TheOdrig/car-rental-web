@@ -9,28 +9,14 @@ export type { ProcessReturnData };
 
 export type EarlyReturnPreview = WithRequired<Schemas['EarlyReturnPreview'], 'rentalId' | 'amount' | 'currency' | 'unusedDays'>;
 
-export interface QuickActionResult {
-    success: boolean;
-    message: string;
-    newStatus?: string;
-    updatedSummary?: unknown;
-}
+export type QuickActionResult = WithRequired<Schemas['QuickActionResultDto'], 'success' | 'message'>;
 
 
-export interface ApproveRentalRequest {
-    rentalId: number;
-    notes?: string;
-}
+export type ApproveRentalRequest = Schemas['QuickApproveRequest'] & { rentalId: number };
 
-export interface RejectRentalRequest {
-    rentalId: number;
-    reason: string;
-}
+export type RejectRentalRequest = Schemas['RejectRequest'] & { rentalId: number };
 
-export interface ProcessPickupRequest {
-    rentalId: number;
-    notes?: string;
-}
+export type ProcessPickupRequest = Schemas['QuickPickupRequest'] & { rentalId: number };
 
 export interface ProcessReturnRequest {
     rentalId: number;

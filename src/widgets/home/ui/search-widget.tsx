@@ -20,7 +20,8 @@ import {
 import { Calendar } from '@/shared/ui/calendar';
 import { cn } from '@/shared/lib';
 import { useFilterOptions } from '@/entities/car';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 interface SearchWidgetProps {
     className?: string;

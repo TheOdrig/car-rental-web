@@ -9,6 +9,9 @@ import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
 import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
+import type { Schemas, WithRequired } from '@/shared/api/contract';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 
 
@@ -33,12 +36,7 @@ export interface UpdateCarRequest extends CreateCarRequest {
     id: number;
 }
 
-export interface CarResponse {
-    id: number;
-    brand: string;
-    model: string;
-    licensePlate: string;
-}
+export type CarResponse = WithRequired<Pick<Schemas['CarResponse'], 'id' | 'brand' | 'model' | 'licensePlate'>, 'id' | 'brand' | 'model' | 'licensePlate'>;
 
 export interface RentalHistoryItem {
     id: number;
@@ -83,40 +81,40 @@ async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<Admi
     }
 
     const queryString = params.toString();
-    const url = queryString ? `/api/admin/cars?${queryString}` : '/api/admin/cars';
+    const url = withQuery(ENDPOINTS.admin.cars, queryString);
 
     return clientGet<PageResponse<AdminCar>>(url);
 }
 
 async function fetchFleetCar(id: number): Promise<AdminCar> {
-    return clientGet<AdminCar>(`/api/admin/cars/${id}`);
+    return clientGet<AdminCar>(ENDPOINTS.admin.car(id));
 }
 
 async function createCar(data: CreateCarRequest): Promise<CarResponse> {
-    return clientPost<CarResponse>('/api/admin/cars', data);
+    return clientPost<CarResponse>(ENDPOINTS.admin.cars, data);
 }
 
 async function updateCar({ id, ...data }: UpdateCarRequest): Promise<CarResponse> {
-    return clientPost<CarResponse>(`/api/admin/cars/${id}`, data);
+    return clientPost<CarResponse>(ENDPOINTS.admin.car(id), data);
 }
 
 async function deleteCar(carId: number): Promise<void> {
-    return clientDelete<void>(`/api/admin/cars/${carId}`);
+    return clientDelete<void>(ENDPOINTS.admin.car(carId));
 }
 
 async function restoreCar(carId: number): Promise<void> {
-    return clientPost<void>(`/api/admin/cars/${carId}/restore`);
+    return clientPost<void>(ENDPOINTS.admin.carRestore(carId));
 }
 
 async function changeCarStatus(params: { id: number; status: string; reason?: string }): Promise<AdminCar> {
-    return clientPost<AdminCar>(`/api/admin/cars/${params.id}/status`, {
+    return clientPost<AdminCar>(ENDPOINTS.admin.carStatus(params.id), {
         status: params.status,
         reason: params.reason
     });
 }
 
 async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
-    const response = await clientGet<AdminCar>(`/api/admin/cars/${id}`);
+    const response = await clientGet<AdminCar>(ENDPOINTS.admin.car(id));
 
     return {
         id: response.id,
@@ -142,29 +140,14 @@ async function fetchVehicleDetail(id: number): Promise<VehicleDetailResponse> {
     };
 }
 
-interface ApiVehicleRentalHistoryItem {
-    id: number;
-    userSummary?: {
-        id: number;
-        fullName?: string;
-        username: string;
-    };
-    carSummary?: {
-        id: number;
-        brand: string;
-        model: string;
-    };
-    startDate: string;
-    endDate: string;
-    days: number;
-    totalPrice: number;
-    currency?: string;
-    status: string;
-}
+type ApiVehicleRentalHistoryItem = WithRequired<
+    Pick<Schemas['RentalResponse'], 'id' | 'userSummary' | 'carSummary' | 'startDate' | 'endDate' | 'days' | 'totalPrice' | 'currency' | 'status'>,
+    'id' | 'startDate' | 'endDate' | 'days' | 'totalPrice'
+>;
 
 async function fetchVehicleRentalHistory(id: number, page: number): Promise<PaginatedResponse<RentalHistoryItem>> {
     const data = await clientGet<PaginatedResponse<ApiVehicleRentalHistoryItem>>(
-        `/api/admin/cars/${id}/rentals?page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}`
+        withQuery(ENDPOINTS.admin.carRentals(id), `page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}`)
     );
 
     return {

@@ -3,10 +3,6 @@ type MaybeId = Id | null | undefined;
 
 const detail = (base: string, id: MaybeId) => (id === null || id === undefined ? base : `${base}/${id}`);
 
-export function withQuery(path: string, query: string | undefined): string {
-    return query ? `${path}?${query}` : path;
-}
-
 export const ROUTES = {
     home: '/',
     login: '/login',

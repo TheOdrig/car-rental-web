@@ -6,6 +6,7 @@ import { showToast, toastMessages } from '@/shared/lib';
 import { profileKeys } from './use-profile';
 import type { AvatarUploadResponse } from '@/entities/user';
 import { MAX_IMAGE_UPLOAD_BYTES, MAX_IMAGE_UPLOAD_MB } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
@@ -36,11 +37,11 @@ async function uploadAvatarApi(file: File): Promise<AvatarUploadResponse> {
     const formData = new FormData();
     formData.append('avatar', file);
 
-    return clientPost<AvatarUploadResponse>('/api/users/me/avatar', formData);
+    return clientPost<AvatarUploadResponse>(ENDPOINTS.users.avatar, formData);
 }
 
 async function deleteAvatarApi(): Promise<AvatarUploadResponse> {
-    return clientDelete<AvatarUploadResponse>('/api/users/me/avatar');
+    return clientDelete<AvatarUploadResponse>(ENDPOINTS.users.avatar);
 }
 
 export function useUploadAvatar() {

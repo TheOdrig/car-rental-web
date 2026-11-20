@@ -9,6 +9,8 @@ import { DAY_AVAILABILITY } from '../model/status-labels';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 const FEATURED_PAGE_SIZE = 8;
 
@@ -59,7 +61,7 @@ async function fetchCars(
     params.append('sortDirection', sortDirection);
 
     const queryString = params.toString();
-    const url = `/api/cars?${queryString}`;
+    const url = withQuery(ENDPOINTS.cars.list, queryString);
 
     return clientGet<PageResponse<Car>>(url);
 }
@@ -79,13 +81,13 @@ async function fetchCar(id: number, options?: UseCarOptions): Promise<CarDetailR
     }
 
     const queryString = params.toString();
-    const url = queryString ? `/api/cars/${id}?${queryString}` : `/api/cars/${id}`;
+    const url = withQuery(ENDPOINTS.cars.detail(id), queryString);
 
     return clientGet<CarDetailResponse>(url);
 }
 
 async function searchCars(params: AvailabilitySearchRequest): Promise<AvailabilitySearchResponse> {
-    return clientPost<AvailabilitySearchResponse>('/api/cars/search', params);
+    return clientPost<AvailabilitySearchResponse>(ENDPOINTS.cars.search, params);
 }
 
 export function useCars(filters?: CarFilters, page: number = 0, sortBy: SortOption = 'recommended') {
@@ -99,7 +101,7 @@ export function useCars(filters?: CarFilters, page: number = 0, sortBy: SortOpti
 export function useFeaturedCars() {
     return useQuery({
         queryKey: carKeys.featured(),
-        queryFn: () => clientGet<PageResponse<Car>>(`/api/cars?carStatusType=AVAILABLE&sortBy=createTime&sortDirection=desc&page=0&size=${FEATURED_PAGE_SIZE}`),
+        queryFn: () => clientGet<PageResponse<Car>>(withQuery(ENDPOINTS.cars.list, `carStatusType=AVAILABLE&sortBy=createTime&sortDirection=desc&page=0&size=${FEATURED_PAGE_SIZE}`)),
         staleTime: STALE_TIME.LONG,
     });
 }
@@ -119,9 +121,7 @@ async function fetchCarCalendar(id: number, month?: string): Promise<CarAvailabi
         if (month) params.append('month', month);
 
         const queryString = params.toString();
-        const url = queryString
-            ? `/api/cars/${id}/availability/calendar?${queryString}`
-            : `/api/cars/${id}/availability/calendar`;
+        const url = withQuery(ENDPOINTS.cars.availabilityCalendar(id), queryString);
 
         const data = await clientGet<CarAvailabilityCalendar>(url);
         return data ?? null;
@@ -169,7 +169,7 @@ export function useSimilarCars(id: number | null | undefined) {
     return useQuery({
         queryKey: carKeys.similar(id!),
         queryFn: async () => {
-            const url = `/api/cars/${id}/similar`;
+            const url = ENDPOINTS.cars.similar(id!);
             const data = await clientGet<SimilarCar[]>(url);
             return data || [];
         },

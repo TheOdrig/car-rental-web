@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useQuery, type Query } from '@tanstack/react-query';
 import { clientGet, clientPost, isApiError } from '@/shared/api';
-import { PAYMENT_ENDPOINTS } from '../api/endpoints';
 import {
     PAYMENT_POLL_CAP_MS,
     isPollingDone,
@@ -12,6 +11,7 @@ import {
     type RentalPayment,
 } from '../model/rental-payment';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 export const paymentKeys = {
     byRental: (rentalId: number) => ['rentals', 'payment', rentalId] as const,
@@ -47,7 +47,7 @@ export function useRentalPayment(rentalId: number, options: UseRentalPaymentOpti
 
     const query = useQuery({
         queryKey: paymentKeys.byRental(rentalId),
-        queryFn: ({ signal }) => clientGet<RentalPayment>(PAYMENT_ENDPOINTS.byRental(rentalId), { signal }),
+        queryFn: ({ signal }) => clientGet<RentalPayment>(ENDPOINTS.rentals.payment(rentalId), { signal }),
         enabled,
         staleTime: STALE_TIME.NONE,
         retry: (failureCount, error) => !isClientError(error) && failureCount < 2,
@@ -70,7 +70,7 @@ export function useRentalPayment(rentalId: number, options: UseRentalPaymentOpti
 export function usePaymentIntent(rentalId: number, attempt: number, enabled = true) {
     return useQuery({
         queryKey: paymentKeys.intent(rentalId, attempt),
-        queryFn: () => clientPost<PaymentIntent>(PAYMENT_ENDPOINTS.intent(rentalId)),
+        queryFn: () => clientPost<PaymentIntent>(ENDPOINTS.rentals.paymentIntent(rentalId)),
         enabled,
         staleTime: STALE_TIME.FOREVER,
         gcTime: 0,

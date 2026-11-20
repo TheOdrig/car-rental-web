@@ -64,19 +64,8 @@ export type PaginatedResponse<T> = PageResponse<T>;
 
 
 
-export interface BanUserRequest {
-    userId: number;
-    reason: string;
-    displayName?: string;
-}
+export type BanUserRequest = Schemas['BanUserRequest'] & { userId: number; displayName?: string };
 
-export interface UnbanUserRequest {
-    userId: number;
-    note?: string;
-    displayName?: string;
-}
+export type UnbanUserRequest = Schemas['UnbanUserRequest'] & { userId: number; displayName?: string };
 
-export interface AddNoteRequest {
-    userId: number;
-    text: string;
-}
+export type AddNoteRequest = Schemas['AddNoteRequest'] & { userId: number };

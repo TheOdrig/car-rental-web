@@ -2,12 +2,11 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientPost } from '@/shared/api';
-import { rentalKeys } from '@/entities/rental';
+import { rentalKeys, type Rental } from '@/entities/rental';
 import type { CreateBookingRequest } from '../model/types';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
-interface CreateBookingResponse {
-    id: number;
-}
+type CreateBookingResponse = Pick<Rental, 'id'>;
 
 interface UseCreateBookingOptions {
     onSuccess?: (data: CreateBookingResponse) => void;
@@ -17,7 +16,7 @@ interface UseCreateBookingOptions {
 async function createBooking(
     request: CreateBookingRequest
 ): Promise<CreateBookingResponse> {
-    return clientPost<CreateBookingResponse>('/api/rentals', request);
+    return clientPost<CreateBookingResponse>(ENDPOINTS.rentals.root, request);
 }
 
 export function useCreateBooking(options?: UseCreateBookingOptions) {

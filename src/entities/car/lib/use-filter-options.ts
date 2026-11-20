@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 interface FilterOptions {
     brands: string[];
@@ -30,7 +31,7 @@ export function uniqueOptions(values: readonly string[] | undefined): string[] {
 }
 
 async function fetchFilterOptions(): Promise<FilterOptions> {
-    const options = await clientGet<Partial<FilterOptions>>('/api/cars/filter-options');
+    const options = await clientGet<Partial<FilterOptions>>(ENDPOINTS.cars.filterOptions);
     return {
         brands: uniqueOptions(options.brands),
         transmissionTypes: uniqueOptions(options.transmissionTypes),

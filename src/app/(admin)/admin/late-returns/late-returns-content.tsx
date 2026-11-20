@@ -18,7 +18,8 @@ import {
     type LateReturnFilters as LateReturnFiltersType,
 } from '@/entities/rental';
 import { pickCode } from '@/shared/lib';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 function LateReturnsList() {
     const searchParams = useSearchParams();

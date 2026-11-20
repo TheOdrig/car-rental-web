@@ -1,5 +1,6 @@
 import { ApiError, parseErrorResponse } from './error';
 import type { ClientRequestOptions } from './types';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
@@ -11,15 +12,15 @@ export function onSessionExpired(handler: (() => void) | null): void {
 
 function isAuthEndpoint(url: string): boolean {
     return (
-        url.includes('/api/auth/refresh') ||
-        url.includes('/api/auth/login') ||
-        url.includes('/api/auth/me')
+        url.includes(ENDPOINTS.auth.refresh) ||
+        url.includes(ENDPOINTS.auth.login) ||
+        url.includes(ENDPOINTS.auth.me)
     );
 }
 
 async function refreshToken(): Promise<boolean> {
     try {
-        const response = await fetch('/api/auth/refresh', {
+        const response = await fetch(ENDPOINTS.auth.refresh, {
             method: 'POST',
             credentials: 'include',
             headers: {

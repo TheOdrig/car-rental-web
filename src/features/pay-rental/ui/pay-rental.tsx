@@ -28,7 +28,8 @@ import {
 import { getStripe, resolvePublishableKey } from '../lib/stripe-client';
 import { DemoNotice } from './demo-notice';
 import { PaymentElementForm } from './payment-element-form';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 interface PayRentalProps {
     rentalId: number;

@@ -4,11 +4,12 @@ import { useMutation } from '@tanstack/react-query';
 import { clientPost, isApiError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import type { PasswordChangeData, MessageResponse } from '@/features/auth';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 const INVALID_PASSWORD_CODE = 'INVALID_PASSWORD';
 
 async function changePasswordApi(data: PasswordChangeData): Promise<MessageResponse> {
-    return clientPost<MessageResponse>('/api/users/me/password', data);
+    return clientPost<MessageResponse>(ENDPOINTS.users.password, data);
 }
 
 export function isWrongCurrentPassword(error: unknown): boolean {

@@ -17,6 +17,7 @@ import type {
 } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 export const authKeys = {
     all: ['auth'] as const,
@@ -25,7 +26,7 @@ export const authKeys = {
 
 async function fetchMe(): Promise<MeResponse | null> {
     try {
-        return await clientGet<MeResponse | null>('/api/auth/me?optional=true');
+        return await clientGet<MeResponse | null>(ENDPOINTS.auth.meOptional);
     } catch (error) {
         if (isApiError(error) && error.status === 401) {
             return null;
@@ -89,19 +90,19 @@ async function adoptPrincipal(queryClient: QueryClient): Promise<MeResponse | nu
 }
 
 async function loginApi(credentials: LoginRequest): Promise<LoginResponse> {
-    return clientPost<LoginResponse>('/api/auth/login', credentials);
+    return clientPost<LoginResponse>(ENDPOINTS.auth.login, credentials);
 }
 
 async function logoutApi(): Promise<LogoutResponse> {
-    return clientPost<LogoutResponse>('/api/auth/logout');
+    return clientPost<LogoutResponse>(ENDPOINTS.auth.logout);
 }
 
 async function refreshApi(): Promise<LoginResponse> {
-    return clientPost<LoginResponse>('/api/auth/refresh');
+    return clientPost<LoginResponse>(ENDPOINTS.auth.refresh);
 }
 
 async function registerApi(data: RegisterRequest): Promise<LoginResponse> {
-    return clientPost<LoginResponse>('/api/auth/register', data);
+    return clientPost<LoginResponse>(ENDPOINTS.auth.register, data);
 }
 
 export function useAuth(): AuthContextValue {

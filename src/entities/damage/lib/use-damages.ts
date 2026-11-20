@@ -15,6 +15,8 @@ import type {
     DamageListResponse,
 } from '@/entities/damage';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 export const damageKeys = {
     all: ['damages'] as const,
@@ -47,19 +49,19 @@ async function fetchDamages(
 ): Promise<DamageListResponse> {
     const params = { ...filters, page, size };
     const queryString = buildQueryString(params);
-    const url = queryString ? `/api/admin/damages?${queryString}` : '/api/admin/damages';
+    const url = withQuery(ENDPOINTS.admin.damages, queryString);
     return clientGet<DamageListResponse>(url);
 }
 
 async function fetchMyDamages(page = 0, size = 20): Promise<DamageListResponse> {
     const queryString = buildQueryString({ page, size });
-    const url = queryString ? `/api/damages/me?${queryString}` : '/api/damages/me';
+    const url = withQuery(ENDPOINTS.damages.mine, queryString);
     return clientGet<DamageListResponse>(url);
 }
 
 async function fetchMyDamageById(id: number): Promise<DamageReport | null> {
     try {
-        const damage = await clientGet<DamageReport>(`/api/damages/${id}`);
+        const damage = await clientGet<DamageReport>(ENDPOINTS.damages.detail(id));
         return { ...damage, photos: damage.photos ?? [] };
     } catch (error) {
         if (isNotFoundError(error)) return null;
@@ -68,7 +70,7 @@ async function fetchMyDamageById(id: number): Promise<DamageReport | null> {
 }
 
 async function fetchDamageDetail(id: number): Promise<DamageReport> {
-    return clientGet<DamageReport>(`/api/admin/damages/${id}`);
+    return clientGet<DamageReport>(ENDPOINTS.admin.damage(id));
 }
 
 async function fetchDamageStatistics(
@@ -76,9 +78,7 @@ async function fetchDamageStatistics(
     endDate?: string
 ): Promise<DamageStatistics> {
     const queryString = buildQueryString({ startDate, endDate });
-    const url = queryString
-        ? `/api/admin/damages/statistics?${queryString}`
-        : '/api/admin/damages/statistics';
+    const url = withQuery(ENDPOINTS.admin.damageStatistics, queryString);
     return clientGet<DamageStatistics>(url);
 }
 
@@ -88,9 +88,7 @@ async function fetchVehicleDamages(
     size = 10
 ): Promise<DamageListResponse> {
     const queryString = buildQueryString({ page, size });
-    const url = queryString
-        ? `/api/admin/damages/vehicle/${carId}?${queryString}`
-        : `/api/admin/damages/vehicle/${carId}`;
+    const url = withQuery(ENDPOINTS.admin.damagesByVehicle(carId), queryString);
     return clientGet<DamageListResponse>(url);
 }
 
@@ -100,9 +98,7 @@ async function fetchCustomerDamages(
     size = 10
 ): Promise<DamageListResponse> {
     const queryString = buildQueryString({ page, size });
-    const url = queryString
-        ? `/api/admin/damages/customer/${userId}?${queryString}`
-        : `/api/admin/damages/customer/${userId}`;
+    const url = withQuery(ENDPOINTS.admin.damagesByCustomer(userId), queryString);
     return clientGet<DamageListResponse>(url);
 }
 
@@ -110,47 +106,47 @@ async function createDamage(
     rentalId: number,
     request: DamageReportRequest
 ): Promise<DamageReport> {
-    return clientPost<DamageReport>(`/api/admin/damages?rentalId=${rentalId}`, request);
+    return clientPost<DamageReport>(withQuery(ENDPOINTS.admin.damages, `rentalId=${rentalId}`), request);
 }
 
 async function reassessDamage(
     damageId: number,
     request: DamageAssessmentRequest
 ): Promise<DamageReport> {
-    return clientPut<DamageReport>(`/api/admin/damages/${damageId}/assess`, request);
+    return clientPut<DamageReport>(ENDPOINTS.admin.damageAssess(damageId), request);
 }
 
 async function assessDamage(
     damageId: number,
     request: DamageAssessmentRequest
 ): Promise<DamageReport> {
-    return clientPost<DamageReport>(`/api/admin/damages/${damageId}/assess`, request);
+    return clientPost<DamageReport>(ENDPOINTS.admin.damageAssess(damageId), request);
 }
 
 async function disputeDamage(
     damageId: number,
     request: DamageDisputeRequest
 ): Promise<DamageReport> {
-    return clientPost<DamageReport>(`/api/damages/${damageId}/dispute`, request);
+    return clientPost<DamageReport>(ENDPOINTS.damages.dispute(damageId), request);
 }
 
 async function resolveDamage(
     damageId: number,
     resolution: DamageDisputeResolution
 ): Promise<DamageReport> {
-    return clientPost<DamageReport>(`/api/admin/damages/${damageId}/resolve`, resolution);
+    return clientPost<DamageReport>(ENDPOINTS.admin.damageResolve(damageId), resolution);
 }
 
 async function chargeDamage(damageId: number): Promise<DamageChargeResult> {
-    return clientPost<DamageChargeResult>(`/api/admin/damages/${damageId}/charge`);
+    return clientPost<DamageChargeResult>(ENDPOINTS.admin.damageCharge(damageId));
 }
 
 async function uploadPhotos(damageId: number, formData: FormData): Promise<DamageReport> {
-    return clientPost<DamageReport>(`/api/admin/damages/${damageId}/photos`, formData);
+    return clientPost<DamageReport>(ENDPOINTS.admin.damagePhotos(damageId), formData);
 }
 
 async function deletePhoto(damageId: number, photoId: number): Promise<void> {
-    await clientDelete<void>(`/api/admin/damages/${damageId}/photos?photoId=${photoId}`);
+    await clientDelete<void>(withQuery(ENDPOINTS.admin.damagePhotos(damageId), `photoId=${photoId}`));
 }
 
 export function useDamages(filters?: DamageSearchFilters, page = 0, size = 20, enabled = true) {

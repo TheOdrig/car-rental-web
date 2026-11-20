@@ -5,6 +5,7 @@ import { clientGet, clientPut } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import type { UserProfile, ProfileUpdateData } from '@/entities/user';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
 
 export const profileKeys = {
     all: ['profile'] as const,
@@ -12,11 +13,11 @@ export const profileKeys = {
 };
 
 async function fetchProfile(): Promise<UserProfile> {
-    return clientGet<UserProfile>('/api/users/me/profile');
+    return clientGet<UserProfile>(ENDPOINTS.users.profile);
 }
 
 async function updateProfileApi(data: ProfileUpdateData): Promise<UserProfile> {
-    return clientPut<UserProfile>('/api/users/me/profile', data);
+    return clientPut<UserProfile>(ENDPOINTS.users.profile, data);
 }
 
 export function useProfile() {

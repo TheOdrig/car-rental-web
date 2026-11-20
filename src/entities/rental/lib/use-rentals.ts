@@ -7,6 +7,8 @@ import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './ren
 import type { Rental, RentalRequest } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 interface RentalFilters {
     page?: number;
@@ -36,7 +38,7 @@ async function fetchMyRentals(filters?: RentalFilters): Promise<PageResponse<Ren
     }
 
     const queryString = params.toString();
-    const url = queryString ? `/api/rentals/me?${queryString}` : '/api/rentals/me';
+    const url = withQuery(ENDPOINTS.rentals.mine, queryString);
 
     return clientGet<PageResponse<Rental>>(url);
 }
@@ -55,11 +57,11 @@ async function fetchAllMyRentals(): Promise<Rental[]> {
 }
 
 async function fetchRental(id: number): Promise<Rental> {
-    return clientGet<Rental>(`/api/rentals/${id}`);
+    return clientGet<Rental>(ENDPOINTS.rentals.detail(id));
 }
 
 async function createRental(data: RentalRequest): Promise<Rental> {
-    return clientPost<Rental>('/api/rentals', data);
+    return clientPost<Rental>(ENDPOINTS.rentals.root, data);
 }
 
 export const CANCEL_REASON_MAX_LENGTH = 500;
@@ -74,7 +76,7 @@ function normalizeCancel(input: CancelRentalInput): { rentalId: number; reason?:
 
 async function cancelRental(input: CancelRentalInput): Promise<Rental> {
     const { rentalId, reason } = normalizeCancel(input);
-    return clientPost<Rental>(`/api/rentals/${rentalId}/cancel`, reason ? { reason } : undefined);
+    return clientPost<Rental>(ENDPOINTS.rentals.cancel(rentalId), reason ? { reason } : undefined);
 }
 
 export function useMyRentals(filters?: RentalFilters) {

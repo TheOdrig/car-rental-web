@@ -17,33 +17,35 @@ import type {
     EarlyReturnPreview,
 } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 
 
 
 
 async function approveRental({ rentalId, notes }: ApproveRentalRequest): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/approve`, { notes });
+    return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalApprove(rentalId), { notes });
 }
 
 async function processPickup({ rentalId, notes }: ProcessPickupRequest): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/pickup`, { notes });
+    return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalPickup(rentalId), { notes });
 }
 
 async function processReturn({ rentalId, data }: ProcessReturnRequest): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/return`, data);
+    return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalReturn(rentalId), data);
 }
 
 async function processEarlyReturn({ rentalId, data }: ProcessReturnRequest): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/early-return`, data);
+    return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalEarlyReturn(rentalId), data);
 }
 
 async function rejectRental({ rentalId, reason }: RejectRentalRequest): Promise<QuickActionResult> {
-    return clientPost<QuickActionResult>(`/api/admin/rentals/${rentalId}/reject`, { reason });
+    return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalReject(rentalId), { reason });
 }
 
 async function fetchRentalDetail(id: number): Promise<RentalDetailResponse> {
-    return clientGet<RentalDetailResponse>(`/api/admin/rentals/${id}/detail`);
+    return clientGet<RentalDetailResponse>(ENDPOINTS.admin.rentalDetail(id));
 }
 
 
@@ -158,10 +160,10 @@ async function fetchAdminRentals(params: AdminRentalsParams): Promise<PageRespon
     if (params.userId === undefined) {
         query.set('sort', 'createTime,desc');
         if (params.status) query.set('status', params.status);
-        return clientGet<PageResponse<Rental>>(`/api/admin/rentals?${query.toString()}`);
+        return clientGet<PageResponse<Rental>>(withQuery(ENDPOINTS.admin.rentals, query.toString()));
     }
     if (params.status) query.set('status', params.status);
-    return clientGet<PageResponse<Rental>>(`/api/admin/users/${params.userId}/rentals?${query.toString()}`);
+    return clientGet<PageResponse<Rental>>(withQuery(ENDPOINTS.admin.userRentals(params.userId), query.toString()));
 }
 
 export function useAdminRentals(params: AdminRentalsParams) {
@@ -176,7 +178,7 @@ export function useAdminRentals(params: AdminRentalsParams) {
 export function useEarlyReturnPreview(rentalId: number, enabled: boolean) {
     return useQuery({
         queryKey: processKeys.earlyReturnPreview(rentalId),
-        queryFn: () => clientGet<EarlyReturnPreview>(`/api/admin/rentals/${rentalId}/early-return/preview`),
+        queryFn: () => clientGet<EarlyReturnPreview>(ENDPOINTS.admin.rentalEarlyReturnPreview(rentalId)),
         enabled: enabled && Number.isFinite(rentalId),
         staleTime: STALE_TIME.NONE,
         gcTime: 0,

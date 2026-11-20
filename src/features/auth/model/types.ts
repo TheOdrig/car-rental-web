@@ -60,11 +60,7 @@ export type {
 
 export type LinkAccountResponse = Schemas['LinkAccountResponse'];
 
-export interface PasswordChangeRequest {
-    currentPassword: string;
-    newPassword: string;
-    confirmPassword: string;
-}
+export type PasswordChangeRequest = Schemas['PasswordChangeRequest'] & { confirmPassword: string };
 
 export interface MeResponse {
     id: number;
@@ -119,14 +115,9 @@ export interface FormMessage {
     type: 'error' | 'success' | 'warning' | 'info';
 }
 
-export interface ForgotPasswordRequest {
-    email: string;
-}
+export type ForgotPasswordRequest = Schemas['ForgotPasswordRequest'];
 
-export interface ResetPasswordRequest {
-    token: string;
-    newPassword: string;
-}
+export type ResetPasswordRequest = Schemas['ResetPasswordRequest'];
 
 export interface MessageResponse {
     message: string;

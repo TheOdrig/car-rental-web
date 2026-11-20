@@ -5,6 +5,8 @@ import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { rentalKeys, type LateReturnFilters, type LateReturnStatistics, type PaginatedLateReturns, type PenaltyWaiverRequest, type PenaltyWaiverResponse } from '@/entities/rental';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ENDPOINTS } from '@/shared/api/endpoints';
+import { withQuery } from '@/shared/lib/url';
 
 export const lateReturnKeys = {
     all: ['late-returns'] as const,
@@ -41,9 +43,7 @@ async function fetchLateReturns(
     size = 20
 ): Promise<PaginatedLateReturns> {
     const queryString = buildQueryString(filters, page, size);
-    const url = queryString
-        ? `/api/admin/late-returns?${queryString}`
-        : '/api/admin/late-returns';
+    const url = withQuery(ENDPOINTS.admin.lateReturns, queryString);
 
     return clientGet<PaginatedLateReturns>(url);
 }
@@ -57,15 +57,13 @@ async function fetchLateReturnStatistics(
     if (endDate) params.append('endDate', endDate);
 
     const queryString = params.toString();
-    const url = queryString
-        ? `/api/admin/late-returns/statistics?${queryString}`
-        : '/api/admin/late-returns/statistics';
+    const url = withQuery(ENDPOINTS.admin.lateReturnStatistics, queryString);
 
     return clientGet<LateReturnStatistics>(url);
 }
 
 async function fetchPenaltyHistory(rentalId: number): Promise<PenaltyWaiverResponse[]> {
-    return clientGet<PenaltyWaiverResponse[]>(`/api/admin/rentals/${rentalId}/penalty/history`);
+    return clientGet<PenaltyWaiverResponse[]>(ENDPOINTS.admin.penaltyHistory(rentalId));
 }
 
 async function waivePenalty(
@@ -73,7 +71,7 @@ async function waivePenalty(
     request: PenaltyWaiverRequest
 ): Promise<PenaltyWaiverResponse> {
     return clientPost<PenaltyWaiverResponse>(
-        `/api/admin/rentals/${rentalId}/penalty/waive`,
+        ENDPOINTS.admin.penaltyWaive(rentalId),
         request
     );
 }

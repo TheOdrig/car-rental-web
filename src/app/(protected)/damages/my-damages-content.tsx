@@ -9,7 +9,8 @@ import { Pagination } from '@/shared/ui/pagination';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { PageHeader } from '@/shared/ui/page-header';
 import { DamageList } from '@/features/manage-damages';
-import { ROUTES, withQuery } from '@/shared/config/routes';
+import { ROUTES } from '@/shared/config/routes';
+import { withQuery } from '@/shared/lib/url';
 
 export function MyDamagesContent() {
     const searchParams = useSearchParams();
