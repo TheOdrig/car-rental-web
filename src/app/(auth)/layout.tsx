@@ -37,11 +37,11 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
                     </p>
                     <div className="flex items-center gap-6 text-sm font-medium text-gray-300">
                         <div className="flex items-center gap-2">
-                            <span className="text-primary" aria-hidden="true">✓</span>
+                            <span aria-hidden="true">✓</span>
                             <span>Live availability</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-primary" aria-hidden="true">✓</span>
+                            <span aria-hidden="true">✓</span>
                             <span>Clear pricing</span>
                         </div>
                     </div>
