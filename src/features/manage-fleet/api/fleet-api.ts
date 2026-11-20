@@ -8,6 +8,7 @@ import { carKeys, type AdminCar, type VehicleDetailResponse } from '@/entities/c
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
+import { STALE_TIME } from '@/shared/config/constants';
 
 
 
@@ -196,7 +197,7 @@ export function useFleetList(filters?: FleetFilters) {
         queryKey: fleetKeys.list(filters),
         queryFn: () => fetchFleetList(filters),
         placeholderData: keepPreviousData,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -205,7 +206,7 @@ export function useFleetCar(id: number | null | undefined) {
         queryKey: fleetKeys.detail(id!),
         queryFn: () => fetchFleetCar(id!),
         enabled: !!id,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -296,7 +297,7 @@ export function useVehicleDetail(id: number) {
     return useQuery({
         queryKey: fleetKeys.vehicleDetail(id),
         queryFn: () => fetchVehicleDetail(id),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         enabled: !!id,
     });
 }
@@ -305,7 +306,7 @@ export function useVehicleRentalHistory(id: number, page: number = 0) {
     return useQuery({
         queryKey: fleetKeys.vehicleRentalHistory(id, page),
         queryFn: () => fetchVehicleRentalHistory(id, page),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         enabled: !!id,
     });
 }

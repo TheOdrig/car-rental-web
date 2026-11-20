@@ -6,12 +6,13 @@ import { ThemeProvider } from 'next-themes';
 import { type ReactNode } from 'react';
 import { SessionKeeper } from '@/features/auth';
 import { CurrencyProvider } from '@/entities/currency';
+import { STALE_TIME } from '@/shared/config/constants';
 
 function makeQueryClient() {
     return new QueryClient({
         defaultOptions: {
             queries: {
-                staleTime: 60 * 1000,
+                staleTime: STALE_TIME.MINUTE,
                 retry: 1,
                 refetchOnWindowFocus: false,
             },

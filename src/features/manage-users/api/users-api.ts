@@ -19,6 +19,7 @@ import type {
     AdminNote,
     AdminRentalStatus,
 } from '../model/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 
 
@@ -136,7 +137,7 @@ export function useUserList(filters?: UserFilters) {
     return useQuery({
         queryKey: usersKeys.list(filters),
         queryFn: () => fetchUserList(filters),
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -144,7 +145,7 @@ export function useUserStats() {
     return useQuery({
         queryKey: usersKeys.stats(),
         queryFn: fetchUserStats,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -153,7 +154,7 @@ export function useUser(id: number | null | undefined) {
         queryKey: usersKeys.detail(id!),
         queryFn: () => fetchUser(id!),
         enabled: !!id,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -161,7 +162,7 @@ export function useCustomerDetail(id: number) {
     return useQuery({
         queryKey: usersKeys.detail(id),
         queryFn: () => fetchCustomerDetail(id),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         enabled: !!id,
     });
 }
@@ -170,7 +171,7 @@ export function useCustomerRentalHistory(id: number, page: number = 0, status?: 
     return useQuery({
         queryKey: usersKeys.rentalHistory(id, page, status),
         queryFn: () => fetchCustomerRentalHistory(id, page, status),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         enabled: !!id,
     });
 }

@@ -11,6 +11,7 @@ import {
     type PaymentIntent,
     type RentalPayment,
 } from '../model/rental-payment';
+import { STALE_TIME } from '@/shared/config/constants';
 
 export const paymentKeys = {
     byRental: (rentalId: number) => ['rentals', 'payment', rentalId] as const,
@@ -48,7 +49,7 @@ export function useRentalPayment(rentalId: number, options: UseRentalPaymentOpti
         queryKey: paymentKeys.byRental(rentalId),
         queryFn: ({ signal }) => clientGet<RentalPayment>(PAYMENT_ENDPOINTS.byRental(rentalId), { signal }),
         enabled,
-        staleTime: 0,
+        staleTime: STALE_TIME.NONE,
         retry: (failureCount, error) => !isClientError(error) && failureCount < 2,
         refetchInterval: poll
             ? (current: Query<RentalPayment>) => {
@@ -71,7 +72,7 @@ export function usePaymentIntent(rentalId: number, attempt: number, enabled = tr
         queryKey: paymentKeys.intent(rentalId, attempt),
         queryFn: () => clientPost<PaymentIntent>(PAYMENT_ENDPOINTS.intent(rentalId)),
         enabled,
-        staleTime: Infinity,
+        staleTime: STALE_TIME.FOREVER,
         gcTime: 0,
         retry: false,
         refetchOnWindowFocus: false,

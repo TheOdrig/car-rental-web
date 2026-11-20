@@ -7,6 +7,7 @@ import { showToast } from '@/shared/lib';
 import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAlert } from '@/features/admin';
 import type { PageResponse } from '@/shared/types';
 import type { AlertVariant } from '../model/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 async function fetchDashboardSummary(): Promise<DailySummary> {
     return clientGet<DailySummary>('/api/admin/dashboard');
@@ -143,7 +144,7 @@ export function useDashboardSummary() {
     return useQuery({
         queryKey: adminKeys.summary(),
         queryFn: fetchDashboardSummary,
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         refetchInterval: 60 * 1000,
     });
 }
@@ -152,7 +153,7 @@ export function useFleetStatus() {
     return useQuery({
         queryKey: adminKeys.fleet(),
         queryFn: fetchFleetStatus,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 
@@ -160,7 +161,7 @@ export function usePendingApprovals(filters?: PendingFilters) {
     return useQuery({
         queryKey: adminKeys.pendingApprovals(filters),
         queryFn: () => fetchPendingApprovals(filters),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -168,7 +169,7 @@ export function usePendingPickups(filters?: PendingFilters) {
     return useQuery({
         queryKey: adminKeys.pendingPickups(filters),
         queryFn: () => fetchPendingPickups(filters),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -176,7 +177,7 @@ export function usePendingReturns(filters?: PendingFilters) {
     return useQuery({
         queryKey: adminKeys.pendingReturns(filters),
         queryFn: () => fetchPendingReturns(filters),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -184,7 +185,7 @@ export function useOverdueRentals(filters?: PendingFilters) {
     return useQuery({
         queryKey: adminKeys.overdueRentals(filters),
         queryFn: () => fetchOverdueRentals(filters),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -192,7 +193,7 @@ export function useRevenueData() {
     return useQuery({
         queryKey: adminKeys.revenue(),
         queryFn: fetchRevenueAnalytics,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -200,7 +201,7 @@ export function useAlerts() {
     return useQuery({
         queryKey: adminKeys.alerts(),
         queryFn: fetchAlerts,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 

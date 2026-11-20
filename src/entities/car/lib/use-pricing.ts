@@ -3,6 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
 import type { PricingResponse } from '../model/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 export const pricingKeys = {
     all: ['pricing'] as const,
@@ -32,7 +33,7 @@ export function usePricingPreview(
         queryKey: pricingKeys.preview(carId!, startDate!, endDate!),
         queryFn: () => fetchPricingPreview(carId!, startDate!, endDate!),
         enabled: !!carId && !!startDate && !!endDate,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
         retry: 1,
     });
 }

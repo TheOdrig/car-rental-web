@@ -4,6 +4,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { rentalKeys, type LateReturnFilters, type LateReturnStatistics, type PaginatedLateReturns, type PenaltyWaiverRequest, type PenaltyWaiverResponse } from '@/entities/rental';
+import { STALE_TIME } from '@/shared/config/constants';
 
 export const lateReturnKeys = {
     all: ['late-returns'] as const,
@@ -81,7 +82,7 @@ export function useLateReturns(filters?: LateReturnFilters, page = 0, size = 20)
     return useQuery({
         queryKey: lateReturnKeys.list(filters, page, size),
         queryFn: () => fetchLateReturns(filters, page, size),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -89,7 +90,7 @@ export function useLateReturnStatistics(startDate?: string, endDate?: string) {
     return useQuery({
         queryKey: lateReturnKeys.statisticsWithRange(startDate, endDate),
         queryFn: () => fetchLateReturnStatistics(startDate, endDate),
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 
@@ -98,7 +99,7 @@ export function usePenaltyHistory(rentalId: number | null | undefined) {
         queryKey: lateReturnKeys.penaltyHistory(rentalId!),
         queryFn: () => fetchPenaltyHistory(rentalId!),
         enabled: !!rentalId,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 

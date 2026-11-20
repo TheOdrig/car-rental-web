@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { clientGet } from '@/shared/api';
+import { STALE_TIME } from '@/shared/config/constants';
 
 interface FilterOptions {
     brands: string[];
@@ -42,7 +43,7 @@ export function useFilterOptions() {
     return useQuery({
         queryKey: filterOptionsKeys.all,
         queryFn: fetchFilterOptions,
-        staleTime: 30 * 60 * 1000,
+        staleTime: STALE_TIME.HOUR_HALF,
         retry: 1,
     });
 }

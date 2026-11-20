@@ -15,6 +15,7 @@ import type {
     LogoutResponse,
     AuthContextValue,
 } from '../model/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 export const authKeys = {
     all: ['auth'] as const,
@@ -63,7 +64,7 @@ export function useSessionKeeper(): void {
         queryKey: authKeys.me(),
         queryFn: fetchMe,
         retry: 1,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
         refetchOnWindowFocus: (query) => Boolean(query.state.data),
         refetchInterval: (query) => (query.state.data ? SESSION_CHECK_INTERVAL_MS : false),
         refetchIntervalInBackground: false,
@@ -83,7 +84,7 @@ function forgetPrincipal(queryClient: QueryClient): void {
 async function adoptPrincipal(queryClient: QueryClient): Promise<MeResponse | null> {
     loggingOut = false;
     queryClient.clear();
-    return queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: 0 }).catch(() => null);
+    return queryClient.fetchQuery({ queryKey: authKeys.me(), queryFn: fetchMe, staleTime: STALE_TIME.NONE }).catch(() => null);
 }
 
 async function loginApi(credentials: LoginRequest): Promise<LoginResponse> {
@@ -115,7 +116,7 @@ export function useAuth(): AuthContextValue {
         queryKey: authKeys.me(),
         queryFn: fetchMe,
         retry: 1,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 
     const user: User | null = meData
@@ -194,7 +195,7 @@ export function useCurrentUser() {
         queryKey: authKeys.me(),
         queryFn: fetchMe,
         retry: 1,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 
     const user: User | null = meData

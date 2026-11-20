@@ -6,6 +6,7 @@ import { showToast, toastMessages } from '@/shared/lib';
 import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './rental-errors';
 import type { Rental, RentalRequest } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 interface RentalFilters {
     page?: number;
@@ -80,7 +81,7 @@ export function useMyRentals(filters?: RentalFilters) {
     return useQuery({
         queryKey: rentalKeys.myList(filters),
         queryFn: () => fetchMyRentals(filters),
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -88,7 +89,7 @@ export function useAllMyRentals() {
     return useQuery({
         queryKey: rentalKeys.myAll(),
         queryFn: fetchAllMyRentals,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -97,7 +98,7 @@ export function useRental(id: number | null | undefined) {
         queryKey: rentalKeys.detail(id!),
         queryFn: () => fetchRental(id!),
         enabled: !!id,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
         retry: (failureCount, error) => !isNotFoundError(error) && failureCount < 1,
     });
 }
@@ -140,7 +141,7 @@ export function usePrefetchRental() {
         void queryClient.prefetchQuery({
             queryKey: rentalKeys.detail(id),
             queryFn: () => fetchRental(id),
-            staleTime: 2 * 60 * 1000,
+            staleTime: STALE_TIME.MEDIUM,
         });
     };
 }

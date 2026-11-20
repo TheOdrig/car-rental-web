@@ -16,6 +16,7 @@ import type {
     ProcessReturnRequest,
     EarlyReturnPreview,
 } from '../model/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 
 
@@ -167,7 +168,7 @@ export function useAdminRentals(params: AdminRentalsParams) {
     return useQuery({
         queryKey: processKeys.list(params),
         queryFn: () => fetchAdminRentals(params),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         placeholderData: (previous) => previous,
     });
 }
@@ -177,7 +178,7 @@ export function useEarlyReturnPreview(rentalId: number, enabled: boolean) {
         queryKey: processKeys.earlyReturnPreview(rentalId),
         queryFn: () => clientGet<EarlyReturnPreview>(`/api/admin/rentals/${rentalId}/early-return/preview`),
         enabled: enabled && Number.isFinite(rentalId),
-        staleTime: 0,
+        staleTime: STALE_TIME.NONE,
         gcTime: 0,
         retry: false,
         refetchOnWindowFocus: false,
@@ -188,7 +189,7 @@ export function useRentalDetail(id: number) {
     return useQuery({
         queryKey: processKeys.detail(id),
         queryFn: () => fetchRentalDetail(id),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
         enabled: !!id,
     });
 }

@@ -14,6 +14,7 @@ import type {
     DamageChargeResult,
     DamageListResponse,
 } from '@/entities/damage';
+import { STALE_TIME } from '@/shared/config/constants';
 
 export const damageKeys = {
     all: ['damages'] as const,
@@ -157,7 +158,7 @@ export function useDamages(filters?: DamageSearchFilters, page = 0, size = 20, e
         queryKey: damageKeys.list({ ...filters, page, size } as DamageSearchFilters),
         queryFn: () => fetchDamages(filters, page, size),
         enabled,
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -165,7 +166,7 @@ export function useMyDamages(page = 0, size = 20) {
     return useQuery({
         queryKey: damageKeys.myList(page, size),
         queryFn: () => fetchMyDamages(page, size),
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -174,7 +175,7 @@ export function useDamageDetail(id: number | null | undefined) {
         queryKey: damageKeys.detail(id!),
         queryFn: () => fetchDamageDetail(id!),
         enabled: !!id,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 
@@ -183,7 +184,7 @@ export function useMyDamageDetail(id: number | null | undefined) {
         queryKey: damageKeys.myDetail(id!),
         queryFn: () => fetchMyDamageById(id!),
         enabled: !!id,
-        staleTime: 30 * 1000,
+        staleTime: STALE_TIME.SHORT,
     });
 }
 
@@ -191,7 +192,7 @@ export function useDamageStatistics(startDate?: string, endDate?: string) {
     return useQuery({
         queryKey: damageKeys.statistics(startDate, endDate),
         queryFn: () => fetchDamageStatistics(startDate, endDate),
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -200,7 +201,7 @@ export function useVehicleDamages(carId: number | null | undefined, page = 0, si
         queryKey: damageKeys.vehicleHistory(carId!, page, size),
         queryFn: () => fetchVehicleDamages(carId!, page, size),
         enabled: !!carId,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 
@@ -209,7 +210,7 @@ export function useCustomerDamages(userId: number | null | undefined, page = 0, 
         queryKey: damageKeys.customerHistory(userId!, page, size),
         queryFn: () => fetchCustomerDamages(userId!, page, size),
         enabled: !!userId,
-        staleTime: 60 * 1000,
+        staleTime: STALE_TIME.MINUTE,
     });
 }
 

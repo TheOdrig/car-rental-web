@@ -8,6 +8,7 @@ import { getCarUnavailableMessage } from './status-messages';
 import { DAY_AVAILABILITY } from '../model/status-labels';
 import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
 import type { PageResponse } from '@/shared/types';
+import { STALE_TIME } from '@/shared/config/constants';
 
 const FEATURED_PAGE_SIZE = 8;
 
@@ -91,7 +92,7 @@ export function useCars(filters?: CarFilters, page: number = 0, sortBy: SortOpti
     return useQuery({
         queryKey: [...carKeys.list(filters), page, sortBy],
         queryFn: () => fetchCars(filters, page, sortBy),
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -99,7 +100,7 @@ export function useFeaturedCars() {
     return useQuery({
         queryKey: carKeys.featured(),
         queryFn: () => clientGet<PageResponse<Car>>(`/api/cars?carStatusType=AVAILABLE&sortBy=createTime&sortDirection=desc&page=0&size=${FEATURED_PAGE_SIZE}`),
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -108,7 +109,7 @@ export function useCar(id: number | null | undefined, options?: UseCarOptions) {
         queryKey: carKeys.detail(id!),
         queryFn: () => fetchCar(id!, options),
         enabled: !!id,
-        staleTime: 5 * 60 * 1000,
+        staleTime: STALE_TIME.LONG,
     });
 }
 
@@ -135,7 +136,7 @@ export function useCarCalendar(id: number | null | undefined, month?: string) {
         queryKey: carKeys.calendar(id!, month),
         queryFn: () => fetchCarCalendar(id!, month),
         enabled: !!id,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -145,7 +146,7 @@ export function useBookedDates(id: number | null | undefined, months: readonly s
             queryKey: carKeys.calendar(id!, month),
             queryFn: () => fetchCarCalendar(id!, month),
             enabled: !!id,
-            staleTime: 2 * 60 * 1000,
+            staleTime: STALE_TIME.MEDIUM,
         })),
     });
 
@@ -173,7 +174,7 @@ export function useSimilarCars(id: number | null | undefined) {
             return data || [];
         },
         enabled: !!id,
-        staleTime: 10 * 60 * 1000,
+        staleTime: STALE_TIME.EXTENDED,
     });
 }
 
@@ -193,7 +194,7 @@ export function useCarSearchResults(params: AvailabilitySearchRequest | null) {
         queryKey: carKeys.searchResult(params!),
         queryFn: () => searchCars(params!),
         enabled: !!params && !!params.startDate && !!params.endDate,
-        staleTime: 2 * 60 * 1000,
+        staleTime: STALE_TIME.MEDIUM,
     });
 }
 
@@ -204,7 +205,7 @@ export function usePrefetchCar() {
         void queryClient.prefetchQuery({
             queryKey: carKeys.detail(id),
             queryFn: () => fetchCar(id),
-            staleTime: 5 * 60 * 1000,
+            staleTime: STALE_TIME.LONG,
         });
     };
 }
