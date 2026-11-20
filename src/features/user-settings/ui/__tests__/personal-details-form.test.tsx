@@ -57,18 +57,29 @@ describe('PersonalDetailsForm', () => {
         });
     });
     describe('validation', () => {
-        it('should show error when first name is empty', async () => {
+        it('should not require a first or last name', async () => {
+            const onSubmit = vi.fn().mockResolvedValue(undefined);
             const user = userEvent.setup();
-            render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={vi.fn()} />);
-            await user.type(screen.getByLabelText(/last name/i), 'Doe');
+            render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={onSubmit} />);
             await user.type(screen.getByLabelText(/phone number/i), '1234567890');
             await submitForm();
             await waitFor(() => {
-                expect(screen.getByText(/first name is required/i)).toBeInTheDocument();
+                expect(onSubmit).toHaveBeenCalled();
+            });
+            expect(screen.queryByText(/is required/i)).not.toBeInTheDocument();
+        });
+        it('should link the error of a too long name to its field', async () => {
+            const user = userEvent.setup();
+            render(<PersonalDetailsForm initialData={{ firstName: '', lastName: '', phone: '' }} email="t@t.com" onSubmit={vi.fn()} />);
+            await user.click(screen.getByLabelText(/first name/i));
+            await user.paste('x'.repeat(51));
+            await submitForm();
+            await waitFor(() => {
+                expect(screen.getByText(/first name must be at most 50 characters/i)).toBeInTheDocument();
             });
             const field = screen.getByLabelText(/first name/i);
             expect(field).toHaveAttribute('aria-invalid', 'true');
-            expect(field).toHaveAccessibleDescription(/first name is required/i);
+            expect(field).toHaveAccessibleDescription(/first name must be at most 50 characters/i);
         });
         it('should show error when phone is invalid', async () => {
             const user = userEvent.setup();

@@ -17,14 +17,8 @@ export function normalizePhone(value: string | null | undefined): string {
 }
 
 export const profileSchema = z.object({
-    firstName: z
-        .string()
-        .min(1, 'First name is required')
-        .max(50, 'First name must be at most 50 characters'),
-    lastName: z
-        .string()
-        .min(1, 'Last name is required')
-        .max(50, 'Last name must be at most 50 characters'),
+    firstName: z.string().trim().max(50, 'First name must be at most 50 characters'),
+    lastName: z.string().trim().max(50, 'Last name must be at most 50 characters'),
     phone: z
         .string()
         .refine(
@@ -36,6 +30,17 @@ export const profileSchema = z.object({
 });
 
 export type ProfileFormData = z.infer<typeof profileSchema>;
+
+export function toProfileUpdate(data: ProfileFormData): { firstName?: string; lastName?: string; phone?: string } {
+    const firstName = data.firstName.trim();
+    const lastName = data.lastName.trim();
+    const phone = normalizePhone(data.phone);
+    return {
+        ...(firstName ? { firstName } : {}),
+        ...(lastName ? { lastName } : {}),
+        ...(phone ? { phone } : {}),
+    };
+}
 
 export const passwordChangeSchema = z
     .object({

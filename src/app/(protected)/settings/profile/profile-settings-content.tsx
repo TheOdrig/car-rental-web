@@ -1,6 +1,6 @@
 'use client';
 
-import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar, normalizePhone } from '@/features/user-settings';
+import { useProfile, useUpdateProfile, useUploadAvatar, useDeleteAvatar, toProfileUpdate } from '@/features/user-settings';
 import { ProfilePicture, PersonalDetailsForm } from '@/features/user-settings';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -19,11 +19,7 @@ export function ProfileSettingsContent() {
 
     const handleProfileUpdate = async (data: ProfileFormData) => {
         await updateProfile
-            .mutateAsync({
-                firstName: data.firstName,
-                lastName: data.lastName,
-                phone: normalizePhone(data.phone) || undefined,
-            })
+            .mutateAsync(toProfileUpdate(data))
             .catch(() => undefined);
     };
 

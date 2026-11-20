@@ -60,3 +60,17 @@ describe('profileSchema phone', () => {
         }
     });
 });
+
+describe('profile names', () => {
+    it('accepts blank names and trims them out of the update', async () => {
+        const { toProfileUpdate } = await import('../validations');
+        expect(profileSchema.safeParse({ firstName: '', lastName: '  ', phone: '' }).success).toBe(true);
+        expect(toProfileUpdate({ firstName: '', lastName: '   ', phone: '' })).toEqual({});
+        expect(toProfileUpdate({ firstName: ' Ada ', lastName: '', phone: '+90 555 111 22 33' })).toEqual({ firstName: 'Ada', phone: '+905551112233' });
+    });
+
+    it('keeps the 50 character limit', () => {
+        expect(profileSchema.safeParse({ firstName: 'x'.repeat(51), lastName: '', phone: '' }).success).toBe(false);
+        expect(profileSchema.safeParse({ firstName: 'x'.repeat(50), lastName: '', phone: '' }).success).toBe(true);
+    });
+});
