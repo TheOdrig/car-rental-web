@@ -22,6 +22,7 @@ export function VehicleDetailsCard({ carSummary }: VehicleDetailsCardProps) {
                             src={carSummary?.thumbnailUrl ?? '/images/car-placeholder.svg'}
                             alt={`${carSummary?.brand} ${carSummary?.model}`}
                             fill
+                            sizes="(min-width: 640px) 192px, 100vw"
                             className="object-cover transition-transform group-hover:scale-105"
                         />
                     </div>

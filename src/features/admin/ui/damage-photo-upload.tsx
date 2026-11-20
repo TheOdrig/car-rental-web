@@ -95,6 +95,7 @@ export function DamagePhotoUpload({
                                     src={photo.secureUrl}
                                     alt={photo.fileName}
                                     fill
+                                    sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                                     className="object-cover"
                                 />
                                 <Button

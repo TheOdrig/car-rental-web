@@ -170,6 +170,7 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                             src={data.imageUrl}
                             alt="Car preview"
                             fill
+                            sizes="(min-width: 1024px) 400px, 100vw"
                             className="object-cover"
                             onError={(e) => {
                                 e.currentTarget.style.display = 'none';

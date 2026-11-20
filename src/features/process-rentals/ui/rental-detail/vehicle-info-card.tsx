@@ -46,6 +46,7 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                                 src={vehicle.imageUrl}
                                 alt={`${vehicle.brand} ${vehicle.model}`}
                                 fill
+                                sizes="96px"
                                 className="object-cover"
                             />
                         </div>

@@ -76,6 +76,7 @@ export function EmptyState({
                         src={illustration}
                         alt=""
                         fill
+                        sizes="160px"
                         className="object-contain"
                     />
                 </div>

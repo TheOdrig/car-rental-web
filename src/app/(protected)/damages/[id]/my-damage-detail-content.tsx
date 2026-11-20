@@ -266,6 +266,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                                 src={photo.secureUrl}
                                                 alt={photo.fileName}
                                                 fill
+                                                sizes="(min-width: 768px) 25vw, (min-width: 640px) 33vw, 50vw"
                                                 unoptimized
                                                 className="object-cover"
                                             />

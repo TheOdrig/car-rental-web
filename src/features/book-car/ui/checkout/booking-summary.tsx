@@ -58,6 +58,7 @@ export function BookingSummary({
                             src={car.imageUrl || '/images/car-placeholder.svg'}
                             alt={`${car.brand} ${car.model}`}
                             fill
+                            sizes="280px"
                             className="object-contain drop-shadow-xl transform group-hover:scale-105 transition-transform duration-500"
                         />
                     </div>
