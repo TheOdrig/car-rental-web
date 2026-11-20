@@ -18,9 +18,9 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
     return (
         <nav
             aria-label="Breadcrumb"
-            className={cn('flex items-center text-sm text-slate-600 dark:text-slate-400', className)}
+            className={cn('flex min-w-0 items-center text-sm text-slate-600 dark:text-slate-400', className)}
         >
-            <ol className="flex items-center gap-1.5">
+            <ol className="flex min-w-0 flex-wrap items-center gap-1.5">
                 <li>
                     <Link
                         href="/"
@@ -36,7 +36,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
                     const isLast = index === items.length - 1;
 
                     return (
-                        <li key={index} className="flex items-center gap-1.5">
+                        <li key={index} className="flex min-w-0 items-center gap-1.5 [overflow-wrap:anywhere]">
                             <ChevronRight className="h-4 w-4" aria-hidden="true" />
                             {isLast || !item.href ? (
                                 <span
