@@ -105,7 +105,8 @@ export function AdminDashboardContent() {
     const latestRevenue = useMemo(() => {
         if (currencies.length !== 1) return null;
         const monthly = (revenueAnalytics?.monthlyRevenue ?? []).filter((item) => item.currency === currencies[0]);
-        return monthly.length > 0 ? monthly[monthly.length - 1] : null;
+        const latest = monthly.length > 0 ? monthly[monthly.length - 1] : null;
+        return latest && Number.isFinite(latest.growthPercentage) ? latest : null;
     }, [currencies, revenueAnalytics]);
 
     return (

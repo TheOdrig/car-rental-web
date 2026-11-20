@@ -88,13 +88,13 @@ export function CustomerDetailContent({ id }: { id: string }) {
             />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <h1 className="break-words text-3xl font-bold tracking-tight text-gray-900 [overflow-wrap:anywhere] dark:text-white">
                             {customerName}
                         </h1>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="break-words text-sm text-gray-600 [overflow-wrap:anywhere] dark:text-gray-400">
                         {customer.email} • Member since {customer.registrationDate ? formatDate(customer.registrationDate) : 'N/A'}
                     </p>
                 </div>
@@ -147,12 +147,12 @@ export function CustomerDetailContent({ id }: { id: string }) {
                 </div>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&>*]:min-w-0">
                 <CustomerDetailInfoCard customer={customer} />
                 <CustomerVerificationCard verification={customer.verification} customerId={customerId} />
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 [&>*]:min-w-0">
                 <CustomerStatusCard accountStatus={customer.accountStatus} />
                 <CustomerStatisticsCard statistics={customer.statistics} />
             </div>

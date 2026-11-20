@@ -131,7 +131,7 @@ export const RentalCard = memo(function RentalCard({
         const cardContent = (
             <Card
                 className={cn(
-                    'group relative overflow-hidden transition-shadow duration-200 hover:shadow-md',
+                    'group relative gap-0 overflow-hidden py-0 transition-shadow duration-200 hover:shadow-md',
                     isActive && 'border-l-4 border-l-primary shadow-md',
                     (onClick || href) && 'cursor-pointer',
                     className
@@ -225,10 +225,10 @@ export const RentalCard = memo(function RentalCard({
     const cardContent = (
         <Card
             className={cn(
-                'group relative overflow-hidden transition-shadow duration-200 hover:shadow-md',
+                'group relative gap-0 overflow-hidden py-0 transition-shadow duration-200 hover:shadow-md',
                 isActive && 'border-l-4 border-l-primary',
                 (onClick || href) && 'cursor-pointer',
-                variant === 'compact' && 'py-2',
+                variant === 'compact' ? 'py-2' : 'py-0',
                 className
             )}
             onClick={() => onClick?.(rental)}

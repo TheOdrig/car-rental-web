@@ -38,8 +38,8 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                             {initials}
                         </AvatarFallback>
                     </Avatar>
-                    <div className="flex-1">
-                        <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
+                    <div className="min-w-0 flex-1">
+                        <h2 className="break-words text-xl [overflow-wrap:anywhere] font-semibold text-slate-900 dark:text-slate-100">
                             {name}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">
@@ -57,11 +57,11 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
 
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
                     <div className="flex items-center gap-3">
-                        <Mail className="h-4 w-4 text-slate-400" />
-                        <div className="flex-1">
+                        <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                        <div className="min-w-0 flex-1">
                             <a
                                 href={`mailto:${customer.email}`}
-                                className="text-slate-900 dark:text-slate-100 hover:underline"
+                                className="break-all text-slate-900 dark:text-slate-100 hover:underline"
                             >
                                 {customer.email}
                             </a>
