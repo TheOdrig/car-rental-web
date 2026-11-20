@@ -9,7 +9,7 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/',
 }));
 
-vi.mock('@/features/auth/lib/use-auth', () => ({
+vi.mock('@/features/auth/api/use-auth', () => ({
     useRegister: vi.fn(),
     useLogin: vi.fn(),
     useLogout: vi.fn(),
@@ -18,15 +18,15 @@ vi.mock('@/features/auth/lib/use-auth', () => ({
     authKeys: { all: ['auth'] },
 }));
 
-vi.mock('@/features/auth/lib/use-password-reset', () => ({
+vi.mock('@/features/auth/api/use-password-reset', () => ({
     useForgotPassword: vi.fn(),
     useResetPassword: vi.fn(),
 }));
 
 import { ApiError } from '@/shared/api';
 import { ForgotPasswordForm, RegisterForm, ResetPasswordForm } from '@/features/auth';
-import { useRegister } from '@/features/auth/lib/use-auth';
-import { useForgotPassword, useResetPassword } from '@/features/auth/lib/use-password-reset';
+import { useRegister } from '@/features/auth/api/use-auth';
+import { useForgotPassword, useResetPassword } from '@/features/auth/api/use-password-reset';
 
 function rateLimited(retryAfter?: number): ApiError {
     return new ApiError({

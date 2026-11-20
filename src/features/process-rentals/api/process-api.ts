@@ -1,7 +1,8 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, isApiError } from '@/shared/api';
+import { clientGet, clientPost, isApiError } from '@/shared/api';
+import { adminKeys } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 import { showToast, toastMessages } from '@/shared/lib';
 import { carKeys } from '@/entities/car';

@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import { isApiError } from '@/shared/api';
-import { useRentalPayment } from '../lib/use-rental-payment';
+import { useRentalPayment } from '../api/use-rental-payment';
 import { isNeverChargedPayment, type RentalPaymentStatus as PaymentStatusValue } from '../model/rental-payment';
 import { PaymentStatusBadge } from './payment-status-badge';
 

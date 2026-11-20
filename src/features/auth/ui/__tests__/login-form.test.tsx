@@ -18,7 +18,7 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/login',
 }));
 
-vi.mock('@/features/auth/lib/use-auth', () => ({
+vi.mock('@/features/auth/api/use-auth', () => ({
     useLogin: vi.fn(),
     useLogout: vi.fn(),
     useRegister: vi.fn(),
@@ -29,7 +29,7 @@ vi.mock('@/features/auth/lib/use-auth', () => ({
 
 import { ApiError } from '@/shared/api';
 import { LoginForm } from '@/features/auth';
-import { useLogin } from '@/features/auth/lib/use-auth';
+import { useLogin } from '@/features/auth/api/use-auth';
 
 describe('LoginForm', () => {
     const user = userEvent.setup();

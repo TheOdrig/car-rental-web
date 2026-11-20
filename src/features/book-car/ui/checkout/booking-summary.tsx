@@ -6,7 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { formatDate } from '@/shared/lib';
 import { useCurrency } from '@/entities/currency';
 import { describeRateBasis, mapCurrency } from '@/entities/currency';
-import type { PriceBreakdown } from '@/features/book-car';
+import type { PriceBreakdown } from '../../model/types';
 import type { Car } from '@/entities/car';
 
 interface BookingSummaryProps {

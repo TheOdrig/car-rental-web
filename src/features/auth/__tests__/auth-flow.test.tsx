@@ -17,8 +17,8 @@ vi.mock('next/navigation', () => ({
     useSearchParams: () => new URLSearchParams(),
     usePathname: () => '/login',
 }));
-vi.mock('@/features/auth/lib/use-auth', async (importOriginal) => {
-    const actual = await importOriginal<typeof import('@/features/auth/lib/use-auth')>();
+vi.mock('@/features/auth/api/use-auth', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@/features/auth/api/use-auth')>();
     return {
         ...actual,
         useLogin: vi.fn(() => ({
@@ -36,7 +36,7 @@ vi.mock('@/features/auth/lib/use-auth', async (importOriginal) => {
         })),
     };
 });
-import { useLogin, useRegister } from '@/features/auth/lib/use-auth';
+import { useLogin, useRegister } from '@/features/auth/api/use-auth';
 describe('Authentication Integration Tests', () => {
     const user = userEvent.setup();
     beforeEach(() => {

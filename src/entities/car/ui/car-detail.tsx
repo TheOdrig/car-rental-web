@@ -13,7 +13,7 @@ import { AVAILABILITY_STATUS_LABELS, CAR_STATUS, DAY_AVAILABILITY } from '../mod
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '@/entities/car';
+import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '../model/types';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 
 export interface CarDetailProps extends React.HTMLAttributes<HTMLDivElement> {

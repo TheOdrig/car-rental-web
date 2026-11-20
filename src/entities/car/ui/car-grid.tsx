@@ -2,7 +2,7 @@
 
 import { cn } from '@/shared/lib';
 import { CarCard, CarCardSkeleton } from './car-card';
-import type { Car, AvailableCar } from '@/entities/car';
+import type { Car, AvailableCar } from '../model/types';
 import React from "react";
 
 interface CarGridProps {

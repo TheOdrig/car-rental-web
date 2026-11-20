@@ -23,5 +23,5 @@ export {
     BookingSummary
 } from './ui/checkout';
 
-export { useCreateBooking } from './lib/use-checkout';
+export { useCreateBooking } from './api/use-checkout';
 export * from './lib/utils';

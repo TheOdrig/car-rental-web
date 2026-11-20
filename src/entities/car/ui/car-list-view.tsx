@@ -10,7 +10,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { EmptyState } from '@/shared/ui/empty-state';
 import { cn } from '@/shared/lib';
 import { formatCurrency } from '@/shared/lib';
-import type { Car, AvailableCar } from '@/entities/car';
+import type { Car, AvailableCar } from '../model/types';
 import { ROUTES } from '@/shared/config/routes';
 
 interface CarListItemProps {

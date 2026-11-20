@@ -12,7 +12,7 @@ import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Car, RotateCcw, CheckCircle, AlertTriangle, User } from 'lucide-react';
 import { isAfterRentalEnd, isBeforeRentalStart } from '@/entities/rental';
-import type { PendingItem } from '@/features/admin';
+import type { PendingItem } from '../model/types';
 
 interface QuickActionsCardProps {
     className?: string;

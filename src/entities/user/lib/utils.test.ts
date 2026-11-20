@@ -9,3 +9,12 @@ describe('account status rules', () => {
         expect(isActiveAccount({ status: 'LOCKED' })).toBe(false);
     });
 });
+
+describe('admin role', () => {
+    it('detects the admin role from a role list', async () => {
+        const { hasAdminRole } = await import('./utils');
+        expect(hasAdminRole(['CUSTOMER', 'ADMIN'])).toBe(true);
+        expect(hasAdminRole(['CUSTOMER'])).toBe(false);
+        expect(hasAdminRole(undefined)).toBe(false);
+    });
+});

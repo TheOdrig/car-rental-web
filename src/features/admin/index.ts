@@ -27,7 +27,6 @@ export type {
 
 export * from './ui';
 
-export { adminKeys, type PendingFilters, type AdminFleetListFilters } from '@/shared/api';
 
 export {
     useDashboardSummary,
@@ -41,7 +40,7 @@ export {
     useDismissAlert,
     useMarkAllAlertsRead,
     useInvalidateAdmin,
-} from './lib/use-admin-dashboard';
+} from './api/use-admin-dashboard';
 
-export * from './lib/use-late-returns';
+export * from './api/use-late-returns';
 export * from './lib/utils';

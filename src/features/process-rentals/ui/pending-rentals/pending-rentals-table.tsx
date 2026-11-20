@@ -6,7 +6,6 @@ import { cn } from '@/shared/lib';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
-import { DamageReportForm } from '@/entities/damage';
 import type { PendingItem, ProcessReturnData } from '@/entities/rental';
 import { ApproveRentalDialog } from '../approve-rental-dialog';
 import { ProcessPickupDialog } from '../process-pickup-dialog';
@@ -16,6 +15,13 @@ import type { PendingRentalsType } from './format';
 import type { PendingAction } from './pending-rental-action';
 import { PendingRentalRow } from './pending-rental-row';
 import { PendingRentalsSkeleton } from './pending-rentals-skeleton';
+
+export interface DamageFormSlotProps {
+    rentalId: number;
+    open: boolean;
+    onOpenChange: (open: boolean) => void;
+    onSuccess: () => void;
+}
 
 interface PendingRentalsTableProps {
     items: PendingItem[];
@@ -28,6 +34,7 @@ interface PendingRentalsTableProps {
     onPickup?: (rentalId: number, notes?: string) => void;
     onReturn?: (rentalId: number, data?: ProcessReturnData) => void;
     onReportDamage?: (rentalId: number) => void;
+    renderDamageForm?: (props: DamageFormSlotProps) => ReactNode;
     actionInProgress?: number | null;
     className?: string;
 }
@@ -52,6 +59,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
     onReject,
     onPickup,
     onReturn,
+    renderDamageForm,
     actionInProgress,
     className,
 }: PendingRentalsTableProps) {
@@ -182,14 +190,13 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                 isLoading={actionInProgress !== null}
             />
 
-            {damageRentalId && (
-                <DamageReportForm
-                    rentalId={damageRentalId}
-                    open={damageDialogOpen}
-                    onOpenChange={setDamageDialogOpen}
-                    onSuccess={() => setDamageRentalId(null)}
-                />
-            )}
+            {damageRentalId &&
+                renderDamageForm?.({
+                    rentalId: damageRentalId,
+                    open: damageDialogOpen,
+                    onOpenChange: setDamageDialogOpen,
+                    onSuccess: () => setDamageRentalId(null),
+                })}
         </>
     );
 });

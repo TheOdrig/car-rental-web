@@ -35,14 +35,6 @@ export {
 export {
     useDamages,
     useDamageDetail,
-    useDisputeDamage,
-    useCreateDamage,
-    useUploadPhotos,
-    useDeletePhoto,
-    useAssessDamage,
-    useReassessDamage,
-    useResolveDamage,
-    useChargeDamage,
     useInvalidateDamages,
     useMyDamages,
     useMyDamageDetail,
@@ -50,8 +42,7 @@ export {
     useVehicleDamages,
     useCustomerDamages,
     damageKeys,
-} from './lib/use-damages';
+} from './api/damage-queries';
 export { DamageStatusBadge } from './ui/damage-status-badge';
 export { DamageSeverityBadge } from './ui/damage-severity-badge';
-export { DamageReportForm } from './ui/damage-report-form';
 export { DamageCurrencyTotals } from './ui/damage-currency-totals';

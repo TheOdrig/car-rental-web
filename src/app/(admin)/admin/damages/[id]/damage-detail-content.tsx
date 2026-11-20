@@ -12,7 +12,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
 import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel, canAssessDamage, canReassessDamage, canResolveDamageDispute, canChargeDamage, hasDisputeActivity } from '@/entities/damage';
-import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
+import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/manage-damages';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import { useRental } from '@/entities/rental';

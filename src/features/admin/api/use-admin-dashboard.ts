@@ -1,10 +1,11 @@
 'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { adminKeys, clientGet, clientPost, isApiError, type PendingFilters, type Schemas } from '@/shared/api';
+import { clientGet, clientPost, isApiError, type Schemas } from '@/shared/api';
+import { adminKeys, type PendingFilters } from '@/entities/rental';
 import { carKeys } from '@/entities/car';
 import { showToast } from '@/shared/lib';
-import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAlert } from '@/features/admin';
+import type { DailySummary, FleetStatus, PendingItem, RevenueAnalytics, AdminAlert } from '../model/types';
 import type { PageResponse } from '@/shared/types';
 import type { AlertVariant } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';

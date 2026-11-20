@@ -8,7 +8,7 @@ import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
-import { type SimilarCar } from '@/entities/car';
+import { type SimilarCar } from '../model/types';
 import { ROUTES } from '@/shared/config/routes';
 
 interface SimilarCarCardProps {

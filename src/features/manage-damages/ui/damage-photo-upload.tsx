@@ -16,7 +16,7 @@ import {
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
 import { Upload, X, ImageIcon, Loader2 } from 'lucide-react';
-import { useUploadPhotos, useDeletePhoto } from '@/entities/damage';
+import { useUploadPhotos, useDeletePhoto } from '../api/damage-mutations';
 import { cn } from '@/shared/lib';
 import type { DamagePhoto } from '@/entities/damage';
 import { MAX_IMAGE_UPLOAD_BYTES, MAX_IMAGE_UPLOAD_MB } from '@/shared/config/constants';

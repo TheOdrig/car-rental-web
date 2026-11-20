@@ -8,7 +8,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { cn } from '@/shared/lib';
-import type { SortOption } from '@/widgets/car-filters';
+import type { SortOption } from '@/entities/car';
 
 export const SORT_OPTIONS: { value: SortOption; label: string }[] = [
     { value: 'recommended', label: 'Recommended' },

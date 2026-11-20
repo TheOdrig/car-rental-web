@@ -23,8 +23,8 @@ import {
 import { Textarea } from '@/shared/ui/textarea';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { useCreateDamage } from '../lib/use-damages';
-import type { DamageSeverity, DamageCategory } from '../model/types';
+import type { DamageSeverity, DamageCategory } from '@/entities/damage';
+import { useCreateDamage } from '../api/damage-mutations';
 
 const damageReportSchema = z.object({
     description: z.string().min(1, 'Description is required').max(1000, 'Description cannot exceed 1000 characters'),

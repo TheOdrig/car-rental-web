@@ -5,10 +5,10 @@ import { Loader2, Mail, CheckCircle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { useForgotPassword } from '@/features/auth';
+import { useForgotPassword } from '../api/use-password-reset';
 import { isRateLimited, rateLimitMessage } from '@/shared/api';
 import { cn, normalizeEmail } from '@/shared/lib';
-import { FormError } from '@/features/auth';
+import { FormError } from './form-error';
 
 interface ForgotPasswordFormProps {
     className?: string;

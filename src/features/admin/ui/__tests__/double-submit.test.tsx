@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { renderWithProviders } from '@/app/testing/test-utils';
 import { showToast } from '@/shared/lib';
-import { DamageChargeDialog } from '../damage-charge-dialog';
+import { DamageChargeDialog } from '@/features/manage-damages';
 import { BanCustomerDialog } from '@/features/manage-users/ui/customer-detail/ban-customer-dialog';
 import { CustomerNotesCard } from '@/features/manage-users/ui/customer-detail/customer-notes-card';
 

@@ -3,7 +3,7 @@
 import { X } from 'lucide-react';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
-import { useFilterStore } from '@/widgets/car-filters';
+import { useFilterStore } from '../model/store';
 import { cn, formatCurrency } from '@/shared/lib';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import type { CarFilters } from '@/entities/car';

@@ -9,7 +9,7 @@ import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
-import { type Car, type AvailableCar } from '@/entities/car';
+import { type Car, type AvailableCar } from '../model/types';
 import { CarStatusBadge } from './car-status-badge';
 import { ROUTES } from '@/shared/config/routes';
 

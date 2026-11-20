@@ -15,7 +15,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
-import { useResolveDamage } from '@/entities/damage';
+import { useResolveDamage } from '../api/damage-mutations';
 import { formatCurrency } from '@/shared/lib';
 import { useMemo } from 'react';
 

@@ -3,10 +3,10 @@
 import { useMemo } from 'react';
 import { useQuery, useQueries, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost } from '@/shared/api';
-import { getSortParams } from './utils';
-import { getCarUnavailableMessage } from './status-messages';
+import { getSortParams } from '../lib/utils';
+import { getCarUnavailableMessage } from '../lib/status-messages';
 import { DAY_AVAILABILITY } from '../model/status-labels';
-import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '@/entities/car';
+import type { Car, CarFilters, CarAvailabilityCalendar, SimilarCar, AvailabilitySearchRequest, AvailabilitySearchResponse, SortOption } from '../model/types';
 import type { PageResponse } from '@/shared/types';
 import { STALE_TIME } from '@/shared/config/constants';
 import { ENDPOINTS } from '@/shared/api/endpoints';

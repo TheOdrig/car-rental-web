@@ -37,7 +37,7 @@ import {
 } from '@/features/process-rentals';
 import { fieldErrorMessages } from '@/shared/api';
 import { useRentalPayment } from '@/entities/payment';
-import { DamageReportForm } from '@/entities/damage';
+import { DamageReportForm } from '@/features/manage-damages';
 import { canReportDamage, isAdminPaymentExpected, isBeforeRentalEnd, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
 import { formatAmount, formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';

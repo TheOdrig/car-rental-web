@@ -1,6 +1,6 @@
 'use client';
 
-import { useSessionKeeper } from '../lib/use-auth';
+import { useSessionKeeper } from '../api/use-auth';
 
 export function SessionKeeper() {
     useSessionKeeper();

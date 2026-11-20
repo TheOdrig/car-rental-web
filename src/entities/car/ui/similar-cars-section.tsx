@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/shared/lib';
-import { useSimilarCars } from '@/entities/car';
+import { useSimilarCars } from '../api/use-cars';
 import { SimilarCarCard, SimilarCarCardSkeleton } from './similar-car-card';
 
 interface SimilarCarsSectionProps {

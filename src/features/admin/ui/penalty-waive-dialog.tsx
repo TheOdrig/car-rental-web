@@ -11,7 +11,7 @@ import { Input } from '@/shared/ui/input';
 import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
-import { useWaivePenalty } from '@/features/admin';
+import { useWaivePenalty } from '../api/use-late-returns';
 import { formatCurrency } from '@/shared/lib';
 import { fieldErrorMap } from '@/shared/api';
 

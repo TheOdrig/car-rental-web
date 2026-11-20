@@ -11,7 +11,7 @@ vi.mock('@/shared/api', async (importOriginal) => {
 });
 
 import { RentalPaymentStatus } from '../rental-payment-status';
-import { paymentKeys } from '../../lib/use-rental-payment';
+import { paymentKeys } from '../../api/use-rental-payment';
 
 function renderStatus(action?: Parameters<typeof RentalPaymentStatus>[0]['action']) {
     const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });

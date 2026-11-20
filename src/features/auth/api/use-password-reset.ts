@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { clientPost, isRateLimited } from '@/shared/api';
 import { showToast } from '@/shared/lib';
-import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
+import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '../model/types';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 
 async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<MessageResponse> {

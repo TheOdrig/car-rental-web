@@ -18,6 +18,7 @@ import type {
 import { STALE_TIME } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
 import { ENDPOINTS } from '@/shared/api/endpoints';
+import { hasAdminRole } from '@/entities/user';
 
 export const authKeys = {
     all: ['auth'] as const,
@@ -131,7 +132,7 @@ export function useAuth(): AuthContextValue {
         : null;
 
     const isAuthenticated = !!user;
-    const isAdmin = user?.roles?.includes('ADMIN') ?? false;
+    const isAdmin = hasAdminRole(user?.roles);
 
     const loginMutation = useMutation({
         mutationFn: loginApi,
@@ -213,7 +214,7 @@ export function useCurrentUser() {
         user,
         isLoading,
         isAuthenticated: !!user,
-        isAdmin: user?.roles?.includes('ADMIN') ?? false,
+        isAdmin: hasAdminRole(user?.roles),
         error: error as Error | null,
     };
 }

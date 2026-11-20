@@ -25,11 +25,13 @@ import {
     parseAdminRentalsParams,
     queueCount,
     type AdminRentalsView,
+    type DamageFormSlotProps,
     type ProcessReturnData,
     type Queue,
     type QueueFilter,
 } from '@/features/process-rentals';
 import { showToast } from '@/shared/lib';
+import { DamageReportForm } from '@/features/manage-damages';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { PageHeader } from '@/shared/ui/page-header';
 import { RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
@@ -48,6 +50,8 @@ const statusOptions: { value: QueueFilter; label: string }[] = [
     { value: 'returns', label: 'Pending Returns' },
     { value: 'overdue', label: 'Overdue' },
 ];
+
+const renderDamageForm = (props: DamageFormSlotProps) => <DamageReportForm {...props} />;
 
 export function AdminRentalsContent() {
     const searchParams = useSearchParams();
@@ -344,6 +348,7 @@ export function AdminRentalsContent() {
                             type="returns"
                             isLoading={returnsLoading}
                             onReturn={handleReturn}
+                            renderDamageForm={renderDamageForm}
                             actionInProgress={actionInProgress}
                         />
                     )
@@ -363,6 +368,7 @@ export function AdminRentalsContent() {
                             type="overdue"
                             isLoading={overdueLoading}
                             onReturn={handleReturn}
+                            renderDamageForm={renderDamageForm}
                             actionInProgress={actionInProgress}
                         />
                     )

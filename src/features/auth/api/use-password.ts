@@ -3,7 +3,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { clientPost, isApiError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
-import type { PasswordChangeData, MessageResponse } from '@/features/auth';
+import type { PasswordChangeData, MessageResponse } from '../model/types';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 
 const INVALID_PASSWORD_CODE = 'INVALID_PASSWORD';

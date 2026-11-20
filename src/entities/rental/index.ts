@@ -42,6 +42,7 @@ export * from './lib/rental-rules';
 export * from './lib/rental-errors';
 export * from './lib/damage-reporting';
 export * from './lib/admin-status';
+export * from './api/admin-keys';
 export {
     useMyRentals,
     useAllMyRentals,
@@ -53,7 +54,7 @@ export {
     usePrefetchRental,
     useInvalidateRentals,
     rentalKeys,
-} from './lib/use-rentals';
+} from './api/use-rentals';
 export { LateReturnStatusBadge } from './ui/late-return-status-badge';
 export { RentalStatusBadge, AdminRentalStatusBadge } from './ui/rental-status-badge';
 export * from './lib/rental-payment-state';

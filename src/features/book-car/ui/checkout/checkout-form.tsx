@@ -11,7 +11,7 @@ import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { calculateRentalDays, getBookingErrorMessage, monthKeysBetween } from '../../lib/utils';
-import { useCreateBooking } from '../../lib/use-checkout';
+import { useCreateBooking } from '../../api/use-checkout';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
 import type { DiscountDetail, PriceBreakdown } from '../../model/types';

@@ -6,10 +6,10 @@ import { Loader2, Eye, EyeOff, CheckCircle, Lock } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { useResetPassword } from '@/features/auth';
+import { useResetPassword } from '../api/use-password-reset';
 import { isRateLimited, rateLimitMessage } from '@/shared/api';
 import { cn, describeResetLinkError, getPasswordMaxError } from '@/shared/lib';
-import { FormError } from '@/features/auth';
+import { FormError } from './form-error';
 import { ROUTES } from '@/shared/config/routes';
 
 interface ResetPasswordFormProps {

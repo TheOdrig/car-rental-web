@@ -14,7 +14,7 @@ import {
 } from '@/shared/ui/dialog';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
-import { useDisputeDamage } from '@/features/manage-damages';
+import { useDisputeDamage } from '../api/damage-mutations';
 
 const disputeSchema = z.object({
     reason: z.string().min(1, 'Reason is required').max(500, 'Reason cannot exceed 500 characters'),

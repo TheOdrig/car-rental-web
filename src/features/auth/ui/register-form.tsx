@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
 import { getFormErrorMessage } from '@/shared/api';
-import { useRegister } from '../lib/use-auth';
+import { useRegister } from '../api/use-auth';
 import { cn } from '@/shared/lib';
 import { FormError } from './form-error';
 import { focusFirstInvalid } from '../lib/focus-first-invalid';

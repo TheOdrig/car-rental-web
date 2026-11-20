@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 
 const mockSimilar = vi.hoisted(() => vi.fn());
 
-vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
+vi.mock('@/entities/car/api/use-cars', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/entities/car/api/use-cars')>()),
     useSimilarCars: mockSimilar,
 }));
 

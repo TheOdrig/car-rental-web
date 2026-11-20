@@ -12,7 +12,7 @@ import { niceAxisTicks } from '../lib/utils';
 import { cn } from '@/shared/lib';
 import { formatCompactCurrency, formatCurrency } from '@/shared/lib';
 
-import type { RevenueCurrency, RevenueDataPoint, RevenuePeriod } from '@/features/admin';
+import type { RevenueBreakdown, RevenueCurrency, RevenueDataPoint, RevenuePeriod } from '../model/types';
 
 interface RevenueChartProps {
     data: RevenueDataPoint[];
@@ -20,7 +20,7 @@ interface RevenueChartProps {
     onPeriodChange?: (period: RevenuePeriod) => void;
     isLoading?: boolean;
     className?: string;
-    breakdown?: import('@/features/admin').RevenueBreakdown;
+    breakdown?: RevenueBreakdown;
     currency: RevenueCurrency;
 }
 

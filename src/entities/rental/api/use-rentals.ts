@@ -3,8 +3,8 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, isNotFoundError } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
-import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from './rental-errors';
-import type { Rental, RentalRequest } from '@/entities/rental';
+import { getRentalCancelErrorMessage, getRentalRequestErrorMessage } from '../lib/rental-errors';
+import type { Rental, RentalRequest } from '../model/types';
 import type { PageResponse } from '@/shared/types';
 import { STALE_TIME } from '@/shared/config/constants';
 import { ENDPOINTS } from '@/shared/api/endpoints';

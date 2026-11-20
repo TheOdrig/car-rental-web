@@ -14,7 +14,7 @@ vi.mock('next/navigation', () => ({
     usePathname: () => '/register',
 }));
 
-vi.mock('@/features/auth/lib/use-auth', () => ({
+vi.mock('@/features/auth/api/use-auth', () => ({
     useRegister: vi.fn(),
     useLogin: vi.fn(),
     useLogout: vi.fn(),
@@ -24,7 +24,7 @@ vi.mock('@/features/auth/lib/use-auth', () => ({
 }));
 
 import { RegisterForm } from '@/features/auth';
-import { useRegister } from '@/features/auth/lib/use-auth';
+import { useRegister } from '@/features/auth/api/use-auth';
 
 describe('RegisterForm', () => {
     let user: ReturnType<typeof userEvent.setup>;

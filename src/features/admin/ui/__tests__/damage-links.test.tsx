@@ -7,8 +7,8 @@ import { DamageTable } from '../damage-table';
 
 const mockUseCar = vi.hoisted(() => vi.fn(() => ({ data: undefined as { car: { brand: string; model: string } } | undefined })));
 
-vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
-    ...(await importOriginal<typeof import('@/entities/car/lib/use-cars')>()),
+vi.mock('@/entities/car/api/use-cars', async (importOriginal) => ({
+    ...(await importOriginal<typeof import('@/entities/car/api/use-cars')>()),
     useCar: mockUseCar,
 }));
 

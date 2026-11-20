@@ -64,36 +64,7 @@ async function sourceFiles(): Promise<string[]> {
   return files.filter((file) => !isTestSupport(file));
 }
 
-const SELF_BARREL_ALLOWLIST: string[] = [
-  'src/entities/car/lib/use-cars.ts',
-  'src/entities/car/ui/car-card.tsx',
-  'src/entities/car/ui/car-detail.tsx',
-  'src/entities/car/ui/car-grid.tsx',
-  'src/entities/car/ui/car-list-view.tsx',
-  'src/entities/car/ui/similar-car-card.tsx',
-  'src/entities/car/ui/similar-cars-section.tsx',
-  'src/entities/currency/ui/currency-provider.tsx',
-  'src/entities/damage/lib/use-damages.ts',
-  'src/entities/rental/lib/use-rentals.ts',
-  'src/features/admin/lib/use-admin-dashboard.ts',
-  'src/features/admin/ui/alerts-panel.tsx',
-  'src/features/admin/ui/penalty-history-section.tsx',
-  'src/features/admin/ui/penalty-waive-dialog.tsx',
-  'src/features/admin/ui/quick-actions.tsx',
-  'src/features/admin/ui/revenue-chart.tsx',
-  'src/features/auth/lib/use-password-reset.ts',
-  'src/features/auth/lib/use-password.ts',
-  'src/features/auth/ui/forgot-password-form.tsx',
-  'src/features/auth/ui/reset-password-form.tsx',
-  'src/features/book-car/ui/checkout/booking-summary.tsx',
-  'src/features/manage-damages/ui/damage-dispute-form.tsx',
-  'src/features/user-settings/ui/personal-details-form.tsx',
-  'src/features/user-settings/ui/profile-picture.tsx',
-  'src/widgets/car-filters/ui/filter-chips.tsx',
-  'src/widgets/car-filters/ui/filter-panel.tsx',
-  'src/widgets/car-filters/ui/filter-sidebar.tsx',
-  'src/widgets/car-filters/ui/sort-dropdown.tsx',
-];
+const SELF_BARREL_ALLOWLIST: string[] = [];
 
 describe('FSD boundaries', () => {
   it('imports only flow to lower layers', async () => {

@@ -13,7 +13,7 @@ import {
     profileSchema,
     type ProfileFormData,
     getProfileDefaultValues,
-} from '@/features/user-settings';
+} from '../lib/validations';
 
 interface PersonalDetailsFormProps {
     initialData?: {

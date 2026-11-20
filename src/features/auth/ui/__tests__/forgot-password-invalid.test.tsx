@@ -3,7 +3,7 @@ import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { renderWithProviders } from '@/app/testing/test-utils';
 
-vi.mock('@/features/auth/lib/use-password-reset', () => ({
+vi.mock('@/features/auth/api/use-password-reset', () => ({
     useForgotPassword: () => ({ mutateAsync: vi.fn(), isPending: false }),
     useResetPassword: vi.fn(),
 }));

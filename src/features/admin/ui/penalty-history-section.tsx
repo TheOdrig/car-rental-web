@@ -1,6 +1,6 @@
 'use client';
 
-import { usePenaltyHistory } from '@/features/admin';
+import { usePenaltyHistory } from '../api/use-late-returns';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Badge } from '@/shared/ui/badge';

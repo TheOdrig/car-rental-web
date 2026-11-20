@@ -38,7 +38,7 @@ export { FormSuccess } from './ui/form-success';
 export { PasswordStrengthIndicator } from './ui/password-strength-indicator';
 export { SessionKeeper } from './ui/session-keeper';
 
-export { useAuth, useCurrentUser, useLogin, useLogout, useRefreshToken, useRegister, authKeys } from './lib/use-auth';
+export { useAuth, useCurrentUser, useLogin, useLogout, useRefreshToken, useRegister, authKeys } from './api/use-auth';
 export { oauthErrorMessage, isKnownOAuthErrorCode } from './lib/oauth-errors';
-export { useChangePassword } from './lib/use-password';
-export { useForgotPassword, useResetPassword } from './lib/use-password-reset';
+export { useChangePassword } from './api/use-password';
+export { useForgotPassword, useResetPassword } from './api/use-password-reset';

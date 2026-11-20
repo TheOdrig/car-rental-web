@@ -24,7 +24,7 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
-import { useAssessDamage, useReassessDamage } from '@/entities/damage';
+import { useAssessDamage, useReassessDamage } from '../api/damage-mutations';
 import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES } from '@/shared/config/constants';
 import { getCurrencySymbol } from '@/shared/lib';
 import type { DamageSeverity, DamageCategory } from '@/entities/damage';

@@ -5,7 +5,7 @@ import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Camera, Trash2, Loader2 } from 'lucide-react';
 import { cn, toFileProxyUrl } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
-import { validateAvatarFile } from '@/features/user-settings';
+import { validateAvatarFile } from '../api/use-avatar';
 import { showToast } from '@/shared/lib';
 
 function normalizeAvatarUrl(url: string | null | undefined): string | null {

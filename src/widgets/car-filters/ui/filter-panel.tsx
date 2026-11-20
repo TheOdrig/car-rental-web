@@ -11,7 +11,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/shared/ui/select';
-import { useFilterStore } from '@/widgets/car-filters';
+import { useFilterStore } from '../model/store';
 import { useFilterOptions } from '@/entities/car';
 
 interface CarFiltersProps {

@@ -11,9 +11,8 @@ import {
 } from 'react';
 import { clientGet } from '@/shared/api';
 import { formatNumber } from '@/shared/lib';
+import type { CurrencyCode, ExchangeRatesResponse } from '../model/types';
 import {
-    type CurrencyCode,
-    type ExchangeRatesResponse,
     CURRENCIES,
     DEFAULT_CURRENCY,
     RATES_BASE_CURRENCY,
@@ -21,7 +20,7 @@ import {
     RATES_CACHE_DURATION,
     getCurrencyByCode,
     type RateSource,
-} from '@/entities/currency';
+} from '../lib/utils';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 
 interface CurrencyContextValue {

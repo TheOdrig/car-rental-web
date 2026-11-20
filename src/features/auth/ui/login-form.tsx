@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { FormField } from '@/shared/ui/form-field';
 import { getFormErrorMessage } from '@/shared/api';
-import { useLogin } from '../lib/use-auth';
+import { useLogin } from '../api/use-auth';
 import { cn, getPasswordMaxError, safeRedirectPath } from '@/shared/lib';
 import { FormError } from './form-error';
 import { focusFirstInvalid } from '../lib/focus-first-invalid';
@@ -16,6 +16,7 @@ import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
 import type { ValidationState } from '@/shared/types';
 import { ROUTES } from '@/shared/config/routes';
+import { hasAdminRole } from '@/entities/user';
 
 interface LoginFormProps {
     callbackUrl?: string;
@@ -101,7 +102,7 @@ export function LoginForm({ callbackUrl = ROUTES.home, className }: LoginFormPro
                 username: formData.username,
                 password: formData.password,
             });
-            const isAdmin = result?.principal?.roles?.includes('ADMIN') ?? false;
+            const isAdmin = hasAdminRole(result?.principal?.roles);
             const target = safeRedirectPath(callbackUrl);
             router.push(isAdmin && target === ROUTES.home ? ROUTES.admin.dashboard : target);
         } catch (error) {

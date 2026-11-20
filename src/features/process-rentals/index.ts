@@ -25,7 +25,7 @@ export { ConfirmActionDialog } from './ui/confirm-action-dialog';
 export { CancelReasonField } from './ui/cancel-reason-field';
 export { EarlyReturnPreviewPanel } from './ui/early-return-preview-panel';
 export { AllRentalsTable } from './ui/all-rentals-table';
-export { PendingRentalsTable, PendingQueueEmpty, PendingRentalsSkeleton } from './ui/pending-rentals';
+export { PendingRentalsTable, PendingQueueEmpty, PendingRentalsSkeleton, type DamageFormSlotProps } from './ui/pending-rentals';
 export { useRentalActions } from './lib/use-rental-actions';
 export {
     CONFIRM_COPY,

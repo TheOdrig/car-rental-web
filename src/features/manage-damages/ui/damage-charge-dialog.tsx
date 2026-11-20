@@ -12,7 +12,7 @@ import {
 } from '@/shared/ui/alert-dialog';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
-import { useChargeDamage } from '@/entities/damage';
+import { useChargeDamage } from '../api/damage-mutations';
 
 interface DamageChargeDialogProps {
     damageId: number;

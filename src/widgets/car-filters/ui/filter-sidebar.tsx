@@ -5,7 +5,7 @@ import { RotateCcw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { Label } from '@/shared/ui/label';
-import { useFilterStore } from '@/widgets/car-filters';
+import { useFilterStore } from '../model/store';
 import { useFilterOptions } from '@/entities/car';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { PriceRangeSlider } from './price-range-slider';

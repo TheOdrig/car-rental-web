@@ -1,9 +1,11 @@
 import { personDisplayName } from '@/shared/lib/person-name';
 import { type AccountStatusType, User, UserRole } from '../model/types';
 
-export const isAdmin = (user: User | null): boolean => {
-    return user?.roles.includes(UserRole.ADMIN) ?? false;
+export const hasAdminRole = (roles: readonly string[] | null | undefined): boolean => {
+    return roles?.includes(UserRole.ADMIN) ?? false;
 };
+
+export const isAdmin = (user: User | null): boolean => hasAdminRole(user?.roles);
 
 export const getDisplayName = (user: User | null): string => {
     if (!user) return 'Guest';

@@ -40,7 +40,7 @@ export {
 export { carStatusPresentation, carServiceStatusPresentation } from './model/status-presentation';
 export { CarStatusBadge } from './ui/car-status-badge';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
-export { useFilterOptions, filterOptionsKeys, uniqueOptions, type FilterOptions } from './lib/use-filter-options';
+export { useFilterOptions, filterOptionsKeys, uniqueOptions, type FilterOptions } from './api/use-filter-options';
 export { getCarUnavailableMessage, friendlyUnavailableReason } from './lib/status-messages';
 export { parseCarListParams, buildCarListParams, type CarListState } from './lib/list-url-state';
 export { CarCard, CarCardSkeleton } from './ui/car-card';
@@ -61,5 +61,5 @@ export {
     usePrefetchCar,
     useInvalidateCars,
     carKeys
-} from './lib/use-cars';
-export { usePricingPreview, pricingKeys } from './lib/use-pricing';
+} from './api/use-cars';
+export { usePricingPreview, pricingKeys } from './api/use-pricing';

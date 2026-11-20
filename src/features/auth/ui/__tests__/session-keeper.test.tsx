@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionKeeper } from '../session-keeper';
-import { authKeys } from '../../lib/use-auth';
+import { authKeys } from '../../api/use-auth';
 
 const mockGet = vi.hoisted(() => vi.fn());
 const mockExpired = vi.hoisted(() => ({ handler: null as null | (() => void) }));

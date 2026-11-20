@@ -8,7 +8,8 @@ import { ErrorMessage } from '@/shared/ui/error-message';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, latestRevenueGrowth, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
 import { FleetStatusCard } from '@/features/manage-fleet';
-import { PendingRentalsTable } from '@/features/process-rentals';
+import { PendingRentalsTable, type DamageFormSlotProps } from '@/features/process-rentals';
+import { DamageReportForm } from '@/features/manage-damages';
 import type { RevenuePeriod } from '@/features/admin';
 import { useRentalActions } from '@/features/process-rentals';
 import { formatTime } from '@/shared/lib';
@@ -33,6 +34,8 @@ function formatUpdatedTime(generatedAt: string | undefined): string | null {
 
     return formatTime(generatedAt);
 }
+
+const renderDamageForm = (props: DamageFormSlotProps) => <DamageReportForm {...props} />;
 
 export function AdminDashboardContent() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
@@ -217,6 +220,7 @@ export function AdminDashboardContent() {
                         onReject={actions.reject}
                         onPickup={actions.pickup}
                         onReturn={actions.processReturn}
+                        renderDamageForm={renderDamageForm}
                         actionInProgress={actions.actionInProgress}
                     />
                 )}
