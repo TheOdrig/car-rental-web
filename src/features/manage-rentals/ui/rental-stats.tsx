@@ -1,9 +1,10 @@
 'use client';
 
-import { memo, type ReactNode } from 'react';
+import { memo } from 'react';
 import { History, CalendarClock } from 'lucide-react';
 import { cn, formatNumber } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
+import { StatCard } from '@/shared/ui/stat-card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import type { RentalStats as RentalStatsType } from '@/entities/rental';
 
@@ -11,50 +12,6 @@ interface RentalStatsProps {
     stats: RentalStatsType;
     isLoading?: boolean;
     className?: string;
-}
-
-interface StatCardProps {
-    icon: ReactNode;
-    label: string;
-    value: number;
-    isHighlighted?: boolean;
-}
-
-function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
-    return (
-        <Card
-            className={cn(
-                'py-4 transition-all',
-                isHighlighted && 'border-success-subtle-foreground/30 ring-1 ring-success-subtle-foreground/30'
-            )}
-        >
-            <CardContent className="flex items-center gap-4 px-4">
-                <div
-                    className={cn(
-                        'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
-                        isHighlighted
-                            ? 'bg-success-subtle text-success-subtle-foreground'
-                            : 'bg-muted text-muted-foreground'
-                    )}
-                >
-                    {icon}
-                </div>
-                <div className="min-w-0 flex-1">
-                    <p className="text-sm text-muted-foreground">{label}</p>
-                    <p
-                        className={cn(
-                            'text-2xl font-bold',
-                            isHighlighted
-                                ? 'text-success-subtle-foreground'
-                                : 'text-foreground'
-                        )}
-                    >
-                        {formatNumber(value)}
-                    </p>
-                </div>
-            </CardContent>
-        </Card>
-    );
 }
 
 function StatCardSkeleton() {
@@ -101,17 +58,8 @@ export const RentalStats = memo(function RentalStats({
             role="region"
             aria-label="Rental statistics"
         >
-            <StatCard
-                icon={<History className="h-6 w-6" />}
-                label="Total Rentals"
-                value={stats.totalRentals}
-            />
-            <StatCard
-                icon={<CalendarClock className="h-6 w-6" />}
-                label="Active Trips"
-                value={stats.activeTrips}
-                isHighlighted
-            />
+            <StatCard icon={History} label="Total Rentals" value={formatNumber(stats.totalRentals)} />
+            <StatCard icon={CalendarClock} label="Active Trips" value={formatNumber(stats.activeTrips)} tone="success" />
         </div>
     );
 });

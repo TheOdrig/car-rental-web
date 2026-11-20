@@ -4,7 +4,9 @@ import { memo } from 'react';
 import { cn } from '@/shared/lib';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { Car, CheckCircle, Settings, AlertTriangle, PieChart, Clock } from 'lucide-react';
+import { StatCard } from '@/shared/ui/stat-card';
+import { Car, CheckCircle, Settings, AlertTriangle, PieChart, Clock, type LucideIcon } from 'lucide-react';
+import type { StatusTone } from '@/shared/types';
 import type { FleetStatistics } from '../model/types';
 
 interface FleetStatusProps {
@@ -136,29 +138,19 @@ export const FleetStatusCompact = memo(function FleetStatusCompact({
 }: FleetStatusCompactProps) {
     const { availableCars, rentedCars, reservedCars = 0, maintenanceCars, inspectionCars = 0, damagedCars } = data;
 
-    const items = [
-        { label: 'Available', value: availableCars, icon: CheckCircle, color: 'text-success-subtle-foreground' },
-        { label: 'Rented', value: rentedCars, icon: Car, color: 'text-info-subtle-foreground' },
-        { label: 'Reserved', value: reservedCars, icon: Clock, color: 'text-info-subtle-foreground' },
-        { label: 'Maintenance', value: maintenanceCars, icon: Settings, color: 'text-warning-subtle-foreground' },
-        { label: 'Inspection', value: inspectionCars, icon: PieChart, color: 'text-info-subtle-foreground' },
-        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, color: 'text-danger-subtle-foreground' },
+    const items: { label: string; value: number; icon: LucideIcon; tone: StatusTone }[] = [
+        { label: 'Available', value: availableCars, icon: CheckCircle, tone: 'success' },
+        { label: 'Rented', value: rentedCars, icon: Car, tone: 'info' },
+        { label: 'Reserved', value: reservedCars, icon: Clock, tone: 'info' },
+        { label: 'Maintenance', value: maintenanceCars, icon: Settings, tone: 'warning' },
+        { label: 'Inspection', value: inspectionCars, icon: PieChart, tone: 'info' },
+        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, tone: 'danger' },
     ];
 
     return (
         <div className={cn('grid grid-cols-2 gap-4 md:grid-cols-4', className)}>
-            {items.map(({ label, value, icon: Icon, color }) => (
-                <Card key={label} className="p-4">
-                    <div className="flex items-center gap-3">
-                        <div className={cn('p-2 rounded-lg bg-muted', color)}>
-                            <Icon className="h-4 w-4" aria-hidden="true" />
-                        </div>
-                        <div>
-                            <p className="text-2xl font-bold">{value}</p>
-                            <p className="text-xs text-muted-foreground">{label}</p>
-                        </div>
-                    </div>
-                </Card>
+            {items.map(({ label, value, icon, tone }) => (
+                <StatCard key={label} label={label} value={value} icon={icon} tone={tone} />
             ))}
         </div>
     );

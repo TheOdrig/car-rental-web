@@ -3,7 +3,8 @@
 import React, { memo } from 'react';
 import { Users, UserCheck, UserX } from 'lucide-react';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { StatTile } from '@/shared/ui/stat-tile';
+import { StatCard } from '@/shared/ui/stat-card';
+import type { StatusTone } from '@/shared/types';
 import { cn } from '@/shared/lib';
 import type { UserStats } from '../model/types';
 
@@ -17,13 +18,13 @@ interface StatCardConfig {
     title: string;
     key: keyof UserStats;
     icon: React.ElementType;
-    dotColor: string;
+    tone: StatusTone;
 }
 
 const statCards: StatCardConfig[] = [
-    { title: 'Total Users', key: 'totalUsers', icon: Users, dotColor: 'bg-muted-foreground' },
-    { title: 'Active Users', key: 'activeUsers', icon: UserCheck, dotColor: 'bg-success' },
-    { title: 'Banned Users', key: 'bannedUsers', icon: UserX, dotColor: 'bg-destructive' },
+    { title: 'Total Users', key: 'totalUsers', icon: Users, tone: 'neutral' },
+    { title: 'Active Users', key: 'activeUsers', icon: UserCheck, tone: 'success' },
+    { title: 'Banned Users', key: 'bannedUsers', icon: UserX, tone: 'danger' },
 ];
 
 export const UserStatsCards = memo(function UserStatsCards({
@@ -41,12 +42,12 @@ export const UserStatsCards = memo(function UserStatsCards({
     return (
         <div className={cn('grid gap-3 sm:grid-cols-3', className)}>
             {statCards.map((card) => (
-                <StatTile
+                <StatCard
                     key={card.key}
                     label={card.title}
                     value={data[card.key] ?? 0}
                     icon={card.icon}
-                    dotClassName={card.dotColor}
+                    tone={card.tone}
                     hint={card.key === 'activeUsers' ? `${activePercentage}% of total` : undefined}
                 />
             ))}

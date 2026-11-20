@@ -1,5 +1,5 @@
 export { AdminSidebar, AdminMobileMenu } from './admin-sidebar';
-export { MetricsCard, MetricsCardSkeleton, DashboardMetricsGrid } from './metrics-card';
+export { DashboardMetricsGrid } from './metrics-card';
 export { DashboardHeader } from './dashboard-header';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';
 export { RevenueChart } from './revenue-chart-lazy';

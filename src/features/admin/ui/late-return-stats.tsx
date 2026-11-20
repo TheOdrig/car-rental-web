@@ -1,6 +1,8 @@
 'use client';
 
 import { Card, CardContent } from '@/shared/ui/card';
+import { StatCard } from '@/shared/ui/stat-card';
+import type { StatusTone } from '@/shared/types';
 import { Skeleton } from '@/shared/ui/skeleton';
 import {
     Clock,
@@ -10,6 +12,7 @@ import {
     Timer,
     TrendingUp,
     Percent,
+    type LucideIcon,
 } from 'lucide-react';
 import type { LateReturnStatistics } from '@/entities/rental';
 import { formatCurrency } from '@/shared/lib';
@@ -28,38 +31,34 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
         return null;
     }
 
-    const stats = [
+    const stats: StatItem[] = [
         {
             label: 'Total Late Returns',
             value: data.totalLateReturns.toString(),
             icon: Clock,
-            color: 'text-info-subtle-foreground',
-            bgColor: 'bg-info-subtle',
+            tone: 'info',
         },
         {
             label: 'Severely Late',
             value: data.severelyLateCount.toString(),
             icon: AlertTriangle,
-            color: 'text-danger-subtle-foreground',
-            bgColor: 'bg-danger-subtle',
+            tone: 'danger',
         },
         {
             label: 'Avg. Late Hours',
             value: `${data.averageLateHours.toFixed(1)}h`,
             icon: TrendingUp,
-            color: 'text-info-subtle-foreground',
-            bgColor: 'bg-info-subtle',
+            tone: 'info',
         },
         {
             label: 'Late Return Rate',
             value: `${data.lateReturnPercentage.toFixed(1)}%`,
             icon: Percent,
-            color: 'text-muted-foreground',
-            bgColor: 'bg-muted',
+            tone: 'neutral',
         },
     ];
 
-    const penalties = (data.penaltiesByCurrency ?? []).flatMap((entry) => {
+    const penalties: StatItem[] = (data.penaltiesByCurrency ?? []).flatMap((entry) => {
         const currency = entry.currency;
         if (!currency) return [];
         return [
@@ -67,22 +66,19 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
                 label: `Total Penalties (${currency})`,
                 value: formatCurrency(entry.totalPenaltyAmount ?? 0, currency),
                 icon: DollarSign,
-                color: 'text-warning-subtle-foreground',
-                bgColor: 'bg-warning-subtle',
+                tone: 'warning',
             },
             {
                 label: `Collected (${currency})`,
                 value: formatCurrency(entry.collectedPenaltyAmount ?? 0, currency),
                 icon: CheckCircle,
-                color: 'text-success-subtle-foreground',
-                bgColor: 'bg-success-subtle',
+                tone: 'success',
             },
             {
                 label: `Pending (${currency})`,
                 value: formatCurrency(entry.pendingPenaltyAmount ?? 0, currency),
                 icon: Timer,
-                color: 'text-warning-subtle-foreground',
-                bgColor: 'bg-warning-subtle',
+                tone: 'warning',
             },
         ];
     });
@@ -98,35 +94,15 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
 interface StatItem {
     label: string;
     value: string;
-    icon: typeof Clock;
-    color: string;
-    bgColor: string;
+    icon: LucideIcon;
+    tone: StatusTone;
 }
 
 function StatGrid({ stats, columns }: { stats: StatItem[]; columns: string }) {
     return (
         <div className={`grid ${columns} gap-4`}>
             {stats.map((stat) => (
-                <Card
-                    key={stat.label}
-                    className="bg-card border-border"
-                >
-                    <CardContent className="p-4">
-                        <div className="flex items-center gap-3">
-                            <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                                <stat.icon className={`h-5 w-5 ${stat.color}`} />
-                            </div>
-                            <div>
-                                <div className="text-2xl font-bold text-foreground">
-                                    {stat.value}
-                                </div>
-                                <div className="text-xs text-muted-foreground">
-                                    {stat.label}
-                                </div>
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
+                <StatCard key={stat.label} label={stat.label} value={stat.value} icon={stat.icon} tone={stat.tone} />
             ))}
         </div>
     );

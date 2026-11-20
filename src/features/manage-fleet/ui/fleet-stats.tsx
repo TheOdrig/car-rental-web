@@ -2,7 +2,8 @@
 
 import { memo } from 'react';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { StatTile } from '@/shared/ui/stat-tile';
+import { StatCard } from '@/shared/ui/stat-card';
+import type { StatusTone } from '@/shared/types';
 import { cn } from '@/shared/lib';
 import type { FleetStatus } from '@/entities/car';
 
@@ -15,17 +16,17 @@ interface FleetStatsCardsProps {
 interface StatCardConfig {
     title: string;
     key: keyof FleetStatus;
-    dotColor: string;
+    tone: StatusTone;
 }
 
 const statCards: StatCardConfig[] = [
-    { title: 'Total', key: 'totalCars', dotColor: 'bg-muted-foreground' },
-    { title: 'Available', key: 'availableCars', dotColor: 'bg-success' },
-    { title: 'Rented', key: 'rentedCars', dotColor: 'bg-info' },
-    { title: 'Reserved', key: 'reservedCars', dotColor: 'bg-info' },
-    { title: 'Maintenance', key: 'maintenanceCars', dotColor: 'bg-warning' },
-    { title: 'Inspection', key: 'inspectionCars', dotColor: 'bg-info' },
-    { title: 'Damaged', key: 'damagedCars', dotColor: 'bg-destructive' },
+    { title: 'Total', key: 'totalCars', tone: 'neutral' },
+    { title: 'Available', key: 'availableCars', tone: 'success' },
+    { title: 'Rented', key: 'rentedCars', tone: 'info' },
+    { title: 'Reserved', key: 'reservedCars', tone: 'info' },
+    { title: 'Maintenance', key: 'maintenanceCars', tone: 'warning' },
+    { title: 'Inspection', key: 'inspectionCars', tone: 'info' },
+    { title: 'Damaged', key: 'damagedCars', tone: 'danger' },
 ];
 
 const GRID = 'grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-7';
@@ -42,11 +43,11 @@ export const FleetStatsCards = memo(function FleetStatsCards({
     return (
         <div className={cn(GRID, className)}>
             {statCards.map((card) => (
-                <StatTile
+                <StatCard
                     key={card.key}
                     label={card.title}
                     value={(data[card.key] ?? 0) as number}
-                    dotClassName={card.dotColor}
+                    tone={card.tone}
                 />
             ))}
         </div>

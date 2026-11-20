@@ -1,5 +1,6 @@
 'use client';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 import { screen } from '@testing-library/react';
 import { Car } from 'lucide-react';
 import { StatCard } from '@/shared/ui/stat-card';
@@ -59,5 +60,27 @@ describe('StatCard', () => {
     it('should handle large numbers', () => {
         renderWithProviders(<StatCard label="Total Spent" value="$1,234,567.89" />);
         expect(screen.getByText('$1,234,567.89')).toBeInTheDocument();
+    });
+    it('should render a hint under the value', () => {
+        renderWithProviders(<StatCard label="Maintenance" value={3} hint="12% of total" />);
+        expect(screen.getByText('12% of total')).toBeInTheDocument();
+    });
+    it('should keep the icon and the tone dot out of the accessibility tree', () => {
+        const { container } = renderWithProviders(<StatCard label="Rented" value={1} icon={Car} tone="info" />);
+        expect(container.querySelectorAll('[aria-hidden="true"]')).toHaveLength(2);
+    });
+    it('should become a button when it is clickable', async () => {
+        const onClick = vi.fn();
+        renderWithProviders(<StatCard label="Approvals" value={4} onClick={onClick} />);
+        await userEvent.click(screen.getByRole('button'));
+        expect(onClick).toHaveBeenCalledTimes(1);
+    });
+    it('should not expose a button when it is static', () => {
+        renderWithProviders(<StatCard label="Approvals" value={4} />);
+        expect(screen.queryByRole('button')).not.toBeInTheDocument();
+    });
+    it('should show the trend label next to the percentage', () => {
+        renderWithProviders(<StatCard label="Revenue" value="$5" trend={{ value: 4, isPositive: true, label: 'vs last month' }} />);
+        expect(screen.getByText('vs last month')).toBeInTheDocument();
     });
 });

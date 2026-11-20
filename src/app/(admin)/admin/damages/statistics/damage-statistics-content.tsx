@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/widgets/layout';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { StatCard } from '@/shared/ui/stat-card';
 import { useDamageStatistics } from '@/features/manage-damages';
 import { DamageCurrencyTotals } from '@/entities/damage';
 
@@ -52,16 +53,7 @@ export function DamageStatisticsContent() {
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Total Damages</CardTitle>
-                        <AlertTriangle className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stats.totalDamages}</div>
-                        <p className="text-xs text-muted-foreground">All time damage reports</p>
-                    </CardContent>
-                </Card>
+                <StatCard label="Total Damages" value={stats.totalDamages} icon={AlertTriangle} hint="All time damage reports" />
             </div>
 
             <DamageCurrencyTotals totals={stats.byCurrency} />
@@ -89,7 +81,7 @@ export function DamageStatisticsContent() {
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-warning" />
+                                    <div className="h-3 w-3 rounded-full bg-destructive" />
                                     <span>Major</span>
                                 </div>
                                 <span className="font-medium">{stats.majorCount}</span>
