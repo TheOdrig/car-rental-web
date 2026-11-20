@@ -67,6 +67,23 @@ describe('GET /api/files/[directory]/[filename]', () => {
 
         expect(response.status).toBe(404);
         expect(response.headers.get('cache-control')).toBe('private, no-store');
+        const body = await response.json();
+        expect(body.code).toBe('FILE_NOT_FOUND');
+        expect(body.detail ?? body.message).toBe('The file does not exist');
+    });
+
+    it('answers FILE_NOT_FOUND from the API as a quiet 404', async () => {
+        fetchMock.mockResolvedValueOnce(
+            new Response(JSON.stringify({ code: 'FILE_NOT_FOUND', message: 'File missing.png was not found' }), {
+                status: 404,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        );
+
+        const response = await call(['damage-photos', 'missing.png']);
+
+        expect(response.status).toBe(404);
+        expect((await response.json()).code).toBe('FILE_NOT_FOUND');
     });
 
     it('rejects unknown directories without calling the API', async () => {

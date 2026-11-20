@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { ApiError } from '@/shared/api';
+import { ApiError, isApiError } from '@/shared/api';
 import { isSafeFilePath } from '@/shared/lib/file-url';
 import { API, route, upstreamResponse } from '@/shared/server';
 
@@ -23,7 +23,15 @@ function targetFor(directory: string, filename: string) {
 
 export const GET = route<{ directory: string; filename: string }>(
     async (_request, { directory, filename }) => {
-        const upstream = await upstreamResponse(targetFor(directory, filename), { cache: 'no-store' });
+        const upstream = await upstreamResponse(targetFor(directory, filename), { cache: 'no-store' }).catch((error: unknown) => {
+            if (isApiError(error) && error.status === 404) {
+                const missing = new ApiError(404, 'The file does not exist');
+                missing.code = 'FILE_NOT_FOUND';
+                missing.title = 'File not found';
+                throw missing;
+            }
+            throw error;
+        });
 
         const headers = new Headers();
         for (const name of FORWARDED_HEADERS) {

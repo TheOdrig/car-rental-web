@@ -41,6 +41,7 @@ describe('getApiErrorMessage', () => {
     });
 
     it('says the account is suspended on a banned login', () => {
+        expect(getApiErrorMessage(problem(404, 'FILE_NOT_FOUND', 'File x.png was not found'))).toBe('That file is no longer available.');
         const message = getApiErrorMessage(problem(403, 'ACCOUNT_BANNED', 'Account is banned'));
 
         expect(message).toMatch(/suspended/i);

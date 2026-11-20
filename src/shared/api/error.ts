@@ -167,6 +167,7 @@ const API_ERROR_MESSAGES: Readonly<Record<string, string>> = {
     PAYLOAD_TOO_LARGE: 'That request is too large. Please reduce its size or choose a smaller file and try again.',
     INVALID_PARAMETER: 'Some of the values sent were not valid. Please check your input and try again.',
     ACCOUNT_BANNED: 'This account has been suspended. Please contact support if you think this is a mistake.',
+    FILE_NOT_FOUND: 'That file is no longer available.',
     INVALID_MULTIPART_REQUEST: 'The upload could not be read. Please choose the file again.',
     CONCURRENT_MODIFICATION: 'This record was changed by someone else. Reload the page and try again.',
     USER_ALREADY_EXISTS: 'An account with these details already exists. Sign in instead, or use a different email or username.',
