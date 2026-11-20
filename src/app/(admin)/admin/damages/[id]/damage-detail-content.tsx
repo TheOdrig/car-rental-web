@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { formatCurrencyWithDecimals, formatDate, formatDateTime } from '@/shared/lib';
+import { formatCurrencyWithDecimals, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
 import {
     DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
@@ -72,7 +72,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                 ]}
             />
 
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
                 <div className="flex items-center gap-4">
                     <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label="Go back">
                         <ArrowLeft className="h-4 w-4" />
@@ -84,7 +84,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                         </p>
                     </div>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                     {canAssess && (
                         <Button onClick={() => setShowAssessDialog(true)} className="gap-2">
                             <Edit2 className="h-4 w-4" />
@@ -112,7 +112,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                 </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 [&>*]:min-w-0">
                 <Card>
                     <CardHeader>
                         <CardTitle>Damage Information</CardTitle>
@@ -133,12 +133,12 @@ export function DamageDetailContent({ id }: { id: string }) {
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Location</p>
-                                <p className="font-medium">{damage.damageLocation || 'Not specified'}</p>
+                                <p className="break-words font-medium">{damage.damageLocation || 'Not specified'}</p>
                             </div>
                         </div>
                         <div>
                             <p className="text-sm text-muted-foreground">Description</p>
-                            <p className="mt-1">{damage.description}</p>
+                            <p className="mt-1 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{damage.description}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -157,13 +157,13 @@ export function DamageDetailContent({ id }: { id: string }) {
                             </div>
                             <div>
                                 <p className="text-sm text-muted-foreground">Customer</p>
-                                <p className="font-medium">{damage.customerName}</p>
+                                <p className="break-words font-medium">{damage.customerName}</p>
                             </div>
                             <div>
-                                <p className="text-sm text-muted-foreground">Rental ID</p>
+                                <p className="text-sm text-muted-foreground">Rental</p>
                                 <p className="font-medium">
                                     <Link href={`/admin/rentals/${damage.rentalId}`} className="text-primary hover:underline">
-                                        #{damage.rentalId}
+                                        {formatRentalReference(damage.rentalId)}
                                     </Link>
                                 </p>
                             </div>
@@ -206,7 +206,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                             {damage.assessmentNotes && (
                                 <div data-testid="damage-assessment-notes">
                                     <p className="text-sm text-muted-foreground">Assessment Notes</p>
-                                    <p className="whitespace-pre-wrap break-words font-medium">{damage.assessmentNotes}</p>
+                                    <p className="whitespace-pre-wrap break-words font-medium [overflow-wrap:anywhere]">{damage.assessmentNotes}</p>
                                 </div>
                             )}
                         </CardContent>
@@ -248,19 +248,19 @@ export function DamageDetailContent({ id }: { id: string }) {
                             {damage.disputeReason && (
                                 <div>
                                     <p className="text-sm text-muted-foreground">Customer Reason</p>
-                                    <p className="mt-1">{damage.disputeReason}</p>
+                                    <p className="mt-1 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{damage.disputeReason}</p>
                                 </div>
                             )}
                             {damage.disputeComments && (
                                 <div>
                                     <p className="text-sm text-muted-foreground">Customer Comments</p>
-                                    <p className="mt-1">{damage.disputeComments}</p>
+                                    <p className="mt-1 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{damage.disputeComments}</p>
                                 </div>
                             )}
                             {damage.resolutionNotes && (
                                 <div>
                                     <p className="text-sm text-muted-foreground">Resolution Notes</p>
-                                    <p className="mt-1">{damage.resolutionNotes}</p>
+                                    <p className="mt-1 whitespace-pre-wrap break-words [overflow-wrap:anywhere]">{damage.resolutionNotes}</p>
                                 </div>
                             )}
                         </CardContent>

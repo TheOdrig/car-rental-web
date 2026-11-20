@@ -47,6 +47,18 @@ describe('damage detail dispute card', () => {
         expect(screen.getByText('$200.00', { selector: 'p.font-medium' })).toBeInTheDocument();
     });
 
+    it('wraps a long unbroken dispute text and names the rental with its reference', async () => {
+        const unbroken = 'x'.repeat(900);
+        mockGet.mockResolvedValue(createMockDamage({ status: 'DISPUTED', rentalId: 9, disputeReason: unbroken }));
+
+        renderWithProviders(<DamageDetailContent id="1" />);
+
+        const reason = await screen.findByText(unbroken);
+        expect(reason).toHaveClass('break-words');
+        expect(reason.closest('.grid')).toHaveClass('[&>*]:min-w-0');
+        expect(screen.getByRole('link', { name: 'CR-000009' })).toHaveAttribute('href', '/admin/rentals/9');
+    });
+
     it('hides the dispute card for a report that was never disputed', async () => {
         mockGet.mockResolvedValue(createMockDamage({ status: 'REPORTED' }));
 
