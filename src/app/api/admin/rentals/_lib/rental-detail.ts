@@ -18,11 +18,14 @@ export interface RentalDetailSources {
     lateReturn?: LateReturn;
 }
 
-const STATUS_EVENTS: Record<string, { type: TimelineEventType; title: string; note: (rental: Rental) => string | undefined }> = {
-    CONFIRMED: { type: 'approved', title: 'Rental confirmed', note: (rental) => rental.approvalNotes },
-    IN_USE: { type: 'picked_up', title: 'Vehicle picked up', note: (rental) => rental.pickupNotes },
-    RETURNED: { type: 'returned', title: 'Vehicle returned', note: (rental) => rental.returnNotes },
-    CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => cancellationNote(rental) },
+const STATUS_EVENTS: Record<
+    string,
+    { type: TimelineEventType; title: string; note: (rental: Rental) => string | undefined; at: (rental: Rental) => string | undefined }
+> = {
+    CONFIRMED: { type: 'approved', title: 'Rental confirmed', note: (rental) => rental.approvalNotes, at: (rental) => rental.confirmedAt },
+    IN_USE: { type: 'picked_up', title: 'Vehicle picked up', note: (rental) => rental.pickupNotes, at: (rental) => rental.pickedUpAt },
+    RETURNED: { type: 'returned', title: 'Vehicle returned', note: (rental) => rental.returnNotes, at: (rental) => rental.returnedAt },
+    CANCELLED: { type: 'cancelled', title: 'Rental cancelled', note: (rental) => cancellationNote(rental), at: () => undefined },
 };
 
 function cancellationNote(rental: Rental): string {
@@ -45,7 +48,7 @@ function timeline(rental: Rental): RentalDetailResponse['timeline'] {
         const isCurrent = index === stages.length - 1;
         events.push({
             type: stage.type,
-            timestamp: isCurrent ? (rental.updateTime ?? created) : '',
+            timestamp: stage.at(rental) ?? (isCurrent ? (rental.updateTime ?? created) : ''),
             title: stage.title,
             description: stage.note(rental) ?? '',
         });

@@ -90,7 +90,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                     <VehicleDetailsCard carSummary={carSummary} />
                     <DriverDetailsCard userSummary={rental.userSummary} fullName={driverName} />
                     {hasRentalNotes(rental) && <RentalNotesCard rental={rental} />}
-                    <RentalPeriodCard startDate={startDate} endDate={endDate} days={days} />
+                    <RentalPeriodCard startDate={startDate} endDate={endDate} days={days} returnedAt={rental.returnedAt} />
                     {(status === RentalStatus.IN_USE || status === RentalStatus.RETURNED) && (
                         <RentalDamageReports rentalId={rental.id} />
                     )}
@@ -152,7 +152,14 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                             <CardTitle className="text-lg">Status Timeline</CardTitle>
                         </CardHeader>
                         <CardContent>
-                            <RentalTimeline status={status} startDate={startDate} endDate={endDate} />
+                            <RentalTimeline
+                                status={status}
+                                startDate={startDate}
+                                endDate={endDate}
+                                confirmedAt={rental.confirmedAt}
+                                pickedUpAt={rental.pickedUpAt}
+                                returnedAt={rental.returnedAt}
+                            />
                         </CardContent>
                     </Card>
                 </div>

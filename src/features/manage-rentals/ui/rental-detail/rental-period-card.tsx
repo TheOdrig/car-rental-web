@@ -9,16 +9,18 @@ interface RentalPeriodCardProps {
     startDate: string;
     endDate: string;
     days: number;
+    returnedAt?: string | null;
 }
 
 interface PeriodCellProps {
     label: string;
     date: string;
+    note?: string;
     dotClassName: string;
     className?: string;
 }
 
-function PeriodCell({ label, date, dotClassName, className }: PeriodCellProps) {
+function PeriodCell({ label, date, note, dotClassName, className }: PeriodCellProps) {
     return (
         <div className={`group p-6 transition-colors hover:bg-slate-50/50 dark:hover:bg-slate-900/30 ${className ?? ''}`}>
             <div className="mb-3 flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">
@@ -26,11 +28,13 @@ function PeriodCell({ label, date, dotClassName, className }: PeriodCellProps) {
                 {label}
             </div>
             <p className="text-xl font-bold dark:text-white">{formatDate(date)}</p>
+            {note && <p className="mt-1 text-sm text-muted-foreground">{note}</p>}
         </div>
     );
 }
 
-export function RentalPeriodCard({ startDate, endDate, days }: RentalPeriodCardProps) {
+export function RentalPeriodCard({ startDate, endDate, days, returnedAt }: RentalPeriodCardProps) {
+    const returnedEarly = !!returnedAt && formatDate(returnedAt) !== formatDate(endDate);
     return (
         <Card className="overflow-hidden border-slate-200 dark:border-slate-800 shadow-md">
             <CardHeader className="border-b border-slate-100 dark:border-slate-800/50 bg-slate-50/50 dark:bg-slate-900/50">
@@ -63,8 +67,9 @@ export function RentalPeriodCard({ startDate, endDate, days }: RentalPeriodCardP
                         className="border-b border-slate-100 dark:border-slate-800 md:border-b-0 md:border-r"
                     />
                     <PeriodCell
-                        label="Return"
-                        date={endDate}
+                        label={returnedAt ? 'Returned' : 'Return'}
+                        date={returnedEarly ? returnedAt : endDate}
+                        note={returnedEarly ? `Booked until ${formatDate(endDate)}` : undefined}
                         dotClassName="bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]"
                     />
                 </div>

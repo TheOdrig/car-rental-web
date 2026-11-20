@@ -117,6 +117,33 @@ describe('RentalTimeline', () => {
             expect(screen.getByText('Return due Jan 20, 2025')).toBeInTheDocument();
         });
     });
+    describe('milestone timestamps', () => {
+        it('shows when each reached step happened', () => {
+            render(
+                <RentalTimeline
+                    status={RentalStatus.IN_USE}
+                    confirmedAt="2030-01-02T09:00:00Z"
+                    pickedUpAt="2030-01-03T10:00:00Z"
+                />
+            );
+            expect(screen.getByText(/^Approved Jan [2-3], 2030/)).toBeInTheDocument();
+            expect(screen.getByText(/^Picked up Jan 3, 2030/)).toBeInTheDocument();
+            expect(screen.getByText(/^In use since Jan 3, 2030/)).toBeInTheDocument();
+        });
+
+        it('ticks every step and shows the return time for a returned rental', () => {
+            render(
+                <RentalTimeline
+                    status={RentalStatus.RETURNED}
+                    confirmedAt="2030-01-02T09:00:00Z"
+                    pickedUpAt="2030-01-03T10:00:00Z"
+                    returnedAt="2030-01-04T11:00:00Z"
+                />
+            );
+            expect(screen.getByText(/^Returned Jan 4, 2030/)).toBeInTheDocument();
+            expect(screen.getByText('Return & Complete')).toHaveClass('text-emerald-700');
+        });
+    });
     describe('visual indicators', () => {
         it('should apply completed styling for past steps', () => {
             render(<RentalTimeline status={RentalStatus.IN_USE} />);

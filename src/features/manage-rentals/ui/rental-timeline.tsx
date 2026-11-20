@@ -9,7 +9,7 @@ import {
     CheckSquare,
     XCircle,
 } from 'lucide-react';
-import { cn, formatDate } from '@/shared/lib';
+import { cn, formatDate, formatDateTime } from '@/shared/lib';
 import { Card, CardContent } from '@/shared/ui/card';
 import { RentalStatus } from '@/entities/rental';
 
@@ -18,6 +18,9 @@ interface RentalTimelineProps {
     startDate?: string;
     endDate?: string;
     pickupLocation?: string;
+    confirmedAt?: string | null;
+    pickedUpAt?: string | null;
+    returnedAt?: string | null;
     className?: string;
 }
 
@@ -36,12 +39,19 @@ const TIMELINE_STEPS: TimelineStep[] = [
 
 const REQUESTED_FIRST_STEP_LABEL = 'Request Submitted';
 
+interface MilestoneTimes {
+    confirmedAt?: string | null;
+    pickedUpAt?: string | null;
+    returnedAt?: string | null;
+}
+
 function getStepText(
     step: TimelineStep,
     status: RentalStatus,
     currentStep: number,
     startDate?: string,
-    endDate?: string
+    endDate?: string,
+    times: MilestoneTimes = {}
 ): { label: string; description: string } {
     const done = step.id < currentStep;
     const current = step.id === currentStep;
@@ -52,21 +62,21 @@ function getStepText(
         case 1:
             return status === RentalStatus.REQUESTED
                 ? { label: REQUESTED_FIRST_STEP_LABEL, description: 'Waiting for an admin to review the request' }
-                : { label: step.label, description: 'An admin approved the request' };
+                : { label: step.label, description: times.confirmedAt ? `Approved ${formatDateTime(times.confirmedAt)}` : 'An admin approved the request' };
         case 2:
             return {
                 label: step.label,
-                description: done ? 'The vehicle was picked up' : start ? `Pick-up from ${start}` : 'Pick-up on the start date',
+                description: done ? (times.pickedUpAt ? `Picked up ${formatDateTime(times.pickedUpAt)}` : 'The vehicle was picked up') : start ? `Pick-up from ${start}` : 'Pick-up on the start date',
             };
         case 3:
             return {
                 label: step.label,
-                description: done ? 'The vehicle was in use' : current ? 'The vehicle is with you' : 'Starts at pick-up',
+                description: done ? (times.pickedUpAt ? `In use since ${formatDateTime(times.pickedUpAt)}` : 'The vehicle was in use') : current ? (times.pickedUpAt ? `In use since ${formatDateTime(times.pickedUpAt)}` : 'The vehicle is with you') : 'Starts at pick-up',
             };
         default:
             return {
                 label: step.label,
-                description: current ? 'The vehicle was returned' : end ? `Return due ${end}` : 'Return on the end date',
+                description: current ? (times.returnedAt ? `Returned ${formatDateTime(times.returnedAt)}` : 'The vehicle was returned') : end ? `Return due ${end}` : 'Return on the end date',
             };
     }
 }
@@ -91,12 +101,13 @@ function getStepFromStatus(status: RentalStatus): number {
 interface StepIndicatorProps {
     step: TimelineStep;
     currentStep: number;
+    complete: boolean;
     isLast: boolean;
 }
 
-function StepIndicator({ step, currentStep, isLast }: StepIndicatorProps) {
-    const isCompleted = step.id < currentStep;
-    const isCurrent = step.id === currentStep;
+function StepIndicator({ step, currentStep, complete, isLast }: StepIndicatorProps) {
+    const isCompleted = step.id < currentStep || complete;
+    const isCurrent = step.id === currentStep && !complete;
     const isPending = step.id > currentStep;
 
     return (
@@ -132,6 +143,8 @@ interface StepContentProps {
     step: TimelineStep;
     status: RentalStatus;
     currentStep: number;
+    complete: boolean;
+    times: MilestoneTimes;
     startDate?: string;
     endDate?: string;
     pickupLocation?: string;
@@ -141,14 +154,16 @@ function StepContent({
     step,
     status,
     currentStep,
+    complete,
+    times,
     startDate,
     endDate,
     pickupLocation,
 }: StepContentProps) {
-    const isCompleted = step.id < currentStep;
-    const isCurrent = step.id === currentStep;
+    const isCompleted = step.id < currentStep || complete;
+    const isCurrent = step.id === currentStep && !complete;
     const isPending = step.id > currentStep;
-    const text = getStepText(step, status, currentStep, startDate, endDate);
+    const text = getStepText(step, status, currentStep, startDate, endDate, times);
 
     const getStepDetails = () => {
         if (!isCurrent) return null;
@@ -202,9 +217,14 @@ export const RentalTimeline = memo(function RentalTimeline({
     startDate,
     endDate,
     pickupLocation,
+    confirmedAt,
+    pickedUpAt,
+    returnedAt,
     className,
 }: RentalTimelineProps) {
     const currentStep = getStepFromStatus(status);
+    const complete = status === RentalStatus.RETURNED;
+    const times = { confirmedAt, pickedUpAt, returnedAt };
 
     if (status === RentalStatus.CANCELLED) {
         return (
@@ -234,12 +254,15 @@ export const RentalTimeline = memo(function RentalTimeline({
                     <StepIndicator
                         step={step}
                         currentStep={currentStep}
+                        complete={complete}
                         isLast={index === TIMELINE_STEPS.length - 1}
                     />
                     <StepContent
                         step={step}
                         status={status}
                         currentStep={currentStep}
+                        complete={complete}
+                        times={times}
                         startDate={startDate}
                         endDate={endDate}
                         pickupLocation={pickupLocation}
