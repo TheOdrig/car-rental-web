@@ -46,6 +46,10 @@ const POLL_STOP_STATUSES: readonly RentalPaymentStatus[] = ['AUTHORIZED', 'CAPTU
 const PAYABLE_STATUSES: readonly RentalPaymentStatus[] = ['PENDING', 'FAILED', 'CANCELLED'];
 const SUCCESS_STATUSES: readonly RentalPaymentStatus[] = ['AUTHORIZED', 'CAPTURED'];
 
+export function isNeverChargedPayment(payment: Pick<RentalPayment, 'status' | 'refundedAmount'>): boolean {
+    return payment.status === 'CANCELLED' && (payment.refundedAmount ?? 0) === 0;
+}
+
 export function isPollingDone(status: RentalPaymentStatus): boolean {
     return POLL_STOP_STATUSES.includes(status);
 }

@@ -7,7 +7,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import { isApiError } from '@/shared/api';
 import { useRentalPayment } from '../lib/use-rental-payment';
-import type { RentalPaymentStatus as PaymentStatusValue } from '../model/rental-payment';
+import { isNeverChargedPayment, type RentalPaymentStatus as PaymentStatusValue } from '../model/rental-payment';
 import { PaymentStatusBadge } from './payment-status-badge';
 
 interface RentalPaymentStatusProps {
@@ -31,7 +31,7 @@ export function RentalPaymentStatus({
     const missing = !enabled || (isApiError(error) && error.status === 404);
     const refunded = data?.refundedAmount ?? 0;
     const loadFailed = !isLoading && !!error && !missing;
-    const neverCharged = data?.status === 'CANCELLED' && refunded === 0;
+    const neverCharged = !!data && isNeverChargedPayment(data);
 
     return (
         <Card className={className} data-testid="rental-payment-status">
