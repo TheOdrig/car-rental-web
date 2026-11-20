@@ -89,7 +89,7 @@ export default function RootLayout({
             <Footer />
           </HideOnAuthRoutes>
         </Providers>
-        <Toaster richColors position="top-right" duration={3000} />
+        <Toaster richColors position="top-right" offset={76} mobileOffset={76} duration={3000} />
       </body>
     </html>
   );
