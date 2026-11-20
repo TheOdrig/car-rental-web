@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { RefreshCw, Clock, Search } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
@@ -21,9 +22,24 @@ type UserRole = 'all' | 'ADMIN' | 'USER';
 type UserStatus = 'all' | 'ACTIVE' | 'BANNED';
 
 export function UserManagementContent() {
-    const [searchQuery, setSearchQuery] = useState('');
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const pathname = usePathname();
+    const [searchQuery, setSearchQuery] = useState(() => (searchParams?.get('search') ?? '').slice(0, 100));
     const [roleFilter, setRoleFilter] = useState<UserRole>('all');
     const [statusFilter, setStatusFilter] = useState<UserStatus>('all');
+
+    const currentSearch = searchParams?.get('search') ?? '';
+
+    useEffect(() => {
+        const trimmed = searchQuery.trim();
+        if (trimmed === currentSearch) return;
+        const params = new URLSearchParams(searchParams?.toString() ?? '');
+        if (trimmed) params.set('search', trimmed);
+        else params.delete('search');
+        const next = params.toString();
+        router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
+    }, [searchQuery, currentSearch, searchParams, pathname, router]);
 
     const { data: stats, isLoading: isLoadingStats, isError: statsFailed, refetch: refetchStats } = useUserStats();
     const invalidateUsers = useInvalidateUsers();
@@ -90,6 +106,7 @@ export function UserManagementContent() {
                 <div className="relative flex-1">
                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     <Input
+                        aria-label="Search users"
                         placeholder="Search by name or email..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}

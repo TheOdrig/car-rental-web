@@ -4,6 +4,7 @@ import { CheckCircle, Calendar, Car, Clock, Mail, FileText, CreditCard, AlertCir
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
+import { DocumentTitle } from '@/shared/ui/document-title';
 import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useRental } from '@/entities/rental';
 
@@ -37,7 +38,7 @@ export function BookingSuccess({
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 motion-safe:animate-[bounce_1s_ease-in-out]">
                             <CheckCircle className="h-12 w-12" />
                         </div>
-                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking Requested!</h1>
+                        <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking requested</h1>
                         <p className="text-green-100 text-lg">Your rental request has been submitted and is waiting for confirmation.</p>
                     </div>
 
@@ -142,6 +143,7 @@ export function BookingSuccessLoader({ referenceNumber }: { referenceNumber: str
         return (
             <div className="flex min-h-[60vh] items-center justify-center px-4 py-12">
                 <div className="max-w-md text-center" role="alert">
+                    <DocumentTitle title="Booking not found" />
                     <AlertCircle className="mx-auto mb-4 h-10 w-10 text-destructive" aria-hidden="true" />
                     <h1 className="mb-2 text-2xl font-bold">We could not load this booking</h1>
                     <p className="mb-6 text-muted-foreground">

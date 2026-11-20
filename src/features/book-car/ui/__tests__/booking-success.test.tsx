@@ -18,7 +18,7 @@ describe('BookingSuccess', () => {
     };
     it('should display booking requested heading', () => {
         render(<BookingSuccess {...defaultProps} />);
-        expect(screen.getByText('Booking Requested!')).toBeInTheDocument();
+        expect(screen.getByText('Booking requested')).toBeInTheDocument();
     });
     it('should display booking reference number', () => {
         render(<BookingSuccess {...defaultProps} />);
@@ -98,7 +98,7 @@ describe('BookingSuccessLoader', () => {
 
         expect(mockUseRental).toHaveBeenCalledWith(null);
         expect(screen.getByRole('alert')).toHaveTextContent(/could not load this booking/i);
-        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
+        expect(screen.queryByText('Booking requested')).not.toBeInTheDocument();
     });
 
     it('shows an error state instead of success when the rental cannot be read', () => {
@@ -107,7 +107,8 @@ describe('BookingSuccessLoader', () => {
 
         expect(screen.getByRole('alert')).toHaveTextContent(/could not load this booking/i);
         expect(screen.getByRole('link', { name: /my rentals/i })).toHaveAttribute('href', '/rentals');
-        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
+        expect(screen.queryByText('Booking requested')).not.toBeInTheDocument();
+        expect(document.title).toBe('Booking not found');
     });
 
     it('shows a loading state while the rental loads', () => {
@@ -115,6 +116,6 @@ describe('BookingSuccessLoader', () => {
         const { container } = render(<BookingSuccessLoader referenceNumber="1" />);
 
         expect(container.querySelector('[aria-busy="true"]')).not.toBeNull();
-        expect(screen.queryByText('Booking Requested!')).not.toBeInTheDocument();
+        expect(screen.queryByText('Booking requested')).not.toBeInTheDocument();
     });
 });

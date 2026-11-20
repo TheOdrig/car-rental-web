@@ -115,3 +115,11 @@ export function getAlertStyles(type: 'critical' | 'warning' | 'info' | 'success'
 
     return styles[type];
 }
+export function niceAxisTicks(max: number, targetIntervals = 4): number[] {
+    if (!Number.isFinite(max) || max <= 0) return [0, 1];
+    const rough = max / targetIntervals;
+    const magnitude = 10 ** Math.floor(Math.log10(rough));
+    const step = [1, 2, 2.5, 5, 10].map((factor) => factor * magnitude).find((candidate) => candidate >= rough) ?? 10 * magnitude;
+    const count = Math.ceil(max / step - 1e-9);
+    return Array.from({ length: count + 1 }, (_, index) => Number((index * step).toPrecision(12)));
+}

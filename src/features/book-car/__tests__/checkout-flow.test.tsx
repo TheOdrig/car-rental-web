@@ -383,7 +383,7 @@ describe('Success/Failure Pages', () => {
 
     it('should display success confirmation', () => {
         render(<BookingSuccess referenceNumber="ABC12345" />);
-        expect(screen.getByText('Booking Requested!')).toBeInTheDocument();
+        expect(screen.getByText('Booking requested')).toBeInTheDocument();
         expect(screen.getByText('ABC12345')).toBeInTheDocument();
     });
 

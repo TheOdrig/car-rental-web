@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { formatCurrency, formatDate, formatTime } from '@/shared/lib';
-import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPercentages, processRevenueData, revenueCurrencies, getAlertStyles } from '@/features/admin';
+import { formatTrend, validatePickupForm, validateRejectForm, calculateFleetPercentages, processRevenueData, revenueCurrencies, getAlertStyles, niceAxisTicks } from '@/features/admin';
 import { MonthlyRevenue } from '@/features/admin';
 describe('formatCurrency', () => {
     it('should format positive amounts with dollar sign', () => {
@@ -269,5 +269,23 @@ describe('getAlertStyles', () => {
         expect(styles.border).toBe('border-green-500');
         expect(styles.bg).toBe('bg-green-50 dark:bg-green-950/20');
         expect(styles.iconColor).toBe('text-green-500');
+    });
+});
+describe('niceAxisTicks', () => {
+    it('uses round steps that cover the maximum', () => {
+        expect(niceAxisTicks(284.2)).toEqual([0, 100, 200, 300]);
+        expect(niceAxisTicks(680.6)).toEqual([0, 200, 400, 600, 800]);
+        expect(niceAxisTicks(11200)).toEqual([0, 5000, 10000, 15000]);
+    });
+
+    it('falls back to a unit axis without data', () => {
+        expect(niceAxisTicks(0)).toEqual([0, 1]);
+        expect(niceAxisTicks(Number.NaN)).toEqual([0, 1]);
+    });
+
+    it('keeps a tiny maximum readable', () => {
+        const ticks = niceAxisTicks(0.7);
+        expect(ticks[0]).toBe(0);
+        expect(ticks[ticks.length - 1]).toBeGreaterThanOrEqual(0.7);
     });
 });

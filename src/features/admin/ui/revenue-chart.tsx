@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { RevenueChartSkeleton } from './revenue-chart-skeleton';
+import { niceAxisTicks } from '../lib/utils';
 import { cn } from '@/shared/lib';
 import { formatCompactCurrency, formatCurrency } from '@/shared/lib';
 
@@ -63,6 +64,8 @@ export function RevenueChart({
                 : 'hsl(var(--primary) / 0.5)',
         }));
     }, [data]);
+
+    const axisTicks = useMemo(() => niceAxisTicks(Math.max(0, ...data.map((item) => item.revenue))), [data]);
 
     const money = (value: number) => formatCurrency(value, currency);
 
@@ -138,7 +141,8 @@ export function RevenueChart({
                                     tickFormatter={(value: number) => formatCompactCurrency(value, currency)}
                                     className="text-xs"
                                     width={55}
-                                    domain={[0, (dataMax: number) => dataMax * 2]}
+                                    domain={[0, axisTicks[axisTicks.length - 1]]}
+                                    ticks={axisTicks}
                                 />
                                 <ChartTooltip
                                     cursor={false}
