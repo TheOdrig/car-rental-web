@@ -42,9 +42,7 @@ export function PriceRangeSlider({
     const handleValueChange = useCallback(
         (newValue: number[]) => {
             const typedValue: [number, number] = [newValue[0], newValue[1]];
-            if (!value) {
-                setInternalValue(typedValue);
-            }
+            if (!value) setInternalValue(typedValue);
             onValueChange?.(typedValue);
         },
         [value, onValueChange]

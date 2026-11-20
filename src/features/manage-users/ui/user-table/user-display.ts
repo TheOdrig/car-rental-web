@@ -1,4 +1,5 @@
 import { personDisplayName } from '@/shared/lib';
+import { DEFAULT_ACCOUNT_STATUS } from '@/entities/user';
 import type { User, UserRole, UserStatus } from '../../model/types';
 
 interface DisplayConfig {
@@ -71,7 +72,7 @@ export function resolveRoles(user: User): string[] {
 }
 
 export function resolveStatus(user: User): UserStatus {
-    return (user.status?.toUpperCase() || 'ACTIVE') as UserStatus;
+    return (user.status?.toUpperCase() || DEFAULT_ACCOUNT_STATUS) as UserStatus;
 }
 
 export const NEVER_LOGGED_IN_LABEL = 'Never logged in';

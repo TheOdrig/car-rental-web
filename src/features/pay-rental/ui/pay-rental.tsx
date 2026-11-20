@@ -12,6 +12,7 @@ import { isApiError } from '@/shared/api';
 import { formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
 import { getPayByLabel, isPaymentWindowOpen, isRentalPaymentSecured, RentalStatus, rentalKeys, useRental } from '@/entities/rental';
 import {
+    isPaymentCancelled,
     isPaymentSecured,
     paymentKeys,
     usePaymentIntent,
@@ -338,7 +339,7 @@ export function PayRental({
     if (isPaymentSecured(intent.status)) {
         return <AuthorizedView rentalId={rentalId} />;
     }
-    if (intent.status === 'CANCELLED') {
+    if (isPaymentCancelled(intent.status)) {
         return <CancelledView rentalId={rentalId} onPayAgain={retry} />;
     }
 

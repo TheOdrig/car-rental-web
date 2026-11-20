@@ -22,6 +22,7 @@ import { cn } from '@/shared/lib';
 import { useFilterOptions } from '@/entities/car';
 import { ROUTES } from '@/shared/config/routes';
 import { withQuery } from '@/shared/lib/url';
+import { buildSearchQuery, validateSearchDates } from '../lib/search-form';
 
 interface SearchWidgetProps {
     className?: string;
@@ -36,40 +37,12 @@ export function SearchWidget({ className }: SearchWidgetProps) {
     const { data: options } = useFilterOptions();
     const vehicleTypes = [{ value: 'all', label: 'All Types' }, ...(options?.bodyTypes ?? []).map((value) => ({ value, label: value }))];
 
-    const validateForm = (): boolean => {
-        const newErrors: Record<string, string> = {};
-
-        if (!pickupDate) {
-            newErrors.pickupDate = 'Pickup date is required';
-        }
-        if (!returnDate) {
-            newErrors.returnDate = 'Return date is required';
-        }
-        if (pickupDate && returnDate && pickupDate >= returnDate) {
-            newErrors.returnDate = 'Return date must be after pickup date';
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
     const handleSearch = () => {
-        if (!validateForm()) return;
+        const newErrors = validateSearchDates(pickupDate, returnDate);
+        setErrors(newErrors);
+        if (Object.keys(newErrors).length > 0) return;
 
-        const params = new URLSearchParams();
-
-        if (pickupDate) {
-            params.set('startDate', format(pickupDate, 'yyyy-MM-dd'));
-        }
-        if (returnDate) {
-            params.set('endDate', format(returnDate, 'yyyy-MM-dd'));
-        }
-        if (vehicleType && vehicleType !== 'all') {
-            params.set('bodyType', vehicleType);
-        }
-
-        const queryString = params.toString();
-        router.push(withQuery(ROUTES.cars.list, queryString));
+        router.push(withQuery(ROUTES.cars.list, buildSearchQuery({ pickupDate, returnDate, vehicleType })));
     };
 
     return (

@@ -15,17 +15,19 @@ const subscribe = () => () => { };
 const getSnapshot = () => true;
 const getServerSnapshot = () => false;
 
+function ThemeTogglePlaceholder() {
+  return (
+    <Button variant="ghost" size="icon" disabled aria-label="Toggle theme">
+      <span className="h-4 w-4 animate-pulse rounded bg-accent" />
+    </Button>
+  );
+}
+
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const mounted = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
 
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="icon" disabled aria-label="Toggle theme">
-        <span className="h-4 w-4 animate-pulse rounded bg-accent" />
-      </Button>
-    );
-  }
+  if (!mounted) return <ThemeTogglePlaceholder />;
 
   return (
     <DropdownMenu>

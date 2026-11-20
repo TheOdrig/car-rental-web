@@ -14,10 +14,6 @@ const CONTRACT_STATUS_LITERAL_FILES = [
   'src/entities/rental/lib/damage-reporting.ts',
   'src/entities/rental/model/types.ts',
   'src/entities/user/lib/utils.ts',
-  'src/features/manage-rentals/ui/rental-detail/rental-detail.tsx',
-  'src/features/manage-users/ui/customer-detail/customer-rental-history-table.tsx',
-  'src/features/manage-users/ui/user-table/user-display.ts',
-  'src/features/pay-rental/ui/pay-rental.tsx',
 ];
 
 function normalized(files: string[]): string[] {

@@ -58,6 +58,10 @@ export function isPayableStatus(status: RentalPaymentStatus | undefined): boolea
     return status === undefined || PAYABLE_STATUSES.includes(status);
 }
 
+export function isPaymentCancelled(status: RentalPaymentStatus | undefined): boolean {
+    return status === 'CANCELLED';
+}
+
 export function isPaymentSecured(status: RentalPaymentStatus | undefined): boolean {
     return status !== undefined && SUCCESS_STATUSES.includes(status);
 }

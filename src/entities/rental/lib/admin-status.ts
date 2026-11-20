@@ -34,6 +34,8 @@ export function toApiRentalStatus(status: string): string {
     }
 }
 
+export const ADMIN_RENTAL_FILTER_STATUSES: AdminRentalStatus[] = ['COMPLETED', 'ACTIVE', 'CANCELLED', 'PENDING'];
+
 const PAYMENT_NOT_EXPECTED: AdminRentalStatus[] = ['PENDING', 'CANCELLED', 'UNKNOWN'];
 
 export function isAdminPaymentExpected(status: AdminRentalStatus | undefined): boolean {

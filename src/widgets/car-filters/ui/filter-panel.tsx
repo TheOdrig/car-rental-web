@@ -19,20 +19,22 @@ interface CarFiltersProps {
     layout?: 'horizontal' | 'vertical';
 }
 
+function FilterSkeleton({ layout, className }: { layout: 'horizontal' | 'vertical'; className?: string }) {
+    return (
+        <div className={cn('flex gap-3', layout === 'vertical' ? 'flex-col' : 'flex-wrap items-center', className)}>
+            <Skeleton className="h-10 w-[160px]" />
+            <Skeleton className="h-10 w-[160px]" />
+            <Skeleton className="h-10 w-[160px]" />
+            <Skeleton className="h-10 w-[160px]" />
+        </div>
+    );
+}
+
 export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps) {
     const { filters, setFilter, clearFilters, hasActiveFilters } = useFilterStore();
     const { data: options, isLoading } = useFilterOptions();
 
-    if (isLoading) {
-        return (
-            <div className={cn('flex gap-3', layout === 'vertical' ? 'flex-col' : 'flex-wrap items-center', className)}>
-                <Skeleton className="h-10 w-[160px]" />
-                <Skeleton className="h-10 w-[160px]" />
-                <Skeleton className="h-10 w-[160px]" />
-                <Skeleton className="h-10 w-[160px]" />
-            </div>
-        );
-    }
+    if (isLoading) return <FilterSkeleton layout={layout} className={className} />;
 
     return (
         <div

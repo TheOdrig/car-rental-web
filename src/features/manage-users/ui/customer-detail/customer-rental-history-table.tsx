@@ -17,7 +17,7 @@ import {
 } from '@/shared/ui/select';
 import { useCustomerRentalHistory } from '../../api/users-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import { ADMIN_RENTAL_STATUS_LABELS, AdminRentalStatusBadge, type AdminRentalStatus } from '@/entities/rental';
+import { ADMIN_RENTAL_FILTER_STATUSES, ADMIN_RENTAL_STATUS_LABELS, AdminRentalStatusBadge, type AdminRentalStatus } from '@/entities/rental';
 import { ROUTES } from '@/shared/config/routes';
 
 interface CustomerRentalHistoryTableProps {
@@ -26,10 +26,7 @@ interface CustomerRentalHistoryTableProps {
 
 const statusFilterOptions = [
     { value: 'all', label: 'All Statuses' },
-    { value: 'COMPLETED', label: ADMIN_RENTAL_STATUS_LABELS.COMPLETED },
-    { value: 'ACTIVE', label: ADMIN_RENTAL_STATUS_LABELS.ACTIVE },
-    { value: 'CANCELLED', label: ADMIN_RENTAL_STATUS_LABELS.CANCELLED },
-    { value: 'PENDING', label: ADMIN_RENTAL_STATUS_LABELS.PENDING },
+    ...ADMIN_RENTAL_FILTER_STATUSES.map((value) => ({ value, label: ADMIN_RENTAL_STATUS_LABELS[value] })),
 ];
 
 export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistoryTableProps) {

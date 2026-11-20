@@ -4,13 +4,7 @@ import { scanFiles, hasUseClientDirective } from './helpers/file-scanner';
 import { getImports, hasBusinessLogic, hasAPIcalls } from './helpers/import-analyzer';
 import { hasComplexJSX, hasInlineClientComponent } from './helpers/ast-parser';
 
-const WIDGETS_WITH_LOGIC = [
-  'src/widgets/car-filters/ui/filter-panel.tsx',
-  'src/widgets/car-filters/ui/price-range-slider.tsx',
-  'src/widgets/car-search/ui/car-search.tsx',
-  'src/widgets/header/ui/theme-toggle.tsx',
-  'src/widgets/home/ui/search-widget.tsx',
-];
+const WIDGETS_WITH_LOGIC: string[] = [];
 
 const STATIC_PAGES = [
   'src/app/(protected)/settings/payment/page.tsx',

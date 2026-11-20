@@ -1,1 +1,1 @@
-npm run type-check
+node scripts/pre-commit.mjs

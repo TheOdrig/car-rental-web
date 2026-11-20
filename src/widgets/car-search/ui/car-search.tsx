@@ -36,15 +36,13 @@ export function CarSearch({ className, variant = 'default', onSearch }: CarSearc
 
         if (!startDate || !endDate) return;
 
-        if (onSearch) {
-            onSearch(startDate, endDate);
-        } else {
-            const params = new URLSearchParams({
-                startDate: format(startDate, 'yyyy-MM-dd'),
-                endDate: format(endDate, 'yyyy-MM-dd'),
-            });
-            router.push(withQuery(ROUTES.search, params.toString()));
-        }
+        if (onSearch) return onSearch(startDate, endDate);
+
+        const params = new URLSearchParams({
+            startDate: format(startDate, 'yyyy-MM-dd'),
+            endDate: format(endDate, 'yyyy-MM-dd'),
+        });
+        router.push(withQuery(ROUTES.search, params.toString()));
     };
 
     const isValid = startDate && endDate && startDate < endDate;

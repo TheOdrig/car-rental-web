@@ -18,7 +18,7 @@ import {
     toPriceAdjustments,
     useCancelRental,
 } from '@/entities/rental';
-import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
+import { RentalPaymentStatus, isPayableStatus, isPaymentCancelled } from '@/entities/payment';
 import type { Rental } from '@/entities/rental';
 import { RentalTimeline } from '../rental-timeline';
 import { CancelRentalDialog } from './cancel-rental-dialog';
@@ -136,7 +136,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                                 }
                                 return (
                                     <Button asChild className="w-full">
-                                        <Link href={ROUTES.rentals.pay(rental.id)}>{paymentStatus === 'CANCELLED' ? 'Pay again' : 'Pay now'}</Link>
+                                        <Link href={ROUTES.rentals.pay(rental.id)}>{isPaymentCancelled(paymentStatus) ? 'Pay again' : 'Pay now'}</Link>
                                     </Button>
                                 );
                             }}

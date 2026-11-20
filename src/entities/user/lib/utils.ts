@@ -1,6 +1,8 @@
 import { personDisplayName } from '@/shared/lib/person-name';
 import { type AccountStatusType, User, UserRole } from '../model/types';
 
+export const DEFAULT_ACCOUNT_STATUS: AccountStatusType = 'ACTIVE';
+
 export const hasAdminRole = (roles: readonly string[] | null | undefined): boolean => {
     return roles?.includes(UserRole.ADMIN) ?? false;
 };
