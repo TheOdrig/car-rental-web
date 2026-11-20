@@ -24,45 +24,51 @@ interface RentalTimelineProps {
 interface TimelineStep {
     id: number;
     label: string;
-    description: string;
     icon: ReactNode;
 }
 
 const TIMELINE_STEPS: TimelineStep[] = [
-    {
-        id: 1,
-        label: 'Booking Confirmed',
-        description: 'Your reservation is confirmed',
-        icon: <Calendar className="h-4 w-4" />,
-    },
-    {
-        id: 2,
-        label: 'Pick-up Scheduled',
-        description: 'Ready for vehicle pickup',
-        icon: <MapPin className="h-4 w-4" />,
-    },
-    {
-        id: 3,
-        label: 'Rental Active',
-        description: 'Enjoy your trip!',
-        icon: <Car className="h-4 w-4" />,
-    },
-    {
-        id: 4,
-        label: 'Return & Complete',
-        description: 'Rental completed successfully',
-        icon: <CheckSquare className="h-4 w-4" />,
-    },
+    { id: 1, label: 'Booking Confirmed', icon: <Calendar className="h-4 w-4" /> },
+    { id: 2, label: 'Pick-up Scheduled', icon: <MapPin className="h-4 w-4" /> },
+    { id: 3, label: 'Rental Active', icon: <Car className="h-4 w-4" /> },
+    { id: 4, label: 'Return & Complete', icon: <CheckSquare className="h-4 w-4" /> },
 ];
 
-const REQUESTED_FIRST_STEP = {
-    label: 'Request Submitted',
-    description: 'Waiting for approval from our team',
-};
+const REQUESTED_FIRST_STEP_LABEL = 'Request Submitted';
 
-function getStepText(step: TimelineStep, status: RentalStatus): { label: string; description: string } {
-    if (step.id === 1 && status === RentalStatus.REQUESTED) return REQUESTED_FIRST_STEP;
-    return { label: step.label, description: step.description };
+function getStepText(
+    step: TimelineStep,
+    status: RentalStatus,
+    currentStep: number,
+    startDate?: string,
+    endDate?: string
+): { label: string; description: string } {
+    const done = step.id < currentStep;
+    const current = step.id === currentStep;
+    const start = startDate ? formatDate(startDate) : null;
+    const end = endDate ? formatDate(endDate) : null;
+
+    switch (step.id) {
+        case 1:
+            return status === RentalStatus.REQUESTED
+                ? { label: REQUESTED_FIRST_STEP_LABEL, description: 'Waiting for an admin to review the request' }
+                : { label: step.label, description: 'An admin approved the request' };
+        case 2:
+            return {
+                label: step.label,
+                description: done ? 'The vehicle was picked up' : start ? `Pick-up from ${start}` : 'Pick-up on the start date',
+            };
+        case 3:
+            return {
+                label: step.label,
+                description: done ? 'The vehicle was in use' : current ? 'The vehicle is with you' : 'Starts at pick-up',
+            };
+        default:
+            return {
+                label: step.label,
+                description: current ? 'The vehicle was returned' : end ? `Return due ${end}` : 'Return on the end date',
+            };
+    }
 }
 
 function getStepFromStatus(status: RentalStatus): number {
@@ -98,7 +104,7 @@ function StepIndicator({ step, currentStep, isLast }: StepIndicatorProps) {
             <div
                 className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all',
-                    isCompleted && 'border-green-500 bg-green-500 text-white',
+                    isCompleted && 'border-emerald-600 bg-emerald-600 text-white',
                     isCurrent && 'border-primary bg-primary/10 text-primary',
                     isPending && 'border-muted bg-muted text-muted-foreground'
                 )}
@@ -114,7 +120,7 @@ function StepIndicator({ step, currentStep, isLast }: StepIndicatorProps) {
                 <div
                     className={cn(
                         'mt-1 h-12 w-0.5 transition-colors',
-                        isCompleted ? 'bg-green-500' : 'bg-muted'
+                        isCompleted ? 'bg-emerald-600' : 'bg-muted'
                     )}
                 />
             )}
@@ -142,7 +148,7 @@ function StepContent({
     const isCompleted = step.id < currentStep;
     const isCurrent = step.id === currentStep;
     const isPending = step.id > currentStep;
-    const text = getStepText(step, status);
+    const text = getStepText(step, status, currentStep, startDate, endDate);
 
     const getStepDetails = () => {
         if (!isCurrent) return null;
@@ -154,8 +160,6 @@ function StepContent({
                 return pickupLocation ?? null;
             case 3:
                 return endDate ? `Returns ${formatDate(endDate)}` : null;
-            case 4:
-                return 'Thank you for choosing us!';
             default:
                 return null;
         }
@@ -168,7 +172,7 @@ function StepContent({
             <p
                 className={cn(
                     'font-medium',
-                    isCompleted && 'text-green-600',
+                    isCompleted && 'text-emerald-700 dark:text-emerald-400',
                     isCurrent && 'text-primary',
                     isPending && 'text-muted-foreground'
                 )}

@@ -41,7 +41,7 @@ vi.mock('@/shared/lib', () => ({
     },
     toastMessages: {
         auth: {
-            loginSuccess: 'Welcome back!',
+            loginSuccess: 'Signed in',
             loginError: 'Login failed',
             logoutSuccess: 'Logged out',
         },

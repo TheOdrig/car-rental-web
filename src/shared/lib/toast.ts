@@ -45,7 +45,7 @@ export const showToast = {
 
 export const toastMessages = {
     rental: {
-        createSuccess: 'Rental request submitted successfully!',
+        createSuccess: 'Rental request sent',
         createError: 'Failed to create rental request',
         cancelSuccess: 'Rental cancelled successfully',
         cancelError: 'Failed to cancel rental',
@@ -59,10 +59,10 @@ export const toastMessages = {
         rejectError: 'Failed to reject rental',
     },
     auth: {
-        loginSuccess: 'Welcome back!',
+        loginSuccess: 'Signed in',
         loginError: 'Invalid credentials',
         logoutSuccess: 'Logged out successfully',
-        registerSuccess: 'Account created successfully!',
+        registerSuccess: 'Account created',
         registerError: 'Failed to create account',
     },
     profile: {

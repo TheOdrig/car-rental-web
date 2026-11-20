@@ -13,10 +13,10 @@ describe('RentalTimeline', () => {
         });
         it('should render step descriptions', () => {
             render(<RentalTimeline status={RentalStatus.CONFIRMED} />);
-            expect(screen.getByText('Your reservation is confirmed')).toBeInTheDocument();
-            expect(screen.getByText('Ready for vehicle pickup')).toBeInTheDocument();
-            expect(screen.getByText('Enjoy your trip!')).toBeInTheDocument();
-            expect(screen.getByText('Rental completed successfully')).toBeInTheDocument();
+            expect(screen.getByText('An admin approved the request')).toBeInTheDocument();
+            expect(screen.getByText('Pick-up on the start date')).toBeInTheDocument();
+            expect(screen.getByText('Starts at pick-up')).toBeInTheDocument();
+            expect(screen.getByText('Return on the end date')).toBeInTheDocument();
         });
         it('should have list role with aria-label', () => {
             render(<RentalTimeline status={RentalStatus.CONFIRMED} />);
@@ -35,7 +35,8 @@ describe('RentalTimeline', () => {
             const currentStep = screen.getByRole('listitem', { current: 'step' });
             expect(currentStep).toHaveTextContent('Request Submitted');
             expect(screen.queryByText('Booking Confirmed')).not.toBeInTheDocument();
-            expect(screen.queryByText('Your reservation is confirmed')).not.toBeInTheDocument();
+            expect(screen.queryByText('An admin approved the request')).not.toBeInTheDocument();
+            expect(screen.getByText('Waiting for an admin to review the request')).toBeInTheDocument();
         });
         it('should show first step as completed for In Use status', () => {
             render(<RentalTimeline status={RentalStatus.IN_USE} />);
@@ -100,16 +101,27 @@ describe('RentalTimeline', () => {
             );
             expect(screen.getByText(/Returns Jan 20, 2025/)).toBeInTheDocument();
         });
-        it('should show completion message for returned rental', () => {
+        it('does not claim a future step already happened', () => {
+            render(<RentalTimeline status={RentalStatus.IN_USE} endDate="2025-01-20" />);
+            expect(screen.queryByText(/completed successfully/i)).not.toBeInTheDocument();
+            expect(screen.getByText('The vehicle is with you')).toBeInTheDocument();
+        });
+
+        it('says the vehicle was returned once the rental is returned', () => {
             render(<RentalTimeline status={RentalStatus.RETURNED} />);
-            expect(screen.getByText('Thank you for choosing us!')).toBeInTheDocument();
+            expect(screen.getByText('The vehicle was returned')).toBeInTheDocument();
+        });
+
+        it('names the due date on the return step before the rental ends', () => {
+            render(<RentalTimeline status={RentalStatus.CONFIRMED} endDate="2025-01-20" />);
+            expect(screen.getByText('Return due Jan 20, 2025')).toBeInTheDocument();
         });
     });
     describe('visual indicators', () => {
         it('should apply completed styling for past steps', () => {
             render(<RentalTimeline status={RentalStatus.IN_USE} />);
             const bookingStep = screen.getByText('Booking Confirmed');
-            expect(bookingStep).toHaveClass('text-green-600');
+            expect(bookingStep).toHaveClass('text-emerald-700');
         });
         it('should apply current styling for active step', () => {
             render(<RentalTimeline status={RentalStatus.CONFIRMED} />);

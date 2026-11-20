@@ -172,7 +172,7 @@ export const EMPTY_STATE_PRESETS = {
     noCancelledRentals: {
         type: 'rentals' as const,
         title: 'No cancelled trips',
-        description: 'Great news! You have no cancelled reservations.',
+        description: 'None of your rentals were cancelled.',
     },
     noCars: {
         type: 'cars' as const,

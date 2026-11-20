@@ -257,9 +257,7 @@ export const QuickActionsCard = memo(function QuickActionsCard({
                 <CardContent>
                     {pickupItems.length === 0 && returnItems.length === 0 ? (
                         <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                            <CheckCircle className="h-8 w-8 text-green-500 dark:text-green-400 mb-2 opacity-60" />
-                            <p className="text-sm font-medium text-slate-600 dark:text-slate-300">All caught up!</p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">No pending pickups or returns.</p>
+                            <p className="text-sm text-slate-600 dark:text-slate-300">No pickups or returns are waiting.</p>
                         </div>
                     ) : (
                         <div className="flex flex-wrap gap-4">

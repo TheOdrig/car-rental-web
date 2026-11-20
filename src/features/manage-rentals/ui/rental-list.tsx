@@ -52,7 +52,7 @@ const TAB_EMPTY_STATES: Record<RentalTab, { title: string; description: string; 
     },
     cancelled: {
         title: 'No cancelled trips',
-        description: 'Great news! You have no cancelled reservations.',
+        description: 'None of your rentals were cancelled.',
         icon: XCircle,
     },
 };

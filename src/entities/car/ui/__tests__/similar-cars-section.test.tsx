@@ -11,13 +11,21 @@ vi.mock('@/entities/car/lib/use-cars', async (importOriginal) => ({
 import { SimilarCarsSection } from '../similar-cars-section';
 
 describe('SimilarCarsSection', () => {
-    it('explains that nothing is similar instead of disappearing', () => {
+    it('hides the whole section when nothing is similar', () => {
         mockSimilar.mockReturnValue({ data: [], isLoading: false, isError: false });
+
+        const { container } = render(<SimilarCarsSection carId={3} />);
+
+        expect(container).toBeEmptyDOMElement();
+        expect(screen.queryByRole('heading', { name: 'Similar Vehicles' })).not.toBeInTheDocument();
+    });
+
+    it('shows the heading while the list loads', () => {
+        mockSimilar.mockReturnValue({ data: undefined, isLoading: true, isError: false });
 
         render(<SimilarCarsSection carId={3} />);
 
         expect(screen.getByRole('heading', { name: 'Similar Vehicles' })).toBeInTheDocument();
-        expect(screen.getByText(/no similar vehicles/i)).toBeInTheDocument();
     });
 
     it('stays hidden when the request failed', () => {

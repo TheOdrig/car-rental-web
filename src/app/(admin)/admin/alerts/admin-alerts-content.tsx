@@ -144,7 +144,7 @@ export function AdminAlertsContent() {
                         <p className="text-muted-foreground text-sm max-w-xs text-center mt-2">
                             {searchQuery || typeFilter !== 'all'
                                 ? "We couldn't find any alerts matching your current filters."
-                                : "Your system is running smoothly. There are no active alerts at the moment."}
+                                : "No alerts have been raised."}
                         </p>
                         {(searchQuery || typeFilter !== 'all') && (
                             <Button

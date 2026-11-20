@@ -158,7 +158,7 @@ describe('Toast Utils', () => {
 describe('toastMessages', () => {
     describe('rental messages', () => {
         it('should have all rental messages defined', () => {
-            expect(toastMessages.rental.createSuccess).toBe('Rental request submitted successfully!');
+            expect(toastMessages.rental.createSuccess).toBe('Rental request sent');
             expect(toastMessages.rental.createError).toBe('Failed to create rental request');
             expect(toastMessages.rental.cancelSuccess).toBe('Rental cancelled successfully');
             expect(toastMessages.rental.cancelError).toBe('Failed to cancel rental');
@@ -172,10 +172,10 @@ describe('toastMessages', () => {
     });
     describe('auth messages', () => {
         it('should have all auth messages defined', () => {
-            expect(toastMessages.auth.loginSuccess).toBe('Welcome back!');
+            expect(toastMessages.auth.loginSuccess).toBe('Signed in');
             expect(toastMessages.auth.loginError).toBe('Invalid credentials');
             expect(toastMessages.auth.logoutSuccess).toBe('Logged out successfully');
-            expect(toastMessages.auth.registerSuccess).toBe('Account created successfully!');
+            expect(toastMessages.auth.registerSuccess).toBe('Account created');
             expect(toastMessages.auth.registerError).toBe('Failed to create account');
         });
     });
