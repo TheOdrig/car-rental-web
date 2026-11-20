@@ -29,7 +29,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
             <Card className="border-border bg-card">
                 <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
-                        <ImageIcon className="h-5 w-5 text-violet-500" />
+                        <ImageIcon className="h-5 w-5 text-muted-foreground" />
                         Vehicle Images
                     </CardTitle>
                 </CardHeader>
@@ -48,7 +48,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2 text-lg">
-                        <ImageIcon className="h-5 w-5 text-violet-500" />
+                        <ImageIcon className="h-5 w-5 text-muted-foreground" />
                         Vehicle Images
                     </CardTitle>
                     <span className="text-sm text-slate-500 dark:text-slate-400">

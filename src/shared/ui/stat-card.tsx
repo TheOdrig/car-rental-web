@@ -18,21 +18,21 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
     return (
         <div
             className={cn(
-                'min-w-0 rounded-xl border border-border bg-card p-4 shadow-sm',
+                'min-w-0 rounded-lg border border-border bg-card p-4 shadow-sm',
                 className
             )}
         >
-            <div className="flex items-center justify-between">
-                <p className="text-sm font-medium text-slate-600 dark:text-slate-400">{label}</p>
-                {Icon && <Icon className="h-4 w-4 text-slate-500 dark:text-slate-400" />}
+            <div className="flex items-start justify-between gap-2">
+                <p className="min-w-0 text-sm font-medium text-muted-foreground">{label}</p>
+                {Icon && <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />}
             </div>
             <div className="mt-2 flex items-baseline gap-2">
-                <p className="min-w-0 text-2xl font-semibold text-slate-900 [overflow-wrap:anywhere] dark:text-slate-100">{value}</p>
+                <p className="min-w-0 text-2xl font-semibold text-foreground [overflow-wrap:anywhere]">{value}</p>
                 {trend && (
                     <span
                         className={cn(
                             'text-xs font-medium',
-                            trend.isPositive ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                            trend.isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
                         )}
                     >
                         {trend.isPositive ? '+' : ''}{trend.value}%

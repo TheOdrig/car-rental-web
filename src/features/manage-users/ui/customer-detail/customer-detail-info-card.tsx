@@ -26,7 +26,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <User className="h-5 w-5 text-emerald-500" />
+                    <User className="h-5 w-5 text-muted-foreground" />
                     Customer Information
                 </CardTitle>
             </CardHeader>

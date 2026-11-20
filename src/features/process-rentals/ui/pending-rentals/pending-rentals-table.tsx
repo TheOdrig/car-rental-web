@@ -1,8 +1,8 @@
 'use client';
 
-import { memo, useState } from 'react';
+import { memo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import { Clock } from 'lucide-react';
+import { cn } from '@/shared/lib';
 import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Table, TableBody, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
@@ -33,6 +33,14 @@ interface PendingRentalsTableProps {
 }
 
 const HEAD_CLASS = 'text-slate-600 dark:text-slate-300 font-semibold';
+
+export function PendingQueueEmpty({ children, className }: { children: ReactNode; className?: string }) {
+    return (
+        <p className={cn('rounded-lg border border-dashed border-border px-4 py-3 text-sm text-muted-foreground', className)}>
+            {children}
+        </p>
+    );
+}
 
 export const PendingRentalsTable = memo(function PendingRentalsTable({
     items,
@@ -78,12 +86,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
 
     if (items.length === 0) {
         return (
-            <Card className={className}>
-                <CardContent className="flex flex-col items-center justify-center py-12">
-                    <Clock className="mb-4 h-12 w-12 text-muted-foreground" aria-hidden="true" />
-                    <p className="text-center text-muted-foreground">No pending {type} at the moment</p>
-                </CardContent>
-            </Card>
+            <PendingQueueEmpty className={className}>No pending {type}.</PendingQueueEmpty>
         );
     }
 

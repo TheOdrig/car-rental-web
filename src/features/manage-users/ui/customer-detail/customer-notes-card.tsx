@@ -46,7 +46,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2 text-lg">
-                        <MessageSquare className="h-5 w-5 text-amber-500" />
+                        <MessageSquare className="h-5 w-5 text-muted-foreground" />
                         Admin Notes
                     </CardTitle>
                     {!isAdding && (

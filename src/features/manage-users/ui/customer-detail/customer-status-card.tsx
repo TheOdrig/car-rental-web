@@ -18,10 +18,10 @@ const statusColors: Record<AccountStatusType, string> = {
 };
 
 const statusDescriptions: Record<AccountStatusType, string> = {
-    ACTIVE: 'Customer account is active and in good standing',
-    PENDING: 'Customer account is pending verification',
-    BANNED: 'Customer account has been banned',
-    LOCKED: 'Customer account is temporarily locked',
+    ACTIVE: 'This account can log in and make rental requests',
+    PENDING: 'This account is waiting for verification',
+    BANNED: 'This account is banned from logging in and renting',
+    LOCKED: 'This account is locked after failed sign-ins',
 };
 
 export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
@@ -32,7 +32,7 @@ export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
             }`}>
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <Activity className="h-5 w-5 text-rose-500" />
+                    <Activity className="h-5 w-5 text-muted-foreground" />
                     Account Status
                 </CardTitle>
             </CardHeader>

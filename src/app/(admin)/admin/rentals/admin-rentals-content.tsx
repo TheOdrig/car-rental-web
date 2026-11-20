@@ -5,12 +5,11 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { RefreshCw, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { Card, CardContent } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
 import { Breadcrumb } from '@/widgets/layout';
-import { PendingRentalsTable, AllRentalsTable, useAdminRentals } from '@/features/process-rentals';
+import { PendingRentalsTable, PendingQueueEmpty, AllRentalsTable, useAdminRentals } from '@/features/process-rentals';
 import { usePendingApprovals, usePendingPickups, usePendingReturns, useOverdueRentals, useInvalidateAdmin } from '@/features/admin';
 import {
     useApproveRental,
@@ -44,6 +43,15 @@ const statusOptions: { value: StatusFilter; label: string }[] = [
 ];
 
 const QUEUE_FILTERS: StatusFilter[] = ['approvals', 'pickups', 'returns', 'overdue'];
+
+type Queue = 'approvals' | 'pickups' | 'returns' | 'overdue';
+
+const QUEUES: { key: Queue; label: string; noun: string }[] = [
+    { key: 'approvals', label: 'Approvals', noun: 'approvals' },
+    { key: 'pickups', label: 'Pickups', noun: 'pickups' },
+    { key: 'returns', label: 'Returns', noun: 'returns' },
+    { key: 'overdue', label: 'Overdue', noun: 'overdue rentals' },
+];
 
 export function AdminRentalsContent() {
     const searchParams = useSearchParams();
@@ -158,6 +166,16 @@ export function AdminRentalsContent() {
     const anyFailed = Object.values(failed).some(Boolean);
     const countLabel = (hasFailed: boolean, value: number) => (hasFailed ? '?' : value);
 
+    const loadingState: Record<Queue, boolean> = {
+        approvals: approvalsLoading,
+        pickups: pickupsLoading,
+        returns: returnsLoading,
+        overdue: overdueLoading,
+    };
+    const hidesWhenEmpty = (queue: Queue) =>
+        statusFilter === 'all' && !loadingState[queue] && !failed[queue] && counts[queue] === 0;
+    const emptyQueues = statusFilter === 'all' ? QUEUES.filter((queue) => hidesWhenEmpty(queue.key)) : [];
+
     const totalPending = counts.approvals + counts.pickups + counts.returns + counts.overdue;
 
     return (
@@ -244,55 +262,21 @@ export function AdminRentalsContent() {
             )}
 
             {view === 'pending' && (<>
-            <div className="grid gap-4 md:grid-cols-4">
-                <Card
-                    className={`cursor-pointer transition-colors ${statusFilter === 'approvals' ? 'border-primary' : ''}`}
-                    onClick={() => setStatusFilter('approvals')}
-                >
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Approvals</span>
-                            <Badge variant={counts.approvals > 0 ? 'default' : 'secondary'}>
-                                {countLabel(failed.approvals, counts.approvals)}
-                            </Badge>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card
-                    className={`cursor-pointer transition-colors ${statusFilter === 'pickups' ? 'border-primary' : ''}`}
-                    onClick={() => setStatusFilter('pickups')}
-                >
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Pickups</span>
-                            <Badge variant="secondary">{countLabel(failed.pickups, counts.pickups)}</Badge>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card
-                    className={`cursor-pointer transition-colors ${statusFilter === 'returns' ? 'border-primary' : ''}`}
-                    onClick={() => setStatusFilter('returns')}
-                >
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Returns</span>
-                            <Badge variant="secondary">{countLabel(failed.returns, counts.returns)}</Badge>
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card
-                    className={`cursor-pointer transition-colors ${statusFilter === 'overdue' ? 'border-primary' : ''}`}
-                    onClick={() => setStatusFilter('overdue')}
-                >
-                    <CardContent className="p-4">
-                        <div className="flex items-center justify-between">
-                            <span className="text-sm text-muted-foreground">Overdue</span>
-                            <Badge variant={counts.overdue > 0 ? 'destructive' : 'secondary'}>
-                                {countLabel(failed.overdue, counts.overdue)}
-                            </Badge>
-                        </div>
-                    </CardContent>
-                </Card>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-4" role="group" aria-label="Pending queues">
+                {QUEUES.map((queue) => (
+                    <button
+                        key={queue.key}
+                        type="button"
+                        aria-pressed={statusFilter === queue.key}
+                        onClick={() => setStatusFilter(queue.key)}
+                        className={`flex items-center justify-between gap-2 rounded-lg border bg-card px-4 py-3 text-left shadow-sm transition-colors hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${statusFilter === queue.key ? 'border-primary' : 'border-border'}`}
+                    >
+                        <span className="text-sm text-muted-foreground">{queue.label}</span>
+                        <Badge variant={queue.key === 'overdue' && counts.overdue > 0 ? 'destructive' : counts[queue.key] > 0 ? 'default' : 'secondary'}>
+                            {countLabel(failed[queue.key], counts[queue.key])}
+                        </Badge>
+                    </button>
+                ))}
             </div>
 
             <div className="flex items-center gap-4">
@@ -320,7 +304,7 @@ export function AdminRentalsContent() {
             </div>
 
             <div className="space-y-6">
-                {(statusFilter === 'all' || statusFilter === 'approvals') && (
+                {(statusFilter === 'all' || statusFilter === 'approvals') && !hidesWhenEmpty('approvals') && (
                     failed.approvals ? (
                         <ErrorMessage
                             title="Failed to load approvals"
@@ -340,7 +324,7 @@ export function AdminRentalsContent() {
                     )
                 )}
 
-                {(statusFilter === 'all' || statusFilter === 'pickups') && (
+                {(statusFilter === 'all' || statusFilter === 'pickups') && !hidesWhenEmpty('pickups') && (
                     failed.pickups ? (
                         <ErrorMessage
                             title="Failed to load pickups"
@@ -359,7 +343,7 @@ export function AdminRentalsContent() {
                     )
                 )}
 
-                {(statusFilter === 'all' || statusFilter === 'returns') && (
+                {(statusFilter === 'all' || statusFilter === 'returns') && !hidesWhenEmpty('returns') && (
                     failed.returns ? (
                         <ErrorMessage
                             title="Failed to load returns"
@@ -378,7 +362,7 @@ export function AdminRentalsContent() {
                     )
                 )}
 
-                {(statusFilter === 'all' || statusFilter === 'overdue') && (
+                {(statusFilter === 'all' || statusFilter === 'overdue') && !hidesWhenEmpty('overdue') && (
                     failed.overdue ? (
                         <ErrorMessage
                             title="Failed to load overdue rentals"
@@ -395,6 +379,12 @@ export function AdminRentalsContent() {
                             actionInProgress={actionInProgress}
                         />
                     )
+                )}
+
+                {emptyQueues.length > 0 && (
+                    <PendingQueueEmpty>
+                        No pending {emptyQueues.map((queue) => queue.noun).join(', ').replace(/, ([^,]*)$/, ' or $1')}.
+                    </PendingQueueEmpty>
                 )}
             </div>
             </>)}

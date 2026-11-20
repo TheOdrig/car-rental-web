@@ -30,21 +30,21 @@ export function MetricsCard({
     return (
         <Card
             className={cn(
-                'transition-all duration-200 hover:shadow-lg',
-                onClick && 'cursor-pointer hover:scale-[1.02]',
+                'gap-0 py-0 transition-colors',
+                onClick && 'cursor-pointer hover:border-primary/50',
                 className
             )}
             onClick={onClick}
         >
-            <CardContent className="p-6">
-                <div className="flex items-center justify-between">
-                    <div className="space-y-1">
+            <CardContent className="p-4">
+                <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 space-y-1">
                         <p className="text-sm font-medium text-muted-foreground">{title}</p>
-                        <p className="text-2xl font-bold">{value}</p>
+                        <p className="text-2xl font-semibold tabular-nums">{value}</p>
                         {trend && (
                             <div className={cn(
                                 'flex items-center gap-1 text-xs font-medium',
-                                trend.direction === 'up' ? 'text-emerald-500' : 'text-red-500'
+                                trend.direction === 'up' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
                             )}>
                                 {trend.direction === 'up' ? (
                                     <TrendingUp className="h-3 w-3" />
@@ -56,9 +56,7 @@ export function MetricsCard({
                             </div>
                         )}
                     </div>
-                    <div className="rounded-full bg-primary/10 p-3">
-                        {icon}
-                    </div>
+                    <div className="shrink-0 text-muted-foreground">{icon}</div>
                 </div>
             </CardContent>
         </Card>
@@ -68,14 +66,14 @@ export function MetricsCard({
 export function MetricsCardSkeleton() {
     return (
         <Card>
-            <CardContent className="p-6">
+            <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                     <div className="space-y-2">
                         <Skeleton className="h-4 w-24" />
                         <Skeleton className="h-8 w-32" />
                         <Skeleton className="h-3 w-20" />
                     </div>
-                    <Skeleton className="h-12 w-12 rounded-full" />
+                    <Skeleton className="h-4 w-4" />
                 </div>
             </CardContent>
         </Card>
@@ -126,22 +124,22 @@ export function DashboardMetricsGrid({
             <MetricsCard
                 title="Total Revenue"
                 value={revenueValue}
-                icon={<DollarSign className="h-5 w-5 text-primary" />}
+                icon={<DollarSign className="h-4 w-4" aria-hidden="true" />}
                 trend={revenueTrend}
                 onClick={() => onCardClick?.('revenue')}
             />
             <MetricsCard
                 title="Active Rentals"
                 value={activeRentals}
-                icon={<Car className="h-5 w-5 text-primary" />}
+                icon={<Car className="h-4 w-4" aria-hidden="true" />}
                 onClick={() => onCardClick?.('activeRentals')}
             />
             <MetricsCard
                 title="Pending Approvals"
                 value={pendingApprovals}
-                icon={<Clock className="h-5 w-5 text-primary" />}
+                icon={<Clock className="h-4 w-4" aria-hidden="true" />}
                 onClick={() => onCardClick?.('approvals')}
-                className={pendingApprovals > 0 ? 'border-amber-500/50' : undefined}
+                className={pendingApprovals > 0 ? 'border-amber-500/60' : undefined}
             />
         </div>
     );

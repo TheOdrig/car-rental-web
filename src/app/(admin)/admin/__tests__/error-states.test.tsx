@@ -160,10 +160,12 @@ describe('admin pages show an error instead of empty data', () => {
     it('rental management marks failed lists and counts', async () => {
         const failing = q.failing();
         q.usePendingPickups.mockReturnValue(failing);
+        q.usePendingApprovals.mockReturnValue(q.ok({ content: [{ id: 1 }], totalElements: 1 }));
         renderPage(<AdminRentalsContent />);
 
         expect(screen.queryByTestId('pending-pickups')).not.toBeInTheDocument();
         expect(screen.getByTestId('pending-approvals')).toBeInTheDocument();
+        expect(screen.getByText('No pending returns or overdue rentals.')).toBeInTheDocument();
         expect(screen.getByText('Some counts could not be loaded')).toBeInTheDocument();
         await userEvent.click(screen.getByRole('button', { name: /try again/i }));
         expect(failing.refetch).toHaveBeenCalledTimes(1);

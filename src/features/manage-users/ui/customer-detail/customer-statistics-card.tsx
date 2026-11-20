@@ -15,7 +15,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <BarChart3 className="h-5 w-5 text-cyan-500" />
+                    <BarChart3 className="h-5 w-5 text-muted-foreground" />
                     Statistics
                 </CardTitle>
             </CardHeader>

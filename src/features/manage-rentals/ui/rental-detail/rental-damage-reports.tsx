@@ -22,7 +22,7 @@ export function RentalDamageReports({ rentalId }: RentalDamageReportsProps) {
         <Card data-testid="rental-damage-reports">
             <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <AlertTriangle className="h-5 w-5 text-orange-500" aria-hidden="true" />
+                    <AlertTriangle className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                     Damage reports
                 </CardTitle>
             </CardHeader>

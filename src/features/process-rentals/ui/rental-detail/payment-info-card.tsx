@@ -26,7 +26,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <DollarSign className="h-5 w-5 text-amber-500" />
+                    <DollarSign className="h-5 w-5 text-muted-foreground" />
                     Payment Details
                 </CardTitle>
             </CardHeader>

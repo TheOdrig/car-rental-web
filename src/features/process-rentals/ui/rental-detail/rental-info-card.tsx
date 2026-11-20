@@ -59,7 +59,7 @@ export function RentalInfoCard({
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <FileText className="h-5 w-5 text-blue-500" />
+                    <FileText className="h-5 w-5 text-muted-foreground" />
                     Rental Information
                 </CardTitle>
             </CardHeader>

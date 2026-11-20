@@ -48,7 +48,7 @@ export function TimelineCard({ events }: TimelineCardProps) {
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <Clock className="h-5 w-5 text-violet-500" />
+                    <Clock className="h-5 w-5 text-muted-foreground" />
                     Timeline
                 </CardTitle>
             </CardHeader>

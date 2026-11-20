@@ -25,7 +25,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2 text-lg">
-                        <User className="h-5 w-5 text-emerald-500" />
+                        <User className="h-5 w-5 text-muted-foreground" />
                         Customer
                     </CardTitle>
                     {customer.id > 0 && (
