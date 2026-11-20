@@ -13,6 +13,7 @@ export { DamageAssessDialog } from './damage-assess-dialog';
 export { DamageResolveDialog } from './damage-resolve-dialog';
 export { DamageChargeDialog } from './damage-charge-dialog';
 export { VehicleDamageHistory } from './vehicle-damage-history';
+export { RentalDamageReports } from './rental-damage-reports';
 export { CustomerDamageHistory } from './customer-damage-history';
 
 export { LateReturnsTable } from './late-returns-table';
