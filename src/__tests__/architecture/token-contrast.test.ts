@@ -76,3 +76,17 @@ describe('Design token contrast', () => {
     });
   }
 });
+
+const SUBTLE_TONES = ['success', 'warning', 'danger', 'info', 'primary', 'neutral'];
+
+describe('Subtle status token contrast', () => {
+  for (const [name, palette] of [['light', light], ['dark', dark]] as const) {
+    it(`keeps subtle status text readable in ${name} mode`, () => {
+      const failures = SUBTLE_TONES.flatMap((tone) => {
+        const ratio = contrastRatio(palette[`${tone}-subtle`], palette[`${tone}-subtle-foreground`]);
+        return ratio >= MIN_TEXT_CONTRAST ? [] : [`${tone}: ${ratio.toFixed(2)}`];
+      });
+      expect(failures).toEqual([]);
+    });
+  }
+});

@@ -14,3 +14,15 @@ describe('FleetStatsCards', () => {
         expect(screen.queryByText(/maint\.|inspect$/i)).not.toBeInTheDocument();
     });
 });
+
+describe('FleetStatsCards tones', () => {
+    it('gives Rented, Reserved and Inspection different dot colours', () => {
+        const data = { totalCars: 5, availableCars: 3, rentedCars: 1, reservedCars: 0, maintenanceCars: 1, inspectionCars: 0, damagedCars: 0 } as FleetStatus;
+        render(<FleetStatsCards data={data} />);
+
+        const dot = (label: string) => screen.getByText(label).previousElementSibling?.className ?? '';
+        const dots = ['Rented', 'Reserved', 'Inspection'].map(dot);
+
+        expect(new Set(dots).size).toBe(3);
+    });
+});

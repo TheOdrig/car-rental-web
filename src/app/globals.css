@@ -60,6 +60,8 @@
     --color-warning-subtle-foreground: var(--warning-subtle-foreground);
     --color-danger-subtle: var(--danger-subtle);
     --color-danger-subtle-foreground: var(--danger-subtle-foreground);
+    --color-primary-subtle: var(--primary-subtle);
+    --color-primary-subtle-foreground: var(--primary-subtle-foreground);
     --color-info-subtle: var(--info-subtle);
     --color-info-subtle-foreground: var(--info-subtle-foreground);
     --color-neutral-subtle: var(--neutral-subtle);
@@ -118,6 +120,8 @@
     --danger-subtle-foreground: hsl(354 70% 34%);
     --info-subtle: hsl(204 90% 93%);
     --info-subtle-foreground: hsl(204 90% 24%);
+    --primary-subtle: hsl(217 91% 93%);
+    --primary-subtle-foreground: hsl(217 91% 28%);
     --neutral-subtle: hsl(210 16% 93%);
     --neutral-subtle-foreground: hsl(215 19% 28%);
 }
@@ -172,6 +176,8 @@
         --danger-subtle-foreground: hsl(354 85% 76%);
         --info-subtle: hsl(204 50% 15%);
         --info-subtle-foreground: hsl(204 85% 72%);
+        --primary-subtle: hsl(213 50% 16%);
+        --primary-subtle-foreground: hsl(213 86% 74%);
         --neutral-subtle: hsl(240 3% 15%);
         --neutral-subtle-foreground: hsl(240 4% 72%);
     }

@@ -7,7 +7,7 @@ const CAR_STATUS_TONES: Record<CarStatus, StatusPresentation['tone']> = {
     AVAILABLE: 'success',
     MAINTENANCE: 'warning',
     DAMAGED: 'danger',
-    INSPECTION: 'info',
+    INSPECTION: 'neutral',
 };
 
 export function carStatusPresentation(status: string | null | undefined): StatusPresentation {

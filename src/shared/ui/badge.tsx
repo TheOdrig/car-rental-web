@@ -27,6 +27,8 @@ const badgeVariants = cva(
           "border-transparent bg-danger-subtle text-danger-subtle-foreground",
         info:
           "border-transparent bg-info-subtle text-info-subtle-foreground",
+        primary:
+          "border-transparent bg-primary-subtle text-primary-subtle-foreground",
         neutral:
           "border-transparent bg-neutral-subtle text-neutral-subtle-foreground",
       },

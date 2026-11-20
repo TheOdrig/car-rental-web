@@ -23,9 +23,9 @@ const statCards: StatCardConfig[] = [
     { title: 'Total', key: 'totalCars', tone: 'neutral' },
     { title: 'Available', key: 'availableCars', tone: 'success' },
     { title: 'Rented', key: 'rentedCars', tone: 'info' },
-    { title: 'Reserved', key: 'reservedCars', tone: 'info' },
+    { title: 'Reserved', key: 'reservedCars', tone: 'primary' },
     { title: 'Maintenance', key: 'maintenanceCars', tone: 'warning' },
-    { title: 'Inspection', key: 'inspectionCars', tone: 'info' },
+    { title: 'Inspection', key: 'inspectionCars', tone: 'neutral' },
     { title: 'Damaged', key: 'damagedCars', tone: 'danger' },
 ];
 

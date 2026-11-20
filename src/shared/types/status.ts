@@ -1,4 +1,4 @@
-export const STATUS_TONES = ['success', 'warning', 'danger', 'info', 'neutral'] as const;
+export const STATUS_TONES = ['success', 'warning', 'danger', 'info', 'primary', 'neutral'] as const;
 
 export type StatusTone = (typeof STATUS_TONES)[number];
 

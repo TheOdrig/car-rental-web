@@ -26,6 +26,7 @@ const TONE_DOT: Record<StatusTone, string> = {
     warning: 'bg-warning',
     danger: 'bg-destructive',
     info: 'bg-info',
+    primary: 'bg-primary',
     neutral: 'bg-muted-foreground',
 };
 
@@ -34,6 +35,7 @@ const TONE_ICON: Record<StatusTone, string> = {
     warning: 'text-warning-subtle-foreground',
     danger: 'text-danger-subtle-foreground',
     info: 'text-info-subtle-foreground',
+    primary: 'text-primary-subtle-foreground',
     neutral: 'text-muted-foreground',
 };
 

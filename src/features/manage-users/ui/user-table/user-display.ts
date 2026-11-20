@@ -18,8 +18,8 @@ export interface UserForAction {
 export const ROLE_CONFIG: Record<UserRole, DisplayConfig> = {
     ADMIN: {
         label: 'Admin',
-        dotColor: 'bg-info',
-        textColor: 'text-info-subtle-foreground',
+        dotColor: 'bg-primary',
+        textColor: 'text-primary-subtle-foreground',
     },
     CUSTOMER: {
         label: 'Customer',
@@ -28,8 +28,8 @@ export const ROLE_CONFIG: Record<UserRole, DisplayConfig> = {
     },
     SUPPORT: {
         label: 'Support',
-        dotColor: 'bg-info',
-        textColor: 'text-info-subtle-foreground',
+        dotColor: 'bg-muted-foreground',
+        textColor: 'text-neutral-subtle-foreground',
     },
 };
 

@@ -90,7 +90,7 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     label="Reserved"
                     value={reservedCars}
                     total={totalCars}
-                    bgColor="bg-info"
+                    bgColor="bg-primary"
                 />
                 <StatusItem
                     label="Maintenance"
@@ -102,7 +102,7 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     label="Inspection"
                     value={inspectionCars}
                     total={totalCars}
-                    bgColor="bg-info"
+                    bgColor="bg-muted-foreground"
                 />
                 <StatusItem
                     label="Damaged"
@@ -141,9 +141,9 @@ export const FleetStatusCompact = memo(function FleetStatusCompact({
     const items: { label: string; value: number; icon: LucideIcon; tone: StatusTone }[] = [
         { label: 'Available', value: availableCars, icon: CheckCircle, tone: 'success' },
         { label: 'Rented', value: rentedCars, icon: Car, tone: 'info' },
-        { label: 'Reserved', value: reservedCars, icon: Clock, tone: 'info' },
+        { label: 'Reserved', value: reservedCars, icon: Clock, tone: 'primary' },
         { label: 'Maintenance', value: maintenanceCars, icon: Settings, tone: 'warning' },
-        { label: 'Inspection', value: inspectionCars, icon: PieChart, tone: 'info' },
+        { label: 'Inspection', value: inspectionCars, icon: PieChart, tone: 'neutral' },
         { label: 'Damaged', value: damagedCars, icon: AlertTriangle, tone: 'danger' },
     ];
 
