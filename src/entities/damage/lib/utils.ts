@@ -7,7 +7,7 @@ export function getDamageStatusColor(status: DamageStatus): string {
         ASSESSED: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200',
         CHARGED: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
         DISPUTED: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-        RESOLVED: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200',
+        RESOLVED: 'bg-slate-200 text-slate-800 dark:bg-slate-600 dark:text-slate-50',
     };
     return colors[status];
 }
