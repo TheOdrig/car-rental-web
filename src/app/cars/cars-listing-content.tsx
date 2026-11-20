@@ -5,6 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { AlertCircle, RefreshCw, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Pagination, PaginationInfo } from '@/shared/ui/pagination';
+import { PageHeader } from '@/shared/ui/page-header';
 import {
     Sheet,
     SheetContent,
@@ -24,7 +25,7 @@ import {
     ViewToggle,
     SortDropdown,
 } from '@/widgets/car-filters';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { useCars, useCarSearchResults, getSortParams, parseCarListParams, buildCarListParams } from '@/entities/car';
 import { getApiErrorMessage } from '@/shared/api';
 import { useFilterStore } from '@/widgets/car-filters';
@@ -172,16 +173,18 @@ export function CarsListingContent() {
         <div className="container mx-auto px-4 py-8">
             <Breadcrumb items={breadcrumbItems} className="mb-6" />
 
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-2">Browse Cars</h1>
-                <p className="text-muted-foreground">
-                    {isLoading
+            <PageHeader
+                area="public"
+                className="mb-8"
+                title="Browse Cars"
+                description={
+                    isLoading
                         ? 'Loading available cars...'
                         : isSearchMode
                             ? `${totalCars} available cars found for your dates`
-                            : `${totalCars} cars available for rent`}
-                </p>
-            </div>
+                            : `${totalCars} cars available for rent`
+                }
+            />
 
             <div className="flex flex-col lg:flex-row gap-8">
                 { }

@@ -16,6 +16,7 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { EmptyState } from '@/shared/ui/empty-state';
+import { PageHeader } from '@/shared/ui/page-header';
 
 export function AdminAlertsContent() {
     const [searchQuery, setSearchQuery] = useState('');
@@ -62,36 +63,34 @@ export function AdminAlertsContent() {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">System Alerts</h1>
-                    <p className="text-muted-foreground">
-                        Critical notifications and system status updates
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleMarkAllRead}
-                        className="gap-2 text-primary hover:text-primary hover:bg-primary/10"
-                        disabled={alerts.length === 0 || markAllReadMutation.isPending}
-                    >
-                        <CheckCheck className="h-4 w-4" />
-                        Mark all as read
-                    </Button>
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={handleRefresh}
-                        className="gap-2"
-                        disabled={isFetching}
-                    >
-                        <RefreshCw className={isFetching ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
-                        Refresh
-                    </Button>
-                </div>
-            </div>
+            <PageHeader
+                title="System Alerts"
+                description="Critical notifications and system status updates"
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={handleMarkAllRead}
+                            className="gap-2 text-primary hover:text-primary hover:bg-primary/10"
+                            disabled={alerts.length === 0 || markAllReadMutation.isPending}
+                        >
+                            <CheckCheck className="h-4 w-4" />
+                            Mark all as read
+                        </Button>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleRefresh}
+                            className="gap-2"
+                            disabled={isFetching}
+                        >
+                            <RefreshCw className={isFetching ? 'h-4 w-4 animate-spin' : 'h-4 w-4'} />
+                            Refresh
+                        </Button>
+                    </>
+                }
+            />
 
             <div className="flex flex-col md:flex-row items-center gap-4">
                 <div className="relative flex-1 w-full">

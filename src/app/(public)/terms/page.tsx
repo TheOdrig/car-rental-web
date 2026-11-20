@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { pageMetadata } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/page-header';
 
 export const metadata: Metadata = pageMetadata({
     title: 'Terms of Service',
@@ -11,10 +12,12 @@ export const metadata: Metadata = pageMetadata({
 export default function TermsPage() {
     return (
         <div className="container max-w-3xl py-12">
-            <h1 className="mb-2 text-3xl font-bold">Terms of Service</h1>
-            <p className="mb-8 text-muted-foreground">
-                Car Rental is a portfolio demo project, not a real rental company.
-            </p>
+            <PageHeader
+                area="public"
+                className="mb-8"
+                title="Terms of Service"
+                description="Car Rental is a portfolio demo project, not a real rental company."
+            />
 
             <div className="space-y-6 leading-relaxed">
                 <section>

@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Badge } from '@/shared/ui/badge';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { PendingRentalsTable, PendingQueueEmpty, AllRentalsTable, useAdminRentals } from '@/features/process-rentals';
 import { usePendingApprovals, usePendingPickups, usePendingReturns, useOverdueRentals, useInvalidateAdmin } from '@/features/admin';
 import {
@@ -20,6 +20,7 @@ import {
 import type { ProcessReturnData } from '@/features/process-rentals';
 import { showToast } from '@/shared/lib';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { PageHeader } from '@/shared/ui/page-header';
 import { RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
@@ -180,28 +181,34 @@ export function AdminRentalsContent() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Rental Management' },
-                ]}
-            />
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight">Rental Management</h1>
-                    <p className="text-muted-foreground">
+            <PageHeader
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Rental Management' },
+                        ]}
+                    />
+                }
+                title="Rental Management"
+                description={
+                    <>
                         {userId !== undefined ? `Rentals of customer #${userId}` : 'Work the pending queues or browse every rental'}
-                    </p>
-                </div>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleRefresh}
-                    aria-label="Refresh rentals"
-                >
-                    <RefreshCw className="h-4 w-4" aria-hidden="true" />
-                </Button>
-            </div>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            aria-label="Refresh rentals"
+                        >
+                            <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                    </>
+                }
+            />
 
             {userId === undefined && (
                 <div className="flex gap-2" role="tablist" aria-label="Rental views">

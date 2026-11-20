@@ -11,6 +11,7 @@ import {
     Home,
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
+import { PageHeader } from '@/shared/ui/page-header';
 
 interface SettingsLayoutProps {
     children: ReactNode;
@@ -98,12 +99,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
         <div className="container py-8">
             <Breadcrumb currentTab={currentTab} />
 
-            <div className="mb-8">
-                <h1 className="text-3xl font-bold">Settings</h1>
-                <p className="mt-1 text-muted-foreground">
-                    Manage your account settings and preferences
-                </p>
-            </div>
+            <PageHeader area="customer" className="mb-8" title="Settings" description="Manage your account settings and preferences" />
 
             <div className="flex flex-col gap-8 lg:flex-row">
                 <SettingsSidebar />

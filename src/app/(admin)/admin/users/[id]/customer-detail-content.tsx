@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui';
+import { PageHeader } from '@/shared/ui/page-header';
 import { DetailPageSkeleton, DetailPageError, CustomerDamageHistory } from '@/features/admin';
 import {
     CustomerDetailInfoCard,
@@ -79,73 +80,73 @@ export function CustomerDetailContent({ id }: { id: string }) {
 
     return (
         <div className="space-y-6 p-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Users', href: '/admin/users' },
-                    { label: customerName },
-                ]}
-            />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="min-w-0 space-y-1 md:min-w-[26rem]">
-                    <div className="flex items-center gap-3">
-                        <h1 className="min-w-0 break-words text-3xl font-bold tracking-tight text-foreground">
-                            {customerName}
-                        </h1>
-                    </div>
-                    <p className="break-words text-sm text-muted-foreground">
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Users', href: '/admin/users' },
+                            { label: customerName },
+                        ]}
+                    />
+                }
+                title={customerName}
+                description={
+                    <>
                         {customer.email} • Member since {customer.registrationDate ? formatDate(customer.registrationDate) : 'N/A'}
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/users">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Users
-                        </Link>
-                    </Button>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/users">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back to Users
+                            </Link>
+                        </Button>
 
-                    {isActive && (
-                        <Button
-                            variant="destructive"
-                            size="sm"
-                            onClick={() => setIsBanDialogOpen(true)}
-                        >
-                            <Ban className="h-4 w-4" />
-                            Ban Customer
+                        {isActive && (
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                onClick={() => setIsBanDialogOpen(true)}
+                            >
+                                <Ban className="h-4 w-4" />
+                                Ban Customer
+                            </Button>
+                        )}
+                        {isBanned && (
+                            <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => setIsUnbanDialogOpen(true)}
+                            >
+                                <ShieldCheck className="h-4 w-4" />
+                                Unban Customer
+                            </Button>
+                        )}
+                        <Button variant="outline" size="sm" asChild>
+                            <a href={`mailto:${customer.email}`}>
+                                <Mail className="h-4 w-4" />
+                                Send Email
+                            </a>
                         </Button>
-                    )}
-                    {isBanned && (
-                        <Button
-                            variant="default"
-                            size="sm"
-                            onClick={() => setIsUnbanDialogOpen(true)}
-                        >
-                            <ShieldCheck className="h-4 w-4" />
-                            Unban Customer
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/rentals?userId=${customerId}`}>
+                                <History className="h-4 w-4" />
+                                View All Rentals
+                            </Link>
                         </Button>
-                    )}
-                    <Button variant="outline" size="sm" asChild>
-                        <a href={`mailto:${customer.email}`}>
-                            <Mail className="h-4 w-4" />
-                            Send Email
-                        </a>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/rentals?userId=${customerId}`}>
-                            <History className="h-4 w-4" />
-                            View All Rentals
-                        </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/damages?userId=${customerId}`}>
-                            <AlertTriangle className="h-4 w-4" />
-                            View Damages
-                        </Link>
-                    </Button>
-                </div>
-            </div>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/damages?userId=${customerId}`}>
+                                <AlertTriangle className="h-4 w-4" />
+                                View Damages
+                            </Link>
+                        </Button>
+                    </>
+                }
+            />
 
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2 [&>*]:min-w-0">
                 <CustomerDetailInfoCard customer={customer} />

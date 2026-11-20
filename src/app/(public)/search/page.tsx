@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { pageMetadata } from '@/shared/lib';
 import { CarSearch } from '@/widgets/car-search';
 import { SearchContent } from './search-content';
+import { PageHeader } from '@/shared/ui/page-header';
 
 export const metadata: Metadata = pageMetadata({
     title: 'Search Available Cars',
@@ -12,8 +13,8 @@ export const metadata: Metadata = pageMetadata({
 export default function SearchPage() {
     return (
         <div className="container mx-auto px-4 py-8">
+            <PageHeader area="public" className="mb-4" title="Search Results" />
             <div className="mb-8">
-                <h1 className="text-3xl font-bold mb-4">Search Results</h1>
                 <CarSearch variant="compact" />
             </div>
             <SearchContent />

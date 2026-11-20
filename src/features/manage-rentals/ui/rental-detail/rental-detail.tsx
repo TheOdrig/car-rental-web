@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { X } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { PageHeader } from '@/shared/ui/page-header';
 import { cn, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
 import {
     getPaymentOpensOn,
@@ -54,24 +55,25 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
 
     return (
         <div className={cn('space-y-6', className)}>
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div>
-                    <div className="mb-2 flex items-center gap-3">
-                        <h1 className="text-2xl font-bold">Rental {formatRentalReference(rental.id)}</h1>
+            <PageHeader
+                area="customer"
+                size="detail"
+                title={`Rental ${formatRentalReference(rental.id)}`}
+                description={
+                    <>
                         <RentalStatusBadge status={status} />
-                    </div>
-                    <p className="text-muted-foreground">Booked on {formatDateTime(rental.createTime)}</p>
-                    {status === RentalStatus.CANCELLED && (
-                        <RentalCancellationNotice
-                            className="mt-2"
-                            cancelledBy={rental.cancelledBy}
-                            reason={rental.cancellationReason}
-                        />
-                    )}
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                    {canCancel && (
+                        <span>Booked on {formatDateTime(rental.createTime)}</span>
+                        {status === RentalStatus.CANCELLED && (
+                            <RentalCancellationNotice
+                                className="basis-full"
+                                cancelledBy={rental.cancelledBy}
+                                reason={rental.cancellationReason}
+                            />
+                        )}
+                    </>
+                }
+                actions={
+                    canCancel && (
                         <Button
                             variant="outline"
                             className="bg-danger-subtle border-danger-subtle-foreground/30 text-danger-subtle-foreground hover:bg-danger-subtle hover:text-danger-subtle-foreground"
@@ -80,9 +82,9 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                             <X className="mr-2 h-4 w-4" aria-hidden="true" />
                             Cancel
                         </Button>
-                    )}
-                </div>
-            </div>
+                    )
+                }
+            />
 
             <div className="grid gap-6 lg:grid-cols-3">
                 <div className="space-y-6 lg:col-span-2">

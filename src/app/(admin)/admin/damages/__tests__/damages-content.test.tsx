@@ -20,7 +20,7 @@ vi.mock('@/features/admin', () => ({
     DamageTable: ({ damages }: { damages: unknown[] }) => <div data-testid="damage-table">{damages.length} damages</div>,
     DamageFilters: () => <div data-testid="damage-filters" />,
 }));
-vi.mock('@/widgets/layout', () => ({ Breadcrumb: () => null }));
+vi.mock('@/shared/ui/breadcrumb', () => ({ Breadcrumb: () => null }));
 
 const idle = { data: undefined, isLoading: false, isFetching: false, isError: false, refetch: vi.fn() };
 

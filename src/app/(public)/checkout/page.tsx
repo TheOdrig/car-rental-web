@@ -5,6 +5,7 @@ import type { Metadata } from 'next';
 import { CheckoutForm } from '@/features/book-car';
 import { CheckoutSkeleton } from '@/features/book-car';
 import { rentalDatesSchema } from '@/entities/rental';
+import { PageHeader } from '@/shared/ui/page-header';
 
 export const metadata: Metadata = {
     title: 'Checkout',
@@ -97,9 +98,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                     </ol>
                 </nav>
 
-                <h1 className="mb-8 text-3xl font-bold">
-                    Checkout
-                </h1>
+                <PageHeader area="public" className="mb-8" title="Checkout" />
 
                 <Suspense fallback={<CheckoutSkeleton />}>
                     <CheckoutForm

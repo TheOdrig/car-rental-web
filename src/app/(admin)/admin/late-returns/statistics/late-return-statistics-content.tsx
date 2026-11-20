@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { Breadcrumb } from '@/widgets/layout';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { LateReturnStats } from '@/features/admin';
 import { useLateReturnStatistics } from '@/features/admin';
 import { toast } from 'sonner';
@@ -28,39 +29,39 @@ function StatisticsContent() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Late Returns', href: '/admin/late-returns' },
-                    { label: 'Statistics' },
-                ]}
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Late Returns', href: '/admin/late-returns' },
+                            { label: 'Statistics' },
+                        ]}
+                    />
+                }
+                title="Late Return Statistics"
+                description="Analyze late return trends and penalty metrics"
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isFetching}
+                            aria-label="Refresh late return statistics"
+                        >
+                            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/late-returns">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back to List
+                            </Link>
+                        </Button>
+                    </>
+                }
             />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Late Return Statistics</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Analyze late return trends and penalty metrics
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isFetching}
-                        aria-label="Refresh late return statistics"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/late-returns">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to List
-                        </Link>
-                    </Button>
-                </div>
-            </div>
 
             <div className="flex flex-wrap items-end gap-4 p-4 rounded-xl bg-card/50 border border-border">
                 <div className="space-y-2">

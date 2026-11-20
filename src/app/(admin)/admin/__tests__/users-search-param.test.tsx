@@ -10,7 +10,7 @@ vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: vi.fn(), replace: nav.replace }),
     usePathname: () => '/admin/users',
 }));
-vi.mock('@/widgets/layout', () => ({ Breadcrumb: () => null }));
+vi.mock('@/shared/ui/breadcrumb', () => ({ Breadcrumb: () => null }));
 vi.mock('@/features/manage-users', () => ({
     useUserStats: () => ({ data: { totalUsers: 1, activeUsers: 1, bannedUsers: 0 }, isLoading: false, isError: false, refetch: vi.fn() }),
     useInvalidateUsers: () => ({ all: vi.fn() }),

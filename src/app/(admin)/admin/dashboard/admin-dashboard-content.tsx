@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { clientPost } from '@/shared/api';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
 import { FleetStatusCard } from '@/features/manage-fleet';
 import { PendingRentalsTable } from '@/features/process-rentals';

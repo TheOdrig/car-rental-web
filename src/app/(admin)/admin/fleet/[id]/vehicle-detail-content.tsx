@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import { PageHeader } from '@/shared/ui/page-header';
 import { DetailPageSkeleton, DetailPageError, VehicleDamageHistory } from '@/features/admin';
 import {
     VehicleDetailInfoCard,
@@ -82,62 +83,62 @@ export function VehicleDetailContent({ id }: { id: string }) {
 
     return (
         <div className="space-y-6 p-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Fleet', href: '/admin/fleet' },
-                    { label: vehicleName },
-                ]}
-            />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground">
-                            {vehicleName}
-                        </h1>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Fleet', href: '/admin/fleet' },
+                            { label: vehicleName },
+                        ]}
+                    />
+                }
+                title={vehicleName}
+                description={
+                    <>
                         {vehicle.year} • {vehicle.licensePlate} • {vehicle.color}
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/fleet">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to Fleet
-                        </Link>
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/fleet/${vehicleId}/edit`}>
-                            <Edit className="h-4 w-4" />
-                            Edit Vehicle
-                        </Link>
-                    </Button>
-                    <Select
-                        value={vehicle.status}
-                        onValueChange={(value) => handleStatusChange(value as CarStatus)}
-                        disabled={updateStatus.isPending}
-                    >
-                        <SelectTrigger aria-label="Change vehicle status" className="w-[160px]">
-                            <SelectValue placeholder="Change Status" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {statusOptions.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                    {option.label}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href={`/admin/damages?carId=${vehicleId}`}>
-                            <AlertTriangle className="h-4 w-4" />
-                            View Damages
-                        </Link>
-                    </Button>
-                </div>
-            </div>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/fleet">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back to Fleet
+                            </Link>
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/fleet/${vehicleId}/edit`}>
+                                <Edit className="h-4 w-4" />
+                                Edit Vehicle
+                            </Link>
+                        </Button>
+                        <Select
+                            value={vehicle.status}
+                            onValueChange={(value) => handleStatusChange(value as CarStatus)}
+                            disabled={updateStatus.isPending}
+                        >
+                            <SelectTrigger aria-label="Change vehicle status" className="w-[160px]">
+                                <SelectValue placeholder="Change Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {statusOptions.map((option) => (
+                                    <SelectItem key={option.value} value={option.value}>
+                                        {option.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href={`/admin/damages?carId=${vehicleId}`}>
+                                <AlertTriangle className="h-4 w-4" />
+                                View Damages
+                            </Link>
+                        </Button>
+                    </>
+                }
+            />
 
             <div className="grid gap-6 lg:grid-cols-2">
                 <VehicleImagesCard images={vehicle.images ?? { primary: '', additional: [] }} vehicleName={vehicleName} />

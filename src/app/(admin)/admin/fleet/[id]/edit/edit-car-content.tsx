@@ -8,6 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import { PageHeader } from '@/shared/ui/page-header';
 import {
     BasicInfoSection,
     SpecificationsSection,
@@ -122,30 +123,35 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
 
     return (
         <div className="space-y-6 p-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Fleet Management', href: '/admin/fleet' },
-                    { label: `Edit ${car.brand} ${car.model}` },
-                ]}
-            />
-
-            <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">Edit Car</h1>
-                    <p className="text-muted-foreground">
+            <PageHeader
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Fleet Management', href: '/admin/fleet' },
+                            { label: `Edit ${car.brand} ${car.model}` },
+                        ]}
+                    />
+                }
+                title="Edit Car"
+                description={
+                    <>
                         Update details for {car.brand} {car.model}
-                    </p>
-                </div>
-                <Button
-                    variant="outline"
-                    onClick={() => router.back()}
-                    className="gap-2"
-                >
-                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                    Back
-                </Button>
-            </div>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button
+                            variant="outline"
+                            onClick={() => router.back()}
+                            className="gap-2"
+                        >
+                            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                            Back
+                        </Button>
+                    </>
+                }
+            />
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 lg:grid-cols-2">

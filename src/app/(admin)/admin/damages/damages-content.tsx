@@ -5,11 +5,12 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { DamageTable, DamageFilters } from '@/features/admin';
 import { Pagination } from '@/shared/ui/pagination';
 import { useDamages, useCustomerDamages } from '@/features/manage-damages';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { PageHeader } from '@/shared/ui/page-header';
 import { toast } from 'sonner';
 import { DAMAGE_CATEGORIES, DAMAGE_SEVERITIES, DAMAGE_STATUSES, type DamageSearchFilters } from '@/entities/damage';
 import { pickCode } from '@/shared/lib';
@@ -56,38 +57,38 @@ function DamagesList() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Damage Reports' },
-                ]}
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Damage Reports' },
+                        ]}
+                    />
+                }
+                title="Damage Reports"
+                description="Manage and track vehicle damage reports"
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isFetching}
+                            aria-label="Refresh damage reports"
+                        >
+                            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/damages/statistics">
+                                <BarChart3 className="h-4 w-4" />
+                                View Statistics
+                            </Link>
+                        </Button>
+                    </>
+                }
             />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Damage Reports</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Manage and track vehicle damage reports
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isFetching}
-                        aria-label="Refresh damage reports"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/damages/statistics">
-                            <BarChart3 className="h-4 w-4" />
-                            View Statistics
-                        </Link>
-                    </Button>
-                </div>
-            </div>
 
             {(userId !== undefined || filters.carId !== undefined) && (
                 <div className="flex items-center justify-between rounded-xl border bg-muted/40 px-4 py-3 text-sm">

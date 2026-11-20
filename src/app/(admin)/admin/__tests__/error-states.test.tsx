@@ -32,7 +32,7 @@ vi.mock('next/navigation', () => ({
     useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
     usePathname: () => '/admin/rentals',
 }));
-vi.mock('@/widgets/layout', () => ({ Breadcrumb: () => null }));
+vi.mock('@/shared/ui/breadcrumb', () => ({ Breadcrumb: () => null }));
 vi.mock('@/features/admin', async () => {
     const actual = await vi.importActual<typeof import('@/features/admin')>('@/features/admin');
     return {

@@ -7,6 +7,7 @@ import { useMyDamages } from '@/features/manage-damages';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Pagination } from '@/shared/ui/pagination';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { PageHeader } from '@/shared/ui/page-header';
 import { DamageList } from '@/features/manage-damages';
 
 export function MyDamagesContent() {
@@ -36,15 +37,17 @@ export function MyDamagesContent() {
     return (
         <ErrorBoundary>
             <div className="container py-8">
-                <div className="mb-8">
-                    <div className="flex items-center gap-3 mb-2">
-                        <AlertTriangle className="h-8 w-8 text-warning-subtle-foreground" />
-                        <h1 className="text-3xl font-bold">Damage Reports</h1>
-                    </div>
-                    <p className="text-muted-foreground">
-                        View damage reports associated with your rentals
-                    </p>
-                </div>
+                <PageHeader
+                    area="customer"
+                    className="mb-8"
+                    title={
+                        <span className="flex items-center gap-3">
+                            <AlertTriangle className="h-8 w-8 text-warning-subtle-foreground" aria-hidden="true" />
+                            Damage Reports
+                        </span>
+                    }
+                    description="View damage reports associated with your rentals"
+                />
 
                 {isLoading ? (
                     <div className="space-y-4">

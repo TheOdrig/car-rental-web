@@ -9,6 +9,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
+import { PageHeader } from '@/shared/ui/page-header';
 import {
     RentalList,
     RentalListSkeleton,
@@ -121,14 +122,7 @@ export function MyRentalsContent() {
     return (
         <ErrorBoundary>
             <div className="container py-8">
-                <div className="mb-8 flex items-start justify-between gap-4">
-                    <div>
-                        <h1 className="text-3xl font-bold">My Rentals</h1>
-                        <p className="mt-1 text-muted-foreground">
-                            View and manage your rental history
-                        </p>
-                    </div>
-                </div>
+                <PageHeader area="customer" className="mb-8" title="My Rentals" description="View and manage your rental history" />
 
                 <div className="mb-8">
                     {isLoading ? (

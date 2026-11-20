@@ -5,9 +5,10 @@ import Link from 'next/link';
 import { RefreshCw, Plus, Clock, Search, Filter } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { PageHeader } from '@/shared/ui/page-header';
 import {
     Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/shared/ui/select';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { FleetStatsCards, FleetTable } from '@/features/manage-fleet';
 import { useFleetStatus } from '@/features/admin';
 import {
@@ -90,17 +91,19 @@ export function FleetManagementContent() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Fleet Management' },
-                ]}
-            />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Fleet Management</h1>
-                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Fleet Management' },
+                        ]}
+                    />
+                }
+                title="Fleet Management"
+                description={
+                    <>
                         <span>Manage your vehicle inventory</span>
                         {lastUpdated && (
                             <span className="flex items-center gap-1.5 text-[11px] font-medium bg-card px-2 py-0.5 rounded-md border border-border">
@@ -108,27 +111,29 @@ export function FleetManagementContent() {
                                 Updated {lastUpdated}
                             </span>
                         )}
-                    </div>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isRefreshing}
-                        aria-label="Refresh fleet data"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
-                    </Button>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isRefreshing}
+                            aria-label="Refresh fleet data"
+                        >
+                            <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
+                        </Button>
 
-                    <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" asChild>
-                        <Link href="/admin/fleet/new">
-                            <Plus className="h-4 w-4" aria-hidden="true" />
-                            Add New Car
-                        </Link>
-                    </Button>
-                </div>
-            </div>
+                        <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" asChild>
+                            <Link href="/admin/fleet/new">
+                                <Plus className="h-4 w-4" aria-hidden="true" />
+                                Add New Car
+                            </Link>
+                        </Button>
+                    </>
+                }
+            />
 
             <FleetStatsCards
                 data={fleetStatus ?? {

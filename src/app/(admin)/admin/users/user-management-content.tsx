@@ -12,10 +12,11 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/shared/ui/select';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { UserStatsCards, UserTable, useUserStats, useInvalidateUsers } from '@/features/manage-users';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { PageHeader } from '@/shared/ui/page-header';
 import { formatTime } from '@/shared/lib';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
@@ -59,35 +60,39 @@ export function UserManagementContent() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'User Management' },
-                ]}
-            />
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-                    <div className="flex items-center gap-2 text-muted-foreground">
+            <PageHeader
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'User Management' },
+                        ]}
+                    />
+                }
+                title="User Management"
+                description={
+                    <>
                         <p className="text-sm">Manage customer and admin accounts</p>
                         <span className="flex items-center gap-1.5 text-[11px] font-medium bg-card px-2 py-0.5 rounded-md border border-border">
                             <Clock className="h-3 w-3" aria-hidden="true" />
                             Updated {lastUpdated}
                         </span>
-                    </div>
-                </div>
-
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRefresh}
-                    disabled={isLoadingStats}
-                >
-                    <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} aria-hidden="true" />
-                    Refresh
-                </Button>
-            </div>
+                    </>
+                }
+                actions={
+                    <>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={handleRefresh}
+                            disabled={isLoadingStats}
+                        >
+                            <RefreshCw className={`h-4 w-4 ${isLoadingStats ? 'animate-spin' : ''}`} aria-hidden="true" />
+                            Refresh
+                        </Button>
+                    </>
+                }
+            />
 
             {statsFailed ? (
                 <ErrorMessage

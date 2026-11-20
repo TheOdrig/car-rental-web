@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/shared/ui/card';
-import { Breadcrumb } from '@/widgets/layout';
+import { PageHeader } from '@/shared/ui/page-header';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import {
     BasicInfoSection,
     SpecificationsSection,
@@ -50,30 +51,31 @@ export function AddCarContent() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Fleet Management', href: '/admin/fleet' },
-                    { label: 'Add New Car' },
-                ]}
+            <PageHeader
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Fleet Management', href: '/admin/fleet' },
+                            { label: 'Add New Car' },
+                        ]}
+                    />
+                }
+                title="Add New Car"
+                description="Add a new vehicle to your fleet"
+                actions={
+                    <>
+                        <Button
+                            variant="outline"
+                            onClick={() => router.back()}
+                            className="gap-2 bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
+                        >
+                            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+                            Back
+                        </Button>
+                    </>
+                }
             />
-
-            <div className="flex items-center justify-between">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight">Add New Car</h1>
-                    <p className="text-muted-foreground">
-                        Add a new vehicle to your fleet
-                    </p>
-                </div>
-                <Button
-                    variant="outline"
-                    onClick={() => router.back()}
-                    className="gap-2 bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
-                >
-                    <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-                    Back
-                </Button>
-            </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid gap-6 lg:grid-cols-2">

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Clock, DollarSign, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { PageHeader } from '@/shared/ui/page-header';
 import { cn } from '@/shared/lib';
 
 interface DashboardHeaderProps {
@@ -21,46 +22,48 @@ export function DashboardHeader({
     onRefreshRates,
 }: DashboardHeaderProps) {
     return (
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="space-y-1">
-                <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-                <div className="flex flex-wrap items-center gap-2 text-muted-foreground">
-                    <p className="text-sm">Overview of your rental operations</p>
+        <PageHeader
+            title="Dashboard"
+            description={
+                <>
+                    <span>Overview of your rental operations</span>
                     {lastUpdated && (
                         <span className="flex items-center gap-1.5 text-[11px] font-medium bg-muted text-muted-foreground px-2 py-0.5 rounded-full border border-dashed border-border">
                             <Clock className="h-3 w-3" aria-hidden="true" />
                             Updated {lastUpdated}
                         </span>
                     )}
-                </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={onRefreshRates}
-                    disabled={isRefreshingRates}
-                    className="gap-2 shrink-0 cursor-pointer bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
-                >
-                    <DollarSign className={cn('h-4 w-4', isRefreshingRates && 'animate-pulse')} aria-hidden="true" />
-                    {isRefreshingRates ? 'Refreshing...' : 'Refresh Rates'}
-                </Button>
-                <Button size="sm" className="gap-2 shrink-0 cursor-pointer" aria-label="Add new car to fleet" asChild>
-                    <Link href="/admin/fleet/new">
-                        <Plus className="h-4 w-4" aria-hidden="true" />
-                        Add New Car
-                    </Link>
-                </Button>
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={onRefresh}
-                    className="shrink-0 cursor-pointer"
-                    aria-label={isRefreshing ? 'Refreshing data' : 'Refresh dashboard data'}
-                >
-                    <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} aria-hidden="true" />
-                </Button>
-            </div>
-        </div>
+                </>
+            }
+            actions={
+                <>
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={onRefreshRates}
+                        disabled={isRefreshingRates}
+                        className="gap-2 shrink-0 cursor-pointer bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
+                    >
+                        <DollarSign className={cn('h-4 w-4', isRefreshingRates && 'animate-pulse')} aria-hidden="true" />
+                        {isRefreshingRates ? 'Refreshing...' : 'Refresh Rates'}
+                    </Button>
+                    <Button size="sm" className="gap-2 shrink-0 cursor-pointer" aria-label="Add new car to fleet" asChild>
+                        <Link href="/admin/fleet/new">
+                            <Plus className="h-4 w-4" aria-hidden="true" />
+                            Add New Car
+                        </Link>
+                    </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={onRefresh}
+                        className="shrink-0 cursor-pointer"
+                        aria-label={isRefreshing ? 'Refreshing data' : 'Refresh dashboard data'}
+                    >
+                        <RefreshCw className={cn('h-4 w-4', isRefreshing && 'animate-spin')} aria-hidden="true" />
+                    </Button>
+                </>
+            }
+        />
     );
 }

@@ -8,6 +8,7 @@ import { Input } from '@/shared/ui/input';
 import {
     Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
+import { PageHeader } from '@/shared/ui/page-header';
 import { DetailPageSkeleton, DetailPageError, PenaltyWaiveDialog, PenaltyHistorySection, RentalDamageReports, type TimelineEventType } from '@/features/admin';
 import {
     RentalInfoCard,
@@ -216,62 +217,64 @@ export function RentalDetailContent({ id }: { id: string }) {
 
     return (
         <div className="space-y-6 p-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Rentals', href: '/admin/rentals' },
-                    { label: referenceNumber },
-                ]}
-            />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <div className="flex items-center gap-3">
-                        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight text-foreground focus:outline-none">
-                            {referenceNumber}
-                        </h1>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                        {rental.vehicle.brand} {rental.vehicle.model} • {personDisplayName(rental.customer)}
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/rentals">
-                            <ArrowLeft className="h-4 w-4" />
-                            Back to List
-                        </Link>
-                    </Button>
-                    <RentalActionButtons
-                        status={rental.status}
-                        onApprove={() => setConfirming('approve')}
-                        onReject={handleReject}
-                        onPickup={() => setConfirming('pickup')}
-                        onReturn={() => setConfirming('return')}
-                        onEarlyReturn={() => setConfirming('earlyReturn')}
-                        onCancel={() => setConfirming('cancel')}
-                        pickupBlockedReason={pickupBlockedReason}
-                        isLoading={isActionLoading}
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Rentals', href: '/admin/rentals' },
+                            { label: referenceNumber },
+                        ]}
                     />
-                    {showReportDamage && (
-                        <Button variant="outline" size="sm" className="gap-2" onClick={() => setDamageDialogOpen(true)}>
-                            <TriangleAlert className="h-4 w-4" aria-hidden="true" />
-                            Report Damage
+                }
+                title={referenceNumber}
+                headingRef={headingRef}
+                focusable
+                description={
+                    <>
+                        {rental.vehicle.brand} {rental.vehicle.model} • {personDisplayName(rental.customer)}
+                    </>
+                }
+                actions={
+                    <>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/rentals">
+                                <ArrowLeft className="h-4 w-4" />
+                                Back to List
+                            </Link>
                         </Button>
-                    )}
-                    {hasPenalty && (
-                        <Button
-                            variant="destructive"
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => setWaiveDialogOpen(true)}
-                        >
-                            <DollarSign className="h-4 w-4" />
-                            Waive Penalty
-                        </Button>
-                    )}
-                </div>
-            </div>
+                        <RentalActionButtons
+                            status={rental.status}
+                            onApprove={() => setConfirming('approve')}
+                            onReject={handleReject}
+                            onPickup={() => setConfirming('pickup')}
+                            onReturn={() => setConfirming('return')}
+                            onEarlyReturn={() => setConfirming('earlyReturn')}
+                            onCancel={() => setConfirming('cancel')}
+                            pickupBlockedReason={pickupBlockedReason}
+                            isLoading={isActionLoading}
+                        />
+                        {showReportDamage && (
+                            <Button variant="outline" size="sm" className="gap-2" onClick={() => setDamageDialogOpen(true)}>
+                                <TriangleAlert className="h-4 w-4" aria-hidden="true" />
+                                Report Damage
+                            </Button>
+                        )}
+                        {hasPenalty && (
+                            <Button
+                                variant="destructive"
+                                size="sm"
+                                className="gap-2"
+                                onClick={() => setWaiveDialogOpen(true)}
+                            >
+                                <DollarSign className="h-4 w-4" />
+                                Waive Penalty
+                            </Button>
+                        )}
+                    </>
+                }
+            />
 
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                 <RentalInfoCard

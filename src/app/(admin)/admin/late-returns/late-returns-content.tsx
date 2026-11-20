@@ -5,11 +5,12 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
-import { Breadcrumb } from '@/widgets/layout';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { LateReturnsTable, LateReturnFilters } from '@/features/admin';
 import { useLateReturns } from '@/features/admin';
 import { toast } from 'sonner';
 import { ErrorMessage } from '@/shared/ui/error-message';
+import { PageHeader } from '@/shared/ui/page-header';
 import {
     LATE_RETURN_SORT_DIRECTIONS,
     LATE_RETURN_SORT_FIELDS,
@@ -50,38 +51,38 @@ function LateReturnsList() {
 
     return (
         <div className="space-y-6">
-            <Breadcrumb
-                items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Late Returns' },
-                ]}
+            <PageHeader
+                surface
+                breadcrumb={
+                    <Breadcrumb
+                        items={[
+                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Late Returns' },
+                        ]}
+                    />
+                }
+                title="Late Returns"
+                description="Monitor and manage overdue rentals and penalties"
+                actions={
+                    <>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleRefresh}
+                            disabled={isFetching}
+                            aria-label="Refresh late returns"
+                        >
+                            <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
+                        </Button>
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="/admin/late-returns/statistics">
+                                <BarChart3 className="h-4 w-4" />
+                                View Statistics
+                            </Link>
+                        </Button>
+                    </>
+                }
             />
-
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Late Returns</h1>
-                    <p className="text-sm text-muted-foreground">
-                        Monitor and manage overdue rentals and penalties
-                    </p>
-                </div>
-                <div className="flex flex-wrap items-center gap-3">
-                    <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={handleRefresh}
-                        disabled={isFetching}
-                        aria-label="Refresh late returns"
-                    >
-                        <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="/admin/late-returns/statistics">
-                            <BarChart3 className="h-4 w-4" />
-                            View Statistics
-                        </Link>
-                    </Button>
-                </div>
-            </div>
 
             <LateReturnFilters />
 
