@@ -8,7 +8,7 @@ import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { useResetPassword } from '@/features/auth';
 import { isRateLimited, rateLimitMessage } from '@/shared/api';
-import { cn, getPasswordMaxError } from '@/shared/lib';
+import { cn, describeResetLinkError, getPasswordMaxError } from '@/shared/lib';
 import { FormError } from '@/features/auth';
 
 interface ResetPasswordFormProps {
@@ -63,7 +63,10 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
         } catch (error) {
             if (isRateLimited(error)) {
                 setFormError(rateLimitMessage(error.retryAfter));
+                return;
             }
+            const message = error instanceof Error ? error.message : '';
+            setFormError(describeResetLinkError(message)?.detail ?? (message || 'The password could not be reset. Please try again.'));
         }
     };
 
@@ -98,6 +101,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
             <FormError
                 message={formError || ''}
                 onDismiss={() => setFormError(null)}
+                focusOnShow
             />
 
             <div className="space-y-2">

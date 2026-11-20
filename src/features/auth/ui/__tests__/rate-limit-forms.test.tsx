@@ -76,6 +76,22 @@ describe('rate limit messages on the auth forms', () => {
         });
     });
 
+    it('shows an inline message and moves focus to it when the reset link is invalid', async () => {
+        vi.mocked(useResetPassword).mockReturnValue({
+            mutateAsync: vi.fn().mockRejectedValue(new Error('Invalid or expired token')),
+            isPending: false,
+        } as unknown as ReturnType<typeof useResetPassword>);
+
+        renderWithProviders(<ResetPasswordForm token="tok" />);
+        await user.type(screen.getByPlaceholderText('Enter new password'), 'password123');
+        await user.type(screen.getByPlaceholderText('Confirm new password'), 'password123');
+        fireEvent.submit(screen.getByPlaceholderText('Enter new password').closest('form')!);
+
+        const alert = await screen.findByRole('alert');
+        expect(alert).toHaveTextContent(/reset link is not valid/i);
+        await waitFor(() => expect(alert).toHaveFocus());
+    });
+
     it('shows a generic wait message on the register form when Retry-After is missing', async () => {
         vi.mocked(useRegister).mockReturnValue({
             mutateAsync: vi.fn().mockRejectedValue(rateLimited()),

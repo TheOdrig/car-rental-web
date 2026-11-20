@@ -2,7 +2,7 @@
 
 import { useMutation } from '@tanstack/react-query';
 import { clientPost, isRateLimited } from '@/shared/api';
-import { showToast, describeResetLinkError } from '@/shared/lib';
+import { showToast } from '@/shared/lib';
 import type { ForgotPasswordRequest, ResetPasswordRequest, MessageResponse } from '@/features/auth';
 
 async function forgotPasswordApi(data: ForgotPasswordRequest): Promise<MessageResponse> {
@@ -46,13 +46,6 @@ export function useResetPassword() {
                 return;
             }
 
-            const described = describeResetLinkError(error.message);
-
-            if (described) {
-                showToast.error(described.title, described.detail);
-            } else {
-                showToast.error('Failed to reset password', error.message);
-            }
         },
     });
 }

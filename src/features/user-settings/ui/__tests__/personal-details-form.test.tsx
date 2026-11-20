@@ -66,6 +66,9 @@ describe('PersonalDetailsForm', () => {
             await waitFor(() => {
                 expect(screen.getByText(/first name is required/i)).toBeInTheDocument();
             });
+            const field = screen.getByLabelText(/first name/i);
+            expect(field).toHaveAttribute('aria-invalid', 'true');
+            expect(field).toHaveAccessibleDescription(/first name is required/i);
         });
         it('should show error when phone is invalid', async () => {
             const user = userEvent.setup();

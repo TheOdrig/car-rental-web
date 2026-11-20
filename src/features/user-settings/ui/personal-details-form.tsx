@@ -69,10 +69,11 @@ export function PersonalDetailsForm({
                                 autoComplete="given-name"
                                 {...register('firstName')}
                                 aria-invalid={!!(errors.firstName || fieldErrors?.firstName)}
+                                aria-describedby={(errors.firstName?.message ?? fieldErrors?.firstName) ? 'firstName-error' : undefined}
                                 disabled={isSubmitting}
                             />
                             {(errors.firstName?.message ?? fieldErrors?.firstName) && (
-                                <p className="text-sm text-destructive">
+                                <p id="firstName-error" className="text-sm text-destructive" role="alert">
                                     {errors.firstName?.message ?? fieldErrors?.firstName}
                                 </p>
                             )}
@@ -84,10 +85,11 @@ export function PersonalDetailsForm({
                                 autoComplete="family-name"
                                 {...register('lastName')}
                                 aria-invalid={!!(errors.lastName || fieldErrors?.lastName)}
+                                aria-describedby={(errors.lastName?.message ?? fieldErrors?.lastName) ? 'lastName-error' : undefined}
                                 disabled={isSubmitting}
                             />
                             {(errors.lastName?.message ?? fieldErrors?.lastName) && (
-                                <p className="text-sm text-destructive">
+                                <p id="lastName-error" className="text-sm text-destructive" role="alert">
                                     {errors.lastName?.message ?? fieldErrors?.lastName}
                                 </p>
                             )}
