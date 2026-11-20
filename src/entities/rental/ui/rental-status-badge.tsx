@@ -2,7 +2,7 @@
 
 import type { ComponentProps } from 'react';
 import { StatusBadge } from '@/shared/ui/status-badge';
-import { adminRentalStatusPresentation, rentalStatusPresentation } from '../model/status-presentation';
+import { adminRentalStatusPresentation, pendingItemStatusPresentation, rentalStatusPresentation } from '../model/status-presentation';
 import type { AdminRentalStatus } from '../model/types';
 
 type RentalStatusBadgeProps = Omit<ComponentProps<'span'>, 'children'> & {
@@ -21,6 +21,11 @@ export function RentalStatusBadge({ status, ...props }: RentalStatusBadgeProps) 
             {label}
         </StatusBadge>
     );
+}
+
+export function PendingItemStatusBadge({ status, overdue = false }: { status: string | null | undefined; overdue?: boolean }) {
+    const { label, tone } = pendingItemStatusPresentation(status, overdue);
+    return <StatusBadge tone={tone}>{label}</StatusBadge>;
 }
 
 export function AdminRentalStatusBadge({ status, className }: AdminRentalStatusBadgeProps) {

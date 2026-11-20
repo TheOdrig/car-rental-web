@@ -40,6 +40,14 @@ export function rentalStatusPresentation(status: string | null | undefined): Sta
     return { label, tone };
 }
 
+export function pendingItemStatusPresentation(status: string | null | undefined, overdue = false): StatusPresentation {
+    if (overdue) return { label: 'Overdue', tone: 'danger' };
+    const code = status?.trim().toUpperCase();
+    if (ownValue(RENTAL_STATUS_LABELS, code) !== undefined) return rentalStatusPresentation(code);
+    if (ownValue(ADMIN_RENTAL_STATUS_LABELS, code) !== undefined) return adminRentalStatusPresentation(code);
+    return { label: status?.trim() || 'Unknown', tone: 'neutral' };
+}
+
 export function adminRentalStatusPresentation(status: AdminRentalStatus | string | null | undefined): StatusPresentation {
     const label = ownValue(ADMIN_RENTAL_STATUS_LABELS, status);
     const tone = ownValue(ADMIN_RENTAL_TONES, status);

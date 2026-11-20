@@ -7,7 +7,7 @@ import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { TableCell, TableRow } from '@/shared/ui/table';
 import { formatDate, formatRentalReference, formatAmount } from '@/shared/lib';
 import type { PendingItem } from '@/entities/rental';
-import { RentalStatusBadge } from '@/entities/rental';
+import { PendingItemStatusBadge } from '@/entities/rental';
 import type { PendingRentalsType } from './format';
 import { PendingRentalAction, type PendingAction } from './pending-rental-action';
 import { ROUTES } from '@/shared/config/routes';
@@ -84,7 +84,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
             </TableCell>
             <TableCell className={`${CELL} ${LABEL} font-medium`} data-label="Amount">{formatAmount(item.totalAmount, item.currency)}</TableCell>
             <TableCell className={`${CELL} ${LABEL}`} data-label="Status">
-                <RentalStatusBadge status={item.status} />
+                <PendingItemStatusBadge status={item.status} overdue={type === 'overdue'} />
             </TableCell>
             {type === 'overdue' && (
                 <TableCell className={`${CELL} ${LABEL}`} data-label="Late">

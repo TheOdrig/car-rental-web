@@ -43,3 +43,23 @@ describe('late return and admin status fallbacks', () => {
         expect(adminRentalStatusPresentation(undefined)).toEqual({ label: 'Unknown', tone: 'neutral' });
     });
 });
+
+describe('pendingItemStatusPresentation', () => {
+    it('shows an Overdue danger badge for the overdue queue', async () => {
+        const { pendingItemStatusPresentation } = await import('../status-presentation');
+        expect(pendingItemStatusPresentation('IN_USE', true)).toEqual({ label: 'Overdue', tone: 'danger' });
+    });
+
+    it('normalises case and understands API and admin codes', async () => {
+        const { pendingItemStatusPresentation } = await import('../status-presentation');
+        expect(pendingItemStatusPresentation('requested').label).toBe('Requested');
+        expect(pendingItemStatusPresentation(' in_use ').label).toBe('In use');
+        expect(pendingItemStatusPresentation('pending').tone).toBe('warning');
+    });
+
+    it('falls back to neutral text for unknown or missing status', async () => {
+        const { pendingItemStatusPresentation } = await import('../status-presentation');
+        expect(pendingItemStatusPresentation('WEIRD')).toEqual({ label: 'WEIRD', tone: 'neutral' });
+        expect(pendingItemStatusPresentation(undefined)).toEqual({ label: 'Unknown', tone: 'neutral' });
+    });
+});

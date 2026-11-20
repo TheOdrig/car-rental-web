@@ -56,7 +56,7 @@ export {
     rentalKeys,
 } from './api/use-rentals';
 export { LateReturnStatusBadge } from './ui/late-return-status-badge';
-export { RentalStatusBadge, AdminRentalStatusBadge } from './ui/rental-status-badge';
+export { RentalStatusBadge, AdminRentalStatusBadge, PendingItemStatusBadge } from './ui/rental-status-badge';
 export * from './lib/rental-payment-state';
 export * from './lib/rental-cancellation';
 export { RentalCancellationNotice } from './ui/rental-cancellation-notice';
