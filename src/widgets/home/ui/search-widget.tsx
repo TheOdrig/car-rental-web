@@ -73,7 +73,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
     return (
         <div
             className={cn(
-                'bg-white dark:bg-slate-900 backdrop-blur-sm rounded-xl p-6 shadow-2xl border dark:border-slate-700',
+                'bg-white dark:bg-slate-900 rounded-xl p-6 shadow-2xl border dark:border-slate-700',
                 className
             )}
         >

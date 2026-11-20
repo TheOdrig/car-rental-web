@@ -4,7 +4,7 @@ import { OAuthButtons, OAuthDivider } from '@/features/auth';
 
 export const metadata: Metadata = {
     title: 'Sign Up',
-    description: 'Create a Car Rental account to start booking your perfect ride.',
+    description: 'Create a Car Rental account to request rentals and track them in one place.',
 };
 
 export default function RegisterPage() {

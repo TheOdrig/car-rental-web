@@ -19,11 +19,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Car Rental - Find Your Perfect Ride",
+    default: "Car Rental - Rent a car by the day",
     template: "%s | Car Rental",
   },
   description:
-    "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
+    "Browse the fleet, request your dates and pay once the rental is approved.",
   keywords: [
     "car rental",
     "rent a car",
@@ -39,15 +39,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: "Car Rental",
-    title: "Car Rental - Find Your Perfect Ride",
+    title: "Car Rental - Rent a car by the day",
     description:
-      "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
+      "Browse the fleet, request your dates and pay once the rental is approved.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Car Rental - Find Your Perfect Ride",
+    title: "Car Rental - Rent a car by the day",
     description:
-      "Discover and rent quality vehicles at competitive prices. Easy booking, flexible pickup, and exceptional customer service.",
+      "Browse the fleet, request your dates and pay once the rental is approved.",
   },
 };
 

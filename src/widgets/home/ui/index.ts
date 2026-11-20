@@ -1,4 +1,4 @@
 export { HeroSection } from './hero-section';
 export { SearchWidget } from './search-widget';
 export { FeaturedCarousel, FeaturedCarouselSkeleton } from './featured-carousel';
-export { PromotionalBanners, type Deal } from './promotional-banners';
+export { PromotionalBanners, type PricingRule } from './promotional-banners';

@@ -1,63 +1,41 @@
 'use client';
 
-import { AlertCircle, RefreshCw } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { CarGrid, CarGridSkeleton } from '@/entities/car';
-import { CarFilters } from '@/widgets/car-filters';
-import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/widgets/home';
 import { useCars } from '@/entities/car';
-import { useFilterStore } from '@/widgets/car-filters';
+import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/widgets/home';
 
 export function HomeContent() {
-    const { filters, sortBy } = useFilterStore();
-    const homeFilters = { ...filters, carStatusType: 'AVAILABLE' };
-    const { data, isLoading, error, refetch } = useCars(homeFilters, 0, sortBy);
-
-    const cars = data?.content ?? [];
-
-    if (error) {
-        return (
-            <div className="flex flex-col items-center justify-center py-16 text-center">
-                <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-                <h2 className="text-xl font-semibold mb-2">Failed to load cars</h2>
-                <p className="text-slate-600 dark:text-slate-400 mb-6">
-                    Something went wrong. Please try again.
-                </p>
-                <Button onClick={() => refetch()} variant="outline">
-                    <RefreshCw className="h-4 w-4 mr-2" />
-                    Retry
-                </Button>
-            </div>
-        );
-    }
+    const { data } = useCars({ carStatusType: 'AVAILABLE' }, 0);
+    const available = data?.totalElements;
 
     return (
         <>
             <HeroSection />
 
-            <FeaturedCarousel className="bg-slate-50 dark:bg-slate-950" />
+            <FeaturedCarousel className="bg-muted/30" subtitle="The most recently added cars that are available to book" />
 
             <PromotionalBanners />
 
-            <section className="container mx-auto px-4 py-12">
-                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+            <section className="border-t">
+                <div className="container mx-auto flex flex-col gap-4 px-4 py-10 md:flex-row md:items-center md:justify-between">
                     <div>
-                        <h2 className="text-2xl font-bold">All Available Cars</h2>
-                        <p className="text-slate-600 dark:text-slate-400 mt-1">
-                            Browse our complete collection
+                        <h2 className="text-xl font-semibold">Looking for something specific?</h2>
+                        <p className="mt-1 text-muted-foreground">
+                            {available !== undefined
+                                ? `${available} ${available === 1 ? 'car is' : 'cars are'} available right now. Filter by brand, transmission, fuel type or body type.`
+                                : 'Filter the fleet by brand, transmission, fuel type or body type.'}
                         </p>
                     </div>
-                    <CarFilters />
+                    <Button asChild>
+                        <Link href="/cars">
+                            Browse all cars
+                            <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
+                        </Link>
+                    </Button>
                 </div>
-
-                {isLoading ? (
-                    <CarGridSkeleton count={8} />
-                ) : (
-                    <CarGrid cars={cars} />
-                )}
             </section>
-
-            { }
         </>
     );
 }

@@ -1,7 +1,4 @@
-'use client';
-
-import { useState } from 'react';
-import Image from 'next/image';
+import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { cn } from '@/shared/lib';
 import { SearchWidget } from './search-widget';
 
@@ -10,46 +7,34 @@ interface HeroSectionProps {
     backgroundImage?: string;
 }
 
-export function HeroSection({
-    className,
-    backgroundImage = '/images/hero-road.svg'
-}: HeroSectionProps) {
-    const [imageError, setImageError] = useState(false);
+const HERO_PHOTO = 'https://images.unsplash.com/photo-1639056067266-43a821cf0a1f?auto=format&fit=crop&q=80&w=2000';
 
+export function HeroSection({ className, backgroundImage = HERO_PHOTO }: HeroSectionProps) {
     return (
-        <section
-            className={cn(
-                'relative min-h-[600px] flex items-center justify-center overflow-hidden',
-                className
-            )}
-        >
+        <section className={cn('relative flex min-h-[560px] items-center overflow-hidden bg-slate-950', className)}>
             <div className="absolute inset-0 z-0">
-                {!imageError ? (
-                    <Image
-                        src={backgroundImage}
-                        alt=""
-                        fill
-                        className="object-cover"
-                        sizes="100vw"
-                        priority
-                        onError={() => setImageError(true)}
-                    />
-                ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-primary via-primary/80 to-primary/60" />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/40 to-black/70" />
+                <DynamicImage
+                    src={backgroundImage}
+                    alt=""
+                    fill
+                    sizes="100vw"
+                    priority
+                    fetchPriority="high"
+                    className="object-cover object-[50%_62%]"
+                />
+                <div className="absolute inset-0 bg-slate-950/65" />
             </div>
 
-            <div className="relative z-10 container mx-auto px-4 py-16 text-center">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 drop-shadow-lg">
-                    Find Your Perfect Ride
+            <div className="container relative z-10 mx-auto px-4 py-16">
+                <h1 className="max-w-2xl text-4xl font-bold tracking-tight text-white md:text-5xl">
+                    Rent a car by the day
                 </h1>
-                <p className="text-lg md:text-xl text-white/90 mb-10 max-w-2xl mx-auto drop-shadow">
-                    Discover premium vehicles at unbeatable prices.
-                    Book your dream car in just a few clicks.
+                <p className="mt-4 mb-10 max-w-xl text-base text-white/85 md:text-lg">
+                    Browse the fleet and request your dates. An admin reviews each request, and payment opens shortly before pickup.
+                    Prices can be shown in several currencies.
                 </p>
 
-                <SearchWidget className="max-w-4xl mx-auto" />
+                <SearchWidget className="max-w-4xl" />
             </div>
         </section>
     );

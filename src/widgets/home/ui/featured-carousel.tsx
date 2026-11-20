@@ -17,8 +17,8 @@ interface FeaturedCarouselProps {
 }
 
 export function FeaturedCarousel({
-    title = 'Featured Vehicles',
-    subtitle = 'Our newest vehicles available now',
+    title = 'Newest vehicles',
+    subtitle = 'Recently added and available now',
     viewAllLink = '/cars',
     className,
 }: FeaturedCarouselProps) {

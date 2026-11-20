@@ -2,7 +2,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 const footerLinks = {
-    explore: [{ label: 'Browse Cars', href: '/cars' }],
+    explore: [
+        { label: 'Browse Cars', href: '/cars' },
+        { label: 'My Rentals', href: '/rentals' },
+    ],
     legal: [
         { label: 'Terms of Service', href: '/terms' },
         { label: 'Privacy Policy', href: '/privacy' },
@@ -15,8 +18,8 @@ export function Footer() {
     return (
         <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
             <div className="container py-12 md:py-16">
-                <div className="grid grid-cols-2 gap-8">
-                    <div>
+                <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+                    <div className="col-span-2">
                         <Link href="/" className="flex items-center gap-2 font-bold text-xl">
                             <Image
                                 src="/images/logo.svg"
@@ -28,14 +31,14 @@ export function Footer() {
                             <span>Car Rental</span>
                         </Link>
                         <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
-                            Find and rent your perfect car with ease. Quality vehicles, competitive prices, and exceptional service.
+                            Rent a car by the day. Requests are reviewed by an admin, and payment opens shortly before pickup.
                         </p>
                     </div>
 
-                    <div>
+                    <nav aria-label="Explore">
                         <h2 className="font-semibold mb-4">Explore</h2>
                         <ul className="space-y-3">
-                            {[...footerLinks.explore, ...footerLinks.legal].map((link) => (
+                            {footerLinks.explore.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
@@ -46,7 +49,23 @@ export function Footer() {
                                 </li>
                             ))}
                         </ul>
-                    </div>
+                    </nav>
+
+                    <nav aria-label="Legal">
+                        <h2 className="font-semibold mb-4">Legal</h2>
+                        <ul className="space-y-3">
+                            {footerLinks.legal.map((link) => (
+                                <li key={link.href}>
+                                    <Link
+                                        href={link.href}
+                                        className="text-sm text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100"
+                                    >
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </nav>
 
                 </div>
 

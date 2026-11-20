@@ -11,7 +11,7 @@ test.describe('smoke', () => {
     test('home page renders the hero search', async ({ page }) => {
         await page.goto('/');
 
-        await expect(page.getByRole('heading', { level: 1, name: 'Find Your Perfect Ride' })).toBeVisible();
+        await expect(page.getByRole('heading', { level: 1, name: 'Rent a car by the day' })).toBeVisible();
     });
 
     test('car catalog loads', async ({ page }) => {

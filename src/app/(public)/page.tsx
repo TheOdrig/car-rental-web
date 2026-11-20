@@ -3,9 +3,9 @@ import { pageMetadata } from '@/shared/lib';
 import { HomeContent } from './home-content';
 
 export const metadata: Metadata = pageMetadata({
-    title: 'Car Rental - Find Your Perfect Ride',
+    title: 'Car Rental - Rent a car by the day',
     absoluteTitle: true,
-    description: 'Browse our collection of premium vehicles and book your next adventure. Wide selection of cars available for rent.',
+    description: 'Browse the fleet, request your dates and pay once the rental is approved.',
     path: '/',
 });
 
