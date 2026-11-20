@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import type { Rental } from '@/entities/rental';
 import { RentalStatus } from '@/entities/rental';
-import { getRentalsByTab, calculateTabCounts, calculateRentalStats, getActionButtons, RENTAL_TABS, getTabLabel, isUpcomingRental, getStatusBadgeVariant, formatRentalDuration, calculateDaysBetween } from '@/entities/rental';
+import { getRentalsByTab, calculateTabCounts, calculateRentalStats, getActionButtons, RENTAL_TABS, getTabLabel, isUpcomingRental, formatRentalDuration, calculateDaysBetween } from '@/entities/rental';
 const createMockRental = (overrides: Partial<Rental> = {}): Rental => ({
     id: 1,
     carSummary: {
@@ -256,26 +256,6 @@ describe('Rental Utils', () => {
                 startDate: '2025-01-10',
             });
             expect(isUpcomingRental(rental)).toBe(true);
-        });
-    });
-    describe('getStatusBadgeVariant', () => {
-        it('should return "default" for "In Use"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.IN_USE)).toBe('default');
-        });
-        it('should return "secondary" for "Confirmed"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.CONFIRMED)).toBe('secondary');
-        });
-        it('should return "outline" for "Returned"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.RETURNED)).toBe('outline');
-        });
-        it('should return "secondary" for "Requested"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.REQUESTED)).toBe('secondary');
-        });
-        it('should return "destructive" for "Cancelled"', () => {
-            expect(getStatusBadgeVariant(RentalStatus.CANCELLED)).toBe('destructive');
-        });
-        it('should return "outline" for unknown status', () => {
-            expect(getStatusBadgeVariant('Unknown' as RentalStatus)).toBe('outline');
         });
     });
     describe('formatRentalDuration', () => {

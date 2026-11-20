@@ -1,28 +1,35 @@
-import { ownValue } from '@/shared/lib/utils';
 import { RentalStatus, type AdminRentalStatus } from '../model/types';
 
-const API_TO_ADMIN: Record<RentalStatus, AdminRentalStatus> = {
-    [RentalStatus.REQUESTED]: 'PENDING',
-    [RentalStatus.CONFIRMED]: 'CONFIRMED',
-    [RentalStatus.IN_USE]: 'ACTIVE',
-    [RentalStatus.RETURNED]: 'COMPLETED',
-    [RentalStatus.CANCELLED]: 'CANCELLED',
-};
-
-const ADMIN_TO_API: Record<AdminRentalStatus, RentalStatus> = {
-    PENDING: RentalStatus.REQUESTED,
-    CONFIRMED: RentalStatus.CONFIRMED,
-    ACTIVE: RentalStatus.IN_USE,
-    OVERDUE: RentalStatus.IN_USE,
-    COMPLETED: RentalStatus.RETURNED,
-    CANCELLED: RentalStatus.CANCELLED,
-    REJECTED: RentalStatus.CANCELLED,
-};
-
 export function toAdminRentalStatus(status: string | undefined): AdminRentalStatus {
-    return ownValue(API_TO_ADMIN, status) ?? 'PENDING';
+    switch (status) {
+        case RentalStatus.REQUESTED:
+            return 'PENDING';
+        case RentalStatus.CONFIRMED:
+            return 'CONFIRMED';
+        case RentalStatus.IN_USE:
+            return 'ACTIVE';
+        case RentalStatus.RETURNED:
+            return 'COMPLETED';
+        case RentalStatus.CANCELLED:
+            return 'CANCELLED';
+        default:
+            return 'UNKNOWN';
+    }
 }
 
 export function toApiRentalStatus(status: string): string {
-    return ownValue(ADMIN_TO_API, status) ?? status;
+    switch (status) {
+        case 'PENDING':
+            return RentalStatus.REQUESTED;
+        case 'CONFIRMED':
+            return RentalStatus.CONFIRMED;
+        case 'ACTIVE':
+            return RentalStatus.IN_USE;
+        case 'COMPLETED':
+            return RentalStatus.RETURNED;
+        case 'CANCELLED':
+            return RentalStatus.CANCELLED;
+        default:
+            return status;
+    }
 }

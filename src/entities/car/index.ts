@@ -37,6 +37,8 @@ export {
     AVAILABILITY_STATUS_LABELS,
     carStatusLabel,
 } from './model/status-labels';
+export { carStatusPresentation, carServiceStatusPresentation } from './model/status-presentation';
+export { CarStatusBadge } from './ui/car-status-badge';
 export { isAvailable, getCarTitle, getFormattedPrice, getSortParams } from './lib/utils';
 export { useFilterOptions, filterOptionsKeys, uniqueOptions, type FilterOptions } from './lib/use-filter-options';
 export { getCarUnavailableMessage, friendlyUnavailableReason } from './lib/status-messages';

@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { History, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
-import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import {
@@ -17,21 +16,11 @@ import {
 } from '@/shared/ui/select';
 import { useCustomerRentalHistory } from '../../api/users-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus } from '@/entities/rental';
+import { ADMIN_RENTAL_STATUS_LABELS, AdminRentalStatusBadge, type AdminRentalStatus } from '@/entities/rental';
 
 interface CustomerRentalHistoryTableProps {
     customerId: number;
 }
-
-const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-    PENDING: 'secondary',
-    CONFIRMED: 'default',
-    ACTIVE: 'default',
-    COMPLETED: 'outline',
-    CANCELLED: 'destructive',
-    REJECTED: 'destructive',
-    OVERDUE: 'destructive',
-};
 
 const statusFilterOptions = [
     { value: 'all', label: 'All Statuses' },
@@ -39,7 +28,6 @@ const statusFilterOptions = [
     { value: 'ACTIVE', label: ADMIN_RENTAL_STATUS_LABELS.ACTIVE },
     { value: 'CANCELLED', label: ADMIN_RENTAL_STATUS_LABELS.CANCELLED },
     { value: 'PENDING', label: ADMIN_RENTAL_STATUS_LABELS.PENDING },
-    { value: 'OVERDUE', label: ADMIN_RENTAL_STATUS_LABELS.OVERDUE },
 ];
 
 export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistoryTableProps) {
@@ -143,9 +131,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
                                                 {formatAmount(rental.totalAmount, rental.currency)}
                                             </td>
                                             <td className="py-3 px-2">
-                                                <Badge variant={statusVariants[rental.status]}>
-                                                    {ADMIN_RENTAL_STATUS_LABELS[rental.status] ?? rental.status}
-                                                </Badge>
+                                                <AdminRentalStatusBadge status={rental.status} />
                                             </td>
                                         </tr>
                                     ))}

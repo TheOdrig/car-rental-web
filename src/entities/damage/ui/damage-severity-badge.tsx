@@ -1,8 +1,8 @@
 'use client';
 
-import { Badge } from '@/shared/ui/badge';
-import { cn } from '@/shared/lib';
-import { getDamageSeverityColor, getDamageSeverityLabel, type DamageSeverity } from '@/entities/damage';
+import { StatusBadge } from '@/shared/ui/status-badge';
+import { damageSeverityPresentation } from '../model/status-presentation';
+import type { DamageSeverity } from '../model/types';
 
 interface DamageSeverityBadgeProps {
     severity: DamageSeverity;
@@ -10,12 +10,10 @@ interface DamageSeverityBadgeProps {
 }
 
 export function DamageSeverityBadge({ severity, className }: DamageSeverityBadgeProps) {
+    const { label, tone } = damageSeverityPresentation(severity);
     return (
-        <Badge
-            variant="outline"
-            className={cn(getDamageSeverityColor(severity), 'border-0', className)}
-        >
-            {getDamageSeverityLabel(severity)}
-        </Badge>
+        <StatusBadge tone={tone} className={className}>
+            {label}
+        </StatusBadge>
     );
 }

@@ -76,7 +76,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const [confirming, setConfirming] = useState<'approve' | 'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn' && rental?.status === 'ACTIVE');
-    const paymentExpected = !!rental && rental.status !== 'PENDING' && rental.status !== 'REJECTED' && rental.status !== 'CANCELLED';
+    const paymentExpected = !!rental && rental.status !== 'PENDING' && rental.status !== 'CANCELLED' && rental.status !== 'UNKNOWN';
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
@@ -132,7 +132,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const rentalWithPenalty = rental;
 
     const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
-    const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE', 'OVERDUE'].includes(rental.status);
+    const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE'].includes(rental.status);
     const referenceNumber = formatRentalReference(rentalId);
     const showReportDamage = canReportDamage(
         rental.status,

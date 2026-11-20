@@ -2,11 +2,10 @@
 
 import { FileText, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency, formatDateTime, formatDate, formatRentalReference } from '@/shared/lib';
 import {
-    ADMIN_RENTAL_STATUS_LABELS,
+    AdminRentalStatusBadge,
     RentalCancellationNotice,
     type AdminRentalStatus,
     type RentalPricing,
@@ -27,16 +26,6 @@ interface RentalInfoCardProps {
     cancellationReason?: string;
     cancelledBy?: string;
 }
-
-const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-    PENDING: 'secondary',
-    CONFIRMED: 'default',
-    ACTIVE: 'default',
-    COMPLETED: 'outline',
-    CANCELLED: 'destructive',
-    REJECTED: 'destructive',
-    OVERDUE: 'destructive',
-};
 
 export function RentalInfoCard({
     rentalId,
@@ -76,7 +65,7 @@ export function RentalInfoCard({
 
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
-                    <Badge variant={statusVariants[status]}>{ADMIN_RENTAL_STATUS_LABELS[status]}</Badge>
+                    <AdminRentalStatusBadge status={status} />
                 </div>
 
                 <div className="flex items-center justify-between">

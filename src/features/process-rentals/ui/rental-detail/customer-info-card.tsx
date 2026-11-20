@@ -86,12 +86,12 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
 
                 <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
                     {isVerified ? (
-                        <Badge variant="outline" className="text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700">
+                        <Badge variant="success">
                             <ShieldCheck className="h-3 w-3 mr-1" />
                             Verified
                         </Badge>
                     ) : (
-                        <Badge variant="outline" className="text-amber-600 dark:text-amber-400 border-amber-300 dark:border-amber-700">
+                        <Badge variant="warning">
                             <ShieldAlert className="h-3 w-3 mr-1" />
                             Unverified
                         </Badge>

@@ -7,7 +7,8 @@ import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { TableCell, TableRow } from '@/shared/ui/table';
 import { formatDate, formatRentalReference, formatAmount } from '@/shared/lib';
 import type { PendingItem } from '@/entities/rental';
-import { getStatusDisplay, type PendingRentalsType } from './format';
+import { RentalStatusBadge } from '@/entities/rental';
+import type { PendingRentalsType } from './format';
 import { PendingRentalAction, type PendingAction } from './pending-rental-action';
 
 interface PendingRentalRowProps {
@@ -24,7 +25,6 @@ const LINK_CLASS =
     'flex min-h-6 items-center truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
 
 export function PendingRentalRow({ item, type, isProcessing, onAction }: PendingRentalRowProps) {
-    const display = getStatusDisplay(item.status);
 
     return (
         <TableRow className="max-xl:grid max-xl:grid-cols-2 max-xl:gap-x-4 max-xl:gap-y-3 max-xl:p-3">
@@ -83,13 +83,11 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
             </TableCell>
             <TableCell className={`${CELL} ${LABEL} font-medium`} data-label="Amount">{formatAmount(item.totalAmount, item.currency)}</TableCell>
             <TableCell className={`${CELL} ${LABEL}`} data-label="Status">
-                <Badge variant={display.variant} className={display.className}>
-                    {display.label}
-                </Badge>
+                <RentalStatusBadge status={item.status} />
             </TableCell>
             {type === 'overdue' && (
                 <TableCell className={`${CELL} ${LABEL}`} data-label="Late">
-                    <Badge variant="destructive">{item.lateHours}h late</Badge>
+                    <Badge variant="danger">{item.lateHours}h late</Badge>
                 </TableCell>
             )}
             <TableCell className={`${CELL} max-xl:col-span-2 text-right max-xl:text-left`}>

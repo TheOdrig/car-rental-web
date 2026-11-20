@@ -1,5 +1,7 @@
 import type { Schemas, WithRequired } from '@/shared/api/contract';
 import type { PageResponse } from '@/shared/types';
+import type { AdminRentalStatus } from '@/entities/rental';
+import type { AccountStatusType } from '@/entities/user';
 
 
 
@@ -7,10 +9,9 @@ import type { PageResponse } from '@/shared/types';
 
 export type UserRole = 'ADMIN' | 'CUSTOMER' | 'SUPPORT';
 export type UserStatus = 'ACTIVE' | 'PENDING' | 'BANNED';
-export type AccountStatusType = 'ACTIVE' | 'BANNED' | 'LOCKED' | 'PENDING';
 export type DocumentVerificationStatus = 'YES' | 'NO' | 'PENDING';
 export type Role = 'USER' | 'ADMIN';
-export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'REJECTED' | 'OVERDUE';
+export type { AdminRentalStatus, AccountStatusType };
 
 
 

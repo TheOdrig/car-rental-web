@@ -5,26 +5,15 @@ import Link from 'next/link';
 import { History, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
-import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import { ADMIN_RENTAL_STATUS_LABELS, type AdminRentalStatus } from '@/entities/rental';
+import { AdminRentalStatusBadge } from '@/entities/rental';
 
 interface VehicleRentalHistoryTableProps {
     vehicleId: number;
 }
-
-const statusVariants: Record<AdminRentalStatus, 'default' | 'secondary' | 'destructive' | 'outline'> = {
-    PENDING: 'secondary',
-    CONFIRMED: 'default',
-    ACTIVE: 'default',
-    COMPLETED: 'outline',
-    CANCELLED: 'destructive',
-    REJECTED: 'destructive',
-    OVERDUE: 'destructive',
-};
 
 export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTableProps) {
     const [page, setPage] = useState(0);
@@ -99,9 +88,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                                 {formatAmount(rental.totalAmount, rental.currency)}
                                             </td>
                                             <td className="py-3 px-2">
-                                                <Badge variant={statusVariants[rental.status as AdminRentalStatus] || 'outline'}>
-                                                    {ADMIN_RENTAL_STATUS_LABELS[rental.status as AdminRentalStatus] ?? rental.status}
-                                                </Badge>
+                                                <AdminRentalStatusBadge status={rental.status} />
                                             </td>
                                         </tr>
                                     ))}

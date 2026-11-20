@@ -39,10 +39,7 @@ const statusActions: Record<AdminRentalStatus, ActionConfig[]> = {
     ],
     COMPLETED: [],
     CANCELLED: [],
-    REJECTED: [],
-    OVERDUE: [
-        { label: 'Process Return', icon: CalendarCheck, variant: 'default', action: 'return' },
-    ],
+    UNKNOWN: [],
 };
 
 export function RentalActionButtons({

@@ -22,16 +22,6 @@ export const getFormattedTotal = (rental: Rental): string => {
     return formatCurrency(rental.totalPrice, rental.currency ?? 'USD');
 };
 
-export function getLateReturnStatusColor(status: LateReturnStatus): string {
-    const colors: Record<LateReturnStatus, string> = {
-        ON_TIME: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
-        GRACE_PERIOD: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200',
-        LATE: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-        SEVERELY_LATE: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
-    };
-    return colors[status];
-}
-
 export function getLateReturnStatusLabel(status: LateReturnStatus): string {
     return LATE_RETURN_STATUS_LABELS[status];
 }
@@ -155,25 +145,6 @@ export function isPaymentWindowOpen(paymentOpensOn: string, now: Date = new Date
     if (!opensOn) return true;
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     return today >= opensOn;
-}
-
-export function getStatusBadgeVariant(
-    status: RentalStatus
-): 'default' | 'secondary' | 'destructive' | 'outline' {
-    switch (status) {
-        case RentalStatus.IN_USE:
-            return 'default';
-        case RentalStatus.CONFIRMED:
-            return 'secondary';
-        case RentalStatus.RETURNED:
-            return 'outline';
-        case RentalStatus.REQUESTED:
-            return 'secondary';
-        case RentalStatus.CANCELLED:
-            return 'destructive';
-        default:
-            return 'outline';
-    }
 }
 
 export function formatRentalDuration(days: number): string {

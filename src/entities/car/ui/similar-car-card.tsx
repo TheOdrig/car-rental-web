@@ -46,7 +46,7 @@ export const SimilarCarCard = memo(function SimilarCarCard({
                                 <Badge
                                     key={reason}
                                     variant="secondary"
-                                    className="bg-card text-slate-700 dark:text-slate-200 text-xs"
+                                    className="bg-card text-foreground text-xs"
                                 >
                                     {reason}
                                 </Badge>

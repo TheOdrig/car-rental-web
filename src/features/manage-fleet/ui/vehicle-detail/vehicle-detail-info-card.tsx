@@ -2,22 +2,14 @@
 
 import { Car, Fuel, Settings2, Users, Palette, Hash, CreditCard } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { formatCurrency } from '@/shared/lib';
 import type { VehicleDetailResponse } from '@/entities/car';
-import { carServiceStatusLabel, type CarStatus } from '@/entities/car';
+import { CarStatusBadge } from '@/entities/car';
 
 interface VehicleDetailInfoCardProps {
     vehicle: VehicleDetailResponse;
 }
-
-const statusColors: Record<CarStatus, string> = {
-    AVAILABLE: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30',
-    MAINTENANCE: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30',
-    DAMAGED: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    INSPECTION: 'text-purple-600 dark:text-purple-400 bg-purple-100 dark:bg-purple-900/30',
-};
 
 export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
     return (
@@ -41,9 +33,7 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
 
                 <div className="flex items-center justify-between">
                     <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
-                    <Badge className={statusColors[vehicle.status as CarStatus]} variant="secondary">
-                        {carServiceStatusLabel(vehicle.status)}
-                    </Badge>
+                    <CarStatusBadge status={vehicle.status} />
                 </div>
 
                 <div className="border-t border-slate-200 dark:border-slate-700 pt-4">

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { ownValue } from '@/shared/lib/utils';
+import { rentalStatusPresentation } from '@/entities/rental/model/status-presentation';
 import { toAdminRentalStatus, toApiRentalStatus } from '@/entities/rental/lib/admin-status';
-import { getStatusDisplay } from '@/features/process-rentals/ui/pending-rentals/format';
 
 const inherited = ['constructor', '__proto__', 'toString', 'hasOwnProperty', 'valueOf'];
 
@@ -22,8 +22,8 @@ describe('ownValue', () => {
 
 describe('status lookups with inherited keys', () => {
     it.each(inherited)('%s is not a known status', (key) => {
-        expect(toAdminRentalStatus(key)).toBe('PENDING');
+        expect(toAdminRentalStatus(key)).toBe('UNKNOWN');
         expect(toApiRentalStatus(key)).toBe(key);
-        expect(getStatusDisplay(key).label).toBe(key);
+        expect(rentalStatusPresentation(key).label).toBe(key);
     });
 });

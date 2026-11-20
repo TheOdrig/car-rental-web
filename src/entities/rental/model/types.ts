@@ -100,7 +100,7 @@ export interface ActionButton {
 }
 
 
-export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'REJECTED' | 'OVERDUE';
+export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'UNKNOWN';
 
 export const ADMIN_RENTAL_STATUS_LABELS: Record<AdminRentalStatus, string> = {
     PENDING: RENTAL_STATUS_LABELS[RentalStatus.REQUESTED],
@@ -108,8 +108,7 @@ export const ADMIN_RENTAL_STATUS_LABELS: Record<AdminRentalStatus, string> = {
     ACTIVE: RENTAL_STATUS_LABELS[RentalStatus.IN_USE],
     COMPLETED: RENTAL_STATUS_LABELS[RentalStatus.RETURNED],
     CANCELLED: RENTAL_STATUS_LABELS[RentalStatus.CANCELLED],
-    REJECTED: 'Rejected',
-    OVERDUE: 'Overdue',
+    UNKNOWN: 'Unknown',
 };
 
 export interface RentalHistoryItem {

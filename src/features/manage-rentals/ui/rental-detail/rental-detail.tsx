@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { X } from 'lucide-react';
-import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { cn, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
@@ -11,7 +10,7 @@ import {
     getPaymentOpensOn,
     isPaymentWindowOpen,
     isRentalPaymentSecured,
-    RENTAL_STATUS_LABELS,
+    RentalStatusBadge,
     RentalCancellationNotice,
     RentalPaymentNote,
     RentalStatus,
@@ -23,7 +22,6 @@ import type { Rental } from '@/entities/rental';
 import { RentalTimeline } from '../rental-timeline';
 import { CancelRentalDialog } from './cancel-rental-dialog';
 import { DriverDetailsCard } from './driver-details-card';
-import { getStatusColor } from './format';
 import { PaymentSummaryCard } from './payment-summary-card';
 import { RentalDamageReports } from './rental-damage-reports';
 import { RentalNotesCard, hasRentalNotes } from './rental-notes-card';
@@ -60,7 +58,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                 <div>
                     <div className="mb-2 flex items-center gap-3">
                         <h1 className="text-2xl font-bold">Rental {formatRentalReference(rental.id)}</h1>
-                        <Badge className={cn('border', getStatusColor(status))}>{RENTAL_STATUS_LABELS[status]}</Badge>
+                        <RentalStatusBadge status={status} />
                     </div>
                     <p className="text-muted-foreground">Booked on {formatDateTime(rental.createTime)}</p>
                     {status === RentalStatus.CANCELLED && (

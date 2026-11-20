@@ -74,8 +74,6 @@ const SELF_BARREL_ALLOWLIST: string[] = [
   'src/entities/car/ui/similar-cars-section.tsx',
   'src/entities/currency/ui/currency-provider.tsx',
   'src/entities/damage/lib/use-damages.ts',
-  'src/entities/damage/ui/damage-severity-badge.tsx',
-  'src/entities/damage/ui/damage-status-badge.tsx',
   'src/entities/rental/lib/use-rentals.ts',
   'src/features/admin/lib/use-admin-dashboard.ts',
   'src/features/admin/ui/alerts-panel.tsx',

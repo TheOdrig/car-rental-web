@@ -13,12 +13,11 @@ export type {
     DamageStatistics,
     DamageListResponse,
 } from './model/types';
+export { damageStatusPresentation, damageSeverityPresentation } from './model/status-presentation';
 export { DAMAGE_STATUSES, DAMAGE_SEVERITIES, DAMAGE_CATEGORIES } from './model/types';
 
 
 export {
-    getDamageStatusColor,
-    getDamageSeverityColor,
     getDamageCategoryLabel,
     getDamageStatusLabel,
     getDamageSeverityLabel,

@@ -10,7 +10,6 @@ import {
 const CONTRACT_STATUS_LITERAL_FILES = [
   'src/entities/car/model/status-labels.ts',
   'src/entities/payment/model/rental-payment.ts',
-  'src/entities/payment/ui/payment-status-badge.tsx',
   'src/entities/rental/lib/admin-status.ts',
   'src/entities/rental/lib/damage-reporting.ts',
   'src/entities/rental/model/types.ts',

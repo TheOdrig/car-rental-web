@@ -1,8 +1,7 @@
 'use client';
 
-import { Badge } from '@/shared/ui/badge';
-import { cn } from '@/shared/lib';
-import { getLateReturnStatusColor, getLateReturnStatusLabel } from '../lib/utils';
+import { StatusBadge } from '@/shared/ui/status-badge';
+import { lateReturnStatusPresentation } from '../model/status-presentation';
 import type { LateReturnStatus } from '../model/types';
 
 interface LateReturnStatusBadgeProps {
@@ -11,12 +10,10 @@ interface LateReturnStatusBadgeProps {
 }
 
 export function LateReturnStatusBadge({ status, className }: LateReturnStatusBadgeProps) {
+    const { label, tone } = lateReturnStatusPresentation(status);
     return (
-        <Badge
-            variant="outline"
-            className={cn(getLateReturnStatusColor(status), 'border-0', className)}
-        >
-            {getLateReturnStatusLabel(status)}
-        </Badge>
+        <StatusBadge tone={tone} className={className}>
+            {label}
+        </StatusBadge>
     );
 }

@@ -26,9 +26,17 @@ describe('rental status codes and labels', () => {
         expect(toAdminRentalStatus('IN_USE')).toBe('ACTIVE');
         expect(toAdminRentalStatus('RETURNED')).toBe('COMPLETED');
         expect(toAdminRentalStatus('REQUESTED')).toBe('PENDING');
+        expect(toAdminRentalStatus('CONFIRMED')).toBe('CONFIRMED');
+        expect(toAdminRentalStatus('CANCELLED')).toBe('CANCELLED');
+    });
+
+    it('fails closed to an unknown state for anything else', () => {
+        expect(toAdminRentalStatus(undefined)).toBe('UNKNOWN');
+        expect(toAdminRentalStatus('SOMETHING_NEW')).toBe('UNKNOWN');
+        expect(toAdminRentalStatus('toString')).toBe('UNKNOWN');
         expect(toApiRentalStatus('ACTIVE')).toBe('IN_USE');
         expect(toApiRentalStatus('COMPLETED')).toBe('RETURNED');
-        expect(toApiRentalStatus('REJECTED')).toBe('CANCELLED');
+        expect(toApiRentalStatus('CANCELLED')).toBe('CANCELLED');
         expect(toApiRentalStatus('IN_USE')).toBe('IN_USE');
     });
 });

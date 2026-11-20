@@ -6,7 +6,6 @@ const now = new Date('2026-11-20T12:00:00Z');
 describe('canReportDamage', () => {
     it('allows rentals that are in use', () => {
         expect(canReportDamage('ACTIVE', undefined, now)).toBe(true);
-        expect(canReportDamage('OVERDUE', undefined, now)).toBe(true);
     });
 
     it('allows a returned rental for seven days after the return', () => {
@@ -19,7 +18,7 @@ describe('canReportDamage', () => {
     });
 
     it('never offers it before pickup or after a cancellation', () => {
-        for (const status of ['PENDING', 'CONFIRMED', 'CANCELLED', 'REJECTED'] as const) {
+        for (const status of ['PENDING', 'CONFIRMED', 'CANCELLED', 'UNKNOWN'] as const) {
             expect(canReportDamage(status, undefined, now)).toBe(false);
         }
     });

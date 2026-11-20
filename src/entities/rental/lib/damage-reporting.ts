@@ -6,7 +6,7 @@ export const DAMAGE_REPORT_WINDOW_DAYS = 7;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 export function canReportDamage(status: AdminRentalStatus, returnedAt?: string, now: Date = new Date()): boolean {
-    if (status === 'ACTIVE' || status === 'OVERDUE') return true;
+    if (status === 'ACTIVE') return true;
     if (status !== 'COMPLETED') return false;
 
     const returned = parseApiDate(returnedAt);

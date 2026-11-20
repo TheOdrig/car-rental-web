@@ -38,8 +38,8 @@ describe('RentalActionButtons', () => {
         renderWithProviders(<RentalActionButtons {...defaultProps} status="CANCELLED" />);
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
-    it('should not render any action buttons for REJECTED status', () => {
-        renderWithProviders(<RentalActionButtons {...defaultProps} status="REJECTED" />);
+    it('should not render any action buttons for an unknown status', () => {
+        renderWithProviders(<RentalActionButtons {...defaultProps} status="UNKNOWN" />);
         expect(screen.queryByRole('button')).not.toBeInTheDocument();
     });
     it('should disable buttons when isLoading is true', () => {

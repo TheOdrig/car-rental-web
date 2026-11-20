@@ -17,8 +17,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import type { Rental, ActionButton } from '@/entities/rental';
 import {
     getActionButtons,
-    getStatusBadgeVariant,
-    RENTAL_STATUS_LABELS,
+    RentalStatusBadge,
     RentalCancellationNotice,
     RentalPaymentNote,
     RentalStatus,
@@ -37,23 +36,6 @@ interface RentalCardProps {
 interface RentalCardSkeletonProps {
     variant?: 'default' | 'compact' | 'detailed';
     className?: string;
-}
-
-function getStatusColor(status: RentalStatus): string {
-    switch (status) {
-        case RentalStatus.CONFIRMED:
-            return 'bg-green-500/10 text-green-600 border-green-200 dark:bg-green-500/20 dark:text-green-400 dark:border-green-700';
-        case RentalStatus.IN_USE:
-            return 'bg-blue-500/10 text-blue-600 border-blue-200 dark:bg-blue-500/20 dark:text-blue-400 dark:border-blue-700';
-        case RentalStatus.REQUESTED:
-            return 'bg-amber-500/10 text-amber-600 border-amber-200 dark:bg-amber-500/20 dark:text-amber-400 dark:border-amber-700';
-        case RentalStatus.RETURNED:
-            return 'bg-slate-500/10 text-slate-600 border-slate-200 dark:bg-slate-500/20 dark:text-slate-400 dark:border-slate-600';
-        case RentalStatus.CANCELLED:
-            return 'bg-red-500/10 text-red-600 border-red-200 dark:bg-red-500/20 dark:text-red-400 dark:border-red-700';
-        default:
-            return '';
-    }
 }
 
 function CardTitleLink({ href, children }: { href?: string; children: ReactNode }) {
@@ -165,16 +147,14 @@ export const RentalCard = memo(function RentalCard({
                                         </CardTitleLink>
                                     </h2>
                                 </div>
-                                <Badge
-                                    variant={getStatusBadgeVariant(status)}
-                                    className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                                <RentalStatusBadge
+ status={status}
+ className="shrink-0 cursor-default"
                                     onClick={(e) => {
                                         e.preventDefault();
                                         e.stopPropagation();
                                     }}
-                                >
-                                    {RENTAL_STATUS_LABELS[status]}
-                                </Badge>
+ />
                             </div>
 
                             <div className="mb-4 grid gap-2 text-sm">
@@ -183,7 +163,7 @@ export const RentalCard = memo(function RentalCard({
                                     <span>{formatDate(startDate)}</span>
                                     <ArrowRight className="h-3 w-3" />
                                     <span>{formatDate(endDate)}</span>
-                                    <Badge variant="outline" className="ml-1 text-xs bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600">
+                                    <Badge variant="neutral" className="ml-1 text-xs">
                                         {days} {days === 1 ? 'day' : 'days'}
                                     </Badge>
                                 </div>
@@ -279,16 +259,14 @@ export const RentalCard = memo(function RentalCard({
                         </div>
                     </div>
 
-                    <Badge
-                        variant={getStatusBadgeVariant(status)}
-                        className={cn('shrink-0 border cursor-default', getStatusColor(status))}
+                    <RentalStatusBadge
+ status={status}
+ className="shrink-0 cursor-default"
                         onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                         }}
-                    >
-                        {RENTAL_STATUS_LABELS[status]}
-                    </Badge>
+ />
                 </div>
             </CardContent>
         </Card>

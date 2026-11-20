@@ -50,7 +50,7 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
                                 {formatDateTime(waiver.waivedAt)}
                             </div>
                             {waiver.remainingPenalty === 0 && (
-                                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border-0">
+                                <Badge variant="success">
                                     Full Waiver
                                 </Badge>
                             )}

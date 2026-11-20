@@ -1,13 +1,12 @@
 'use client';
 
 import Link from 'next/link';
-import { Badge } from '@/shared/ui/badge';
 import { Card, CardContent } from '@/shared/ui/card';
 import { Pagination } from '@/shared/ui/pagination';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
-import { RENTAL_STATUS_LABELS, type Rental } from '@/entities/rental';
+import { RentalStatusBadge, type Rental } from '@/entities/rental';
 
 interface AllRentalsTableProps {
     rentals: Rental[];
@@ -81,7 +80,7 @@ export function AllRentalsTable({
                                             {formatAmount(rental.totalPrice, rental.currency)}
                                         </TableCell>
                                         <TableCell>
-                                            <Badge variant="secondary">{RENTAL_STATUS_LABELS[rental.status] ?? rental.status}</Badge>
+                                            <RentalStatusBadge status={rental.status} />
                                         </TableCell>
                                     </TableRow>
                                 ))}

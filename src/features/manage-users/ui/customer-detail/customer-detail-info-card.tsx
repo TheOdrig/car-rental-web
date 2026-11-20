@@ -68,9 +68,9 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                         </div>
                         <CopyButton value={customer.email} />
                         {customer.verification.emailVerified ? (
-                            <Badge variant="outline" className="text-emerald-600 border-emerald-300">Verified</Badge>
+                            <Badge variant="success">Verified</Badge>
                         ) : (
-                            <Badge variant="outline" className="text-amber-600 border-amber-300">Unverified</Badge>
+                            <Badge variant="warning">Unverified</Badge>
                         )}
                     </div>
 
@@ -87,9 +87,9 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                             </div>
                             <CopyButton value={customer.phone} />
                             {customer.verification.phoneVerified ? (
-                                <Badge variant="outline" className="text-emerald-600 border-emerald-300">Verified</Badge>
+                                <Badge variant="success">Verified</Badge>
                             ) : (
-                                <Badge variant="outline" className="text-amber-600 border-amber-300">Unverified</Badge>
+                                <Badge variant="warning">Unverified</Badge>
                             )}
                         </div>
                     )}

@@ -3,7 +3,7 @@
 import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
-import { toAdminRentalStatus } from '@/entities/rental';
+import { toAdminRentalStatus, type AdminRentalStatus } from '@/entities/rental';
 import { carKeys, type AdminCar, type VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
@@ -50,7 +50,7 @@ export interface RentalHistoryItem {
     duration: number;
     totalAmount: number;
     currency?: string;
-    status: string;
+    status: AdminRentalStatus;
 }
 
 export type PaginatedResponse<T> = PageResponse<T>;

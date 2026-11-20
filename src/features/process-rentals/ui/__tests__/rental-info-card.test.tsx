@@ -58,7 +58,7 @@ describe('RentalInfoCard', () => {
         expect(screen.getByText('VIP customer')).toBeInTheDocument();
     });
     it('should render different status variants correctly', () => {
-        const statuses: AdminRentalStatus[] = ['PENDING', 'CONFIRMED', 'ACTIVE', 'COMPLETED', 'CANCELLED', 'REJECTED'];
+        const statuses: AdminRentalStatus[] = ['PENDING', 'CONFIRMED', 'ACTIVE', 'COMPLETED', 'CANCELLED', 'UNKNOWN'];
         statuses.forEach(status => {
             const { unmount } = renderWithProviders(
                 <RentalInfoCard {...defaultProps} status={status} />

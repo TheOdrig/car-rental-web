@@ -2,20 +2,12 @@
 
 import { Activity, Clock, Ban } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
-import { Badge } from '@/shared/ui/badge';
 import { formatDateTime } from '@/shared/lib';
-import type { CustomerAccountStatus, AccountStatusType } from '@/entities/user';
+import { AccountStatusBadge, type CustomerAccountStatus, type AccountStatusType } from '@/entities/user';
 
 interface CustomerStatusCardProps {
     accountStatus: CustomerAccountStatus;
 }
-
-const statusColors: Record<AccountStatusType, string> = {
-    ACTIVE: 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-900/30 border-emerald-300 dark:border-emerald-700',
-    PENDING: 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/30 border-amber-300 dark:border-amber-700',
-    BANNED: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30 border-red-300 dark:border-red-700',
-    LOCKED: 'text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-900/30 border-slate-300 dark:border-slate-700',
-};
 
 const statusDescriptions: Record<AccountStatusType, string> = {
     ACTIVE: 'This account can log in and make rental requests',
@@ -38,10 +30,11 @@ export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
-                    <Badge className={`${statusColors[accountStatus.status]} text-base px-4 py-1`} variant="outline">
-                        {accountStatus.status === 'BANNED' && <Ban className="h-4 w-4 mr-1" />}
-                        {accountStatus.status}
-                    </Badge>
+                    <AccountStatusBadge
+ status={accountStatus.status}
+ className="px-4 py-1 text-base"
+ icon={accountStatus.status === 'BANNED' ? <Ban className="mr-1 h-4 w-4" /> : null}
+ />
                 </div>
 
                 <p className="text-sm text-slate-600 dark:text-slate-400">

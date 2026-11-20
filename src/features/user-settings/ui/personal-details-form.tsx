@@ -108,7 +108,7 @@ export function PersonalDetailsForm({
                                 className="bg-muted"
                             />
                             {emailVerified === true && (
-                                <Badge variant="outline" className="gap-1 text-green-600">
+                                <Badge variant="success" className="gap-1">
                                     <CheckCircle className="h-3 w-3" aria-hidden="true" />
                                     Verified
                                 </Badge>
