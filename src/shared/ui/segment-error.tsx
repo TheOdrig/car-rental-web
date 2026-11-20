@@ -28,8 +28,8 @@ export function SegmentError({
 
     return (
         <div role="alert" className="flex min-h-[40vh] flex-col items-center justify-center px-4 py-12 text-center">
-            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-100">
-                <AlertTriangle className="h-7 w-7 text-red-600" aria-hidden="true" />
+            <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-danger-subtle">
+                <AlertTriangle className="h-7 w-7 text-danger-subtle-foreground" aria-hidden="true" />
             </div>
             <h1 className="text-xl font-bold">{title}</h1>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">{description}</p>

@@ -7,7 +7,7 @@ describe('ValidationIcon', () => {
             render(<ValidationIcon state="valid" />);
             const icon = document.querySelector('svg');
             expect(icon).toBeInTheDocument();
-            expect(icon).toHaveClass('text-green-600');
+            expect(icon).toHaveClass('text-success');
         });
         it('should have aria-hidden attribute', () => {
             render(<ValidationIcon state="valid" />);

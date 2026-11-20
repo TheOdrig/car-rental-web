@@ -28,7 +28,7 @@ export const ValidationIcon = memo(function ValidationIcon({
         case 'valid':
             return (
                 <CheckCircle2
-                    className={cn(iconSize, 'text-green-600 dark:text-green-500', className)}
+                    className={cn(iconSize, 'text-success', className)}
                     aria-hidden="true"
                 />
             );

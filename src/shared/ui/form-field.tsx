@@ -76,7 +76,7 @@ export const FormField = memo(function FormField({
             <Label
                 htmlFor={htmlFor}
                 className={cn(
-                    isDisabled && 'text-slate-600 dark:text-slate-400 cursor-not-allowed'
+                    isDisabled && 'text-muted-foreground cursor-not-allowed'
                 )}
             >
                 {label}
@@ -88,7 +88,7 @@ export const FormField = memo(function FormField({
             {description && (
                 <div
                     id={descriptionId}
-                    className="text-sm text-slate-600 dark:text-slate-400"
+                    className="text-sm text-muted-foreground"
                 >
                     {description}
                 </div>

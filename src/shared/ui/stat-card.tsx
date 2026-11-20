@@ -32,7 +32,7 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
                     <span
                         className={cn(
                             'text-xs font-medium',
-                            trend.isPositive ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
+                            trend.isPositive ? 'text-success-subtle-foreground' : 'text-danger-subtle-foreground'
                         )}
                     >
                         {trend.isPositive ? '+' : ''}{trend.value}%

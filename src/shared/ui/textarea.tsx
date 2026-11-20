@@ -46,7 +46,7 @@ function Textarea({
         "focus-visible:ring-[3px]",
 
         effectiveState === 'idle' && "border-input focus-visible:border-ring focus-visible:ring-ring/50",
-        effectiveState === 'valid' && "border-green-500 focus-visible:border-green-500 focus-visible:ring-green-500/20",
+        effectiveState === 'valid' && "border-success focus-visible:border-success focus-visible:ring-success/20",
         effectiveState === 'invalid' && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
         effectiveState === 'empty' && "border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20",
         effectiveState === 'loading' && "border-ring focus-visible:border-ring focus-visible:ring-ring/50",

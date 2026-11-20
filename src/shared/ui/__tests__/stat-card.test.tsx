@@ -28,7 +28,7 @@ describe('StatCard', () => {
             />
         );
         expect(screen.getByText('+12%')).toBeInTheDocument();
-        expect(screen.getByText('+12%')).toHaveClass('text-emerald-700');
+        expect(screen.getByText('+12%')).toHaveClass('text-success-subtle-foreground');
     });
     it('should render negative trend correctly', () => {
         renderWithProviders(
@@ -39,7 +39,7 @@ describe('StatCard', () => {
             />
         );
         expect(screen.getByText('-8%')).toBeInTheDocument();
-        expect(screen.getByText('-8%')).toHaveClass('text-red-700');
+        expect(screen.getByText('-8%')).toHaveClass('text-danger-subtle-foreground');
     });
     it('should not render trend when not provided', () => {
         renderWithProviders(<StatCard label="Test" value={10} />);

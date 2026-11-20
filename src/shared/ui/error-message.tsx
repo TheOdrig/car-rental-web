@@ -16,18 +16,18 @@ interface ErrorMessageProps {
 const variantConfig = {
     error: {
         icon: XCircle,
-        containerClass: 'bg-red-50 border-red-200 text-red-800',
-        iconClass: 'text-red-500',
+        containerClass: 'bg-danger-subtle border-danger-subtle-foreground/30 text-danger-subtle-foreground',
+        iconClass: 'text-danger-subtle-foreground',
     },
     warning: {
         icon: AlertTriangle,
-        containerClass: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-        iconClass: 'text-yellow-500',
+        containerClass: 'bg-warning-subtle border-warning-subtle-foreground/30 text-warning-subtle-foreground',
+        iconClass: 'text-warning-subtle-foreground',
     },
     info: {
         icon: Info,
-        containerClass: 'bg-blue-50 border-blue-200 text-blue-800',
-        iconClass: 'text-blue-500',
+        containerClass: 'bg-info-subtle border-info-subtle-foreground/30 text-info-subtle-foreground',
+        iconClass: 'text-info-subtle-foreground',
     },
 };
 

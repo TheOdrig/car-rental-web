@@ -19,7 +19,7 @@ describe('Textarea Component - Validation States', () => {
             render(<Textarea placeholder="Enter text" validationState="valid" />);
             const textarea = screen.getByPlaceholderText('Enter text');
             expect(textarea).toHaveAttribute('data-validation-state', 'valid');
-            expect(textarea).toHaveClass('border-green-500');
+            expect(textarea).toHaveClass('border-success');
         });
     });
     describe('Invalid State', () => {
