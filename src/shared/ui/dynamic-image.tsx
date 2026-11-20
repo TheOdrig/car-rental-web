@@ -5,6 +5,7 @@ import Image, { ImageProps } from 'next/image';
 import { Car } from 'lucide-react';
 import { FILE_PROXY_ROOT, toFileProxyUrl } from '@/shared/lib/file-url';
 import { cn } from '@/shared/lib';
+import { isUnsplashUrl, unsplashLoader } from '@/shared/lib/image-loader';
 
 const ALLOWED_HOSTNAMES = ['lh3.googleusercontent.com', 'avatars.githubusercontent.com'];
 
@@ -43,7 +44,8 @@ export function DynamicImage({ src, alt, onError, ...props }: ImageProps) {
     const [failedSrc, setFailedSrc] = useState<unknown>(null);
     const proxied = typeof src === 'string' ? (toFileProxyUrl(src) ?? src) : src;
     const srcString = typeof proxied === 'string' ? proxied : '';
-    const shouldOptimize = isAllowedHostname(srcString);
+    const resizedByLoader = isUnsplashUrl(srcString);
+    const shouldOptimize = resizedByLoader || isAllowedHostname(srcString);
 
     if (srcString === IMAGE_PLACEHOLDER_SRC || failedSrc === proxied) {
         return (
@@ -62,6 +64,7 @@ export function DynamicImage({ src, alt, onError, ...props }: ImageProps) {
             src={proxied}
             alt={alt}
             unoptimized={!shouldOptimize}
+            loader={resizedByLoader ? unsplashLoader : undefined}
             onError={(event) => {
                 setFailedSrc(proxied);
                 onError?.(event);

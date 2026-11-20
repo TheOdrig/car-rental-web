@@ -10,3 +10,4 @@ export * from './seo';
 export * from './file-url';
 export * from './reset-link-errors';
 export * from './person-name';
+export * from './image-loader';
