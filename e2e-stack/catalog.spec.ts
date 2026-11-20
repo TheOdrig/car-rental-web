@@ -3,7 +3,7 @@ import { firstAvailableCarId } from './support';
 
 async function shownPrices(cards: Locator): Promise<number[]> {
     const texts = await cards.allInnerTexts();
-    return texts.map((text) => Number(text.trim().split('$').pop()));
+    return texts.map((text) => Number([...text.matchAll(/\$([\d,]+(?:\.\d+)?)/g)].pop()?.[1].replace(/,/g, '')));
 }
 
 test.describe('catalog against the real API', () => {
