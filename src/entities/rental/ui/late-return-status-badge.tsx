@@ -5,7 +5,7 @@ import { lateReturnStatusPresentation } from '../model/status-presentation';
 import type { LateReturnStatus } from '../model/types';
 
 interface LateReturnStatusBadgeProps {
-    status: LateReturnStatus;
+    status?: LateReturnStatus | string | null;
     className?: string;
 }
 

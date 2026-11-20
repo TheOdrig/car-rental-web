@@ -34,3 +34,12 @@ describe('rental status presentation', () => {
         expect(lateReturnStatusPresentation('SEVERELY_LATE')).toEqual({ label: 'Severely late', tone: 'danger' });
     });
 });
+
+describe('late return and admin status fallbacks', () => {
+    it('falls back to neutral for null, undefined and unknown values', async () => {
+        const { lateReturnStatusPresentation, adminRentalStatusPresentation } = await import('../status-presentation');
+        expect(lateReturnStatusPresentation(null)).toEqual({ label: 'Unknown', tone: 'neutral' });
+        expect(lateReturnStatusPresentation('MISSING')).toEqual({ label: 'MISSING', tone: 'neutral' });
+        expect(adminRentalStatusPresentation(undefined)).toEqual({ label: 'Unknown', tone: 'neutral' });
+    });
+});

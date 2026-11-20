@@ -5,7 +5,7 @@ import { paymentStatusPresentation } from '../model/status-presentation';
 import type { RentalPaymentStatus } from '../model/rental-payment';
 
 interface PaymentStatusBadgeProps {
-    status: RentalPaymentStatus;
+    status?: RentalPaymentStatus | string | null;
 }
 
 export function PaymentStatusBadge({ status }: PaymentStatusBadgeProps) {

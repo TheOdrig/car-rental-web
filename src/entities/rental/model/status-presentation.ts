@@ -40,10 +40,16 @@ export function rentalStatusPresentation(status: string | null | undefined): Sta
     return { label, tone };
 }
 
-export function adminRentalStatusPresentation(status: AdminRentalStatus): StatusPresentation {
-    return { label: ADMIN_RENTAL_STATUS_LABELS[status], tone: ADMIN_RENTAL_TONES[status] };
+export function adminRentalStatusPresentation(status: AdminRentalStatus | string | null | undefined): StatusPresentation {
+    const label = ownValue(ADMIN_RENTAL_STATUS_LABELS, status);
+    const tone = ownValue(ADMIN_RENTAL_TONES, status);
+    if (label === undefined || tone === undefined) return { label: status || 'Unknown', tone: 'neutral' };
+    return { label, tone };
 }
 
-export function lateReturnStatusPresentation(status: LateReturnStatus): StatusPresentation {
-    return { label: LATE_RETURN_STATUS_LABELS[status], tone: LATE_RETURN_TONES[status] };
+export function lateReturnStatusPresentation(status: LateReturnStatus | string | null | undefined): StatusPresentation {
+    const label = ownValue(LATE_RETURN_STATUS_LABELS, status);
+    const tone = ownValue(LATE_RETURN_TONES, status);
+    if (label === undefined || tone === undefined) return { label: status || 'Unknown', tone: 'neutral' };
+    return { label, tone };
 }
