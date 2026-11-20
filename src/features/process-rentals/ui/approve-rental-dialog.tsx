@@ -50,10 +50,9 @@ export function ApproveRentalDialog({
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-2xl bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-indigo-600" />
 
                 <DialogHeader className="pt-2">
-                    <DialogTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+                    <DialogTitle className="text-2xl font-bold">
                         Approve Rental Request
                     </DialogTitle>
                     <DialogDescription className="text-slate-500 dark:text-slate-400">
@@ -123,7 +122,6 @@ export function ApproveRentalDialog({
                     </div>
 
                     <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 shadow-inner">
-                        <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl bg-blue-500 rounded-full -mr-4 -mt-4 w-32 h-32" />
 
                         <div className="relative z-10 grid grid-cols-3 gap-x-4 gap-y-5">
                             <div className="space-y-1.5">

@@ -28,7 +28,7 @@ export function CustomerStatusCard({ accountStatus }: CustomerStatusCardProps) {
     const isBanned = accountStatus.status === 'BANNED';
 
     return (
-        <Card className={`border-white/50 dark:border-white/5 backdrop-blur-sm ${isBanned ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-white/30 dark:bg-slate-900/30'
+        <Card className={`border-border ${isBanned ? 'bg-red-50/50 dark:bg-red-900/10' : 'bg-card'
             }`}>
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">

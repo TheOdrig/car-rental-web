@@ -31,7 +31,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
     const { data, isLoading, isError, refetch } = useVehicleRentalHistory(vehicleId, page);
 
     return (
-        <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+        <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <History className="h-5 w-5 text-teal-500" />

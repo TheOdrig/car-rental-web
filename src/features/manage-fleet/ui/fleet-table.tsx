@@ -144,7 +144,7 @@ export const FleetTable = memo(function FleetTable({
     return (
         <>
             <Card className={cn(
-                "rounded-3xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl border border-white/50 dark:border-white/10 shadow-lg",
+                "rounded-3xl bg-card border border-white/50 dark:border-white/10 shadow-lg",
                 className
             )}>
                 <CardHeader className="pb-3">
@@ -218,7 +218,7 @@ export const FleetTable = memo(function FleetTable({
                                                 <div
                                                     className={cn(
                                                         "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium",
-                                                        "backdrop-blur-md bg-white/80 dark:bg-slate-800/80",
+                                                        " bg-card",
                                                         "border border-slate-200/50 dark:border-slate-700/50 shadow-sm",
                                                         statusConfig[car.carStatusType]?.textColor
                                                     )}

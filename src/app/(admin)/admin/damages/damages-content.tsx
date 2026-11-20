@@ -63,7 +63,7 @@ function DamagesList() {
                 ]}
             />
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm bg-white/30 dark:bg-slate-900/30 p-6 rounded-3xl border border-white/50 dark:border-white/5 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-3xl border border-border shadow-sm">
                 <div className="space-y-1">
                     <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Damage Reports</h1>
                     <p className="text-sm text-gray-600 dark:text-gray-400">

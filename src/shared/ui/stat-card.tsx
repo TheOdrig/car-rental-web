@@ -18,7 +18,7 @@ export function StatCard({ label, value, icon: Icon, className, trend }: StatCar
     return (
         <div
             className={cn(
-                'min-w-0 rounded-xl border border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm p-4 shadow-sm',
+                'min-w-0 rounded-xl border border-border bg-card p-4 shadow-sm',
                 className
             )}
         >

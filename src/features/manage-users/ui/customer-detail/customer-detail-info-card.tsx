@@ -22,7 +22,7 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
     const primaryRole = customer.roles[0] ?? 'USER';
 
     return (
-        <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+        <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <User className="h-5 w-5 text-emerald-500" />

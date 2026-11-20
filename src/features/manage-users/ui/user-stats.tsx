@@ -76,9 +76,9 @@ export const UserStatsCards = memo(function UserStatsCards({
                         key={card.key}
                         className={cn(
                             'group relative flex flex-col p-5 rounded-2xl',
-                            'bg-white/60 dark:bg-slate-800/40',
-                            'backdrop-blur-xl',
-                            'border border-white/40 dark:border-white/10',
+                            'bg-card',
+                            '',
+                            'border border-border',
                             'shadow-lg hover:shadow-xl',
                             'transition-all duration-200 hover:-translate-y-0.5'
                         )}
@@ -91,7 +91,7 @@ export const UserStatsCards = memo(function UserStatsCards({
                                 </span>
                             </div>
                             <div className={cn(
-                                'p-2 rounded-lg backdrop-blur-md transition-colors',
+                                'p-2 rounded-lg transition-colors',
                                 card.iconBg
                             )}>
                                 <Icon className={cn('h-5 w-5', card.iconColor)} aria-hidden="true" />
@@ -118,7 +118,7 @@ function UserStatsCardsSkeleton({ className }: { className?: string }) {
     return (
         <div className={cn('grid gap-4 sm:grid-cols-3', className)}>
             {[...Array(3)].map((_, i) => (
-                <div key={i} className="rounded-2xl bg-white/60 dark:bg-slate-800/40 backdrop-blur-xl border border-white/40 dark:border-white/10 p-5">
+                <div key={i} className="rounded-2xl bg-card border border-border p-5">
                     <div className="flex items-center justify-between mb-4">
                         <div className="flex items-center gap-2">
                             <Skeleton className="h-2 w-2 rounded-full" />

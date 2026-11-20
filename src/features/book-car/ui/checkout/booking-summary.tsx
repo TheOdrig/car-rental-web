@@ -52,7 +52,7 @@ export function BookingSummary({
                     </div>
                 </div>
 
-                <div className="px-6 py-4 flex justify-center bg-gradient-to-b from-white dark:from-slate-900 to-slate-50 dark:to-slate-950">
+                <div className="px-6 py-4 flex justify-center bg-muted/40">
                     <div className="relative w-full max-w-[280px] aspect-[16/9] group">
                         <DynamicImage
                             src={car.imageUrl || '/images/car-placeholder.svg'}

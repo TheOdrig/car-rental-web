@@ -302,7 +302,7 @@ export function AdminRentalsContent() {
                         value={statusFilter}
                         onValueChange={(value) => setStatusFilter(value as StatusFilter)}
                     >
-                        <SelectTrigger aria-label="Filter rentals by status" className="w-48 bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100">
+                        <SelectTrigger aria-label="Filter rentals by status" className="w-48 bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>

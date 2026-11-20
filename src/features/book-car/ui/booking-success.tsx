@@ -33,7 +33,7 @@ export function BookingSuccess({
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
             <div className="max-w-2xl w-full">
                 <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-                    <div className="bg-gradient-to-br from-green-500 to-emerald-600 px-8 py-12 text-center text-white">
+                    <div className="bg-emerald-700 px-8 py-12 text-center text-white">
                         <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 motion-safe:animate-[bounce_1s_ease-in-out]">
                             <CheckCircle className="h-12 w-12" />
                         </div>

@@ -247,7 +247,7 @@ export const QuickActionsCard = memo(function QuickActionsCard({
 
     return (
         <>
-            <Card className={cn("border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm", className)}>
+            <Card className={cn("border-border bg-card", className)}>
                 <CardHeader>
                     <CardTitle className="text-lg">Quick Actions</CardTitle>
                     <CardDescription>

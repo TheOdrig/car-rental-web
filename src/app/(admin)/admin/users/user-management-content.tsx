@@ -55,7 +55,7 @@ export function UserManagementContent() {
                     <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
                     <div className="flex items-center gap-2 text-muted-foreground">
                         <p className="text-sm">Manage customer and admin accounts</p>
-                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-white/50 dark:bg-slate-800/50 px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
+                        <span className="flex items-center gap-1.5 text-[11px] font-medium bg-card px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
                             <Clock className="h-3 w-3" aria-hidden="true" />
                             Updated {lastUpdated}
                         </span>
@@ -99,7 +99,7 @@ export function UserManagementContent() {
                 <div className="flex gap-2">
                     <Select value={roleFilter} onValueChange={(v) => setRoleFilter(v as UserRole)}>
                         <SelectTrigger
-                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[140px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by role"
                         >
                             <SelectValue placeholder="Role" />
@@ -112,7 +112,7 @@ export function UserManagementContent() {
                     </Select>
                     <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as UserStatus)}>
                         <SelectTrigger
-                            className="w-[140px] bg-white/90 dark:bg-slate-800/80 backdrop-blur-sm border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[140px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
                             aria-label="Filter by status"
                         >
                             <SelectValue placeholder="Status" />

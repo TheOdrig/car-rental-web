@@ -26,7 +26,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
 
     if (allImages.length === 0) {
         return (
-            <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+            <Card className="border-border bg-card">
                 <CardHeader className="pb-3">
                     <CardTitle className="flex items-center gap-2 text-lg">
                         <ImageIcon className="h-5 w-5 text-violet-500" />
@@ -44,7 +44,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
     }
 
     return (
-        <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+        <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2 text-lg">
@@ -72,7 +72,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                             <Button
                                 variant="secondary"
                                 size="icon"
-                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
+                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-card"
                                 onClick={handlePrev}
                                 aria-label="Previous image"
                             >
@@ -81,7 +81,7 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                             <Button
                                 variant="secondary"
                                 size="icon"
-                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm"
+                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-card"
                                 onClick={handleNext}
                                 aria-label="Next image"
                             >

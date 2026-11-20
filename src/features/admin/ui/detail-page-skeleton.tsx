@@ -40,7 +40,7 @@ export function DetailPageSkeleton({ className }: DetailPageSkeletonProps) {
 
 function SkeletonCard({ lines = 3, className }: { lines?: number; className?: string }) {
     return (
-        <Card className={cn('border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm', className)}>
+        <Card className={cn('border-border bg-card', className)}>
             <CardHeader>
                 <Skeleton className="h-5 w-32" />
             </CardHeader>
@@ -59,7 +59,7 @@ export function CardSkeleton({ className }: { className?: string }) {
 
 export function TableSkeleton({ rows = 5, className }: { rows?: number; className?: string }) {
     return (
-        <Card className={cn('border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm', className)}>
+        <Card className={cn('border-border bg-card', className)}>
             <CardHeader>
                 <Skeleton className="h-5 w-40" />
             </CardHeader>

@@ -40,7 +40,7 @@ export function DashboardHeader({
                     size="sm"
                     onClick={onRefreshRates}
                     disabled={isRefreshingRates}
-                    className="gap-2 shrink-0 cursor-pointer bg-white/60 dark:bg-slate-800/60 backdrop-blur-md border-white/40 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
+                    className="gap-2 shrink-0 cursor-pointer bg-background border-border text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
                 >
                     <DollarSign className={cn('h-4 w-4', isRefreshingRates && 'animate-pulse')} aria-hidden="true" />
                     {isRefreshingRates ? 'Refreshing...' : 'Refresh Rates'}

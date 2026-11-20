@@ -62,13 +62,12 @@ export function RejectRentalDialog({
             onOpenChange(val);
         }}>
             <DialogContent className="max-w-md bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-500 to-red-600" />
 
                 <DialogHeader className="pt-2">
                     <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 dark:bg-rose-500/20 mb-4 shadow-sm border border-rose-500/20">
                         <AlertTriangle className="h-7 w-7 text-rose-600 dark:text-rose-500" />
                     </div>
-                    <DialogTitle className="text-2xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-600 dark:from-white dark:to-slate-400">
+                    <DialogTitle className="text-2xl font-bold text-center">
                         Reject Rental Request
                     </DialogTitle>
                     <DialogDescription className="text-center text-slate-500 dark:text-slate-400 px-4">

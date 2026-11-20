@@ -53,7 +53,7 @@ export function CustomerRentalHistoryTable({ customerId }: CustomerRentalHistory
     );
 
     return (
-        <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+        <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2 text-lg">

@@ -5,7 +5,7 @@ export default function LateReturnsLoading() {
         <div className="space-y-6">
             <Skeleton className="h-8 w-64" />
 
-            <div className="flex justify-between items-center p-6 rounded-3xl bg-white/30 dark:bg-slate-900/30">
+            <div className="flex justify-between items-center p-6 rounded-3xl bg-card">
                 <div className="space-y-2">
                     <Skeleton className="h-8 w-48" />
                     <Skeleton className="h-4 w-64" />

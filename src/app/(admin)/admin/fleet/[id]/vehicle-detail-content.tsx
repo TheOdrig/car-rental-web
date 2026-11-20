@@ -90,7 +90,7 @@ export function VehicleDetailContent({ id }: { id: string }) {
                 ]}
             />
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-sm bg-white/30 dark:bg-slate-900/30 p-6 rounded-3xl border border-white/50 dark:border-white/5 shadow-sm">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-3xl border border-border shadow-sm">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
                         <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">

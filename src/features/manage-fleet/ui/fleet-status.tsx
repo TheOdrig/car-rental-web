@@ -23,7 +23,7 @@ interface StatusItemProps {
     bgColor: string;
 }
 
-function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps & { gradient?: string }) {
+function StatusItem({ label, value, total, bgColor }: StatusItemProps) {
     const percentage = total > 0 ? Math.round((value / total) * 100) : 0;
 
     return (
@@ -34,7 +34,7 @@ function StatusItem({ label, value, total, bgColor, gradient }: StatusItemProps 
             </div>
             <div className="h-2 rounded-full bg-muted/60 overflow-hidden shadow-inner">
                 <div
-                    className={cn('h-full rounded-full transition-all duration-700 ease-out shadow-sm', bgColor, gradient)}
+                    className={cn('h-full rounded-full transition-all duration-700 ease-out shadow-sm', bgColor)}
                     style={{ width: `${percentage}%` }}
                 />
             </div>
@@ -77,42 +77,36 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     value={availableCars}
                     total={totalCars}
                     bgColor="bg-emerald-500"
-                    gradient="bg-gradient-to-r from-emerald-500 to-teal-400"
                 />
                 <StatusItem
                     label="Rented"
                     value={rentedCars}
                     total={totalCars}
                     bgColor="bg-violet-500"
-                    gradient="bg-gradient-to-r from-violet-500 to-purple-400"
                 />
                 <StatusItem
                     label="Reserved"
                     value={reservedCars}
                     total={totalCars}
                     bgColor="bg-blue-500"
-                    gradient="bg-gradient-to-r from-blue-500 to-indigo-400"
                 />
                 <StatusItem
                     label="Maintenance"
                     value={maintenanceCars}
                     total={totalCars}
                     bgColor="bg-amber-500"
-                    gradient="bg-gradient-to-r from-amber-500 to-orange-400"
                 />
                 <StatusItem
                     label="Inspection"
                     value={inspectionCars}
                     total={totalCars}
                     bgColor="bg-cyan-500"
-                    gradient="bg-gradient-to-r from-cyan-500 to-sky-400"
                 />
                 <StatusItem
                     label="Damaged"
                     value={damagedCars}
                     total={totalCars}
                     bgColor="bg-rose-500"
-                    gradient="bg-gradient-to-r from-rose-500 to-red-400"
                 />
 
                 <div className="pt-4 border-t">

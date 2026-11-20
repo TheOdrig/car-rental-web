@@ -23,7 +23,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
 
     return (
         <div className="space-y-6">
-        <Card className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm">
+        <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
                     <DollarSign className="h-5 w-5 text-amber-500" />
@@ -116,7 +116,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                 Pay by {formatDateTime(paymentDueBy)}
             </p>
         )}
-        <RentalPaymentStatus rentalId={rentalId} enabled={paymentEnabled} className="border-white/50 dark:border-white/5 bg-white/30 dark:bg-slate-900/30 backdrop-blur-sm" />
+        <RentalPaymentStatus rentalId={rentalId} enabled={paymentEnabled} className="border-border bg-card" />
         </div>
     );
 }
