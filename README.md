@@ -22,11 +22,13 @@ You need Node 22 and Docker.
 4. Run `npm ci`, then `npm run dev`.
 5. Open http://localhost:3000. The seed includes an admin account (`admin` / `Admin123!`).
 
-Without a `pk_test_` Stripe key, the pay page refuses to render the card form, by design. Stop the API and delete its data with `docker compose down -v`.
+Without a `pk_test_` Stripe key, the pay page refuses to render the card form, by design.
+
+To remove the API stack and its local data, run `docker compose down -v` in the API checkout.
 
 ## Architecture
 
-The source follows Feature-Sliced Design (`app`, `widgets`, `features`, `entities`, `shared` under [`src`](src)); imports only point downward and ESLint enforces it. The browser never talks to the API: it calls Next route handlers under [`src/app/api`](src/app/api), which call the API from the server.
+The source follows Feature-Sliced Design (`app`, `widgets`, `features`, `entities`, `shared` under [`src`](src)). ESLint restricts cross-layer imports. The browser never talks to the API: it calls Next route handlers under [`src/app/api`](src/app/api), which call the API from the server.
 
 ```mermaid
 graph LR
@@ -40,13 +42,13 @@ graph LR
 
 | Topic | What it does | Proof |
 | --- | --- | --- |
-| Layer boundaries | Downward-only imports and public `index.ts` entry points are lint errors | [`eslint.config.mjs`](eslint.config.mjs), [`src/__tests__/architecture`](src/__tests__/architecture) |
-| Session handling | Tokens live in httpOnly cookies; `proxy.ts` verifies the JWT and refreshes it once per token | [`proxy.test.ts`](src/__tests__/proxy.test.ts), [`upstream.ts`](src/shared/server/upstream.ts) |
-| Request guards | State-changing handlers reject a cross-origin `Origin` with 403 and a wrong `Content-Type` with 415 | [`route.test.ts`](src/shared/server/__tests__/route.test.ts) |
+| Layer boundaries | ESLint restricts cross-layer imports. Architecture tests check slice entry points and entity cross-imports (`@x`). | [`eslint.config.mjs`](eslint.config.mjs), [`fsd-boundaries.test.ts`](src/__tests__/architecture/fsd-boundaries.test.ts), [`misc.test.ts`](src/__tests__/architecture/misc.test.ts) |
+| Session handling | Tokens live in httpOnly cookies. Concurrent refreshes share one request per refresh token. | [`auth-cookies.ts`](src/shared/server/auth-cookies.ts), [`upstream.ts`](src/shared/server/upstream.ts) |
+| Request guards | Guarded mutations reject cross-origin requests with 403. Guarded POST, PUT and PATCH requests reject unsupported media types with 415. | [`route.test.ts`](src/shared/server/__tests__/route.test.ts) |
 | API contract | Types are generated from a committed OpenAPI snapshot; drift fails `verify` | [`scripts/contract.mjs`](scripts/contract.mjs), [`upstream-contract.test.ts`](src/shared/server/__tests__/upstream-contract.test.ts) |
-| Errors | RFC 9457 problem details become a typed `ApiError`; an unreachable API is a 503, a timeout a 504 | [`error.test.ts`](src/shared/api/__tests__/error.test.ts) |
+| Errors | RFC 9457 problem details become a typed `ApiError`; an unreachable API is a 503, a timeout a 504 | [`route.test.ts`](src/shared/server/__tests__/route.test.ts), [`upstream.test.ts`](src/shared/server/__tests__/upstream.test.ts) |
 | Payments | Stripe Payment Element with `redirect: 'if_required'`, polled with back-off, `pk_test_` keys only | [`pay-rental.test.tsx`](src/features/pay-rental/__tests__/pay-rental.test.tsx), [`env-stripe.test.ts`](src/shared/server/__tests__/env-stripe.test.ts) |
-| Safe redirects | `callbackUrl` accepts same-origin paths only; the OAuth state is compared in constant time | [`safe-redirect.test.ts`](src/shared/lib/__tests__/safe-redirect.test.ts), [`oauth-flow.test.ts`](src/app/api/auth/_lib/__tests__/oauth-flow.test.ts) |
+| Safe redirects | The callback checks redirect paths for same origin. The OAuth callback compares equal-length state buffers with `timingSafeEqual`. | [`oauth-state.ts`](src/app/api/auth/_lib/oauth-state.ts), [OAuth callback](src/app/api/auth/callback/%5Bprovider%5D/route.ts) |
 
 ## Stack
 
@@ -59,6 +61,8 @@ bash scripts/verify.sh
 ```
 
 On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). It checks the Node version and that no AI or planning files are tracked, then runs lint with zero warnings, the contract check, type check, the unit and architecture tests, a dependency audit and the production build. There is no hosted CI; this local gate is the check. End-to-end tests against the real API run with `npm run test:e2e:stack`.
+
+Before `npm run test:e2e:stack`, start the API with its rate limiter trusting `X-Client-IP` from the web server's address range (the [Playwright config](playwright.stack.config.ts) sets the web server's proxy hops).
 
 Environment variables are listed in [`.env.example`](.env.example).
 
