@@ -25,15 +25,15 @@ export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps
             </div>
 
             <div
-                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto snap-x snap-mandatory"
+                className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4"
                 role="list"
             >
                 {isLoading
                     ? Array.from({ length: 4 }).map((_, i) => (
-                        <SimilarCarCardSkeleton key={`skeleton-${i}`} className="snap-start" />
+                        <SimilarCarCardSkeleton key={`skeleton-${i}`} />
                     ))
                     : similarCars?.map((car) => (
-                        <article key={car.id} role="listitem" className="snap-start">
+                        <article key={car.id} role="listitem">
                             <SimilarCarCard car={car} />
                         </article>
                     ))}

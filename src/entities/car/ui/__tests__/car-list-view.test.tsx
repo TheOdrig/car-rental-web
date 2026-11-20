@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import { renderWithProviders as render } from '@/app/testing/test-utils';
 import { describe, it, expect } from 'vitest';
 import { CarListView, CarListItem, CarListViewSkeleton } from '@/entities/car';
 import type { Car } from '@/entities/car';

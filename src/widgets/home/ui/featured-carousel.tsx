@@ -97,7 +97,7 @@ export function FeaturedCarousel({
                 ) : (
                     <div
                         ref={scrollRef}
-                        className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 scroll-pl-4 sm:-mx-6 sm:px-6 sm:scroll-pl-6 lg:-mx-8 lg:px-8 lg:scroll-pl-8"
+                        className="flex gap-3 sm:gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory scrollbar-hide pb-4 -mx-4 px-4 scroll-pl-4 sm:-mx-6 sm:px-6 sm:scroll-pl-6 lg:-mx-8 lg:px-8 lg:scroll-pl-8"
                         style={{
                             scrollbarWidth: 'none',
                             msOverflowStyle: 'none',
@@ -106,9 +106,9 @@ export function FeaturedCarousel({
                         {cars.map((car: Car) => (
                             <div
                                 key={car.id}
-                                className="flex-shrink-0 w-[280px] sm:w-[300px] snap-start"
+                                className="flex-shrink-0 w-[42vw] max-w-[220px] sm:w-[300px] sm:max-w-none snap-start"
                             >
-                                <CarCard car={car} variant="compact" />
+                                <CarCard car={car} variant="compact" sizes="(max-width: 639px) 42vw, 300px" />
                             </div>
                         ))}
                     </div>
@@ -122,7 +122,7 @@ function FeaturedCarouselSkeleton() {
     return (
         <div className="flex gap-4 overflow-hidden">
             {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className="flex-shrink-0 w-[280px] sm:w-[300px]">
+                <div key={i} className="flex-shrink-0 w-[42vw] max-w-[220px] sm:w-[300px] sm:max-w-none">
                     <CarCardSkeleton variant="compact" />
                 </div>
             ))}

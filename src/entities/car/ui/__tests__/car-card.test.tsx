@@ -33,7 +33,7 @@ describe('CarCard', () => {
             const car = createMockCar({ brand: 'Mercedes-Benz', model });
             renderWithProviders(<CarCard car={car} />);
             const heading = screen.getByRole('heading', { name: new RegExp(model) });
-            expect(heading).toHaveClass('line-clamp-2', 'break-words');
+            expect(heading).toHaveClass('line-clamp-1', 'sm:line-clamp-2', 'break-words');
             expect(heading).toHaveAttribute('title', `Mercedes-Benz ${model}`);
         });
     });

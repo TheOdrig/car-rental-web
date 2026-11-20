@@ -46,6 +46,18 @@ describe('CurrencyProvider formatting', () => {
         expect(result.current.format(300, 'TRY')).toBe('€5.00');
     });
 
+    it('formatCompact drops decimals outside USD and keeps them in USD', async () => {
+        const { result } = renderHook(() => useCurrency(), {
+            wrapper: wrapperWith({ initialRates: RATES, initialIsLoading: false }),
+        });
+        await waitFor(() => expect(result.current.currency).toBe('EUR'));
+
+        expect(result.current.formatCompact(1234.56, 'EUR')).toBe('€1,235');
+        expect(result.current.formatCompact(300, 'TRY')).toBe('€5');
+        expect(result.current.formatCompact(88.49, 'USD')).toBe('€44');
+        expect(result.current.format(88.49, 'USD')).toBe('€44.25');
+    });
+
     it('does not mark amounts already in the selected currency', async () => {
         const { result } = renderHook(() => useCurrency(), {
             wrapper: wrapperWith({ initialRates: RATES, initialIsLoading: false }),

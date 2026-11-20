@@ -31,14 +31,15 @@ interface CurrencyContextValue {
     isLoading: boolean;
     convert: (amount: number, from?: CurrencyCode) => number;
     format: (amount: number, from?: CurrencyCode) => string;
+    formatCompact: (amount: number, from?: CurrencyCode) => string;
     formatSource: (amount: number, from?: CurrencyCode) => string;
     isConverted: (from?: CurrencyCode) => boolean;
     refreshRates: () => Promise<void>;
 }
 
-function formatInCurrency(amount: number, code: CurrencyCode): string {
+function formatInCurrency(amount: number, code: CurrencyCode, whole = false): string {
     const info = getCurrencyByCode(code);
-    if (code === 'JPY') {
+    if (code === 'JPY' || whole) {
         return `${info.symbol}${formatNumber(Math.round(amount))}`;
     }
     return `${info.symbol}${formatNumber(amount, {
@@ -140,6 +141,15 @@ export function CurrencyProvider({
         [rates, convert, currency]
     );
 
+    const formatCompact = useCallback(
+        (amount: number, from: CurrencyCode = DEFAULT_CURRENCY): string => {
+            const target = !rates || currency === from ? from : currency;
+            const value = target === from ? amount : convert(amount, from);
+            return formatInCurrency(value, target, target !== DEFAULT_CURRENCY);
+        },
+        [rates, convert, currency]
+    );
+
     const refreshRates = useCallback(async () => {
         setIsLoading(true);
         await fetchRates(true);
@@ -171,11 +181,12 @@ export function CurrencyProvider({
             isLoading,
             convert,
             format,
+            formatCompact,
             formatSource,
             isConverted,
             refreshRates,
         }),
-        [currency, setCurrency, rates, rateSource, isLoading, convert, format, formatSource, isConverted, refreshRates]
+        [currency, setCurrency, rates, rateSource, isLoading, convert, format, formatCompact, formatSource, isConverted, refreshRates]
     );
 
     return (
