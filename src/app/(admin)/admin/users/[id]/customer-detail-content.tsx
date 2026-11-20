@@ -88,9 +88,9 @@ export function CustomerDetailContent({ id }: { id: string }) {
             />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
-                <div className="space-y-1">
+                <div className="min-w-0 space-y-1 md:min-w-[26rem]">
                     <div className="flex items-center gap-3">
-                        <h1 className="break-words text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <h1 className="min-w-0 break-words text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
                             {customerName}
                         </h1>
                     </div>
