@@ -31,14 +31,14 @@ import { fieldErrorMessages } from '@/shared/api';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
 import { DamageReportForm } from '@/entities/damage';
 import { canReportDamage, isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
-import { formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
+import { formatAmount, formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 const CONFIRM_COPY = {
     approve: {
         title: 'Approve this rental request?',
         description: 'The customer is notified and can pay once the payment window opens. This cannot be undone.',
-        confirm: 'Approve Rental',
+        confirm: 'Confirm Approval',
     },
     pickup: {
         title: 'Hand the vehicle over?',
@@ -358,6 +358,18 @@ export function RentalDetailContent({ id }: { id: string }) {
                 }
                 onConfirm={runConfirmed}
             >
+                {confirming === 'approve' && (
+                    <dl data-testid="approve-summary" className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 rounded-md border bg-muted/40 p-3 text-sm">
+                        <dt className="text-muted-foreground">Customer</dt>
+                        <dd className="min-w-0 font-medium [overflow-wrap:anywhere]">{personDisplayName(rental.customer)}</dd>
+                        <dt className="text-muted-foreground">Vehicle</dt>
+                        <dd className="min-w-0 font-medium [overflow-wrap:anywhere]">{rental.vehicle.brand} {rental.vehicle.model}</dd>
+                        <dt className="text-muted-foreground">Dates</dt>
+                        <dd className="font-medium">{formatDate(rental.startDate)} to {formatDate(rental.endDate)}</dd>
+                        <dt className="text-muted-foreground">Total</dt>
+                        <dd className="font-semibold">{formatAmount(rental.pricing.finalTotal, rental.pricing.currency)}</dd>
+                    </dl>
+                )}
                 {confirming === 'earlyReturn' && <EarlyReturnPreviewPanel query={earlyReturnPreview} />}
                 {confirming === 'return' && isBeforeRentalEnd(rental.endDate) && (
                     <div

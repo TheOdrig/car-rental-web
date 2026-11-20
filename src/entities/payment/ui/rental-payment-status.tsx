@@ -13,6 +13,7 @@ import { PaymentStatusBadge } from './payment-status-badge';
 interface RentalPaymentStatusProps {
     rentalId: number;
     action?: (status: PaymentStatusValue | undefined) => ReactNode;
+    note?: ReactNode;
     emptyMessage?: string;
     className?: string;
     enabled?: boolean;
@@ -21,6 +22,7 @@ interface RentalPaymentStatusProps {
 export function RentalPaymentStatus({
     rentalId,
     action,
+    note,
     emptyMessage = 'No payment has been started for this rental yet.',
     className,
     enabled = true,
@@ -29,6 +31,7 @@ export function RentalPaymentStatus({
     const missing = !enabled || (isApiError(error) && error.status === 404);
     const refunded = data?.refundedAmount ?? 0;
     const loadFailed = !isLoading && !!error && !missing;
+    const neverCharged = data?.status === 'CANCELLED' && refunded === 0;
 
     return (
         <Card className={className} data-testid="rental-payment-status">
@@ -56,7 +59,7 @@ export function RentalPaymentStatus({
                             <PaymentStatusBadge status={data.status} />
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Amount</span>
+                            <span className="text-muted-foreground">{neverCharged ? 'Amount (not charged)' : 'Amount'}</span>
                             <span className="font-medium">{formatCurrencyWithDecimals(data.amount, data.currency)}</span>
                         </div>
                         {refunded > 0 && (
@@ -65,11 +68,18 @@ export function RentalPaymentStatus({
                                 <span className="font-medium">{formatCurrencyWithDecimals(refunded, data.currency)}</span>
                             </div>
                         )}
+                        {neverCharged && (
+                            <p className="text-muted-foreground" data-testid="payment-not-charged">
+                                This payment was cancelled and no money was taken.
+                            </p>
+                        )}
                         {data.status === 'FAILED' && data.failureReason && (
                             <p className="text-destructive">{data.failureReason}</p>
                         )}
                     </div>
                 )}
+
+                {note}
 
                 {!isLoading && !loadFailed && action?.(data?.status)}
             </CardContent>

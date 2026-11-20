@@ -37,6 +37,15 @@ describe('RentalPaymentStatus', () => {
         expect(screen.queryByText('Refunded')).not.toBeInTheDocument();
     });
 
+    it('does not present a cancelled, never-charged payment as money that moved', async () => {
+        clientGet.mockResolvedValue({ paymentId: 1, rentalId: 3, status: 'CANCELLED', amount: 147.49, currency: 'EUR' });
+
+        renderStatus();
+
+        expect(await screen.findByText('Amount (not charged)')).toBeInTheDocument();
+        expect(screen.getByTestId('payment-not-charged')).toHaveTextContent('no money was taken');
+    });
+
     it('shows refunded amounts', async () => {
         clientGet.mockResolvedValue({
             paymentId: 1,

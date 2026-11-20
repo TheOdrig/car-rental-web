@@ -1,6 +1,6 @@
 'use client';
 
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import Link from 'next/link';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import {
@@ -56,6 +56,18 @@ function getStatusColor(status: RentalStatus): string {
     }
 }
 
+function CardTitleLink({ href, children }: { href?: string; children: ReactNode }) {
+    if (!href) return <>{children}</>;
+    return (
+        <Link
+            href={href}
+            className="rounded-sm after:absolute after:inset-0 after:rounded-lg after:content-[''] focus-visible:outline-none focus-visible:after:ring-2 focus-visible:after:ring-ring"
+        >
+            {children}
+        </Link>
+    );
+}
+
 function formatPrice(price: number, currency: string): string {
     return formatCurrency(price, currency || 'USD');
 }
@@ -74,7 +86,7 @@ function ActionButtons({
     const hint = actions.find((action) => action.disabled && action.hint)?.hint;
 
     return (
-        <div className="flex flex-col items-end gap-1">
+        <div className="relative z-10 flex flex-col items-end gap-1">
             <div className="flex items-center gap-2">
                 {actions.map((action) => (
                     <Button
@@ -113,14 +125,15 @@ export const RentalCard = memo(function RentalCard({
     const actions = showActions ? getActionButtons(status, { paymentOpensOn, paymentStatus: rental.paymentStatus }) : [];
 
     const referenceId = formatRentalReference(id);
+    const href = onClick ? undefined : `/rentals/${rental.id}`;
 
     if (variant === 'detailed') {
         const cardContent = (
             <Card
                 className={cn(
-                    'group overflow-hidden transition-all duration-300 hover:shadow-lg',
+                    'group relative overflow-hidden transition-shadow duration-200 hover:shadow-md',
                     isActive && 'border-l-4 border-l-primary shadow-md',
-                    onClick && 'cursor-pointer',
+                    (onClick || href) && 'cursor-pointer',
                     className
                 )}
                 onClick={() => onClick?.(rental)}
@@ -147,7 +160,9 @@ export const RentalCard = memo(function RentalCard({
                                 <div className="min-w-0">
                                     <p className="text-xs text-muted-foreground">{referenceId}</p>
                                     <h2 className="truncate text-lg font-semibold" title={`${carSummary?.brand} ${carSummary?.model}`}>
-                                        {carSummary?.brand} {carSummary?.model}
+                                        <CardTitleLink href={href}>
+                                            {carSummary?.brand} {carSummary?.model}
+                                        </CardTitleLink>
                                     </h2>
                                 </div>
                                 <Badge
@@ -204,23 +219,15 @@ export const RentalCard = memo(function RentalCard({
             </Card>
         );
 
-        if (!onClick) {
-            return (
-                <Link href={`/rentals/${rental.id}`} className="block">
-                    {cardContent}
-                </Link>
-            );
-        }
-
         return cardContent;
     }
 
     const cardContent = (
         <Card
             className={cn(
-                'group overflow-hidden transition-all duration-300 hover:shadow-lg',
+                'group relative overflow-hidden transition-shadow duration-200 hover:shadow-md',
                 isActive && 'border-l-4 border-l-primary',
-                onClick && 'cursor-pointer',
+                (onClick || href) && 'cursor-pointer',
                 variant === 'compact' && 'py-2',
                 className
             )}
@@ -232,7 +239,9 @@ export const RentalCard = memo(function RentalCard({
                         <div className="mb-2 flex items-center gap-2">
                             <Car className="h-4 w-4 shrink-0 text-muted-foreground" />
                             <h2 className="truncate text-lg font-semibold leading-tight">
-                                {carSummary?.brand} {carSummary?.model}
+                                <CardTitleLink href={href}>
+                                    {carSummary?.brand} {carSummary?.model}
+                                </CardTitleLink>
                             </h2>
                         </div>
 
@@ -284,14 +293,6 @@ export const RentalCard = memo(function RentalCard({
             </CardContent>
         </Card>
     );
-
-    if (!onClick) {
-        return (
-            <Link href={`/rentals/${rental.id}`} className="block">
-                {cardContent}
-            </Link>
-        );
-    }
 
     return cardContent;
 });

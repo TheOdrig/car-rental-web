@@ -20,6 +20,7 @@ describe('PaymentInfoCard pay-by', () => {
         );
 
         expect(screen.getByTestId('payment-due-by')).toHaveTextContent(/^Pay by May [5-7], 2030/);
+        expect(screen.getByTestId('payment-due-by').closest('[data-testid="rental-payment-status"]')).not.toBeNull();
     });
 
     it('shows nothing when the API sends no pay-by time', () => {

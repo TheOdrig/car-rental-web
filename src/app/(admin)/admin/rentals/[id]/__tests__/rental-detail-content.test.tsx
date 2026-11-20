@@ -46,7 +46,7 @@ function rental(status: string) {
         duration: 2,
         customer: { firstName: 'Ada', lastName: 'Lovelace', emailVerified: true, phoneVerified: false },
         vehicle: { id: 3, brand: 'Honda', model: 'Civic' },
-        pricing: { currency: 'EUR', totalAmount: 100 },
+        pricing: { currency: 'EUR', totalAmount: 100, finalTotal: 294.3 },
         notes: {},
         timeline: [],
         damages: [],
@@ -75,7 +75,10 @@ describe('admin rental detail approval', () => {
         await user.click(screen.getByRole('button', { name: 'Approve' }));
         expect(approve).not.toHaveBeenCalled();
 
-        await user.click(await screen.findByRole('button', { name: 'Approve Rental' }));
+        const summary = await screen.findByTestId('approve-summary');
+        expect(summary).toHaveTextContent('Ada Lovelace');
+        expect(summary).toHaveTextContent('€294.30');
+        await user.click(await screen.findByRole('button', { name: 'Confirm Approval' }));
         await waitFor(() => expect(approve).toHaveBeenCalledTimes(1));
 
         view.rerender(

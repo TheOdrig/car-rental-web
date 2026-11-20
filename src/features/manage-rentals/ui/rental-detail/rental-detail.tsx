@@ -100,6 +100,14 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                     {status !== RentalStatus.REQUESTED && (
                         <RentalPaymentStatus
                             rentalId={rental.id}
+                            note={
+                                <RentalPaymentNote
+                                    status={status}
+                                    paymentStatus={rental.paymentStatus}
+                                    paymentDueBy={rental.paymentDueBy}
+                                    showState={false}
+                                />
+                            }
                             action={(paymentStatus) => {
                                 if (
                                     status !== RentalStatus.CONFIRMED ||
@@ -131,11 +139,6 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                             }}
                         />
                     )}
-                    <RentalPaymentNote
-                        status={status}
-                        paymentStatus={rental.paymentStatus}
-                        paymentDueBy={rental.paymentDueBy}
-                    />
                     <PaymentSummaryCard
                         dailyPrice={dailyPrice}
                         days={days}

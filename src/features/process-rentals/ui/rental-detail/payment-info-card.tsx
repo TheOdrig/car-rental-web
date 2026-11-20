@@ -111,12 +111,18 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                 )}
             </CardContent>
         </Card>
-        {parseApiDate(paymentDueBy) && (
-            <p className="text-sm text-slate-600 dark:text-slate-400" data-testid="payment-due-by">
-                Pay by {formatDateTime(paymentDueBy)}
-            </p>
-        )}
-        <RentalPaymentStatus rentalId={rentalId} enabled={paymentEnabled} className="border-border bg-card" />
+        <RentalPaymentStatus
+            rentalId={rentalId}
+            enabled={paymentEnabled}
+            className="border-border bg-card"
+            note={
+                parseApiDate(paymentDueBy) ? (
+                    <p className="text-sm text-muted-foreground" data-testid="payment-due-by">
+                        Pay by {formatDateTime(paymentDueBy)}
+                    </p>
+                ) : undefined
+            }
+        />
         </div>
     );
 }

@@ -8,16 +8,18 @@ interface RentalPaymentNoteProps {
     paymentStatus?: string | null;
     paymentDueBy?: string | null;
     className?: string;
+    showState?: boolean;
 }
 
-export function RentalPaymentNote({ status, paymentStatus, paymentDueBy, className }: RentalPaymentNoteProps) {
+export function RentalPaymentNote({ status, paymentStatus, paymentDueBy, className, showState = true }: RentalPaymentNoteProps) {
     if (status === RentalStatus.CANCELLED || status === RentalStatus.REQUESTED) return null;
 
     const stateLabel = getRentalPaymentStateLabel(paymentStatus);
     if (stateLabel) {
+        if (!showState) return null;
         return (
             <p
-                className={cn('flex items-center gap-1.5 text-sm font-medium text-green-700 dark:text-green-400', className)}
+                className={cn('flex items-center gap-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400', className)}
                 data-testid="rental-payment-state"
             >
                 <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />
