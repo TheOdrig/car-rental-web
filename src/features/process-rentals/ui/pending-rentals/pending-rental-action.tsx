@@ -18,13 +18,13 @@ export function PendingRentalAction({ item, type, isProcessing, onAction }: Pend
     switch (type) {
         case 'approvals':
             return (
-                <div className="flex items-center justify-end gap-2 max-xl:justify-start">
+                <div className="grid grid-cols-2 items-center gap-2 sm:flex sm:justify-end max-xl:sm:justify-start">
                     <Button
                         size="sm"
                         variant="destructive"
                         onClick={() => onAction(item, 'reject')}
                         disabled={isProcessing}
-                        className="gap-1 h-8"
+                        className="gap-1"
                         aria-label={`Reject rental request for ${item.customerName}`}
                     >
                         <XCircle className="h-4 w-4" aria-hidden="true" />
@@ -34,7 +34,7 @@ export function PendingRentalAction({ item, type, isProcessing, onAction }: Pend
                         size="sm"
                         onClick={() => onAction(item, 'approve')}
                         disabled={isProcessing}
-                        className="gap-1 h-8"
+                        className="gap-1"
                         aria-label={`Approve rental request for ${item.customerName}`}
                     >
                         <CheckCircle className="h-4 w-4" aria-hidden="true" />

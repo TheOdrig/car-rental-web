@@ -102,8 +102,8 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
 
     return (
         <>
-            <Card className={className}>
-                <CardHeader className="pb-3">
+            <Card className={cn('max-xl:gap-2', className)}>
+                <CardHeader className="pb-3 max-xl:pb-0">
                     <CardTitle className="text-lg capitalize">
                         Pending {type}
                         <Badge variant="secondary" className="ml-2">

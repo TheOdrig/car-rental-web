@@ -19,4 +19,26 @@ describe('VehicleRentalHistoryTable', () => {
         await userEvent.click(screen.getByRole('button', { name: /try again/i }));
         expect(refetch).toHaveBeenCalledTimes(1);
     });
+
+    it('renders a card list for phones next to the desktop table', () => {
+        mockHistory.mockReturnValue({
+            data: {
+                content: [
+                    { id: 7, customerId: 2, customerName: 'Qa Tester', startDate: '2030-03-01', endDate: '2030-03-04', duration: 3, totalAmount: 265.48, currency: 'USD', status: 'CONFIRMED' },
+                ],
+                totalPages: 1,
+                totalElements: 1,
+            },
+            isLoading: false,
+            isError: false,
+            refetch: vi.fn(),
+        });
+
+        render(<VehicleRentalHistoryTable vehicleId={3} />);
+
+        const cards = screen.getByRole('list', { name: 'Rental history' });
+        expect(cards.closest('[data-slot="responsive-data-view-mobile"]')).toHaveClass('md:hidden');
+        expect(screen.getByRole('table').closest('[data-slot="responsive-data-view-desktop"]')).toHaveClass('hidden', 'md:block');
+        expect(screen.getAllByRole('link', { name: 'Qa Tester', hidden: true })).toHaveLength(2);
+    });
 });

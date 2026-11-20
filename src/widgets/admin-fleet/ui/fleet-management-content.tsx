@@ -162,13 +162,13 @@ export function FleetManagementContent() {
                         aria-label="Search cars"
                     />
                 </div>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-1 gap-2 2xs:grid-cols-2 sm:flex">
                     <Select value={statusFilter} onValueChange={(v) => {
                         setStatusFilter(v as StatusFilter);
                         setPage(0);
                     }}>
                         <SelectTrigger
-                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
+                            className="w-full sm:w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by status"
                         >
                             <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
@@ -191,7 +191,7 @@ export function FleetManagementContent() {
                         }}
                     >
                         <SelectTrigger
-                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
+                            className="w-full sm:w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by occupancy"
                         >
                             <SelectValue placeholder="Occupancy" />
@@ -213,7 +213,7 @@ export function FleetManagementContent() {
                         }}
                     >
                         <SelectTrigger
-                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
+                            className="w-full sm:w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by brand"
                         >
                             <SelectValue placeholder="Brand" />

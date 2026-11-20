@@ -43,11 +43,11 @@ export const SimilarCarCard = memo(function SimilarCarCard({
 
                     {badges.length > 0 && (
                         <div className="absolute top-2 left-2 flex flex-wrap gap-1">
-                            {badges.map((reason) => (
+                            {badges.map((reason, index) => (
                                 <Badge
                                     key={reason}
                                     variant="secondary"
-                                    className="bg-card text-foreground text-xs"
+                                    className={cn('bg-card text-foreground text-xs', index > 0 && 'hidden sm:inline-flex')}
                                 >
                                     {reason}
                                 </Badge>
