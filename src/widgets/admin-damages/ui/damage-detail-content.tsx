@@ -19,9 +19,24 @@ import { useRental } from '@/entities/rental';
 import { VehicleLabel } from '@/entities/car';
 import type { CurrencyType } from '@/shared/types';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
+
+function DamageNotFound() {
+    const router = useRouter();
+    return (
+        <div className="flex flex-col items-center justify-center py-12">
+            <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
+            <DocumentTitle title="Damage report not found" />
+            <h1 className="text-lg font-semibold">Damage report not found</h1>
+            <Button variant="outline" className="mt-4" onClick={() => router.back()}>
+                Go Back
+            </Button>
+        </div>
+    );
+}
 
 export function DamageDetailContent({ id }: { id: string }) {
-    const damageId = parseInt(id, 10);
+    const damageId = useNumericParam(id);
     const router = useRouter();
 
     const [showAssessDialog, setShowAssessDialog] = useState(false);
@@ -35,18 +50,7 @@ export function DamageDetailContent({ id }: { id: string }) {
         return <DamageDetailSkeleton />;
     }
 
-    if (!damage) {
-        return (
-            <div className="flex flex-col items-center justify-center py-12">
-                <AlertTriangle className="h-12 w-12 text-muted-foreground mb-4" />
-                <DocumentTitle title="Damage report not found" />
-                <h1 className="text-lg font-semibold">Damage report not found</h1>
-                <Button variant="outline" className="mt-4" onClick={() => router.back()}>
-                    Go Back
-                </Button>
-            </div>
-        );
-    }
+    if (!damage) return <DamageNotFound />;
 
     const canAssess = canAssessDamage(damage);
     const canReassess = canReassessDamage(damage);

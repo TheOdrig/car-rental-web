@@ -12,12 +12,12 @@ vi.mock('next/navigation', () => ({
     notFound: () => notFoundMock(),
 }));
 
-vi.mock('../(admin)/admin/rentals/[id]/rental-detail-content', () => ({ RentalDetailContent: () => null }));
-vi.mock('../(admin)/admin/users/[id]/customer-detail-content', () => ({ CustomerDetailContent: () => null }));
-vi.mock('../(admin)/admin/fleet/[id]/vehicle-detail-content', () => ({ VehicleDetailContent: () => null }));
+vi.mock('@/widgets/admin-rental-detail', () => ({ RentalDetailContent: () => null }));
+vi.mock('@/widgets/admin-customer-detail', () => ({ CustomerDetailContent: () => null }));
+vi.mock('@/widgets/admin-fleet', () => ({ VehicleDetailContent: () => null }));
 vi.mock('../(admin)/admin/fleet/[id]/edit/edit-car-content', () => ({ EditCarContent: () => null }));
-vi.mock('../(admin)/admin/damages/[id]/damage-detail-content', () => ({ DamageDetailContent: () => null }));
-vi.mock('../(protected)/rentals/[id]/rental-detail-content', () => ({ RentalDetailContent: () => null }));
+vi.mock('@/widgets/admin-damages', () => ({ DamageDetailContent: () => null }));
+vi.mock('@/widgets/rental-detail', () => ({ RentalDetailContent: () => null }));
 vi.mock('../(protected)/damages/[id]/my-damage-detail-content', () => ({ MyDamageDetailContent: () => null }));
 
 import AdminRentalPage from '../(admin)/admin/rentals/[id]/page';

@@ -6,7 +6,7 @@ import { ArrowLeft, Ban, ShieldCheck, Mail, History, AlertTriangle } from 'lucid
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui';
 import { PageHeader } from '@/shared/ui/page-header';
-import { DetailPageSkeleton, DetailPageError, CustomerDamageHistory } from '@/features/admin';
+import { DetailPageLoadingState, DetailPageErrorState, CustomerDamageHistory } from '@/features/admin';
 import {
     CustomerDetailInfoCard,
     CustomerVerificationCard,
@@ -21,50 +21,29 @@ import {
 import { isActiveAccount, isBannedAccount } from '@/entities/user';
 import { formatDate, personDisplayName } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
+
+const SECTION = { label: 'Users', href: ROUTES.admin.users, backLabel: 'Back to Users' };
 
 export function CustomerDetailContent({ id }: { id: string }) {
-    const customerId = parseInt(id, 10);
+    const customerId = useNumericParam(id);
 
     const [isBanDialogOpen, setIsBanDialogOpen] = useState(false);
     const [isUnbanDialogOpen, setIsUnbanDialogOpen] = useState(false);
 
     const { data: customer, isLoading, isError, refetch } = useCustomerDetail(customerId);
 
-    if (isLoading) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Users', href: ROUTES.admin.users },
-                        { label: 'Loading...' },
-                    ]}
-                />
-                <DetailPageSkeleton />
-            </div>
-        );
-    }
+    if (isLoading) return <DetailPageLoadingState section={SECTION} />;
 
-    if (isError || !customer) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Users', href: ROUTES.admin.users },
-                        { label: `User #${customerId}` },
-                    ]}
-                />
-                <DetailPageError
-                    title="Customer Not Found"
-                    message="The customer you are looking for does not exist or could not be loaded."
-                    onRetry={() => refetch()}
-                    backUrl={ROUTES.admin.users}
-                    backLabel="Back to Users"
-                />
-            </div>
-        );
-    }
+    if (isError || !customer) return (
+        <DetailPageErrorState
+            section={SECTION}
+            current={`User #${customerId}`}
+            title="Customer Not Found"
+            message="The customer you are looking for does not exist or could not be loaded."
+            onRetry={() => refetch()}
+        />
+    );
 
     const customerName = personDisplayName(customer);
     const isBanned = isBannedAccount(customer.accountStatus);

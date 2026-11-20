@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
@@ -19,11 +18,10 @@ import {
 } from '@/entities/rental';
 import { pickCode } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
-import { withQuery } from '@/shared/lib/url';
+import { useUrlState } from '@/shared/lib/use-url-state';
 
 function LateReturnsList() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
+    const { searchParams, update } = useUrlState();
 
     const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: LateReturnFiltersType = {
@@ -46,10 +44,8 @@ function LateReturnsList() {
     };
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams?.toString());
-        params?.set('page', String(newPage));
-        router.push(withQuery(ROUTES.admin.lateReturns, params?.toString()));
-    }, [router, searchParams]);
+        update({ page: newPage }, { path: ROUTES.admin.lateReturns });
+    }, [update]);
 
     return (
         <div className="space-y-6">

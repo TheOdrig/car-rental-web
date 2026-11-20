@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { SecuritySettingsContent } from './security-settings-content';
+import { SecuritySettingsContent } from '@/widgets/security-settings';
 
 export const metadata: Metadata = { title: 'Security Settings' };
 

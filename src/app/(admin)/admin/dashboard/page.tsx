@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AdminDashboardContent } from './admin-dashboard-content';
+import { AdminDashboardContent } from '@/widgets/admin-dashboard';
 
 export const metadata: Metadata = { title: 'Admin Dashboard' };
 

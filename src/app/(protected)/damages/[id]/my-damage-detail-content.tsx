@@ -18,9 +18,10 @@ import { VehicleLabel } from '@/entities/car';
 import { DamageDisputeForm } from '@/features/manage-damages';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
 
 export function MyDamageDetailContent({ id }: { id: string }) {
-    const damageId = parseInt(id, 10);
+    const damageId = useNumericParam(id);
     const router = useRouter();
 
     const [showDisputeDialog, setShowDisputeDialog] = useState(false);

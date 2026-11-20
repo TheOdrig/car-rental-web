@@ -1,13 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { MyDamageDetailContent } from './my-damage-detail-content';
+import { isNumericId } from '@/shared/lib/numeric-id';
 
 interface PageProps {
     params: Promise<{ id: string }>;
-}
-
-function isNumericId(value: string): boolean {
-    return /^[0-9]+$/.test(value) && Number.isSafeInteger(Number(value));
 }
 
 export const metadata: Metadata = { title: 'Damage Report' };

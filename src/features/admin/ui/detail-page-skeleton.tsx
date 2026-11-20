@@ -1,3 +1,5 @@
+'use client';
+
 import { Skeleton } from '@/shared/ui/skeleton';
 import { Card, CardContent, CardHeader } from '@/shared/ui/card';
 import { cn } from '@/shared/lib';

@@ -5,7 +5,7 @@ import { ArrowLeft, Edit, AlertTriangle } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { PageHeader } from '@/shared/ui/page-header';
-import { DetailPageSkeleton, DetailPageError, VehicleDamageHistory } from '@/features/admin';
+import { DetailPageLoadingState, DetailPageErrorState, VehicleDamageHistory } from '@/features/admin';
 import {
     VehicleDetailInfoCard,
     VehicleImagesCard,
@@ -25,50 +25,29 @@ import {
 import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, type CarStatus } from '@/entities/car';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
 
 const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_SERVICE_STATUS_LABELS[value] }));
 
+const SECTION = { label: 'Fleet', href: ROUTES.admin.fleet, backLabel: 'Back to Fleet' };
+
 export function VehicleDetailContent({ id }: { id: string }) {
-    const vehicleId = parseInt(id, 10);
+    const vehicleId = useNumericParam(id);
 
     const { data: vehicle, isLoading, isError, refetch } = useVehicleDetail(vehicleId);
     const updateStatus = useChangeCarStatus();
 
-    if (isLoading) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Fleet', href: ROUTES.admin.fleet },
-                        { label: 'Loading...' },
-                    ]}
-                />
-                <DetailPageSkeleton />
-            </div>
-        );
-    }
+    if (isLoading) return <DetailPageLoadingState section={SECTION} />;
 
-    if (isError || !vehicle) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Fleet', href: ROUTES.admin.fleet },
-                        { label: `Vehicle #${vehicleId}` },
-                    ]}
-                />
-                <DetailPageError
-                    title="Vehicle Not Found"
-                    message="The vehicle you are looking for does not exist or could not be loaded."
-                    onRetry={() => refetch()}
-                    backUrl={ROUTES.admin.fleet}
-                    backLabel="Back to Fleet"
-                />
-            </div>
-        );
-    }
+    if (isError || !vehicle) return (
+        <DetailPageErrorState
+            section={SECTION}
+            current={`Vehicle #${vehicleId}`}
+            title="Vehicle Not Found"
+            message="The vehicle you are looking for does not exist or could not be loaded."
+            onRetry={() => refetch()}
+        />
+    );
 
     const vehicleName = `${vehicle.brand} ${vehicle.model}`;
 

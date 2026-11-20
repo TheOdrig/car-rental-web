@@ -2,11 +2,10 @@
 
 import { useMemo, useState } from 'react';
 import { toast } from 'sonner';
-import { clientPost } from '@/shared/api';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
-import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, latestRevenueGrowth, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
+import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, latestRevenueGrowth, useRefreshExchangeRates, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
 import { FleetStatusCard } from '@/features/manage-fleet';
 import { PendingRentalsTable, type DamageFormSlotProps } from '@/features/process-rentals';
 import { DamageReportForm } from '@/features/manage-damages';
@@ -14,7 +13,6 @@ import type { RevenuePeriod } from '@/features/admin';
 import { useRentalActions } from '@/features/process-rentals';
 import { formatTime } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
-import { ENDPOINTS } from '@/shared/api/endpoints';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -40,7 +38,7 @@ const renderDamageForm = (props: DamageFormSlotProps) => <DamageReportForm {...p
 export function AdminDashboardContent() {
     const [activeTab, setActiveTab] = useState<ActiveTab>('approvals');
     const [revenuePeriod, setRevenuePeriod] = useState<RevenuePeriod>('last6months');
-    const [refreshingRates, setRefreshingRates] = useState(false);
+    const refreshRates = useRefreshExchangeRates();
 
     const summaryQuery = useDashboardSummary();
     const fleetQuery = useFleetStatus();
@@ -69,18 +67,7 @@ export function AdminDashboardContent() {
         toast.success('Dashboard refreshed');
     };
 
-    const handleRefreshRates = async () => {
-        setRefreshingRates(true);
-        try {
-            await clientPost(ENDPOINTS.exchangeRates.refresh);
-            toast.success('Exchange rates refreshed');
-            window.location.reload();
-        } catch {
-            toast.error('Failed to refresh exchange rates');
-        } finally {
-            setRefreshingRates(false);
-        }
-    };
+    const handleRefreshRates = () => refreshRates.mutate();
 
     const handleCardClick = (type: string) => {
         if (type === 'approvals' || type === 'pickups' || type === 'returns' || type === 'overdue') {
@@ -120,7 +107,7 @@ export function AdminDashboardContent() {
                 <DashboardHeader
                     lastUpdated={formatUpdatedTime(summary?.generatedAt)}
                     isRefreshing={summaryLoading}
-                    isRefreshingRates={refreshingRates}
+                    isRefreshingRates={refreshRates.isPending}
                     onRefresh={handleRefresh}
                     onRefreshRates={handleRefreshRates}
                 />

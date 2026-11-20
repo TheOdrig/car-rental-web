@@ -43,4 +43,5 @@ export {
 } from './api/use-admin-dashboard';
 
 export * from './api/use-late-returns';
+export { useRefreshExchangeRates } from './api/use-refresh-rates';
 export * from './lib/utils';

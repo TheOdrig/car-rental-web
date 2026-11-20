@@ -24,13 +24,14 @@ import { mapCurrency } from '@/entities/currency';
 import { toast } from 'sonner';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
 
 export function EditCarContent() {
     const router = useRouter();
     const params = useParams();
 
-    const rawId = Array.isArray(params.id) ? params.id[0] : params.id;
-    const carId = rawId ? Number(rawId) : null;
+    const parsedId = useNumericParam(params.id);
+    const carId = Number.isNaN(parsedId) ? null : parsedId;
 
 
     const { data: car, isLoading: isLoadingCar } = useVehicleDetail(carId || 0);

@@ -1,7 +1,6 @@
 'use client';
 
 import { useCallback } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from '@/shared/ui/button';
 import {
     Select,
@@ -13,6 +12,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { X } from 'lucide-react';
 import { LATE_RETURN_STATUS_LABELS, type LateReturnStatus } from '@/entities/rental';
+import { useUrlState } from '@/shared/lib/use-url-state';
 
 const STATUS_OPTIONS: { value: LateReturnStatus; label: string }[] = (
     ['GRACE_PERIOD', 'LATE', 'SEVERELY_LATE'] as const
@@ -34,26 +34,16 @@ const triggerClassName = "bg-background border-border hover:bg-accent transition
 const inputClassName = "bg-background border-border hover:bg-accent transition-colors text-foreground";
 
 export function LateReturnFilters() {
-    const router = useRouter();
-    const searchParams = useSearchParams();
+    const { searchParams, update, clear } = useUrlState();
 
     const updateFilter = useCallback(
         (key: string, value: string | null) => {
-            const params = new URLSearchParams(searchParams?.toString());
-            if (value && value !== 'all') {
-                params?.set(key, value);
-            } else {
-                params?.delete(key);
-            }
-            params?.set('page', '0');
-            router.push(`?${params?.toString()}`);
+            update({ [key]: value && value !== 'all' ? value : null, page: 0 });
         },
-        [router, searchParams]
+        [update]
     );
 
-    const clearFilters = useCallback(() => {
-        router.push('?');
-    }, [router]);
+    const clearFilters = clear;
 
     const hasFilters =
         searchParams?.has('status') ||

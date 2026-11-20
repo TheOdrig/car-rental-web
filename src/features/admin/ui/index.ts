@@ -20,3 +20,4 @@ export { PenaltyHistorySection } from './penalty-history-section';
 
 export { DetailPageSkeleton, CardSkeleton, TableSkeleton } from './detail-page-skeleton';
 export { DetailPageError } from './detail-page-error';
+export { DetailPageLoadingState, DetailPageErrorState, type DetailSection } from './detail-page-states';

@@ -1,7 +1,6 @@
 'use client';
 
 import { Suspense, useCallback } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
 import { RefreshCw, BarChart3 } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
@@ -15,7 +14,7 @@ import { toast } from 'sonner';
 import { DAMAGE_CATEGORIES, DAMAGE_SEVERITIES, DAMAGE_STATUSES, type DamageSearchFilters } from '@/entities/damage';
 import { pickCode } from '@/shared/lib';
 import { ROUTES } from '@/shared/config/routes';
-import { withQuery } from '@/shared/lib/url';
+import { useUrlState } from '@/shared/lib/use-url-state';
 
 function parsePositiveInt(value: string | null | undefined): number | undefined {
     if (!value || !/^[0-9]+$/.test(value)) return undefined;
@@ -24,8 +23,7 @@ function parsePositiveInt(value: string | null | undefined): number | undefined 
 }
 
 function DamagesList() {
-    const searchParams = useSearchParams();
-    const router = useRouter();
+    const { searchParams, update } = useUrlState();
 
     const page = parseInt(searchParams?.get('page') || '0', 10);
     const filters: DamageSearchFilters = {
@@ -52,10 +50,8 @@ function DamagesList() {
     };
 
     const handlePageChange = useCallback((newPage: number) => {
-        const params = new URLSearchParams(searchParams?.toString());
-        params.set('page', String(newPage));
-        router.push(withQuery(ROUTES.admin.damages, params.toString()));
-    }, [router, searchParams]);
+        update({ page: newPage }, { path: ROUTES.admin.damages });
+    }, [update]);
 
     return (
         <div className="space-y-6">

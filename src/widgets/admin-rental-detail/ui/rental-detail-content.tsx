@@ -6,7 +6,7 @@ import { ArrowLeft, DollarSign, TriangleAlert } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { PageHeader } from '@/shared/ui/page-header';
-import { DetailPageSkeleton, DetailPageError, PenaltyWaiveDialog, PenaltyHistorySection, RentalDamageReports } from '@/features/admin';
+import { DetailPageLoadingState, DetailPageErrorState, PenaltyWaiveDialog, PenaltyHistorySection, RentalDamageReports } from '@/features/admin';
 import {
     RentalInfoCard,
     CustomerInfoCard,
@@ -42,9 +42,12 @@ import { canReportDamage, isAdminPaymentExpected, isBeforeRentalEnd, CANCEL_REAS
 import { formatAmount, formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 import { ROUTES } from '@/shared/config/routes';
+import { useNumericParam } from '@/shared/lib/use-numeric-param';
+
+const SECTION = { label: 'Rentals', href: ROUTES.admin.rentals, backLabel: 'Back to Rentals' };
 
 export function RentalDetailContent({ id }: { id: string }) {
-    const rentalId = parseInt(id, 10);
+    const rentalId = useNumericParam(id);
 
     const { data: rental, isLoading, isError, refetch } = useRentalDetail(rentalId);
     const approveRental = useApproveRental();
@@ -74,41 +77,17 @@ export function RentalDetailContent({ id }: { id: string }) {
         earlyReturn.isPending ||
         cancelRental.isPending;
 
-    if (isLoading) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Rentals', href: ROUTES.admin.rentals },
-                        { label: 'Loading...' },
-                    ]}
-                />
-                <DetailPageSkeleton />
-            </div>
-        );
-    }
+    if (isLoading) return <DetailPageLoadingState section={SECTION} />;
 
-    if (isError || !rental) {
-        return (
-            <div className="space-y-6 p-6">
-                <Breadcrumb
-                    items={[
-                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
-                        { label: 'Rentals', href: ROUTES.admin.rentals },
-                        { label: formatRentalReference(rentalId) },
-                    ]}
-                />
-                <DetailPageError
-                    title="Rental Not Found"
-                    message="The rental you are looking for does not exist or could not be loaded."
-                    onRetry={() => refetch()}
-                    backUrl={ROUTES.admin.rentals}
-                    backLabel="Back to Rentals"
-                />
-            </div>
-        );
-    }
+    if (isError || !rental) return (
+        <DetailPageErrorState
+            section={SECTION}
+            current={formatRentalReference(rentalId)}
+            title="Rental Not Found"
+            message="The rental you are looking for does not exist or could not be loaded."
+            onRetry={() => refetch()}
+        />
+    );
 
     const penaltyPresent = hasPenalty(rental);
     const showPenaltyHistory = shouldShowPenaltyHistory(rental);
@@ -124,12 +103,11 @@ export function RentalDetailContent({ id }: { id: string }) {
         if (!rejectionReason.trim()) return;
         void singleFlight(async () => {
             const done = await rejectRental.mutateAsync({ rentalId, reason: rejectionReason }).then(() => true, () => false);
-            if (done) {
-                setRejectDialogOpen(false);
-                setRejectionReason('');
-                await refetch();
-                focusHeading();
-            }
+            if (!done) return;
+            setRejectDialogOpen(false);
+            setRejectionReason('');
+            await refetch();
+            focusHeading();
         });
     };
 
@@ -148,12 +126,11 @@ export function RentalDetailContent({ id }: { id: string }) {
                         ? earlyReturn.mutateAsync({ rentalId })
                         : cancelRental.mutateAsync({ rentalId, reason: cancelReason });
             const done = await request.then(() => true, () => false);
-            if (done) {
-                setConfirming(null);
-                setCancelReason('');
-                await refetch();
-                focusHeading();
-            }
+            if (!done) return;
+            setConfirming(null);
+            setCancelReason('');
+            await refetch();
+            focusHeading();
         });
     };
 

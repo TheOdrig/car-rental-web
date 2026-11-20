@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { PayRental } from '@/features/pay-rental';
 import { getServerEnv } from '@/shared/server';
+import { isNumericId } from '@/shared/lib/numeric-id';
 
 export const metadata: Metadata = {
     title: 'Pay for Rental',
@@ -25,7 +26,7 @@ export default async function PayRentalPage({ params, searchParams }: PayPagePro
         redirect_status: redirectStatus,
     } = await searchParams;
 
-    if (!/^\d+$/.test(id)) {
+    if (!isNumericId(id)) {
         notFound();
     }
 

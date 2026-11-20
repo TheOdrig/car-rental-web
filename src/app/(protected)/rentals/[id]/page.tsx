@@ -1,13 +1,10 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { RentalDetailContent } from './rental-detail-content';
+import { RentalDetailContent } from '@/widgets/rental-detail';
+import { isNumericId } from '@/shared/lib/numeric-id';
 
 interface PageProps {
     params: Promise<{ id: string }>;
-}
-
-function isNumericId(value: string): boolean {
-    return /^[0-9]+$/.test(value) && Number.isSafeInteger(Number(value));
 }
 
 export const metadata: Metadata = { title: 'Rental Details' };

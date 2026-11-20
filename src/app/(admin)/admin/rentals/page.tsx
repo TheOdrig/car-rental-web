@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { AdminRentalsContent } from './admin-rentals-content';
+import { AdminRentalsContent } from '@/widgets/admin-rentals';
 
 export const metadata: Metadata = { title: 'Rental Management' };
 

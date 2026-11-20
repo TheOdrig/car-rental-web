@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { CalendarDays, Car, Wallet } from 'lucide-react';
 import { logger, formatCurrencyWithDecimals, formatDate, paginate, parsePageIndex } from '@/shared/lib';
 import { useAllMyRentals, useCancelRental } from '@/entities/rental';
@@ -31,28 +31,25 @@ import {
 } from '@/shared/ui/alert-dialog';
 import { DEFAULT_CURRENCY, PAGE_SIZE } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
+import { useUrlState } from '@/shared/lib/use-url-state';
 
 
 export function MyRentalsContent() {
     const router = useRouter();
     const pathname = usePathname();
-    const searchParams = useSearchParams();
+    const { get, update } = useUrlState();
     const { data, isLoading, isError, refetch } = useAllMyRentals();
     const cancelMutation = useCancelRental();
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [rentalToCancel, setRentalToCancel] = useState<Rental | null>(null);
-    const activeTab = parseRentalTab(searchParams?.get('tab'));
-    const page = parsePageIndex(searchParams?.get('page'));
+    const activeTab = parseRentalTab(get('tab'));
+    const page = parsePageIndex(get('page'));
 
     const goTo = useCallback(
         (tab: RentalTab, pageIndex: number) => {
-            const params = new URLSearchParams();
-            if (tab !== 'all') params.set('tab', tab);
-            if (pageIndex > 0) params.set('page', String(pageIndex + 1));
-            const query = params.toString();
-            router.push(query ? `${pathname}?${query}` : pathname, { scroll: false });
+            update({ tab: tab !== 'all' ? tab : null, page: pageIndex > 0 ? pageIndex + 1 : null }, { path: pathname, scroll: false });
         },
-        [router, pathname]
+        [update, pathname]
     );
 
     const rentals = useMemo(() => data ?? [], [data]);

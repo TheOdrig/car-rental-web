@@ -93,8 +93,8 @@ vi.mock('@/features/manage-fleet', async () => {
 import { LateReturnsContent } from '../late-returns/late-returns-content';
 import { AdminAlertsContent } from '../alerts/admin-alerts-content';
 import { UserManagementContent } from '../users/user-management-content';
-import { AdminRentalsContent } from '../rentals/admin-rentals-content';
-import { AdminDashboardContent } from '../dashboard/admin-dashboard-content';
+import { AdminRentalsContent } from '@/widgets/admin-rentals';
+import { AdminDashboardContent } from '@/widgets/admin-dashboard';
 
 function renderPage(ui: React.ReactElement) {
     const Wrapper = createQueryWrapper();
