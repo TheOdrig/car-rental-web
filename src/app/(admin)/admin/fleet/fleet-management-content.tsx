@@ -169,7 +169,7 @@ export function FleetManagementContent() {
                             <SelectValue placeholder="Service" />
                         </SelectTrigger>
                         <SelectContent>
-                            <SelectItem value="all">Any service status</SelectItem>
+                            <SelectItem value="all">Any service</SelectItem>
                             {CAR_STATUSES.map((status) => (
                                 <SelectItem key={status} value={status}>
                                     {CAR_SERVICE_STATUS_LABELS[status]}
