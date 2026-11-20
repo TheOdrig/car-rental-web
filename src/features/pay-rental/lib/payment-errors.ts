@@ -1,7 +1,15 @@
 import { detailString, isApiError } from '@/shared/api';
 import { formatDate, parseApiDate } from '@/shared/lib/format';
 
-export type PaymentBlockKind = 'signin' | 'window-not-open' | 'forbidden' | 'not-confirmed' | 'settled' | 'not-found' | 'unavailable';
+export type PaymentBlockKind =
+    | 'signin'
+    | 'window-not-open'
+    | 'deadline-passed'
+    | 'forbidden'
+    | 'not-confirmed'
+    | 'settled'
+    | 'not-found'
+    | 'unavailable';
 
 export interface PaymentBlock {
     kind: PaymentBlockKind;
@@ -19,6 +27,11 @@ const BLOCKS: Record<PaymentBlockKind, PaymentBlock> = {
         kind: 'window-not-open',
         title: 'Payment is not open yet',
         message: 'Payment opens shortly before your rental starts. Please come back closer to the start date.',
+    },
+    'deadline-passed': {
+        kind: 'deadline-passed',
+        title: 'Payment deadline has passed',
+        message: 'The time to pay for this rental has run out, so it can no longer be paid. The rental is released automatically.',
     },
     forbidden: {
         kind: 'forbidden',
@@ -80,6 +93,10 @@ export function describePaymentError(error: unknown): PaymentBlock {
 
     if (error.code && PAYMENT_WINDOW_ERROR_CODES.includes(error.code)) {
         return windowNotOpen(error);
+    }
+
+    if (error.code === 'PAYMENT_DEADLINE_PASSED') {
+        return BLOCKS['deadline-passed'];
     }
 
     switch (error.status) {

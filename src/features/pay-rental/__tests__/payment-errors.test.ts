@@ -58,6 +58,17 @@ describe('describePaymentError', () => {
             expect(describePaymentError(error).message).toContain('closer to the start date');
         });
 
+        it('maps a passed payment deadline to its own state, not to settled', () => {
+            const error = new ApiError({
+                status: 409,
+                message: 'deadline passed',
+                timestamp: new Date().toISOString(),
+                code: 'PAYMENT_DEADLINE_PASSED',
+            });
+
+            expect(describePaymentError(error).kind).toBe('deadline-passed');
+        });
+
         it('ignores unregistered codes', () => {
             const error = new ApiError({
                 status: 409,
