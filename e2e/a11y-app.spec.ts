@@ -240,6 +240,32 @@ test.describe('accessibility of data pages against a stubbed API', () => {
         expect(box!.x + box!.width).toBeLessThanOrEqual(320);
     });
 
+    test('admin pages use their own shell without the public header or footer', async ({ page }) => {
+        await page.setViewportSize({ width: 1440, height: 900 });
+        await signIn(page, 'ADMIN');
+        await stubApi(page);
+
+        await page.goto('/admin/dashboard');
+        await expect(page.locator('h1').first()).toBeVisible();
+
+        await expect(page.getByRole('link', { name: 'Browse Cars' })).toHaveCount(0);
+        await expect(page.getByRole('contentinfo')).toHaveCount(0);
+        await expect(page.getByRole('link', { name: 'View site' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Account menu' })).toBeVisible();
+    });
+
+    test('admin pages have exactly one menu button on a phone', async ({ page }) => {
+        await page.setViewportSize({ width: 375, height: 800 });
+        await signIn(page, 'ADMIN');
+        await stubApi(page);
+
+        await page.goto('/admin/dashboard');
+        await expect(page.locator('h1').first()).toBeVisible();
+
+        await expect(page.getByRole('button', { name: 'Open admin menu' })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Toggle menu' })).toHaveCount(0);
+    });
+
     test('the public header brand stays on one line at 320px', async ({ page }) => {
         await page.setViewportSize({ width: 320, height: 700 });
         await stubApi(page);
