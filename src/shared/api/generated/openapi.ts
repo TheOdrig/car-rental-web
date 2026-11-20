@@ -53,7 +53,7 @@ export interface paths {
         };
         /**
          * Search the fleet
-         * @description Server-side search, status and brand filters, paging and sorting over all non-deleted cars, including the VIN
+         * @description Server-side search, status, brand and occupancy filters, paging and sorting over all non-deleted cars, including the VIN and the current occupancy
          */
         get: operations["searchFleet"];
         put?: never;
@@ -2340,6 +2340,8 @@ export interface components {
             createTime?: string;
             /** @enum {string} */
             currencyType?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** Format: int64 */
+            currentRentalId?: number;
             /** @enum {string} */
             displayCurrency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
             displayName?: string;
@@ -2368,6 +2370,8 @@ export interface components {
             /** Format: date */
             nextServiceDate?: string;
             notes?: string;
+            /** @enum {string} */
+            occupancy?: "FREE" | "RESERVED" | "IN_USE";
             price?: number;
             /** Format: int32 */
             productionYear?: number;
@@ -2579,17 +2583,26 @@ export interface components {
             customerName?: string;
             damageLocation?: string;
             description?: string;
+            disputeComments?: string;
+            disputeReason?: string;
+            /** Format: date-time */
+            disputedAt?: string;
             /** Format: int64 */
             id?: number;
             insuranceCoverage?: boolean;
             insuranceDeductible?: number;
+            originalLiability?: number;
             pending?: boolean;
             photos?: components["schemas"]["DamagePhotoDto"][];
+            refundAmount?: number;
             /** Format: int64 */
             rentalId?: number;
             repairCostEstimate?: number;
             /** Format: date-time */
             reportedAt?: string;
+            resolutionNotes?: string;
+            /** Format: date-time */
+            resolvedAt?: string;
             /** @enum {string} */
             severity?: "MINOR" | "MODERATE" | "MAJOR" | "TOTAL_LOSS";
             /** @enum {string} */
@@ -2971,6 +2984,12 @@ export interface components {
         PickupRequest: {
             notes?: string;
         };
+        PriceAdjustment: {
+            amount?: number;
+            code?: string;
+            label?: string;
+            multiplier?: number;
+        };
         PricingRequest: {
             /** Format: int64 */
             carId: number;
@@ -2996,7 +3015,7 @@ export interface components {
              * @description Stable machine readable error code
              * @enum {string}
              */
-            code: "ACCESS_DENIED" | "ACCOUNT_BANNED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "BAD_REQUEST" | "CAR_ALREADY_EXISTS" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_VALIDATION_FAILED" | "CONCURRENT_MODIFICATION" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "DATA_CONFLICT" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_MULTIPART_REQUEST" | "INVALID_PARAMETER" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "INVALID_USER_STATE" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OAUTH2_ACCOUNT_ALREADY_LINKED" | "OAUTH2_AUTHENTICATION_FAILED" | "OAUTH2_AUTHORIZATION_DENIED" | "OAUTH2_EMAIL_REQUIRED" | "OAUTH2_INVALID_STATE" | "OAUTH2_INVALID_TOKEN" | "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED" | "OAUTH2_PROVIDER_NOT_SUPPORTED" | "OAUTH2_PROVIDER_UNAVAILABLE" | "OAUTH2_SOCIAL_LOGIN_REQUIRED" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYLOAD_TOO_LARGE" | "PAYMENT_DEADLINE_PASSED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
+            code: "ACCESS_DENIED" | "ACCOUNT_BANNED" | "ALERT_NOT_FOUND" | "AUTHENTICATION_FAILED" | "BAD_REQUEST" | "CAR_ALREADY_EXISTS" | "CAR_DATES_UNAVAILABLE" | "CAR_NOT_AVAILABLE" | "CAR_NOT_FOUND" | "CAR_VALIDATION_FAILED" | "CONCURRENT_MODIFICATION" | "CONSTRAINT_VIOLATION" | "DAMAGE_ASSESSMENT_ERROR" | "DAMAGE_DISPUTE_ERROR" | "DAMAGE_REPORT_ERROR" | "DATA_CONFLICT" | "EMAIL_SEND_FAILED" | "ENDPOINT_NOT_FOUND" | "FILE_NOT_FOUND" | "FILE_UPLOAD_ERROR" | "INTERNAL_SERVER_ERROR" | "INVALID_JSON" | "INVALID_MULTIPART_REQUEST" | "INVALID_PARAMETER" | "INVALID_PARAMETER_TYPE" | "INVALID_PASSWORD" | "INVALID_PAYMENT_STATE" | "INVALID_RENTAL_STATE" | "INVALID_STATUS_TRANSITION" | "INVALID_TOKEN" | "INVALID_USER_STATE" | "METHOD_NOT_ALLOWED" | "MISSING_PARAMETER" | "NOT_ACCEPTABLE" | "OAUTH2_ACCOUNT_ALREADY_LINKED" | "OAUTH2_AUTHENTICATION_FAILED" | "OAUTH2_AUTHORIZATION_DENIED" | "OAUTH2_EMAIL_REQUIRED" | "OAUTH2_INVALID_STATE" | "OAUTH2_INVALID_TOKEN" | "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED" | "OAUTH2_PROVIDER_NOT_SUPPORTED" | "OAUTH2_PROVIDER_UNAVAILABLE" | "OAUTH2_SOCIAL_LOGIN_REQUIRED" | "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED" | "PAYLOAD_TOO_LARGE" | "PAYMENT_DEADLINE_PASSED" | "PAYMENT_FAILED" | "PAYMENT_NOT_AUTHORIZED" | "PAYMENT_NOT_FOUND" | "PAYMENT_WINDOW_NOT_OPEN" | "PENALTY_WAIVER_ERROR" | "RATE_LIMIT_EXCEEDED" | "RECONCILIATION_ERROR" | "RENTAL_CANCEL_NOT_ALLOWED" | "RENTAL_NOT_FOUND" | "RENTAL_VALIDATION_FAILED" | "STRIPE_INTEGRATION_ERROR" | "TOKEN_EXPIRED" | "UNSUPPORTED_MEDIA_TYPE" | "USER_ALREADY_EXISTS" | "USER_NOT_FOUND" | "VALIDATION_FAILED" | "WEBHOOK_PAYLOAD_TOO_LARGE" | "WEBHOOK_PROCESSING_FAILED" | "WEBHOOK_SIGNATURE_INVALID" | "WEBHOOK_SIGNATURE_MISSING";
             /** @description Explanation specific to this occurrence */
             detail: string;
             /** @description Error specific extra data */
@@ -3031,8 +3050,8 @@ export interface components {
             type: string;
         };
         ProfileUpdateRequest: {
-            firstName: string;
-            lastName: string;
+            firstName?: string;
+            lastName?: string;
             phone?: string;
         };
         PublicCarResponse: {
@@ -3158,6 +3177,8 @@ export interface components {
             /** @enum {string} */
             cancelledBy?: "CUSTOMER" | "ADMIN" | "SYSTEM";
             carSummary?: components["schemas"]["CarSummaryResponse"];
+            /** Format: date-time */
+            confirmedAt?: string;
             convertedTotalPrice?: number;
             /** Format: date-time */
             createTime?: string;
@@ -3182,9 +3203,14 @@ export interface components {
             paymentOpensOn?: string;
             /** @enum {string} */
             paymentStatus?: "PENDING" | "AUTHORIZED" | "CAPTURED" | "FAILED" | "REFUNDED" | "CANCELLED";
+            /** Format: date-time */
+            pickedUpAt?: string;
             pickupNotes?: string;
+            priceAdjustments?: components["schemas"]["PriceAdjustment"][];
             rateSource?: string;
             returnNotes?: string;
+            /** Format: date-time */
+            returnedAt?: string;
             /** Format: date */
             startDate?: string;
             /** @enum {string} */
@@ -3453,6 +3479,8 @@ export interface operations {
                 brand?: string;
                 /** @description Car status filter */
                 status?: "AVAILABLE" | "MAINTENANCE" | "DAMAGED" | "INSPECTION";
+                /** @description Current occupancy: FREE, RESERVED (confirmed rental covering today) or IN_USE (picked up, not returned) */
+                occupancy?: "FREE" | "RESERVED" | "IN_USE";
                 /** @description Zero-based page index (0..N) */
                 page?: number;
                 /** @description The size of the page to be returned */

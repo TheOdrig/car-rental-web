@@ -656,6 +656,10 @@
             "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
             "type" : "string"
           },
+          "currentRentalId" : {
+            "format" : "int64",
+            "type" : "integer"
+          },
           "displayCurrency" : {
             "enum" : [ "TRY", "USD", "EUR", "GBP", "JPY" ],
             "type" : "string"
@@ -722,6 +726,10 @@
             "type" : "string"
           },
           "notes" : {
+            "type" : "string"
+          },
+          "occupancy" : {
+            "enum" : [ "FREE", "RESERVED", "IN_USE" ],
             "type" : "string"
           },
           "price" : {
@@ -1246,6 +1254,16 @@
           "description" : {
             "type" : "string"
           },
+          "disputeComments" : {
+            "type" : "string"
+          },
+          "disputeReason" : {
+            "type" : "string"
+          },
+          "disputedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
           "id" : {
             "format" : "int64",
             "type" : "integer"
@@ -1254,6 +1272,9 @@
             "type" : "boolean"
           },
           "insuranceDeductible" : {
+            "type" : "number"
+          },
+          "originalLiability" : {
             "type" : "number"
           },
           "pending" : {
@@ -1265,6 +1286,9 @@
             },
             "type" : "array"
           },
+          "refundAmount" : {
+            "type" : "number"
+          },
           "rentalId" : {
             "format" : "int64",
             "type" : "integer"
@@ -1273,6 +1297,13 @@
             "type" : "number"
           },
           "reportedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
+          "resolutionNotes" : {
+            "type" : "string"
+          },
+          "resolvedAt" : {
             "format" : "date-time",
             "type" : "string"
           },
@@ -2225,6 +2256,23 @@
         },
         "type" : "object"
       },
+      "PriceAdjustment" : {
+        "properties" : {
+          "amount" : {
+            "type" : "number"
+          },
+          "code" : {
+            "type" : "string"
+          },
+          "label" : {
+            "type" : "string"
+          },
+          "multiplier" : {
+            "type" : "number"
+          }
+        },
+        "type" : "object"
+      },
       "PricingRequest" : {
         "properties" : {
           "carId" : {
@@ -2282,7 +2330,7 @@
         "properties" : {
           "code" : {
             "description" : "Stable machine readable error code",
-            "enum" : [ "ACCESS_DENIED", "ACCOUNT_BANNED", "ALERT_NOT_FOUND", "AUTHENTICATION_FAILED", "BAD_REQUEST", "CAR_ALREADY_EXISTS", "CAR_DATES_UNAVAILABLE", "CAR_NOT_AVAILABLE", "CAR_NOT_FOUND", "CAR_VALIDATION_FAILED", "CONCURRENT_MODIFICATION", "CONSTRAINT_VIOLATION", "DAMAGE_ASSESSMENT_ERROR", "DAMAGE_DISPUTE_ERROR", "DAMAGE_REPORT_ERROR", "DATA_CONFLICT", "EMAIL_SEND_FAILED", "ENDPOINT_NOT_FOUND", "FILE_UPLOAD_ERROR", "INTERNAL_SERVER_ERROR", "INVALID_JSON", "INVALID_MULTIPART_REQUEST", "INVALID_PARAMETER", "INVALID_PARAMETER_TYPE", "INVALID_PASSWORD", "INVALID_PAYMENT_STATE", "INVALID_RENTAL_STATE", "INVALID_STATUS_TRANSITION", "INVALID_TOKEN", "INVALID_USER_STATE", "METHOD_NOT_ALLOWED", "MISSING_PARAMETER", "NOT_ACCEPTABLE", "OAUTH2_ACCOUNT_ALREADY_LINKED", "OAUTH2_AUTHENTICATION_FAILED", "OAUTH2_AUTHORIZATION_DENIED", "OAUTH2_EMAIL_REQUIRED", "OAUTH2_INVALID_STATE", "OAUTH2_INVALID_TOKEN", "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED", "OAUTH2_PROVIDER_NOT_SUPPORTED", "OAUTH2_PROVIDER_UNAVAILABLE", "OAUTH2_SOCIAL_LOGIN_REQUIRED", "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED", "PAYLOAD_TOO_LARGE", "PAYMENT_DEADLINE_PASSED", "PAYMENT_FAILED", "PAYMENT_NOT_AUTHORIZED", "PAYMENT_NOT_FOUND", "PAYMENT_WINDOW_NOT_OPEN", "PENALTY_WAIVER_ERROR", "RATE_LIMIT_EXCEEDED", "RECONCILIATION_ERROR", "RENTAL_CANCEL_NOT_ALLOWED", "RENTAL_NOT_FOUND", "RENTAL_VALIDATION_FAILED", "STRIPE_INTEGRATION_ERROR", "TOKEN_EXPIRED", "UNSUPPORTED_MEDIA_TYPE", "USER_ALREADY_EXISTS", "USER_NOT_FOUND", "VALIDATION_FAILED", "WEBHOOK_PAYLOAD_TOO_LARGE", "WEBHOOK_PROCESSING_FAILED", "WEBHOOK_SIGNATURE_INVALID", "WEBHOOK_SIGNATURE_MISSING" ],
+            "enum" : [ "ACCESS_DENIED", "ACCOUNT_BANNED", "ALERT_NOT_FOUND", "AUTHENTICATION_FAILED", "BAD_REQUEST", "CAR_ALREADY_EXISTS", "CAR_DATES_UNAVAILABLE", "CAR_NOT_AVAILABLE", "CAR_NOT_FOUND", "CAR_VALIDATION_FAILED", "CONCURRENT_MODIFICATION", "CONSTRAINT_VIOLATION", "DAMAGE_ASSESSMENT_ERROR", "DAMAGE_DISPUTE_ERROR", "DAMAGE_REPORT_ERROR", "DATA_CONFLICT", "EMAIL_SEND_FAILED", "ENDPOINT_NOT_FOUND", "FILE_NOT_FOUND", "FILE_UPLOAD_ERROR", "INTERNAL_SERVER_ERROR", "INVALID_JSON", "INVALID_MULTIPART_REQUEST", "INVALID_PARAMETER", "INVALID_PARAMETER_TYPE", "INVALID_PASSWORD", "INVALID_PAYMENT_STATE", "INVALID_RENTAL_STATE", "INVALID_STATUS_TRANSITION", "INVALID_TOKEN", "INVALID_USER_STATE", "METHOD_NOT_ALLOWED", "MISSING_PARAMETER", "NOT_ACCEPTABLE", "OAUTH2_ACCOUNT_ALREADY_LINKED", "OAUTH2_AUTHENTICATION_FAILED", "OAUTH2_AUTHORIZATION_DENIED", "OAUTH2_EMAIL_REQUIRED", "OAUTH2_INVALID_STATE", "OAUTH2_INVALID_TOKEN", "OAUTH2_LOCAL_ACCOUNT_UNVERIFIED", "OAUTH2_PROVIDER_NOT_SUPPORTED", "OAUTH2_PROVIDER_UNAVAILABLE", "OAUTH2_SOCIAL_LOGIN_REQUIRED", "OPEN_RENTAL_REQUEST_LIMIT_EXCEEDED", "PAYLOAD_TOO_LARGE", "PAYMENT_DEADLINE_PASSED", "PAYMENT_FAILED", "PAYMENT_NOT_AUTHORIZED", "PAYMENT_NOT_FOUND", "PAYMENT_WINDOW_NOT_OPEN", "PENALTY_WAIVER_ERROR", "RATE_LIMIT_EXCEEDED", "RECONCILIATION_ERROR", "RENTAL_CANCEL_NOT_ALLOWED", "RENTAL_NOT_FOUND", "RENTAL_VALIDATION_FAILED", "STRIPE_INTEGRATION_ERROR", "TOKEN_EXPIRED", "UNSUPPORTED_MEDIA_TYPE", "USER_ALREADY_EXISTS", "USER_NOT_FOUND", "VALIDATION_FAILED", "WEBHOOK_PAYLOAD_TOO_LARGE", "WEBHOOK_PROCESSING_FAILED", "WEBHOOK_SIGNATURE_INVALID", "WEBHOOK_SIGNATURE_MISSING" ],
             "type" : "string"
           },
           "detail" : {
@@ -2337,12 +2385,12 @@
         "properties" : {
           "firstName" : {
             "maxLength" : 50,
-            "minLength" : 1,
+            "minLength" : 0,
             "type" : "string"
           },
           "lastName" : {
             "maxLength" : 50,
-            "minLength" : 1,
+            "minLength" : 0,
             "type" : "string"
           },
           "phone" : {
@@ -2350,7 +2398,6 @@
             "type" : "string"
           }
         },
-        "required" : [ "firstName", "lastName" ],
         "type" : "object"
       },
       "PublicCarResponse" : {
@@ -2640,6 +2687,10 @@
           "carSummary" : {
             "$ref" : "#/components/schemas/CarSummaryResponse"
           },
+          "confirmedAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
           "convertedTotalPrice" : {
             "type" : "number"
           },
@@ -2694,13 +2745,27 @@
             "enum" : [ "PENDING", "AUTHORIZED", "CAPTURED", "FAILED", "REFUNDED", "CANCELLED" ],
             "type" : "string"
           },
+          "pickedUpAt" : {
+            "format" : "date-time",
+            "type" : "string"
+          },
           "pickupNotes" : {
             "type" : "string"
+          },
+          "priceAdjustments" : {
+            "items" : {
+              "$ref" : "#/components/schemas/PriceAdjustment"
+            },
+            "type" : "array"
           },
           "rateSource" : {
             "type" : "string"
           },
           "returnNotes" : {
+            "type" : "string"
+          },
+          "returnedAt" : {
+            "format" : "date-time",
             "type" : "string"
           },
           "startDate" : {
@@ -3214,7 +3279,7 @@
     },
     "/api/v1/admin/cars" : {
       "get" : {
-        "description" : "Server-side search, status and brand filters, paging and sorting over all non-deleted cars, including the VIN",
+        "description" : "Server-side search, status, brand and occupancy filters, paging and sorting over all non-deleted cars, including the VIN and the current occupancy",
         "operationId" : "searchFleet",
         "parameters" : [ {
           "description" : "Free text matched against license plate, brand and model",
@@ -3239,6 +3304,15 @@
           "required" : false,
           "schema" : {
             "enum" : [ "AVAILABLE", "MAINTENANCE", "DAMAGED", "INSPECTION" ],
+            "type" : "string"
+          }
+        }, {
+          "description" : "Current occupancy: FREE, RESERVED (confirmed rental covering today) or IN_USE (picked up, not returned)",
+          "in" : "query",
+          "name" : "occupancy",
+          "required" : false,
+          "schema" : {
+            "enum" : [ "FREE", "RESERVED", "IN_USE" ],
             "type" : "string"
           }
         }, {
