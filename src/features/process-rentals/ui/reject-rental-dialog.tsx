@@ -118,8 +118,8 @@ export function RejectRentalDialog({
                             id="reject-reason"
                             placeholder="Please explain the reason for rejection (this will be sent to the customer)..."
                             className={cn(
-                                "h-32 resize-none bg-raised border-border focus-visible:ring-danger-subtle-foreground/30 focus-visible:border-danger-subtle-foreground/30 placeholder:text-muted-foreground transition-all rounded-xl",
-                                error && "border-danger-subtle-foreground/30 ring-1 ring-danger-subtle-foreground/30 focus-visible:ring-danger-subtle-foreground/30"
+                                "h-32 resize-none bg-raised border-border focus-visible:ring-ring placeholder:text-muted-foreground transition-all rounded-xl",
+                                error && "border-destructive"
                             )}
                             value={reason}
                             onChange={(e) => {
@@ -149,7 +149,7 @@ export function RejectRentalDialog({
                         variant="destructive"
                         onClick={handleConfirm}
                         disabled={isLoading}
-                        className="bg-destructive hover:bg-destructive text-white font-semibold h-11 px-6 gap-2"
+                        className="bg-destructive hover:bg-destructive text-destructive-foreground font-semibold h-11 px-6 gap-2"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">

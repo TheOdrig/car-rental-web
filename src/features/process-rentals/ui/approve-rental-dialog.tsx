@@ -166,7 +166,7 @@ export function ApproveRentalDialog({
                         <Textarea
                             id="notes"
                             placeholder="Add administrative notes regarding this approval..."
-                            className="bg-raised border-border focus-visible:ring-info-subtle-foreground/30 focus-visible:border-info-subtle-foreground/30 h-28 resize-none placeholder:text-muted-foreground transition-all rounded-xl"
+                            className="bg-raised border-border focus-visible:ring-ring focus-visible:border-ring h-28 resize-none placeholder:text-muted-foreground transition-all rounded-xl"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                         />
