@@ -11,6 +11,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { PriceRangeSlider } from './price-range-slider';
 import { cn, formatCurrency } from '@/shared/lib';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { useCurrency } from '@/entities/currency';
 
 interface FilterSidebarProps {
     className?: string;
@@ -18,6 +19,7 @@ interface FilterSidebarProps {
 
 export function FilterSidebar({ className }: FilterSidebarProps) {
     const { filters, setFilter, setFilters, clearFilters, hasActiveFilters } = useFilterStore();
+    const { isConverted, format } = useCurrency();
     const { data: options, isLoading, isError } = useFilterOptions();
     const bodyTypes = options?.bodyTypes ?? [];
     const transmissionTypes = options?.transmissionTypes ?? [];
@@ -73,7 +75,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
             </div>
 
             <div className="space-y-6">
-                <FilterSection title={`Price Range (${DEFAULT_CURRENCY}/day)`}>
+                <FilterSection title={`Price range per day (${DEFAULT_CURRENCY})`}>
                     <PriceRangeSlider
                         min={0}
                         max={500}
@@ -82,6 +84,11 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         onValueCommit={handlePriceRangeCommit}
                         formatPrice={(v) => formatCurrency(v, DEFAULT_CURRENCY, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}
                     />
+                    {isConverted(DEFAULT_CURRENCY) && (
+                        <p className="text-xs text-muted-foreground" data-testid="price-filter-note">
+                            Filtered in {DEFAULT_CURRENCY}, about {format(filters.minPrice ?? 0, DEFAULT_CURRENCY)} to {format(filters.maxPrice ?? 500, DEFAULT_CURRENCY)} in your currency.
+                        </p>
+                    )}
                 </FilterSection>
 
                 <FilterSection title="Body Type">
