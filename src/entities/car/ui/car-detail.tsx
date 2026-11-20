@@ -14,7 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Button } from '@/shared/ui/button';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { type Car, type CarAvailabilityCalendar, type DayAvailability } from '../model/types';
-import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
+import { useCurrency, mapCurrency, ConvertedPricesNote } from '@/entities/currency/@x/car';
 
 export interface CarDetailProps extends React.HTMLAttributes<HTMLDivElement> {
     car: Car;
@@ -82,11 +82,14 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
                     <p className="text-muted-foreground mt-1">{car.productionYear}</p>
                 </div>
 
-                <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-foreground">
-                        {formatPrice(car.price, sourceCurrency)}
-                    </span>
-                    <span className="text-muted-foreground">/day</span>
+                <div>
+                    <div className="flex items-baseline gap-2 whitespace-nowrap">
+                        <span className="text-3xl font-bold text-foreground xs:text-4xl">
+                            {formatPrice(car.price, sourceCurrency)}
+                        </span>
+                        <span className="text-muted-foreground">/day</span>
+                    </div>
+                    <ConvertedPricesNote from={sourceCurrency} className="mt-1" />
                 </div>
 
                 <Card>

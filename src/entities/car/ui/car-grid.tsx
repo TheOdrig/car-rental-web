@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/shared/lib';
+import { ConvertedPricesNote, mapCurrency } from '@/entities/currency/@x/car';
 import { CarCard, CarCardSkeleton } from './car-card';
 import type { Car, AvailableCar } from '../model/types';
 import React from "react";
@@ -40,25 +41,30 @@ export function CarGrid({
         return <CarGridEmpty />;
     }
 
+    const sourceCurrencies = cars.map((car) => mapCurrency('dailyRate' in car ? car.currency : car.currencyType));
+
     return (
-        <div
-            className={cn(
-                'grid gap-6',
-                'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
-                className
-            )}
-        >
-            {cars.map((car, index) => (
-                <CarCard
-                    key={car.id}
-                    priority={index < priorityCount}
-                    headingLevel={headingLevel}
-                    car={car}
-                    variant={variant}
-                    showStatus={showStatus}
-                    onSelect={onCarSelect}
-                />
-            ))}
+        <div className="space-y-4">
+            <ConvertedPricesNote from={sourceCurrencies} />
+            <div
+                className={cn(
+                    'grid gap-6',
+                    'grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4',
+                    className
+                )}
+            >
+                {cars.map((car, index) => (
+                    <CarCard
+                        key={car.id}
+                        priority={index < priorityCount}
+                        headingLevel={headingLevel}
+                        car={car}
+                        variant={variant}
+                        showStatus={showStatus}
+                        onSelect={onCarSelect}
+                    />
+                ))}
+            </div>
         </div>
     );
 }

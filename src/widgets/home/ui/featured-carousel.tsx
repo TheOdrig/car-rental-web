@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { CarCard, CarCardSkeleton } from '@/entities/car';
+import { ConvertedPricesNote, mapCurrency } from '@/entities/currency';
 import { useFeaturedCars } from '@/entities/car';
 import { cn } from '@/shared/lib';
 import type { Car } from '@/entities/car';
@@ -86,6 +87,8 @@ export function FeaturedCarousel({
                         </Button>
                     </div>
                 </div>
+
+                <ConvertedPricesNote from={cars.map((car: Car) => mapCurrency(car.currencyType))} className="-mt-3 mb-4" />
 
                 {isLoading ? (
                     <FeaturedCarouselSkeleton />

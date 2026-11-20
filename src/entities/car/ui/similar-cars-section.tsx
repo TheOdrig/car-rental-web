@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/shared/lib';
+import { ConvertedPricesNote, mapCurrency } from '@/entities/currency/@x/car';
 import { useSimilarCars } from '../api/use-cars';
 import { SimilarCarCard, SimilarCarCardSkeleton } from './similar-car-card';
 
@@ -18,7 +19,10 @@ export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps
 
     return (
         <section aria-label="Similar vehicles" className={cn('py-8', className)}>
-            <h2 className="mb-6 text-2xl font-bold text-foreground">Similar Vehicles</h2>
+            <div className="mb-6 space-y-1">
+                <h2 className="text-2xl font-bold text-foreground">Similar Vehicles</h2>
+                {similarCars && <ConvertedPricesNote from={similarCars.map((car) => mapCurrency(car.currency))} />}
+            </div>
 
             <div
                 className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto snap-x snap-mandatory"

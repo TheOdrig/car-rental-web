@@ -38,7 +38,6 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                         <span className="text-muted-foreground">Daily rate</span>
                         <span className="font-medium text-foreground">
                             {formatPrice(dailyPrice, currency)}
-                            {rounded ? ' approx.' : ''}
                         </span>
                     </div>
                     {rounded && (

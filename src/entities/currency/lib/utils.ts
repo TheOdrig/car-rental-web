@@ -48,3 +48,15 @@ export function describeRateBasis(source: RateSource | undefined): string {
             return "at today's approximate rate";
     }
 }
+
+
+export function describeConversionBasis(source: RateSource | undefined): string {
+    switch (source) {
+        case 'FALLBACK':
+            return 'at a fixed reference rate';
+        case 'CACHED':
+            return 'at a recent rate';
+        default:
+            return "at today's rate";
+    }
+}

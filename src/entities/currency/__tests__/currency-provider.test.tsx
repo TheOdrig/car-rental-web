@@ -36,14 +36,14 @@ describe('CurrencyProvider formatting', () => {
         expect(result.current.isConverted('TRY')).toBe(false);
     });
 
-    it('marks converted amounts as approximate and uses the selected symbol', async () => {
+    it('formats converted amounts without a suffix and uses the selected symbol', async () => {
         const { result } = renderHook(() => useCurrency(), {
             wrapper: wrapperWith({ initialRates: RATES, initialIsLoading: false }),
         });
         await waitFor(() => expect(result.current.currency).toBe('EUR'));
 
         expect(result.current.isConverted('TRY')).toBe(true);
-        expect(result.current.format(300, 'TRY')).toBe('€5.00 approx.');
+        expect(result.current.format(300, 'TRY')).toBe('€5.00');
     });
 
     it('does not mark amounts already in the selected currency', async () => {
@@ -74,7 +74,7 @@ describe('CurrencyProvider formatting', () => {
 
         act(() => result.current.setCurrency('JPY'));
 
-        expect(result.current.format(1, 'USD')).toBe('¥100 approx.');
+        expect(result.current.format(1, 'USD')).toBe('¥100');
     });
 });
 

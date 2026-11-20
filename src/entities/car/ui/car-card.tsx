@@ -122,14 +122,14 @@ export const CarCard = memo(function CarCard({
                 </div>
 
                 <div className="mt-auto flex items-baseline justify-between gap-2">
-                    <div>
+                    <div className="whitespace-nowrap">
                         <span className="text-xl font-bold text-foreground">
                             {format(price, sourceCurrency)}
                         </span>
                         <span className="text-sm text-muted-foreground">/day</span>
                     </div>
                     {totalPrice && (
-                        <div className="text-right">
+                        <div className="text-right whitespace-nowrap">
                             <span className="text-sm text-muted-foreground">Total: </span>
                             <span className="font-semibold">
                                 {format(totalPrice, sourceCurrency)}

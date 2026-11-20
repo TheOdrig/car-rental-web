@@ -65,7 +65,7 @@ export const SimilarCarCard = memo(function SimilarCarCard({
                         {car.bodyType && <span className="ml-1">• {car.bodyType}</span>}
                     </p>
 
-                    <div className="flex items-baseline gap-1">
+                    <div className="flex items-baseline gap-1 whitespace-nowrap">
                         <span className="text-lg font-bold text-foreground">
                             {format(car.dailyRate, sourceCurrency)}
                         </span>

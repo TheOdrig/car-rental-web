@@ -10,7 +10,8 @@ export {
     isValidCurrencyCode,
     mapCurrency,
     describeRateBasis,
+    describeConversionBasis,
     type RateSource,
 } from './lib/utils';
 
-export { CurrencyProvider, useCurrency } from './ui/currency-provider';
+export { CurrencyProvider, useCurrency } from './ui/currency-provider';export { ConvertedPricesNote } from './ui/converted-prices-note';
