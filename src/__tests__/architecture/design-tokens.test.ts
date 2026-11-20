@@ -12,6 +12,21 @@ const RAW_PALETTE = new RegExp(String.raw`(?<![\w-])(?:${UTILITIES})-(?:${PALETT
 
 const DARK_RAW_PALETTE = new RegExp(String.raw`(?<![\w-])dark:[\w\[\]=:*&>()'.!-]*?(?:${UTILITIES})-(?:${PALETTES})-\d{2,3}(?![\w-])`, 'g');
 
+const ARBITRARY_COLOR = new RegExp(
+  String.raw`(?<![\w-])(?:[a-z-]+:)*(?:${UTILITIES})-\[[^\]\s]*(?:#[0-9a-fA-F]{3,8}\b|(?:hsla?|rgba?|oklch|oklab|lab|lch)\(|var\(--color-)`,
+  'g'
+);
+
+const DARK_WITH_BLACK_OR_WHITE = new RegExp(
+  String.raw`(?<![\w-])dark:[\w\[\]=:*&>()'.!-]*?(?:${UTILITIES})-(?:white|black)(?![\w-])`,
+  'g'
+);
+
+const APPLY_RAW_PALETTE = new RegExp(
+  String.raw`@apply[^;}]*?(?<![\w-])(?:[a-z-]+:)*(?:${UTILITIES})-(?:(?:${PALETTES})-\d{2,3}|white|black|\[[^\]\s]*(?:#[0-9a-fA-F]{3,8}\b|(?:hsla?|rgba?)\())(?![\w-])`,
+  'g'
+);
+
 function normalize(file: string): string {
   return file.split(sep).join('/');
 }
@@ -27,9 +42,65 @@ function findings(file: string, pattern: RegExp): string[] {
   return [...text.matchAll(pattern)].map((match) => `${file}: ${match[0]}`);
 }
 
+function matches(pattern: RegExp, text: string): string[] {
+  return [...text.matchAll(pattern)].map((match) => match[0]);
+}
+
+describe('Design token detectors', () => {
+  it('flags arbitrary colour values', () => {
+    for (const fixture of [
+      'bg-[#ff0000]',
+      'text-[hsl(10_20%_30%)]',
+      'border-[rgb(1,2,3)]',
+      'hover:bg-[var(--color-primary)]',
+      'shadow-[0_0_8px_rgba(244,63,94,0.6)]',
+      'dark:bg-[#111]',
+    ]) {
+      expect(matches(ARBITRARY_COLOR, fixture), fixture).not.toEqual([]);
+    }
+    for (const fixture of ['bg-primary', 'w-[calc(100%-2rem)]', 'text-[length:var(--text-2xs)]', 'before:content-[attr(data-label)]', 'grid-cols-[auto_1fr]']) {
+      expect(matches(ARBITRARY_COLOR, fixture), fixture).toEqual([]);
+    }
+  });
+
+  it('flags dark: combined with white or black', () => {
+    for (const fixture of ['dark:text-white', 'dark:hover:text-white', 'dark:bg-black', 'dark:border-white']) {
+      expect(matches(DARK_WITH_BLACK_OR_WHITE, fixture), fixture).not.toEqual([]);
+    }
+    for (const fixture of ['dark:text-foreground', 'text-white', 'dark:bg-input/30', 'dark:hover:text-foreground']) {
+      expect(matches(DARK_WITH_BLACK_OR_WHITE, fixture), fixture).toEqual([]);
+    }
+  });
+
+  it('flags raw palette classes inside css @apply', () => {
+    for (const fixture of ['.a { @apply bg-red-500 p-2; }', '.a { @apply text-white; }', '.a { @apply dark:bg-[#111] p-2; }']) {
+      expect(matches(APPLY_RAW_PALETTE, fixture), fixture).not.toEqual([]);
+    }
+    for (const fixture of ['.a { @apply bg-card p-2; }', '.a { @apply text-foreground border-border; }']) {
+      expect(matches(APPLY_RAW_PALETTE, fixture), fixture).toEqual([]);
+    }
+  });
+});
+
 describe('Design token discipline', () => {
   it('never pairs dark: with a raw palette colour; dark mode comes from the tokens', async () => {
     const violations = (await sourceFiles()).flatMap((file) => findings(file, DARK_RAW_PALETTE));
+    expect(violations).toEqual([]);
+  });
+
+  it('never uses arbitrary colour values in class names', async () => {
+    const violations = (await sourceFiles()).flatMap((file) => findings(file, ARBITRARY_COLOR));
+    expect(violations).toEqual([]);
+  });
+
+  it('never pairs dark: with white or black; use a foreground token', async () => {
+    const violations = (await sourceFiles()).flatMap((file) => findings(file, DARK_WITH_BLACK_OR_WHITE));
+    expect(violations).toEqual([]);
+  });
+
+  it('keeps raw palette and arbitrary colours out of css @apply', async () => {
+    const stylesheets = await scanFiles('src/**/*.css');
+    const violations = stylesheets.flatMap((file) => findings(file, APPLY_RAW_PALETTE));
     expect(violations).toEqual([]);
   });
 

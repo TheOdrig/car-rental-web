@@ -27,7 +27,7 @@ function PeriodCell({ label, date, note, dotClassName, className }: PeriodCellPr
                 <div className={`h-1.5 w-1.5 rounded-full ${dotClassName}`} />
                 {label}
             </div>
-            <p className="text-xl font-bold dark:text-white">{formatDate(date)}</p>
+            <p className="text-xl font-bold">{formatDate(date)}</p>
             {note && <p className="mt-1 text-sm text-muted-foreground">{note}</p>}
         </div>
     );
@@ -70,7 +70,7 @@ export function RentalPeriodCard({ startDate, endDate, days, returnedAt }: Renta
                         label={returnedAt ? 'Returned' : 'Return'}
                         date={returnedEarly ? returnedAt : endDate}
                         note={returnedEarly ? `Booked until ${formatDate(endDate)}` : undefined}
-                        dotClassName="bg-destructive shadow-[0_0_8px_rgba(244,63,94,0.6)]"
+                        dotClassName="bg-destructive shadow-[0_0_8px_var(--destructive)]"
                     />
                 </div>
             </CardContent>
