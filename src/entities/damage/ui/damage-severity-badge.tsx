@@ -5,7 +5,7 @@ import { damageSeverityPresentation } from '../model/status-presentation';
 import type { DamageSeverity } from '../model/types';
 
 interface DamageSeverityBadgeProps {
-    severity: DamageSeverity;
+    severity?: DamageSeverity | null;
     className?: string;
 }
 

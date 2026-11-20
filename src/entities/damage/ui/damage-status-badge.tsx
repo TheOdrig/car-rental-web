@@ -5,7 +5,7 @@ import { damageStatusPresentation } from '../model/status-presentation';
 import type { DamageStatus } from '../model/types';
 
 interface DamageStatusBadgeProps {
-    status: DamageStatus;
+    status?: DamageStatus | null;
     className?: string;
 }
 

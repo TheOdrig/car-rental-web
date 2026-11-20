@@ -13,10 +13,10 @@ export function getDamageCategoryLabel(category: DamageCategory): string {
     return labels[category];
 }
 
-export function getDamageStatusLabel(status: DamageStatus): string {
+export function getDamageStatusLabel(status: DamageStatus | string | null | undefined): string {
     return damageStatusPresentation(status).label;
 }
 
-export function getDamageSeverityLabel(severity: DamageSeverity): string {
+export function getDamageSeverityLabel(severity: DamageSeverity | string | null | undefined): string {
     return damageSeverityPresentation(severity).label;
 }

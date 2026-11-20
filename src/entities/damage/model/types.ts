@@ -21,7 +21,6 @@ export type DamageReport = Omit<
         | 'carLicensePlate'
         | 'customerName'
         | 'description'
-        | 'severity'
         | 'category'
         | 'status'
         | 'reportedAt'
