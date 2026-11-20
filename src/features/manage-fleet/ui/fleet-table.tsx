@@ -45,6 +45,7 @@ import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, carOccupancyLabel, type AdminC
 import { Pagination } from '@/shared/ui/pagination';
 import { EmptyState } from '@/shared/ui/empty-state';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
     AVAILABLE: {
@@ -198,7 +199,7 @@ export const FleetTable = memo(function FleetTable({
                                                     )}
                                                     <div>
                                                         <Link
-                                                            href={`/admin/fleet/${car.id}`}
+                                                            href={ROUTES.admin.fleetDetail(car.id)}
                                                             className="font-semibold hover:text-primary hover:underline transition-colors"
                                                         >
                                                             {car.brand} {car.model}
@@ -233,7 +234,7 @@ export const FleetTable = memo(function FleetTable({
                                             <TableCell data-label="Occupancy" className="text-sm">
                                                 {car.currentRentalId && car.occupancy && car.occupancy !== 'FREE' ? (
                                                     <Link
-                                                        href={`/admin/rentals/${car.currentRentalId}`}
+                                                        href={ROUTES.admin.rental(car.currentRentalId)}
                                                         className="text-primary hover:underline"
                                                         aria-label={`${carOccupancyLabel(car.occupancy)}, rental ${formatRentalReference(car.currentRentalId)}`}
                                                     >
@@ -255,7 +256,7 @@ export const FleetTable = memo(function FleetTable({
                                                         aria-label={`Edit ${car.brand} ${car.model}`}
                                                         asChild
                                                     >
-                                                        <Link href={`/admin/fleet/${car.id}/edit`}>
+                                                        <Link href={ROUTES.admin.fleetEdit(car.id)}>
                                                             <Edit className="h-4 w-4" />
                                                         </Link>
                                                     </Button>
@@ -275,13 +276,13 @@ export const FleetTable = memo(function FleetTable({
                                                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                                                             <DropdownMenuSeparator />
                                                             <DropdownMenuItem asChild>
-                                                                <Link href={`/admin/fleet/${car.id}`}>
+                                                                <Link href={ROUTES.admin.fleetDetail(car.id)}>
                                                                     <Eye className="h-4 w-4 mr-2" />
                                                                     View Details
                                                                 </Link>
                                                             </DropdownMenuItem>
                                                             <DropdownMenuItem asChild>
-                                                                <Link href={`/admin/fleet/${car.id}/edit`}>
+                                                                <Link href={ROUTES.admin.fleetEdit(car.id)}>
                                                                     <Edit className="h-4 w-4 mr-2" />
                                                                     Edit Details
                                                                 </Link>

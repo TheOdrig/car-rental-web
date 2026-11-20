@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { cn } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface OAuthButtonsProps {
     className?: string;
@@ -50,7 +51,7 @@ export function OAuthButtons({ className, disabled, callbackUrl, onError }: OAut
         try {
             setLoadingProvider(provider);
             const target = new URL(`/api/auth/oauth/${provider}`, window.location.origin);
-            if (callbackUrl && callbackUrl !== '/') {
+            if (callbackUrl && callbackUrl !== ROUTES.home) {
                 target.searchParams.set('callbackUrl', callbackUrl);
             }
             window.location.href = target.href;

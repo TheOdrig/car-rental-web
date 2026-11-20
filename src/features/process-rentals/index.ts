@@ -30,7 +30,6 @@ export { useRentalActions } from './lib/use-rental-actions';
 export {
     CONFIRM_COPY,
     REJECT_COPY,
-    isPaymentExpected,
     hasPenalty,
     shouldShowPenaltyHistory,
     getPickupBlockedReason,

@@ -12,6 +12,7 @@ import { PendingRentalsTable } from '@/features/process-rentals';
 import type { RevenuePeriod } from '@/features/admin';
 import { useRentalActions } from '@/features/process-rentals';
 import { formatTime } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 type ActiveTab = 'approvals' | 'pickups' | 'returns' | 'overdue';
 
@@ -208,7 +209,7 @@ export function AdminDashboardContent() {
                     <PendingRentalsTable
                         items={tabSources[activeTab].items}
                         total={tabSources[activeTab].total}
-                        viewAllHref="/admin/rentals"
+                        viewAllHref={ROUTES.admin.rentals}
                         type={activeTab}
                         isLoading={tabSources[activeTab].loading}
                         onApprove={actions.approve}

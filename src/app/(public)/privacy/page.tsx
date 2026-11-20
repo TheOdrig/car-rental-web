@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { pageMetadata } from '@/shared/lib';
 import { PageHeader } from '@/shared/ui/page-header';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = pageMetadata({
     title: 'Privacy Policy',
     description: 'Privacy policy for the Car Rental portfolio demo.',
-    path: '/privacy',
+    path: ROUTES.privacy,
 });
 
 export default function PrivacyPage() {
@@ -53,7 +54,7 @@ export default function PrivacyPage() {
             </div>
 
             <p className="mt-10 text-sm text-muted-foreground">
-                See also the <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link>.
+                See also the <Link href={ROUTES.terms} className="text-primary hover:underline">Terms of Service</Link>.
             </p>
         </div>
     );

@@ -11,6 +11,7 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { LateReturnStats } from '@/features/admin';
 import { useLateReturnStatistics } from '@/features/admin';
 import { toast } from 'sonner';
+import { ROUTES } from '@/shared/config/routes';
 
 function StatisticsContent() {
     const [startDate, setStartDate] = useState('');
@@ -34,8 +35,8 @@ function StatisticsContent() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Late Returns', href: '/admin/late-returns' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Late Returns', href: ROUTES.admin.lateReturns },
                             { label: 'Statistics' },
                         ]}
                     />
@@ -54,7 +55,7 @@ function StatisticsContent() {
                             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/late-returns">
+                            <Link href={ROUTES.admin.lateReturns}>
                                 <ArrowLeft className="h-4 w-4" />
                                 Back to List
                             </Link>

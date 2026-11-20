@@ -1,6 +1,7 @@
 'use client';
 
 import { SegmentError } from '@/shared/ui/segment-error';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AdminDamageError({
     error,
@@ -15,7 +16,7 @@ export default function AdminDamageError({
             reset={reset}
             title="Damage report could not be loaded"
             description="The damage report could not be loaded."
-            backHref="/admin/damages"
+            backHref={ROUTES.admin.damages}
             backLabel="Back to damages"
         />
     );

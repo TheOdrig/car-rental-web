@@ -13,9 +13,10 @@ import {
     type AuthResponse,
     type Session,
 } from '@/shared/server';
+import { ROUTES } from '@/shared/config/routes';
 
 function redirectToLogin(request: NextRequest, clearCookies: boolean): NextResponse {
-    const loginUrl = new URL('/login', request.url);
+    const loginUrl = new URL(ROUTES.login, request.url);
     loginUrl.searchParams.set('callbackUrl', `${request.nextUrl.pathname}${request.nextUrl.search}`);
 
     const response = NextResponse.redirect(loginUrl);
@@ -110,7 +111,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     }
 
     if (access === 'admin' && !isAdminSession(session)) {
-        return NextResponse.redirect(new URL('/forbidden', request.url));
+        return NextResponse.redirect(new URL(ROUTES.forbidden, request.url));
     }
 
     return passThrough(request, renewed);

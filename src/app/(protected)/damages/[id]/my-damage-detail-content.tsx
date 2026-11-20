@@ -17,6 +17,7 @@ import { DamageStatusBadge, DamageSeverityBadge, useMyDamageDetail, getDamageCat
 import { VehicleLabel } from '@/entities/car';
 import { DamageDisputeForm } from '@/features/manage-damages';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 export function MyDamageDetailContent({ id }: { id: string }) {
     const damageId = parseInt(id, 10);
@@ -73,7 +74,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                 <Breadcrumb
                     className="mb-4"
                     items={[
-                        { label: 'My Damages', href: '/damages' },
+                        { label: 'My Damages', href: ROUTES.damages.list },
                         { label: `Damage report for ${formatRentalReference(damage.rentalId)}` },
                     ]}
                 />
@@ -146,7 +147,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                 <div>
                                     <p className="text-sm text-muted-foreground">Rental</p>
                                     <p className="font-medium">
-                                        <Link href={`/rentals/${damage.rentalId}`} className="text-primary hover:underline">
+                                        <Link href={ROUTES.rentals.detail(damage.rentalId)} className="text-primary hover:underline">
                                             {formatRentalReference(damage.rentalId)}
                                         </Link>
                                     </p>

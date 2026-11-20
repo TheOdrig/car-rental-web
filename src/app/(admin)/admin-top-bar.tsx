@@ -15,6 +15,7 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
+import { ROUTES } from '@/shared/config/routes';
 
 export function AdminTopBar({ username }: { username: string }) {
     const router = useRouter();
@@ -22,20 +23,20 @@ export function AdminTopBar({ username }: { username: string }) {
 
     const handleLogout = async () => {
         await logout();
-        router.push('/');
+        router.push(ROUTES.home);
     };
 
     return (
         <div className="sticky top-0 z-40 flex h-14 items-center justify-between gap-2 border-b border-border bg-background/95 px-4 backdrop-blur md:px-6">
             <div className="flex items-center gap-2 md:hidden">
                 <AdminMobileMenu username={username} />
-                <Link href="/admin/dashboard" className="font-semibold">
+                <Link href={ROUTES.admin.dashboard} className="font-semibold">
                     Admin Panel
                 </Link>
             </div>
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
                 <Button variant="ghost" size="sm" asChild>
-                    <Link href="/">
+                    <Link href={ROUTES.home}>
                         <ExternalLink className="h-4 w-4" aria-hidden="true" />
                         View site
                     </Link>
@@ -56,7 +57,7 @@ export function AdminTopBar({ username }: { username: string }) {
                         </DropdownMenuLabel>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem asChild>
-                            <Link href="/settings/profile">Profile</Link>
+                            <Link href={ROUTES.settings.profile}>Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem onClick={handleLogout} className="text-danger-subtle-foreground focus:text-danger-subtle-foreground">

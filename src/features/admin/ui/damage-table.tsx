@@ -17,6 +17,7 @@ import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
 import { VehicleLabel } from '@/entities/car';
 import type { DamageReport } from '@/entities/damage';
 import { formatDate } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface DamageTableProps {
     damages: DamageReport[];
@@ -31,7 +32,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
         if (onRowClick) {
             onRowClick(damage);
         } else {
-            router.push(`/admin/damages/${damage.id}`);
+            router.push(ROUTES.admin.damage(damage.id));
         }
     };
 
@@ -67,7 +68,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                         >
                             <TableCell className="font-medium text-foreground">
                                 <Link
-                                    href={`/admin/fleet/${damage.carId}`}
+                                    href={ROUTES.admin.fleetDetail(damage.carId)}
                                     className="hover:text-primary hover:underline transition-colors"
                                     onClick={(e) => e.stopPropagation()}
                                 >
@@ -79,7 +80,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                             </TableCell>
                             <TableCell data-label="Description" data-wide className="max-w-[200px] truncate text-muted-foreground">
                                 <Link
-                                    href={`/admin/damages/${damage.id}`}
+                                    href={ROUTES.admin.damage(damage.id)}
                                     className="hover:text-primary hover:underline"
                                     onClick={(e) => e.stopPropagation()}
                                 >

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { LoginForm } from '@/features/auth';
 import { FormError, OAuthButtons, OAuthDivider, oauthErrorMessage } from '@/features/auth';
 import { safeRedirectPath } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Log In',
@@ -39,7 +40,7 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                     Don&apos;t have an account?{' '}
-                    <Link href="/register" className="font-bold text-primary hover:underline">
+                    <Link href={ROUTES.register} className="font-bold text-primary hover:underline">
                         Create Account
                     </Link>
                 </p>

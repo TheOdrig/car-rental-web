@@ -9,6 +9,7 @@ import { Breadcrumb } from '@/shared/ui';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { isNotFoundError } from '@/shared/api';
+import { ROUTES } from '@/shared/config/routes';
 
 function BreadcrumbLoader() {
     return (
@@ -31,7 +32,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const driverName = personFullName(profile);
 
     const handleCancelSuccess = () => {
-        router.push('/rentals');
+        router.push(ROUTES.rentals.list);
     };
 
     if (isLoading) {
@@ -67,7 +68,7 @@ export function RentalDetailContent({ id }: { id: string }) {
         <div className="container py-8">
             <Breadcrumb
                 items={[
-                    { label: 'Rentals', href: '/rentals' },
+                    { label: 'Rentals', href: ROUTES.rentals.list },
                     { label: `Rental ${formatRentalReference(rental.id)}` },
                 ]}
                 className="mb-6"

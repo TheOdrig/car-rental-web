@@ -18,6 +18,7 @@ import { toast } from 'sonner';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { PageHeader } from '@/shared/ui/page-header';
 import { formatTime } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 type UserRole = 'all' | 'ADMIN' | 'USER';
 type UserStatus = 'all' | 'ACTIVE' | 'BANNED';
@@ -64,7 +65,7 @@ export function UserManagementContent() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
                             { label: 'User Management' },
                         ]}
                     />

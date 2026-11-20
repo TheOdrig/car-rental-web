@@ -26,7 +26,6 @@ import {
     CancelReasonField,
     RejectReasonDialog,
     CONFIRM_COPY,
-    isPaymentExpected,
     hasPenalty,
     shouldShowPenaltyHistory,
     getPickupBlockedReason,
@@ -39,9 +38,10 @@ import {
 import { fieldErrorMessages } from '@/shared/api';
 import { useRentalPayment } from '@/entities/payment';
 import { DamageReportForm } from '@/entities/damage';
-import { canReportDamage, isBeforeRentalEnd, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
+import { canReportDamage, isAdminPaymentExpected, isBeforeRentalEnd, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
 import { formatAmount, formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
+import { ROUTES } from '@/shared/config/routes';
 
 export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
@@ -57,7 +57,7 @@ export function RentalDetailContent({ id }: { id: string }) {
     const [confirming, setConfirming] = useState<ConfirmableAction | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn' && rental?.status === 'ACTIVE');
-    const paymentExpected = isPaymentExpected(rental?.status);
+    const paymentExpected = isAdminPaymentExpected(rental?.status);
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
@@ -79,8 +79,8 @@ export function RentalDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Rentals', href: '/admin/rentals' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Rentals', href: ROUTES.admin.rentals },
                         { label: 'Loading...' },
                     ]}
                 />
@@ -94,8 +94,8 @@ export function RentalDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Rentals', href: '/admin/rentals' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Rentals', href: ROUTES.admin.rentals },
                         { label: formatRentalReference(rentalId) },
                     ]}
                 />
@@ -103,7 +103,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     title="Rental Not Found"
                     message="The rental you are looking for does not exist or could not be loaded."
                     onRetry={() => refetch()}
-                    backUrl="/admin/rentals"
+                    backUrl={ROUTES.admin.rentals}
                     backLabel="Back to Rentals"
                 />
             </div>
@@ -172,8 +172,8 @@ export function RentalDetailContent({ id }: { id: string }) {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Rentals', href: '/admin/rentals' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Rentals', href: ROUTES.admin.rentals },
                             { label: referenceNumber },
                         ]}
                     />
@@ -189,7 +189,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                 actions={
                     <>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/rentals">
+                            <Link href={ROUTES.admin.rentals}>
                                 <ArrowLeft className="h-4 w-4" />
                                 Back to List
                             </Link>

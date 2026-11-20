@@ -11,6 +11,7 @@ import { EmptyState } from '@/shared/ui/empty-state';
 import { useVehicleRentalHistory } from '../../api/fleet-api';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
 import { AdminRentalStatusBadge } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 interface VehicleRentalHistoryTableProps {
     vehicleId: number;
@@ -62,7 +63,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                         <tr key={rental.id} className="border-b border-border hover:bg-raised">
                                             <td className="py-3 px-2">
                                                 <Link
-                                                    href={`/admin/rentals/${rental.id}`}
+                                                    href={ROUTES.admin.rental(rental.id)}
                                                     className="font-mono text-info-subtle-foreground hover:underline"
                                                 >
                                                     {formatRentalReference(rental.id)}
@@ -70,7 +71,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                             </td>
                                             <td className="py-3 px-2">
                                                 <Link
-                                                    href={`/admin/users/${rental.customerId}`}
+                                                    href={ROUTES.admin.user(rental.customerId)}
                                                     className="text-foreground hover:underline"
                                                 >
                                                     {rental.customerName}

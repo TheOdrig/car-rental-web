@@ -18,6 +18,7 @@ import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 import { useRental } from '@/entities/rental';
 import { VehicleLabel } from '@/entities/car';
 import type { CurrencyType } from '@/shared/types';
+import { ROUTES } from '@/shared/config/routes';
 
 export function DamageDetailContent({ id }: { id: string }) {
     const damageId = parseInt(id, 10);
@@ -58,8 +59,8 @@ export function DamageDetailContent({ id }: { id: string }) {
         <div className="space-y-6 p-6">
             <Breadcrumb
                 items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Damage Reports', href: '/admin/damages' },
+                    { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                    { label: 'Damage Reports', href: ROUTES.admin.damages },
                     { label: `#${damage.id}` },
                 ]}
             />
@@ -154,7 +155,7 @@ export function DamageDetailContent({ id }: { id: string }) {
                             <div>
                                 <p className="text-sm text-muted-foreground">Rental</p>
                                 <p className="font-medium">
-                                    <Link href={`/admin/rentals/${damage.rentalId}`} className="text-primary hover:underline">
+                                    <Link href={ROUTES.admin.rental(damage.rentalId)} className="text-primary hover:underline">
                                         {formatRentalReference(damage.rentalId)}
                                     </Link>
                                 </p>

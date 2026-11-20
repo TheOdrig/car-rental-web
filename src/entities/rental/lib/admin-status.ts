@@ -33,3 +33,18 @@ export function toApiRentalStatus(status: string): string {
             return status;
     }
 }
+
+const PAYMENT_NOT_EXPECTED: AdminRentalStatus[] = ['PENDING', 'CANCELLED', 'UNKNOWN'];
+
+export function isAdminPaymentExpected(status: AdminRentalStatus | undefined): boolean {
+    return !!status && !PAYMENT_NOT_EXPECTED.includes(status);
+}
+
+export function isPenaltyHistoryStatus(status: AdminRentalStatus): boolean {
+    const withHistory: AdminRentalStatus[] = ['COMPLETED', 'ACTIVE'];
+    return withHistory.includes(status);
+}
+
+export function isAwaitingPickup(status: AdminRentalStatus): boolean {
+    return status === 'CONFIRMED';
+}

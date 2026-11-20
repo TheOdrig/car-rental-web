@@ -23,6 +23,7 @@ import type { VehicleDetailResponse } from '@/entities/car';
 import { mapCurrency } from '@/entities/currency';
 import { toast } from 'sonner';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
+import { ROUTES } from '@/shared/config/routes';
 
 export function EditCarContent() {
     const router = useRouter();
@@ -49,7 +50,7 @@ export function EditCarContent() {
                 <p className="text-muted-foreground mb-4">
                     The car you&apos;re looking for doesn&apos;t exist or has been removed.
                 </p>
-                <Button onClick={() => router.push('/admin/fleet')}>
+                <Button onClick={() => router.push(ROUTES.admin.fleet)}>
                     Back to Fleet
                 </Button>
             </div>
@@ -117,7 +118,7 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
                 setErrors(carFormFieldErrors(error));
                 return;
             }
-            router.push('/admin/fleet');
+            router.push(ROUTES.admin.fleet);
         });
     };
 
@@ -127,8 +128,8 @@ function EditCarForm({ car, carId, initialFormData, updateCar }: EditCarFormProp
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Fleet Management', href: '/admin/fleet' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Fleet Management', href: ROUTES.admin.fleet },
                             { label: `Edit ${car.brand} ${car.model}` },
                         ]}
                     />

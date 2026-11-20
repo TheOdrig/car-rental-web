@@ -7,6 +7,7 @@ import { Header } from '@/widgets/header';
 import { Footer, HideOnAuthRoutes } from "@/widgets/layout";
 import React from "react";
 import { APP_NAME } from "@/shared/config/constants";
+import { ROUTES } from '@/shared/config/routes';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "/",
+    url: ROUTES.home,
     siteName: APP_NAME,
     title: `${APP_NAME} - Rent a car by the day`,
     description:

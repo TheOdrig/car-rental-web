@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import { useBookedDates } from '@/entities/car';
 import type { Car as CarType } from '@/entities/car';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 function formatPrice(price: number, currency: string): string {
     return formatCurrency(price, currency || DEFAULT_CURRENCY);
@@ -104,7 +105,7 @@ export function RentalForm({ car, className }: RentalFormProps) {
         params.append('carId', car.id.toString());
         params.append('startDate', toDateInputValue(startDate!));
         params.append('endDate', toDateInputValue(endDate!));
-        router.push(`/checkout?${params.toString()}`);
+        router.push(withQuery(ROUTES.checkout, params.toString()));
     };
 
     const calculateDays = (): number => {

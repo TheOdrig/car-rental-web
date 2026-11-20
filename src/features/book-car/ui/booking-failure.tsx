@@ -4,6 +4,7 @@ import { XCircle, RefreshCw, ArrowLeft } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { ROUTES } from '@/shared/config/routes';
 
 interface BookingFailureProps {
     errorMessage?: string;
@@ -55,7 +56,7 @@ export function BookingFailure({ errorMessage }: BookingFailureProps) {
                                 className="w-full"
                                 size="lg"
                             >
-                                <Link href="/cars">
+                                <Link href={ROUTES.cars.list}>
                                     <ArrowLeft className="h-5 w-5 mr-2" />
                                     Browse Other Cars
                                 </Link>

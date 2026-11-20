@@ -12,15 +12,16 @@ import {
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { PageHeader } from '@/shared/ui/page-header';
+import { ROUTES } from '@/shared/config/routes';
 
 interface SettingsLayoutProps {
     children: ReactNode;
 }
 
 const SETTINGS_TABS = [
-    { label: 'Personal Info', href: '/settings/profile', icon: User },
-    { label: 'Security', href: '/settings/security', icon: Shield },
-    { label: 'Payment Methods', href: '/settings/payment', icon: CreditCard },
+    { label: 'Personal Info', href: ROUTES.settings.profile, icon: User },
+    { label: 'Security', href: ROUTES.settings.security, icon: Shield },
+    { label: 'Payment Methods', href: ROUTES.settings.payment, icon: CreditCard },
 ];
 
 function Breadcrumb({ currentTab }: { currentTab?: string }) {
@@ -29,7 +30,7 @@ function Breadcrumb({ currentTab }: { currentTab?: string }) {
             <ol className="flex items-center gap-2 text-sm text-muted-foreground">
                 <li>
                     <Link
-                        href="/"
+                        href={ROUTES.home}
                         className="flex items-center gap-1 transition-colors hover:text-foreground"
                     >
                         <Home className="h-4 w-4" />
@@ -41,7 +42,7 @@ function Breadcrumb({ currentTab }: { currentTab?: string }) {
                 </li>
                 <li>
                     <Link
-                        href="/settings"
+                        href={ROUTES.settings.root}
                         className="transition-colors hover:text-foreground"
                     >
                         Settings

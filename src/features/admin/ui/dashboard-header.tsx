@@ -5,6 +5,7 @@ import { Clock, DollarSign, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { PageHeader } from '@/shared/ui/page-header';
 import { cn } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface DashboardHeaderProps {
     lastUpdated: string | null;
@@ -48,7 +49,7 @@ export function DashboardHeader({
                         {isRefreshingRates ? 'Refreshing...' : 'Refresh Rates'}
                     </Button>
                     <Button size="sm" className="gap-2 shrink-0 cursor-pointer" aria-label="Add new car to fleet" asChild>
-                        <Link href="/admin/fleet/new">
+                        <Link href={ROUTES.admin.fleetNew}>
                             <Plus className="h-4 w-4" aria-hidden="true" />
                             Add New Car
                         </Link>

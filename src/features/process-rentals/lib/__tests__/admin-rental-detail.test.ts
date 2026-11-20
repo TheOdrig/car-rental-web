@@ -3,7 +3,6 @@ import {
     findTimelineTimestamp,
     getPickupBlockedReason,
     hasPenalty,
-    isPaymentExpected,
     shouldShowPenaltyHistory,
     toTimelineEvents,
     toVehicleInfo,
@@ -12,16 +11,6 @@ import { PICKUP_PAYMENT_REQUIRED_MESSAGE } from '@/entities/rental';
 
 const dayMs = 24 * 60 * 60 * 1000;
 const iso = (offsetDays: number) => new Date(Date.now() + offsetDays * dayMs).toISOString().slice(0, 10);
-
-describe('isPaymentExpected', () => {
-    it.each(['CONFIRMED', 'ACTIVE', 'COMPLETED'])('expects payment for %s', (status) => {
-        expect(isPaymentExpected(status)).toBe(true);
-    });
-
-    it.each(['PENDING', 'CANCELLED', 'UNKNOWN', undefined])('does not expect payment for %s', (status) => {
-        expect(isPaymentExpected(status)).toBe(false);
-    });
-});
 
 describe('penalty rules', () => {
     it('detects a positive penalty only', () => {

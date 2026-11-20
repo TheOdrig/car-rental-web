@@ -1,6 +1,7 @@
 'use client';
 
 import { SegmentError } from '@/shared/ui/segment-error';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AdminRentalError({
     error,
@@ -15,7 +16,7 @@ export default function AdminRentalError({
             reset={reset}
             title="Rental could not be loaded"
             description="The rental details could not be loaded."
-            backHref="/admin/rentals"
+            backHref={ROUTES.admin.rentals}
             backLabel="Back to rentals"
         />
     );

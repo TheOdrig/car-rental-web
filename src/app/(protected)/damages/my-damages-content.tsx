@@ -9,6 +9,7 @@ import { Pagination } from '@/shared/ui/pagination';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { PageHeader } from '@/shared/ui/page-header';
 import { DamageList } from '@/features/manage-damages';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 export function MyDamagesContent() {
     const searchParams = useSearchParams();
@@ -20,7 +21,7 @@ export function MyDamagesContent() {
     const handlePageChange = useCallback((newPage: number) => {
         const params = new URLSearchParams(searchParams?.toString());
         params?.set('page', String(newPage));
-        router.push(`/damages?${params?.toString()}`);
+        router.push(withQuery(ROUTES.damages.list, params?.toString()));
     }, [router, searchParams]);
 
     if (error) {

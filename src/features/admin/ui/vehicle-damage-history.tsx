@@ -11,6 +11,7 @@ import { DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
 import { useVehicleDamages } from '@/entities/damage';
 import { formatDate } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface VehicleDamageHistoryProps {
     carId: number;
@@ -74,7 +75,7 @@ export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHisto
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => router.push(`/admin/damages?carId=${carId}`)}
+                        onClick={() => router.push(ROUTES.admin.damagesOfCar(carId))}
                     >
                         View All ({data.totalElements})
                         <ExternalLink className="ml-2 h-3 w-3" />
@@ -91,7 +92,7 @@ export function VehicleDamageHistory({ carId, maxItems = 5 }: VehicleDamageHisto
                         {damages.map((damage) => (
                             <Link
                                 key={damage.id}
-                                href={`/admin/damages/${damage.id}`}
+                                href={ROUTES.admin.damage(damage.id)}
                                 className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                                 <div className="flex items-center gap-3">

@@ -18,6 +18,7 @@ import {
     type LateReturnFilters as LateReturnFiltersType,
 } from '@/entities/rental';
 import { pickCode } from '@/shared/lib';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 function LateReturnsList() {
     const searchParams = useSearchParams();
@@ -46,7 +47,7 @@ function LateReturnsList() {
     const handlePageChange = useCallback((newPage: number) => {
         const params = new URLSearchParams(searchParams?.toString());
         params?.set('page', String(newPage));
-        router.push(`/admin/late-returns?${params?.toString()}`);
+        router.push(withQuery(ROUTES.admin.lateReturns, params?.toString()));
     }, [router, searchParams]);
 
     return (
@@ -56,7 +57,7 @@ function LateReturnsList() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
                             { label: 'Late Returns' },
                         ]}
                     />
@@ -75,7 +76,7 @@ function LateReturnsList() {
                             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/late-returns/statistics">
+                            <Link href={ROUTES.admin.lateReturnStatistics}>
                                 <BarChart3 className="h-4 w-4" />
                                 View Statistics
                             </Link>

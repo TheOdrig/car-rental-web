@@ -29,6 +29,7 @@ import { RentalNotesCard, hasRentalNotes } from './rental-notes-card';
 import { RentalPeriodCard } from './rental-period-card';
 import { VehicleDetailsCard } from './vehicle-details-card';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 interface RentalDetailProps {
     rental: Rental;
@@ -135,7 +136,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                                 }
                                 return (
                                     <Button asChild className="w-full">
-                                        <Link href={`/rentals/${rental.id}/pay`}>{paymentStatus === 'CANCELLED' ? 'Pay again' : 'Pay now'}</Link>
+                                        <Link href={ROUTES.rentals.pay(rental.id)}>{paymentStatus === 'CANCELLED' ? 'Pay again' : 'Pay now'}</Link>
                                     </Button>
                                 );
                             }}

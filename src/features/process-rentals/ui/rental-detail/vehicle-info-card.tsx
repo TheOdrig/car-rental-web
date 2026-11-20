@@ -8,6 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { CopyButton } from '@/shared/ui/copy-button';
 import type { RentalVehicleInfo } from '@/entities/rental';
 import { CarStatusBadge } from '@/entities/car';
+import { ROUTES } from '@/shared/config/routes';
 
 interface VehicleInfoCardProps {
     vehicle: RentalVehicleInfo;
@@ -23,7 +24,7 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                         Vehicle
                     </CardTitle>
                     <Button variant="ghost" size="sm" asChild>
-                        <Link href={`/admin/fleet/${vehicle.id}`}>
+                        <Link href={ROUTES.admin.fleetDetail(vehicle.id)}>
                             <ExternalLink className="h-4 w-4 mr-1" />
                             View Details
                         </Link>

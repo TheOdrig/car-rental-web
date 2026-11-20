@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function ProtectedError({
     error,
@@ -29,7 +30,7 @@ export default function ProtectedError({
                     <div className="flex gap-4">
                         <Button onClick={() => reset()}>Try again</Button>
                         <Button variant="outline" asChild>
-                            <Link href="/">Go home</Link>
+                            <Link href={ROUTES.home}>Go home</Link>
                         </Button>
                     </div>
                 </CardContent>

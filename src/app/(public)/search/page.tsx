@@ -3,11 +3,12 @@ import { pageMetadata } from '@/shared/lib';
 import { CarSearch } from '@/widgets/car-search';
 import { SearchContent } from './search-content';
 import { PageHeader } from '@/shared/ui/page-header';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = pageMetadata({
     title: 'Search Available Cars',
     description: 'Find and book available cars for your travel dates. Wide selection of vehicles to choose from.',
-    path: '/search',
+    path: ROUTES.search,
 });
 
 export default function SearchPage() {

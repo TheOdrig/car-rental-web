@@ -15,6 +15,7 @@ import { useCreateBooking } from '../../lib/use-checkout';
 import { BookingSummary } from './booking-summary';
 import { CheckoutSkeleton } from './checkout-skeleton';
 import type { DiscountDetail, PriceBreakdown } from '../../model/types';
+import { ROUTES } from '@/shared/config/routes';
 
 const NOTES_MAX_LENGTH = 1000;
 
@@ -53,7 +54,7 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
 
     const booking = useCreateBooking({
         onSuccess: (created) => {
-            router.replace(`/booking/success?ref=${created.id}`);
+            router.replace(ROUTES.booking.success(created.id));
         },
         onError: (error) => {
             submitted.current = false;

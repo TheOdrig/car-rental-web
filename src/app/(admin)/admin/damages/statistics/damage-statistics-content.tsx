@@ -9,6 +9,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { StatCard } from '@/shared/ui/stat-card';
 import { useDamageStatistics } from '@/features/manage-damages';
 import { DamageCurrencyTotals } from '@/entities/damage';
+import { ROUTES } from '@/shared/config/routes';
 
 export function DamageStatisticsContent() {
     const router = useRouter();
@@ -34,8 +35,8 @@ export function DamageStatisticsContent() {
         <div className="space-y-6">
             <Breadcrumb
                 items={[
-                    { label: 'Dashboard', href: '/admin/dashboard' },
-                    { label: 'Damage Reports', href: '/admin/damages' },
+                    { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                    { label: 'Damage Reports', href: ROUTES.admin.damages },
                     { label: 'Statistics' },
                 ]}
             />

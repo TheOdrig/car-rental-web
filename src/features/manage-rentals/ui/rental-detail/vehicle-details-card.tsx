@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import type { Rental } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 interface VehicleDetailsCardProps {
     carSummary: Rental['carSummary'];
@@ -16,7 +17,7 @@ export function VehicleDetailsCard({ carSummary }: VehicleDetailsCardProps) {
                 <CardTitle className="text-lg">Vehicle Details</CardTitle>
             </CardHeader>
             <CardContent>
-                <Link href={`/cars/${carSummary?.id}`} className="group flex flex-col gap-4 sm:flex-row">
+                <Link href={ROUTES.cars.detail(carSummary?.id)} className="group flex flex-col gap-4 sm:flex-row">
                     <div className="relative h-40 w-full shrink-0 sm:h-32 sm:w-48 overflow-hidden rounded-lg">
                         <DynamicImage
                             src={carSummary?.thumbnailUrl ?? '/images/car-placeholder.svg'}

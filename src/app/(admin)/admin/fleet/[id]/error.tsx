@@ -1,6 +1,7 @@
 'use client';
 
 import { SegmentError } from '@/shared/ui/segment-error';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AdminVehicleError({
     error,
@@ -15,7 +16,7 @@ export default function AdminVehicleError({
             reset={reset}
             title="Vehicle could not be loaded"
             description="The vehicle details could not be loaded."
-            backHref="/admin/fleet"
+            backHref={ROUTES.admin.fleet}
             backLabel="Back to fleet"
         />
     );

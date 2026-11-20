@@ -26,6 +26,7 @@ import {
     resolveStatus,
     type UserForAction,
 } from './user-display';
+import { ROUTES } from '@/shared/config/routes';
 
 interface UserTableRowProps {
     user: User;
@@ -53,7 +54,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     </Avatar>
                     <div className="min-w-0">
                         <Link
-                            href={`/admin/users/${user.id}`}
+                            href={ROUTES.admin.user(user.id)}
                             className="block max-w-[14rem] truncate font-semibold text-foreground hover:text-primary hover:underline transition-colors"
                         >
                             {displayName}
@@ -109,7 +110,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                             <DropdownMenuLabel>Actions</DropdownMenuLabel>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem asChild>
-                                <Link href={`/admin/users/${user.id}`}>
+                                <Link href={ROUTES.admin.user(user.id)}>
                                     <Eye className="mr-2 h-4 w-4" aria-hidden="true" />
                                     View Profile
                                 </Link>

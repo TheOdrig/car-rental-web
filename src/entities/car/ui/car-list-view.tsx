@@ -11,6 +11,7 @@ import { EmptyState } from '@/shared/ui/empty-state';
 import { cn } from '@/shared/lib';
 import { formatCurrency } from '@/shared/lib';
 import type { Car, AvailableCar } from '@/entities/car';
+import { ROUTES } from '@/shared/config/routes';
 
 interface CarListItemProps {
     car: Car | AvailableCar;
@@ -45,7 +46,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
         <Card className={cn('group gap-0 overflow-hidden py-0', className)}>
             <div className="flex flex-col sm:flex-row">
                 <div className="relative w-full sm:w-72 h-48 sm:h-auto sm:min-h-[200px] flex-shrink-0">
-                    <Link href={`/cars/${data.id}`}>
+                    <Link href={ROUTES.cars.detail(data.id)}>
                         {data.imageUrl ? (
                             <DynamicImage
                                 src={data.imageUrl}
@@ -72,7 +73,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
                     <div className="flex-1">
                         <div className="flex items-start justify-between gap-4 mb-3">
                             <div>
-                                <Link href={`/cars/${data.id}`}>
+                                <Link href={ROUTES.cars.detail(data.id)}>
                                     <Heading className="text-lg font-semibold hover:text-primary transition-colors">
                                         {data.brand} {data.model}
                                     </Heading>
@@ -125,7 +126,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
                             </span>
                         </div>
                         <Button asChild>
-                            <Link href={`/cars/${data.id}`}>View Details</Link>
+                            <Link href={ROUTES.cars.detail(data.id)}>View Details</Link>
                         </Button>
                     </div>
                 </div>

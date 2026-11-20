@@ -1,4 +1,6 @@
-const FALLBACK_PATH = '/';
+import { ROUTES } from '@/shared/config/routes';
+
+const FALLBACK_PATH = ROUTES.home;
 const PROBE_ORIGIN = 'http://redirect.invalid';
 const BACKSLASH = String.fromCharCode(92);
 

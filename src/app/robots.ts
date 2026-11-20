@@ -1,19 +1,20 @@
 import type { MetadataRoute } from 'next';
+import { ROUTES } from '@/shared/config/routes';
 
 const PRIVATE_PATHS = [
-    '/admin',
-    '/dashboard',
+    ROUTES.admin.root,
+    ROUTES.dashboard,
     '/api',
-    '/rentals',
-    '/damages',
-    '/settings',
-    '/checkout',
-    '/booking',
-    '/login',
-    '/register',
-    '/forgot-password',
-    '/reset-password',
-    '/forbidden',
+    ROUTES.rentals.list,
+    ROUTES.damages.list,
+    ROUTES.settings.root,
+    ROUTES.checkout,
+    ROUTES.booking.root,
+    ROUTES.login,
+    ROUTES.register,
+    ROUTES.forgotPassword,
+    ROUTES.resetPassword,
+    ROUTES.forbidden,
 ];
 
 export default function robots(): MetadataRoute.Robots {

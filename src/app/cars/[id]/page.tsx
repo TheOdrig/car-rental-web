@@ -6,6 +6,7 @@ import { SimilarCarsSection } from '@/entities/car';
 import { getCar, getCarCalendar } from '@/entities/car/api/cached-fetchers';
 import { CarBookingCard } from '@/widgets/car-booking-card';
 import { ClientCarDetail } from './client-car-detail';
+import { ROUTES } from '@/shared/config/routes';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -75,7 +76,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return pageMetadata({
         title: `${car.brand} ${car.model} ${car.productionYear}`,
         description: `Rent ${car.brand} ${car.model} - ${car.fuelType ?? ''} ${car.transmissionType ?? ''}`.trim(),
-        path: `/cars/${carId}`,
+        path: ROUTES.cars.detail(carId),
         image: car.imageUrl ?? car.thumbnailUrl ?? undefined,
     });
 }

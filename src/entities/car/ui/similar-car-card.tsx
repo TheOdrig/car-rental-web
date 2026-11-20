@@ -9,6 +9,7 @@ import { Badge } from '@/shared/ui/badge';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 import { type SimilarCar } from '@/entities/car';
+import { ROUTES } from '@/shared/config/routes';
 
 interface SimilarCarCardProps {
     car: SimilarCar;
@@ -26,7 +27,7 @@ export const SimilarCarCard = memo(function SimilarCarCard({
 
     return (
         <Link
-            href={`/cars/${car.id}`}
+            href={ROUTES.cars.detail(car.id)}
             className={cn('block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2', className)}
         >
             <Card className="group h-full gap-0 overflow-hidden py-0 transition-shadow duration-200 hover:shadow-md">

@@ -34,6 +34,7 @@ import { ErrorMessage } from '@/shared/ui/error-message';
 import { PageHeader } from '@/shared/ui/page-header';
 import { RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
 import { PAGE_SIZE } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 const RENTAL_STATUS_OPTIONS = [
     { value: ALL_STATUSES, label: 'All statuses' },
@@ -164,7 +165,7 @@ export function AdminRentalsContent() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
                             { label: 'Rental Management' },
                         ]}
                     />
@@ -224,7 +225,7 @@ export function AdminRentalsContent() {
                         </Select>
                         {userId !== undefined && (
                             <Button variant="ghost" size="sm" asChild>
-                                <Link href="/admin/rentals">Show all customers</Link>
+                                <Link href={ROUTES.admin.rentals}>Show all customers</Link>
                             </Button>
                         )}
                     </div>

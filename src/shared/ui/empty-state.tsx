@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/config/routes';
 
 type EmptyStateType = 'default' | 'search' | 'cart' | 'users' | 'cars' | 'rentals';
 
@@ -155,11 +156,11 @@ export const EMPTY_STATE_PRESETS = {
         illustration: '/images/empty-rentals.svg',
         action: {
             label: 'Browse Cars',
-            href: '/cars',
+            href: ROUTES.cars.list,
         },
         helpLinks: [
-            { label: 'How to Book', href: '/help/booking', icon: BookOpen },
-            { label: 'FAQ', href: '/help/faq', icon: HelpCircle },
+            { label: 'How to Book', href: ROUTES.help.booking, icon: BookOpen },
+            { label: 'FAQ', href: ROUTES.help.faq, icon: HelpCircle },
         ],
     },
     noActiveRentals: {
@@ -173,7 +174,7 @@ export const EMPTY_STATE_PRESETS = {
         description: 'You have no upcoming reservations scheduled.',
         action: {
             label: 'Plan a Trip',
-            href: '/cars',
+            href: ROUTES.cars.list,
         },
     },
     noCompletedRentals: {

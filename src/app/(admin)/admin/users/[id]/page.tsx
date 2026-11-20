@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { CustomerDetailContent } from './customer-detail-content';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = { title: 'Customer Details' };
 
@@ -16,7 +17,7 @@ export default async function CustomerDetailPage({ params }: PageProps) {
     const { id } = await params;
 
     if (!isNumericId(id)) {
-        redirect('/admin/users');
+        redirect(ROUTES.admin.users);
     }
 
     return <CustomerDetailContent id={id} />;

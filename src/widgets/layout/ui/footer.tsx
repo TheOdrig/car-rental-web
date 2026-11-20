@@ -1,14 +1,15 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { ROUTES } from '@/shared/config/routes';
 
 const footerLinks = {
     explore: [
-        { label: 'Browse Cars', href: '/cars' },
-        { label: 'My Rentals', href: '/rentals' },
+        { label: 'Browse Cars', href: ROUTES.cars.list },
+        { label: 'My Rentals', href: ROUTES.rentals.list },
     ],
     legal: [
-        { label: 'Terms of Service', href: '/terms' },
-        { label: 'Privacy Policy', href: '/privacy' },
+        { label: 'Terms of Service', href: ROUTES.terms },
+        { label: 'Privacy Policy', href: ROUTES.privacy },
     ],
 };
 
@@ -20,7 +21,7 @@ export function Footer() {
             <div className="container py-12 md:py-16">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
                     <div className="col-span-2">
-                        <Link href="/" className="flex items-center gap-2 font-bold text-xl">
+                        <Link href={ROUTES.home} className="flex items-center gap-2 font-bold text-xl">
                             <Image
                                 src="/images/logo.svg"
                                 alt=""

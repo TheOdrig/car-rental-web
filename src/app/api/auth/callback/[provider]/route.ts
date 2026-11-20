@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
+import { ROUTES } from '@/shared/config/routes';
 import { safeRedirectPath } from '@/shared/lib/safe-redirect';
 import { API, authResponseSchema, searchParamsOf, setAuthTokens, upstream } from '@/shared/server';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
@@ -23,7 +24,7 @@ function finish(response: NextResponse): NextResponse {
 }
 
 function loginRedirect(request: NextRequest, error: string): NextResponse {
-    return finish(NextResponse.redirect(new URL(`/login?error=${encodeURIComponent(error)}`, request.url)));
+    return finish(NextResponse.redirect(new URL(ROUTES.loginWithError(encodeURIComponent(error)), request.url)));
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {

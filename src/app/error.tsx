@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/config/routes';
 
 interface ErrorProps {
     error: Error & { digest?: string };
@@ -36,7 +37,7 @@ export default function Error({ error, reset }: ErrorProps) {
                     Try Again
                 </Button>
                 <Button variant="outline" asChild>
-                    <Link href="/">Go Home</Link>
+                    <Link href={ROUTES.home}>Go Home</Link>
                 </Button>
             </div>
         </div>

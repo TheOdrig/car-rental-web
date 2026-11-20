@@ -1,9 +1,10 @@
 import type { MetadataRoute } from 'next';
 import { API, upstream } from '@/shared/server';
+import { ROUTES } from '@/shared/config/routes';
 
 export const revalidate = 3600;
 
-const STATIC_PATHS = ['', '/cars', '/search', '/terms', '/privacy'];
+const STATIC_PATHS = ['', ROUTES.cars.list, ROUTES.search, ROUTES.terms, ROUTES.privacy];
 
 interface CarPage {
     content?: Array<{ id?: number }>;

@@ -8,6 +8,7 @@ import { CarCard, CarCardSkeleton } from '@/entities/car';
 import { useFeaturedCars } from '@/entities/car';
 import { cn } from '@/shared/lib';
 import type { Car } from '@/entities/car';
+import { ROUTES } from '@/shared/config/routes';
 
 interface FeaturedCarouselProps {
     title?: string;
@@ -19,7 +20,7 @@ interface FeaturedCarouselProps {
 export function FeaturedCarousel({
     title = 'Newest vehicles',
     subtitle = 'Recently added and available now',
-    viewAllLink = '/cars',
+    viewAllLink = ROUTES.cars.list,
     className,
 }: FeaturedCarouselProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
@@ -131,7 +132,7 @@ function FeaturedCarouselEmpty() {
         <div className="text-center py-12 text-muted-foreground">
             <p>No featured cars available at the moment.</p>
             <Button variant="link" className="mt-2" asChild>
-                <Link href="/cars">Browse all cars</Link>
+                <Link href={ROUTES.cars.list}>Browse all cars</Link>
             </Button>
         </div>
     );

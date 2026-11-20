@@ -12,6 +12,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '@/shared/ui/popover';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 interface CarSearchProps {
     className?: string;
@@ -41,7 +42,7 @@ export function CarSearch({ className, variant = 'default', onSearch }: CarSearc
                 startDate: format(startDate, 'yyyy-MM-dd'),
                 endDate: format(endDate, 'yyyy-MM-dd'),
             });
-            router.push(`/search?${params.toString()}`);
+            router.push(withQuery(ROUTES.search, params.toString()));
         }
     };
 

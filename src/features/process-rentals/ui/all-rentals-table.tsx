@@ -7,6 +7,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/shared/ui/table';
 import { formatAmount, formatDate, formatRentalReference } from '@/shared/lib';
 import { RentalStatusBadge, type Rental } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 interface AllRentalsTableProps {
     rentals: Rental[];
@@ -63,7 +64,7 @@ export function AllRentalsTable({
                                 {rentals.map((rental) => (
                                     <TableRow key={rental.id}>
                                         <TableCell className="whitespace-nowrap font-mono text-sm">
-                                            <Link href={`/admin/rentals/${rental.id}`} className="text-primary hover:underline">
+                                            <Link href={ROUTES.admin.rental(rental.id)} className="text-primary hover:underline">
                                                 {formatRentalReference(rental.id)}
                                             </Link>
                                         </TableCell>

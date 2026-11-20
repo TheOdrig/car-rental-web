@@ -30,6 +30,7 @@ import {
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
 import { DEFAULT_CURRENCY, PAGE_SIZE } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 
 export function MyRentalsContent() {
@@ -77,14 +78,14 @@ export function MyRentalsContent() {
     const handleAction = useCallback((action: string, rental: Rental) => {
         switch (action) {
             case 'view':
-                router.push(`/rentals/${rental.id}`);
+                router.push(ROUTES.rentals.detail(rental.id));
                 break;
             case 'pay':
-                router.push(`/rentals/${rental.id}/pay`);
+                router.push(ROUTES.rentals.pay(rental.id));
                 break;
             case 'book-again':
                 if (rental.carSummary?.id) {
-                    router.push(`/cars/${rental.carSummary.id}`);
+                    router.push(ROUTES.cars.detail(rental.carSummary.id));
                 }
                 break;
             case 'cancel':

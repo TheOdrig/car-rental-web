@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { ChevronRight, Home } from 'lucide-react';
 import { cn } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface BreadcrumbItem {
     label: string;
@@ -23,7 +24,7 @@ export function Breadcrumb({ items, className }: BreadcrumbProps) {
             <ol className="flex min-w-0 flex-wrap items-center gap-1.5">
                 <li>
                     <Link
-                        href="/"
+                        href={ROUTES.home}
                         className="flex items-center gap-1 hover:text-foreground transition-colors"
                         aria-label="Home"
                     >

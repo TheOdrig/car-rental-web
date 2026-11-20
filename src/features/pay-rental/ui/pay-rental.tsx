@@ -28,6 +28,7 @@ import {
 import { getStripe, resolvePublishableKey } from '../lib/stripe-client';
 import { DemoNotice } from './demo-notice';
 import { PaymentElementForm } from './payment-element-form';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 interface PayRentalProps {
     rentalId: number;
@@ -58,7 +59,7 @@ function Shell({ rentalId, demo = false, children }: { rentalId: number; demo?: 
 function BackLink({ rentalId }: { rentalId: number }) {
     return (
         <Button variant="outline" asChild>
-            <Link href={`/rentals/${rentalId}`}>View rental</Link>
+            <Link href={ROUTES.rentals.detail(rentalId)}>View rental</Link>
         </Button>
     );
 }
@@ -76,11 +77,11 @@ function BlockedView({ rentalId, block }: { rentalId: number; block: PaymentBloc
             </div>
             {block.kind === 'signin' ? (
                 <Button asChild>
-                    <Link href={`/login?callbackUrl=${encodeURIComponent(`/rentals/${rentalId}/pay`)}`}>Sign in</Link>
+                    <Link href={ROUTES.loginWithCallback(ROUTES.rentals.pay(rentalId))}>Sign in</Link>
                 </Button>
             ) : block.kind === 'forbidden' || block.kind === 'not-found' ? (
                 <Button variant="outline" asChild>
-                    <Link href="/rentals">My rentals</Link>
+                    <Link href={ROUTES.rentals.list}>My rentals</Link>
                 </Button>
             ) : (
                 <BackLink rentalId={rentalId} />
@@ -249,7 +250,7 @@ export function PayRental({
         if (returnedPaymentIntent) kept.set('payment_intent', returnedPaymentIntent);
         if (redirectStatus) kept.set('redirect_status', redirectStatus);
         const query = kept.toString();
-        router.replace(`/rentals/${rentalId}/pay${query ? `?${query}` : ''}`, { scroll: false });
+        router.replace(withQuery(ROUTES.rentals.pay(rentalId), query), { scroll: false });
     }, [returnedClientSecret, returnedPaymentIntent, redirectStatus, rentalId, router]);
 
     const intentStatus = isApiError(intentQuery.error) ? intentQuery.error.status : undefined;
@@ -269,7 +270,7 @@ export function PayRental({
     const retry = () => {
         queryClient.removeQueries({ queryKey: paymentKeys.byRental(rentalId) });
         if (returned) {
-            router.replace(`/rentals/${rentalId}/pay`);
+            router.replace(ROUTES.rentals.pay(rentalId));
         }
         setFailure(null);
         setPhase('form');

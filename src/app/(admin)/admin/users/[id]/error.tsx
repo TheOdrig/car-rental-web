@@ -1,6 +1,7 @@
 'use client';
 
 import { SegmentError } from '@/shared/ui/segment-error';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AdminUserError({
     error,
@@ -15,7 +16,7 @@ export default function AdminUserError({
             reset={reset}
             title="Customer could not be loaded"
             description="The customer details could not be loaded."
-            backHref="/admin/users"
+            backHref={ROUTES.admin.users}
             backLabel="Back to users"
         />
     );

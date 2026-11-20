@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ForgotPasswordForm } from '@/features/auth';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Forgot Password',
@@ -24,7 +25,7 @@ export default function ForgotPasswordPage() {
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                     Remember your password?{' '}
-                    <Link href="/login" className="font-bold text-primary hover:underline">
+                    <Link href={ROUTES.login} className="font-bold text-primary hover:underline">
                         Back to login
                     </Link>
                 </p>

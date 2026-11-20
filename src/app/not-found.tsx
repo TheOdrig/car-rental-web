@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { FileQuestion } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { DocumentTitle } from '@/shared/ui/document-title';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Page Not Found',
@@ -23,10 +24,10 @@ export default function NotFound() {
             </p>
             <div className="mt-8 flex gap-4">
                 <Button asChild variant="outline">
-                    <Link href="/">Go Home</Link>
+                    <Link href={ROUTES.home}>Go Home</Link>
                 </Button>
                 <Button asChild>
-                    <Link href="/cars">Browse Cars</Link>
+                    <Link href={ROUTES.cars.list}>Browse Cars</Link>
                 </Button>
             </div>
         </div>

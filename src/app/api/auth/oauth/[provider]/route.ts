@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
+import { ROUTES } from '@/shared/config/routes';
 import { safeRedirectPath } from '@/shared/lib/safe-redirect';
 import { API, buildUpstreamUrl, clientIpHeaders } from '@/shared/server';
 import { oauthProblemRedirectCode } from '../../_lib/oauth-errors';
@@ -11,7 +12,7 @@ interface RouteParams {
 }
 
 function loginRedirect(request: NextRequest, error: string): NextResponse {
-    return NextResponse.redirect(new URL(`/login?error=${error}`, request.url));
+    return NextResponse.redirect(new URL(ROUTES.loginWithError(error), request.url));
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {

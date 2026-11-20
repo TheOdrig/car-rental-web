@@ -19,6 +19,7 @@ import {
     Clock,
     Menu,
 } from 'lucide-react';
+import { ROUTES } from '@/shared/config/routes';
 
 interface AdminSidebarProps {
     username: string;
@@ -33,37 +34,37 @@ interface NavItem {
 const navItems: NavItem[] = [
     {
         label: 'Dashboard',
-        href: '/admin/dashboard',
+        href: ROUTES.admin.dashboard,
         icon: <LayoutDashboard className="h-5 w-5" />,
     },
     {
         label: 'Fleet Management',
-        href: '/admin/fleet',
+        href: ROUTES.admin.fleet,
         icon: <Car className="h-5 w-5" />,
     },
     {
         label: 'Customers',
-        href: '/admin/users',
+        href: ROUTES.admin.users,
         icon: <Users className="h-5 w-5" />,
     },
     {
         label: 'Rental Management',
-        href: '/admin/rentals',
+        href: ROUTES.admin.rentals,
         icon: <ClipboardList className="h-5 w-5" />,
     },
     {
         label: 'Damage Reports',
-        href: '/admin/damages',
+        href: ROUTES.admin.damages,
         icon: <AlertTriangle className="h-5 w-5" />,
     },
     {
         label: 'Alerts',
-        href: '/admin/alerts',
+        href: ROUTES.admin.alerts,
         icon: <Bell className="h-5 w-5" />,
     },
     {
         label: 'Late Returns',
-        href: '/admin/late-returns',
+        href: ROUTES.admin.lateReturns,
         icon: <Clock className="h-5 w-5" />,
     },
 ];
@@ -175,7 +176,7 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
             >
                 <div className="flex h-14 items-center justify-between border-b border-border px-4">
                     {!collapsed && (
-                        <Link href="/admin/dashboard" className="flex items-center gap-2">
+                        <Link href={ROUTES.admin.dashboard} className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">
                                 A
                             </div>

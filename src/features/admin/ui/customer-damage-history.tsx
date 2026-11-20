@@ -10,6 +10,7 @@ import { DamageStatusBadge } from '@/entities/damage';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { AlertTriangle, ExternalLink } from 'lucide-react';
 import { useCustomerDamages } from '@/entities/damage';
+import { ROUTES } from '@/shared/config/routes';
 
 interface CustomerDamageHistoryProps {
     userId: number;
@@ -73,7 +74,7 @@ export function CustomerDamageHistory({ userId, maxItems = 5 }: CustomerDamageHi
                     <Button
                         variant="ghost"
                         size="sm"
-                        onClick={() => router.push(`/admin/damages?userId=${userId}`)}
+                        onClick={() => router.push(ROUTES.admin.damagesOfUser(userId))}
                     >
                         View All ({data.totalElements})
                         <ExternalLink className="ml-2 h-3 w-3" />
@@ -90,7 +91,7 @@ export function CustomerDamageHistory({ userId, maxItems = 5 }: CustomerDamageHi
                         {damages.map((damage) => (
                             <Link
                                 key={damage.id}
-                                href={`/admin/damages/${damage.id}`}
+                                href={ROUTES.admin.damage(damage.id)}
                                 className="flex items-center justify-between p-3 rounded-lg border hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                             >
                                 <div className="flex items-center gap-3">

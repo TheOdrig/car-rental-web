@@ -15,6 +15,7 @@ import { EmptyState } from '@/shared/ui/empty-state';
 import { ChevronLeft, ChevronRight, Clock, CheckCircle } from 'lucide-react';
 import { LateReturnStatusBadge, formatLateTime, type LateReturnReport } from '@/entities/rental';
 import { formatCurrency, formatDate } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface LateReturnsTableProps {
     data: LateReturnReport[];
@@ -34,7 +35,7 @@ export function LateReturnsTable({
     const router = useRouter();
 
     const handleRowClick = (rentalId: number) => {
-        router.push(`/admin/rentals/${rentalId}`);
+        router.push(ROUTES.admin.rental(rentalId));
     };
 
     if (isLoading) {

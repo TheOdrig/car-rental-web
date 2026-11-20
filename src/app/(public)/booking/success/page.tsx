@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BookingSuccessLoader } from '@/features/book-car';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Booking Requested',
@@ -26,7 +27,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
                         This page needs a booking reference. You can find your requests on your rentals page.
                     </p>
                     <Link
-                        href="/rentals"
+                        href={ROUTES.rentals.list}
                         className="inline-flex items-center px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-xl hover:bg-primary/90 transition-colors"
                     >
                         My Rentals

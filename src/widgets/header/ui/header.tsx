@@ -18,6 +18,7 @@ import {
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { ThemeToggle } from './theme-toggle';
+import { ROUTES } from '@/shared/config/routes';
 
 const CurrencySelector = dynamic(
     () => import('./currency-selector').then(mod => mod.CurrencySelector),
@@ -53,7 +54,7 @@ export function Header() {
 
     const handleLogout = async () => {
         await logout();
-        router.push('/');
+        router.push(ROUTES.home);
     };
 
     return (
@@ -68,7 +69,7 @@ export function Header() {
                             </Button>
                         }
                     />
-                    <Link href="/" className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
+                    <Link href={ROUTES.home} className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
                         <Image
                             src="/images/logo.svg"
                             alt=""
@@ -81,7 +82,7 @@ export function Header() {
                 </div>
 
                 <nav aria-label="Main" className="hidden md:flex items-center gap-6 text-sm font-medium">
-                    <Link href="/cars" className="transition-colors hover:text-primary">
+                    <Link href={ROUTES.cars.list} className="transition-colors hover:text-primary">
                         Browse Cars
                     </Link>
                 </nav>
@@ -109,19 +110,19 @@ export function Header() {
                                 {isAdmin && (
                                     <>
                                         <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
-                                            <Link href="/admin/dashboard">Admin Dashboard</Link>
+                                            <Link href={ROUTES.admin.dashboard}>Admin Dashboard</Link>
                                         </DropdownMenuItem>
                                         <DropdownMenuSeparator className="bg-accent" />
                                     </>
                                 )}
                                 <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
-                                    <Link href="/rentals">My Rentals</Link>
+                                    <Link href={ROUTES.rentals.list}>My Rentals</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
-                                    <Link href="/damages">My Damages</Link>
+                                    <Link href={ROUTES.damages.list}>My Damages</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
-                                    <Link href="/settings/profile">Profile</Link>
+                                    <Link href={ROUTES.settings.profile}>Profile</Link>
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator className="bg-accent" />
                                 <DropdownMenuItem onClick={handleLogout} className="text-danger-subtle-foreground focus:text-danger-subtle-foreground hover:bg-danger-subtle focus:bg-danger-subtle">
@@ -132,10 +133,10 @@ export function Header() {
                     ) : (
                         <div className="hidden md:flex items-center gap-2">
                             <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground hover:bg-muted">
-                                <Link href="/login">Log In</Link>
+                                <Link href={ROUTES.login}>Log In</Link>
                             </Button>
                             <Button asChild>
-                                <Link href="/register">Sign Up</Link>
+                                <Link href={ROUTES.register}>Sign Up</Link>
                             </Button>
                         </div>
                     )}

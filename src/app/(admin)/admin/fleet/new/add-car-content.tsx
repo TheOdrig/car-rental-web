@@ -17,6 +17,7 @@ import {
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
+import { ROUTES } from '@/shared/config/routes';
 
 export function AddCarContent() {
     const router = useRouter();
@@ -45,7 +46,7 @@ export function AddCarContent() {
                 setErrors(carFormFieldErrors(error));
                 return;
             }
-            router.push('/admin/fleet');
+            router.push(ROUTES.admin.fleet);
         });
     };
 
@@ -55,8 +56,8 @@ export function AddCarContent() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Fleet Management', href: '/admin/fleet' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Fleet Management', href: ROUTES.admin.fleet },
                             { label: 'Add New Car' },
                         ]}
                     />

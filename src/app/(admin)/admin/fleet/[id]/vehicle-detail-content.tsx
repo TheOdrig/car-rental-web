@@ -24,6 +24,7 @@ import {
 } from '@/shared/ui/select';
 import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, type CarStatus } from '@/entities/car';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_SERVICE_STATUS_LABELS[value] }));
 
@@ -38,8 +39,8 @@ export function VehicleDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Fleet', href: '/admin/fleet' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Fleet', href: ROUTES.admin.fleet },
                         { label: 'Loading...' },
                     ]}
                 />
@@ -53,8 +54,8 @@ export function VehicleDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Fleet', href: '/admin/fleet' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Fleet', href: ROUTES.admin.fleet },
                         { label: `Vehicle #${vehicleId}` },
                     ]}
                 />
@@ -62,7 +63,7 @@ export function VehicleDetailContent({ id }: { id: string }) {
                     title="Vehicle Not Found"
                     message="The vehicle you are looking for does not exist or could not be loaded."
                     onRetry={() => refetch()}
-                    backUrl="/admin/fleet"
+                    backUrl={ROUTES.admin.fleet}
                     backLabel="Back to Fleet"
                 />
             </div>
@@ -89,8 +90,8 @@ export function VehicleDetailContent({ id }: { id: string }) {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Fleet', href: '/admin/fleet' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Fleet', href: ROUTES.admin.fleet },
                             { label: vehicleName },
                         ]}
                     />
@@ -104,13 +105,13 @@ export function VehicleDetailContent({ id }: { id: string }) {
                 actions={
                     <>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/fleet">
+                            <Link href={ROUTES.admin.fleet}>
                                 <ArrowLeft className="h-4 w-4" />
                                 Back to Fleet
                             </Link>
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/fleet/${vehicleId}/edit`}>
+                            <Link href={ROUTES.admin.fleetEdit(vehicleId)}>
                                 <Edit className="h-4 w-4" />
                                 Edit Vehicle
                             </Link>
@@ -132,7 +133,7 @@ export function VehicleDetailContent({ id }: { id: string }) {
                             </SelectContent>
                         </Select>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/damages?carId=${vehicleId}`}>
+                            <Link href={ROUTES.admin.damagesOfCar(vehicleId)}>
                                 <AlertTriangle className="h-4 w-4" />
                                 View Damages
                             </Link>

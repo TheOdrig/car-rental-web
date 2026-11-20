@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { AlertTriangle, RefreshCw } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/config/routes';
 
 interface SegmentErrorProps {
     error: Error & { digest?: string };
@@ -19,7 +20,7 @@ export function SegmentError({
     reset,
     title = 'Something went wrong',
     description = 'This page could not be loaded. Try again, or go back.',
-    backHref = '/',
+    backHref = ROUTES.home,
     backLabel = 'Go home',
 }: SegmentErrorProps) {
     useEffect(() => {

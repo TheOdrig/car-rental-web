@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AdminError({
     error,
@@ -29,7 +30,7 @@ export default function AdminError({
                     <div className="flex gap-4">
                         <Button onClick={() => reset()}>Try again</Button>
                         <Button variant="outline" asChild>
-                            <Link href="/admin/dashboard">Back to Dashboard</Link>
+                            <Link href={ROUTES.admin.dashboard}>Back to Dashboard</Link>
                         </Button>
                     </div>
                 </CardContent>

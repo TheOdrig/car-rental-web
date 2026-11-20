@@ -16,6 +16,7 @@ import type {
     AuthContextValue,
 } from '../model/types';
 import { STALE_TIME } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 export const authKeys = {
     all: ['auth'] as const,
@@ -51,7 +52,7 @@ function handleSessionExpired(queryClient: QueryClient): void {
     const { pathname, search } = window.location;
     const access = classifyRoute(pathname);
     if (access === 'protected' || access === 'admin') {
-        const login = new URL('/login', window.location.origin);
+        const login = new URL(ROUTES.login, window.location.origin);
         login.searchParams.set('callbackUrl', `${pathname}${search}`);
         window.location.assign(login.href);
     }
@@ -152,7 +153,7 @@ export function useAuth(): AuthContextValue {
         },
         onSuccess: () => {
             showToast.success(toastMessages.auth.logoutSuccess);
-            router.push('/');
+            router.push(ROUTES.home);
         },
         onSettled: () => {
             forgetPrincipal(queryClient);
@@ -241,7 +242,7 @@ export function useLogout() {
             loggingOut = false;
         },
         onSuccess: () => {
-            router.push('/');
+            router.push(ROUTES.home);
         },
         onSettled: () => {
             forgetPrincipal(queryClient);
@@ -260,7 +261,7 @@ export function useRefreshToken() {
         },
         onError: () => {
             forgetPrincipal(queryClient);
-            router.push('/login');
+            router.push(ROUTES.login);
         },
     });
 }

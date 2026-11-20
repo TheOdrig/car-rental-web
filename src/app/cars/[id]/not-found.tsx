@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function CarNotFound() {
     return (
@@ -8,7 +9,7 @@ export default function CarNotFound() {
                 The car you&apos;re looking for doesn&apos;t exist or has been removed.
             </p>
             <Link
-                href="/"
+                href={ROUTES.home}
                 className="inline-flex items-center justify-center rounded-md bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90"
             >
                 Browse All Cars

@@ -9,6 +9,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { useAuth } from '@/features/auth';
 import { RentalForm } from '@/features/manage-rentals';
 import { getCarUnavailableMessage, isAvailable, type Car } from '@/entities/car';
+import { ROUTES } from '@/shared/config/routes';
 
 interface CarBookingCardProps {
     car: Car;
@@ -49,7 +50,7 @@ export function CarBookingCard({ car }: CarBookingCardProps) {
                             Please log in to book this car
                         </p>
                         <Button asChild>
-                            <Link href={`/login?callbackUrl=/cars/${car.id}`}>
+                            <Link href={ROUTES.loginWithCallback(ROUTES.cars.detail(car.id))}>
                                 <LogIn className="h-4 w-4 mr-2" />
                                 Log In to Book
                             </Link>

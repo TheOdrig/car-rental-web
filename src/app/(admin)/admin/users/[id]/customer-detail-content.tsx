@@ -20,6 +20,7 @@ import {
 } from '@/features/manage-users';
 import { isActiveAccount, isBannedAccount } from '@/entities/user';
 import { formatDate, personDisplayName } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 export function CustomerDetailContent({ id }: { id: string }) {
     const customerId = parseInt(id, 10);
@@ -34,8 +35,8 @@ export function CustomerDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Users', href: '/admin/users' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Users', href: ROUTES.admin.users },
                         { label: 'Loading...' },
                     ]}
                 />
@@ -49,8 +50,8 @@ export function CustomerDetailContent({ id }: { id: string }) {
             <div className="space-y-6 p-6">
                 <Breadcrumb
                     items={[
-                        { label: 'Dashboard', href: '/admin/dashboard' },
-                        { label: 'Users', href: '/admin/users' },
+                        { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                        { label: 'Users', href: ROUTES.admin.users },
                         { label: `User #${customerId}` },
                     ]}
                 />
@@ -58,7 +59,7 @@ export function CustomerDetailContent({ id }: { id: string }) {
                     title="Customer Not Found"
                     message="The customer you are looking for does not exist or could not be loaded."
                     onRetry={() => refetch()}
-                    backUrl="/admin/users"
+                    backUrl={ROUTES.admin.users}
                     backLabel="Back to Users"
                 />
             </div>
@@ -86,8 +87,8 @@ export function CustomerDetailContent({ id }: { id: string }) {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
-                            { label: 'Users', href: '/admin/users' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
+                            { label: 'Users', href: ROUTES.admin.users },
                             { label: customerName },
                         ]}
                     />
@@ -101,7 +102,7 @@ export function CustomerDetailContent({ id }: { id: string }) {
                 actions={
                     <>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/users">
+                            <Link href={ROUTES.admin.users}>
                                 <ArrowLeft className="h-4 w-4" />
                                 Back to Users
                             </Link>
@@ -134,13 +135,13 @@ export function CustomerDetailContent({ id }: { id: string }) {
                             </a>
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/rentals?userId=${customerId}`}>
+                            <Link href={ROUTES.admin.rentalsOfUser(customerId)}>
                                 <History className="h-4 w-4" />
                                 View All Rentals
                             </Link>
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href={`/admin/damages?userId=${customerId}`}>
+                            <Link href={ROUTES.admin.damagesOfUser(customerId)}>
                                 <AlertTriangle className="h-4 w-4" />
                                 View Damages
                             </Link>

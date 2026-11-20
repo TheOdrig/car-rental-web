@@ -1,6 +1,8 @@
 import { isPaymentSecured } from '@/entities/payment';
 import {
     isAfterRentalEnd,
+    isAwaitingPickup,
+    isPenaltyHistoryStatus,
     isBeforeRentalStart,
     PICKUP_AFTER_END_MESSAGE,
     PICKUP_BEFORE_START_MESSAGE,
@@ -49,25 +51,19 @@ export const REJECT_COPY = {
     dismiss: 'Cancel',
 } as const;
 
-const NO_PAYMENT_STATUSES = new Set(['PENDING', 'CANCELLED', 'UNKNOWN']);
-
-export function isPaymentExpected(status: string | undefined): boolean {
-    return !!status && !NO_PAYMENT_STATUSES.has(status);
-}
-
 export function hasPenalty(rental: Pick<RentalDetailResponse, 'penaltyAmount'>): boolean {
     return (rental.penaltyAmount ?? 0) > 0;
 }
 
 export function shouldShowPenaltyHistory(rental: Pick<RentalDetailResponse, 'penaltyAmount' | 'status'>): boolean {
-    return !hasPenalty(rental) && ['COMPLETED', 'ACTIVE'].includes(rental.status);
+    return !hasPenalty(rental) && isPenaltyHistoryStatus(rental.status);
 }
 
 export function getPickupBlockedReason(
     rental: Pick<RentalDetailResponse, 'status' | 'startDate' | 'endDate'>,
     payment: { isLoading: boolean; status: Parameters<typeof isPaymentSecured>[0] },
 ): string | undefined {
-    if (rental.status !== 'CONFIRMED') return undefined;
+    if (!isAwaitingPickup(rental.status)) return undefined;
     if (isBeforeRentalStart(rental.startDate)) return PICKUP_BEFORE_START_MESSAGE;
     if (isAfterRentalEnd(rental.endDate)) return PICKUP_AFTER_END_MESSAGE;
     if (!payment.isLoading && !isPaymentSecured(payment.status)) return PICKUP_PAYMENT_REQUIRED_MESSAGE;

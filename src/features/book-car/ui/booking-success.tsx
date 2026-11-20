@@ -7,6 +7,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { DocumentTitle } from '@/shared/ui/document-title';
 import { formatDate, formatRentalReference } from '@/shared/lib';
 import { useRental } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 function formatBookingReference(ref: string): string {
     const numericId = parseInt(ref, 10);
@@ -108,12 +109,12 @@ export function BookingSuccess({
 
                         <div className="flex flex-col sm:flex-row gap-3">
                             <Button asChild className="flex-1">
-                                <Link href={`/rentals/${referenceNumber}`}>
+                                <Link href={ROUTES.rentals.detail(referenceNumber)}>
                                     View Booking Details
                                 </Link>
                             </Button>
                             <Button variant="outline" asChild className="flex-1">
-                                <Link href="/">
+                                <Link href={ROUTES.home}>
                                     Return to Home
                                 </Link>
                             </Button>
@@ -150,7 +151,7 @@ export function BookingSuccessLoader({ referenceNumber }: { referenceNumber: str
                         This booking does not exist or belongs to another account. Your requests are listed on your rentals page.
                     </p>
                     <Button asChild>
-                        <Link href="/rentals">My Rentals</Link>
+                        <Link href={ROUTES.rentals.list}>My Rentals</Link>
                     </Button>
                 </div>
             </div>

@@ -10,6 +10,7 @@ import type { PendingItem } from '@/entities/rental';
 import { RentalStatusBadge } from '@/entities/rental';
 import type { PendingRentalsType } from './format';
 import { PendingRentalAction, type PendingAction } from './pending-rental-action';
+import { ROUTES } from '@/shared/config/routes';
 
 interface PendingRentalRowProps {
     item: PendingItem;
@@ -35,7 +36,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     </div>
                     <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
                         {item.customerId && item.customerId > 0 ? (
-                            <Link href={`/admin/users/${item.customerId}`} className={LINK_CLASS}>
+                            <Link href={ROUTES.admin.user(item.customerId)} className={LINK_CLASS}>
                                 {item.customerName}
                             </Link>
                         ) : (
@@ -63,11 +64,11 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                         </div>
                     )}
                     <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
-                        <Link href={`/admin/fleet/${item.carId}`} className={LINK_CLASS}>
+                        <Link href={ROUTES.admin.fleetDetail(item.carId)} className={LINK_CLASS}>
                             {item.carBrand} {item.carModel}
                         </Link>
                         <Link
-                            href={`/admin/rentals/${item.rentalId}`}
+                            href={ROUTES.admin.rental(item.rentalId)}
                             className="flex min-h-6 items-center text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
                         >
                             {item.licensePlate} • {formatRentalReference(item.rentalId)}

@@ -16,24 +16,25 @@ import {
 } from '@/shared/ui/sheet';
 import { cn } from '@/shared/lib';
 import React from "react";
+import { ROUTES } from '@/shared/config/routes';
 
 interface MobileNavProps {
     trigger: React.ReactNode;
 }
 
 const publicLinks = [
-    { href: '/', label: 'Home', icon: Home },
-    { href: '/cars', label: 'Browse Cars', icon: Car },
+    { href: ROUTES.home, label: 'Home', icon: Home },
+    { href: ROUTES.cars.list, label: 'Browse Cars', icon: Car },
 ];
 
 const userLinks = [
-    { href: '/rentals', label: 'My Rentals', icon: ClipboardList },
-    { href: '/damages', label: 'My Damages', icon: Wrench },
-    { href: '/settings/profile', label: 'Profile', icon: User },
+    { href: ROUTES.rentals.list, label: 'My Rentals', icon: ClipboardList },
+    { href: ROUTES.damages.list, label: 'My Damages', icon: Wrench },
+    { href: ROUTES.settings.profile, label: 'Profile', icon: User },
 ];
 
 const adminLinks = [
-    { href: '/admin/dashboard', label: 'Admin Dashboard', icon: LayoutDashboard },
+    { href: ROUTES.admin.dashboard, label: 'Admin Dashboard', icon: LayoutDashboard },
 ];
 
 export function MobileNav({ trigger }: MobileNavProps) {
@@ -171,7 +172,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                         <div className="flex flex-col gap-2">
                             <SheetClose asChild>
                                 <Button variant="outline" asChild className="w-full">
-                                    <Link href="/login" className="flex items-center gap-2">
+                                    <Link href={ROUTES.login} className="flex items-center gap-2">
                                         <LogIn className="h-4 w-4" />
                                         Log In
                                     </Link>
@@ -179,7 +180,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                             </SheetClose>
                             <SheetClose asChild>
                                 <Button asChild className="w-full">
-                                    <Link href="/register" className="flex items-center gap-2">
+                                    <Link href={ROUTES.register} className="flex items-center gap-2">
                                         <UserPlus className="h-4 w-4" />
                                         Sign Up
                                     </Link>

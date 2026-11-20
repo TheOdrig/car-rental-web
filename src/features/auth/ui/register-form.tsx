@@ -14,6 +14,7 @@ import { FormError } from './form-error';
 import { focusFirstInvalid } from '../lib/focus-first-invalid';
 import { PasswordStrengthIndicator } from './password-strength-indicator';
 import { getPasswordMaxError, normalizeEmail, validateEmail, validatePassword, validatePasswordMatch } from '@/shared/lib';
+import { ROUTES } from '@/shared/config/routes';
 
 interface RegisterFormProps {
     className?: string;
@@ -90,7 +91,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                 firstName: formData.firstName || undefined,
                 lastName: formData.lastName || undefined,
             });
-            router.push('/');
+            router.push(ROUTES.home);
         } catch (error) {
             setFormError(getFormErrorMessage(error, 'Registration failed. Please try again.'));
         }
@@ -294,7 +295,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     <label htmlFor="terms" className="text-foreground">
                         I agree to the{' '}
                         <Link
-                            href="/terms"
+                            href={ROUTES.terms}
                             target="_blank"
                             rel="noopener"
                             className="text-primary hover:underline"
@@ -303,7 +304,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                         </Link>{' '}
                         and{' '}
                         <Link
-                            href="/privacy"
+                            href={ROUTES.privacy}
                             target="_blank"
                             rel="noopener"
                             className="text-primary hover:underline"
@@ -337,7 +338,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                     Already have an account?{' '}
-                    <Link href="/login" className="font-bold text-primary hover:underline">
+                    <Link href={ROUTES.login} className="font-bold text-primary hover:underline">
                         Log In
                     </Link>
                 </p>

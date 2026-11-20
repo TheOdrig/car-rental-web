@@ -10,6 +10,7 @@ import { useResetPassword } from '@/features/auth';
 import { isRateLimited, rateLimitMessage } from '@/shared/api';
 import { cn, describeResetLinkError, getPasswordMaxError } from '@/shared/lib';
 import { FormError } from '@/features/auth';
+import { ROUTES } from '@/shared/config/routes';
 
 interface ResetPasswordFormProps {
     token: string;
@@ -88,7 +89,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                 <Button
                     type="button"
                     className="w-full h-12 font-bold"
-                    onClick={() => router.push('/login')}
+                    onClick={() => router.push(ROUTES.login)}
                 >
                     Continue to Login
                 </Button>

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { CreditCard, Shield } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/shared/ui/card';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = { title: 'Payment Methods' };
 
@@ -27,7 +28,7 @@ export default function PaymentMethodsPage() {
                         hold is cancelled you can start a new one with Pay again.
                     </p>
                     <Button asChild>
-                        <Link href="/rentals">Go to my rentals</Link>
+                        <Link href={ROUTES.rentals.list}>Go to my rentals</Link>
                     </Button>
                 </CardContent>
             </Card>

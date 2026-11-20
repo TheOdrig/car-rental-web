@@ -6,6 +6,7 @@ import { cn } from '@/shared/lib';
 import { Button } from '@/shared/ui/button';
 import { RentalCard, RentalCardSkeleton } from './rental-card';
 import type { Rental, RentalTab } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 interface RentalListProps {
     rentals: Rental[];
@@ -120,7 +121,7 @@ export function RentalListEmpty({
             <p className="mb-6 max-w-sm text-muted-foreground">{displayDescription}</p>
             {showBrowseLink && tab === 'all' && (
                 <Button asChild>
-                    <Link href="/cars">Browse Cars</Link>
+                    <Link href={ROUTES.cars.list}>Browse Cars</Link>
                 </Button>
             )}
         </div>

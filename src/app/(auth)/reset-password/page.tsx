@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ResetPasswordForm } from '@/features/auth';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Reset Password',
@@ -29,13 +30,13 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
                 <div className="text-center space-y-4">
                     <p className="text-sm text-muted-foreground">
                         Need a new reset link?{' '}
-                        <Link href="/forgot-password" className="font-bold text-primary hover:underline">
+                        <Link href={ROUTES.forgotPassword} className="font-bold text-primary hover:underline">
                             Request password reset
                         </Link>
                     </p>
                     <p className="text-sm text-muted-foreground">
                         Or{' '}
-                        <Link href="/login" className="font-bold text-primary hover:underline">
+                        <Link href={ROUTES.login} className="font-bold text-primary hover:underline">
                             Back to login
                         </Link>
                     </p>
@@ -60,7 +61,7 @@ export default async function ResetPasswordPage({ searchParams }: ResetPasswordP
             <div className="text-center">
                 <p className="text-sm text-muted-foreground">
                     Remember your password?{' '}
-                    <Link href="/login" className="font-bold text-primary hover:underline">
+                    <Link href={ROUTES.login} className="font-bold text-primary hover:underline">
                         Back to login
                     </Link>
                 </p>

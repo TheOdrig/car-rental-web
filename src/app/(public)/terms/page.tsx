@@ -2,11 +2,12 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { pageMetadata } from '@/shared/lib';
 import { PageHeader } from '@/shared/ui/page-header';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = pageMetadata({
     title: 'Terms of Service',
     description: 'Terms of service for the Car Rental portfolio demo.',
-    path: '/terms',
+    path: ROUTES.terms,
 });
 
 export default function TermsPage() {
@@ -52,7 +53,7 @@ export default function TermsPage() {
             </div>
 
             <p className="mt-10 text-sm text-muted-foreground">
-                See also the <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
+                See also the <Link href={ROUTES.privacy} className="text-primary hover:underline">Privacy Policy</Link>.
             </p>
         </div>
     );

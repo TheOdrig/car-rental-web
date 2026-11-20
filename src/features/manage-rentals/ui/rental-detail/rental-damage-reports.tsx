@@ -5,6 +5,7 @@ import { AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { formatDate } from '@/shared/lib';
 import { DamageStatusBadge, useMyDamages } from '@/entities/damage';
+import { ROUTES } from '@/shared/config/routes';
 
 interface RentalDamageReportsProps {
     rentalId: number;
@@ -30,7 +31,7 @@ export function RentalDamageReports({ rentalId }: RentalDamageReportsProps) {
                 {reports.map((damage) => (
                     <Link
                         key={damage.id}
-                        href={`/damages/${damage.id}`}
+                        href={ROUTES.damages.detail(damage.id)}
                         className="flex items-center justify-between gap-3 rounded-md border p-3 hover:bg-muted/50"
                     >
                         <span className="min-w-0 text-sm">

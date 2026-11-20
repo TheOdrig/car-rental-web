@@ -5,6 +5,7 @@ import { ArrowRight } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { useCars } from '@/entities/car';
 import { HeroSection, FeaturedCarousel, PromotionalBanners } from '@/widgets/home';
+import { ROUTES } from '@/shared/config/routes';
 
 export function HomeContent() {
     const { data } = useCars({ carStatusType: 'AVAILABLE' }, 0);
@@ -29,7 +30,7 @@ export function HomeContent() {
                         </p>
                     </div>
                     <Button asChild>
-                        <Link href="/cars">
+                        <Link href={ROUTES.cars.list}>
                             Browse all cars
                             <ArrowRight className="ml-2 h-4 w-4" aria-hidden="true" />
                         </Link>

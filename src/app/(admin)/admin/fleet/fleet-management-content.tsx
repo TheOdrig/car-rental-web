@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 import { CAR_OCCUPANCIES, CAR_OCCUPANCY_LABELS, CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, useFilterOptions, type CarOccupancy, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
 import { PAGE_SIZE } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 type StatusFilter = 'all' | CarStatus;
 type OccupancyFilter = 'all' | CarOccupancy;
@@ -96,7 +97,7 @@ export function FleetManagementContent() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
                             { label: 'Fleet Management' },
                         ]}
                     />
@@ -126,7 +127,7 @@ export function FleetManagementContent() {
                         </Button>
 
                         <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" asChild>
-                            <Link href="/admin/fleet/new">
+                            <Link href={ROUTES.admin.fleetNew}>
                                 <Plus className="h-4 w-4" aria-hidden="true" />
                                 Add New Car
                             </Link>

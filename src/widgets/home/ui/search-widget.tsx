@@ -20,6 +20,7 @@ import {
 import { Calendar } from '@/shared/ui/calendar';
 import { cn } from '@/shared/lib';
 import { useFilterOptions } from '@/entities/car';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 interface SearchWidgetProps {
     className?: string;
@@ -67,7 +68,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
         }
 
         const queryString = params.toString();
-        router.push(queryString ? `/cars?${queryString}` : '/cars');
+        router.push(withQuery(ROUTES.cars.list, queryString));
     };
 
     return (

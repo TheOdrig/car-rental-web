@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import Link from 'next/link';
 import { Button } from '@/shared/ui/button';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function PublicError({
     error,
@@ -24,7 +25,7 @@ export default function PublicError({
             <div className="flex gap-4 justify-center">
                 <Button onClick={() => reset()}>Try again</Button>
                 <Button variant="outline" asChild>
-                    <Link href="/">Go home</Link>
+                    <Link href={ROUTES.home}>Go home</Link>
                 </Button>
             </div>
         </div>

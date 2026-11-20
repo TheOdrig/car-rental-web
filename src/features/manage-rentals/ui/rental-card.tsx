@@ -23,6 +23,7 @@ import {
     RentalStatus,
 } from '@/entities/rental';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { ROUTES } from '@/shared/config/routes';
 
 interface RentalCardProps {
     rental: Rental;
@@ -108,7 +109,7 @@ export const RentalCard = memo(function RentalCard({
     const actions = showActions ? getActionButtons(status, { paymentOpensOn, paymentStatus: rental.paymentStatus }) : [];
 
     const referenceId = formatRentalReference(id);
-    const href = onClick ? undefined : `/rentals/${rental.id}`;
+    const href = onClick ? undefined : ROUTES.rentals.detail(rental.id);
 
     if (variant === 'detailed') {
         const cardContent = (

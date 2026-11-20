@@ -1,12 +1,15 @@
+import { ROUTES } from '@/shared/config/routes';
+
+
 export type RouteAccess = 'public' | 'guest-only' | 'auth-flow' | 'protected' | 'admin' | 'admin-api';
 
-const ADMIN_PAGE_ROUTES = ['/admin'];
+const ADMIN_PAGE_ROUTES = [ROUTES.admin.root];
 const ADMIN_API_ROUTES = ['/api/admin'];
-const GUEST_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
-const AUTH_FLOW_ROUTES = ['/reset-password'];
-const PROTECTED_ROUTES = ['/rentals', '/damages', '/settings', '/dashboard', '/checkout', '/booking'];
-const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api', '/terms', '/privacy'];
-const CHROMELESS_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password', '/admin'];
+const GUEST_ONLY_ROUTES = [ROUTES.login, ROUTES.register, ROUTES.forgotPassword];
+const AUTH_FLOW_ROUTES = [ROUTES.resetPassword];
+const PROTECTED_ROUTES = [ROUTES.rentals.list, ROUTES.damages.list, ROUTES.settings.root, ROUTES.dashboard, ROUTES.checkout, ROUTES.booking.root];
+const PUBLIC_ROUTES = [ROUTES.search, ROUTES.cars.list, ROUTES.forbidden, '/api', ROUTES.terms, ROUTES.privacy];
+const CHROMELESS_ROUTES = [ROUTES.login, ROUTES.register, ROUTES.forgotPassword, ROUTES.resetPassword, ROUTES.admin.root];
 
 function matches(pathname: string, route: string): boolean {
     return pathname === route || pathname.startsWith(`${route}/`);
@@ -21,7 +24,7 @@ export function isChromelessRoute(pathname: string | null | undefined): boolean 
 }
 
 export function classifyRoute(pathname: string): RouteAccess {
-    if (pathname === '/') return 'public';
+    if (pathname === ROUTES.home) return 'public';
     if (matchesAny(pathname, ADMIN_API_ROUTES)) return 'admin-api';
     if (matchesAny(pathname, ADMIN_PAGE_ROUTES)) return 'admin';
     if (matchesAny(pathname, GUEST_ONLY_ROUTES)) return 'guest-only';

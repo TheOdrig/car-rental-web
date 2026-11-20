@@ -11,6 +11,7 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { useCurrency, mapCurrency } from '@/entities/currency/@x/car';
 import { type Car, type AvailableCar } from '@/entities/car';
 import { CarStatusBadge } from './car-status-badge';
+import { ROUTES } from '@/shared/config/routes';
 
 interface CarCardProps {
     car: Car | AvailableCar;
@@ -142,7 +143,7 @@ export const CarCard = memo(function CarCard({
 
     if (!onSelect) {
         return (
-            <Link href={`/cars/${car.id}`} className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+            <Link href={ROUTES.cars.detail(car.id)} className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                 {cardContent}
             </Link>
         );

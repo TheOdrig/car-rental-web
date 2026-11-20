@@ -6,6 +6,7 @@ import { CheckoutForm } from '@/features/book-car';
 import { CheckoutSkeleton } from '@/features/book-car';
 import { rentalDatesSchema } from '@/entities/rental';
 import { PageHeader } from '@/shared/ui/page-header';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     title: 'Checkout',
@@ -36,7 +37,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         Please select a car and dates to proceed with checkout.
                     </p>
                     <Link
-                        href="/cars"
+                        href={ROUTES.cars.list}
                         className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
                     >
                         Browse Cars
@@ -58,7 +59,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         {dateCheck.error.issues[0]?.message}
                     </p>
                     <Link
-                        href={`/cars/${carId}`}
+                        href={ROUTES.cars.detail(carId)}
                         className="inline-flex items-center px-6 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors"
                     >
                         Choose Different Dates
@@ -74,7 +75,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                 <nav aria-label="Breadcrumb" className="flex mb-8 text-sm font-medium text-muted-foreground">
                     <ol className="flex items-center space-x-2">
                         <li>
-                            <Link href="/cars" className="hover:text-primary transition-colors">
+                            <Link href={ROUTES.cars.list} className="hover:text-primary transition-colors">
                                 Select Car
                             </Link>
                         </li>
@@ -83,7 +84,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         </li>
                         <li>
                             <Link
-                                href={`/cars/${carId}`}
+                                href={ROUTES.cars.detail(carId)}
                                 className="hover:text-primary transition-colors"
                             >
                                 Details

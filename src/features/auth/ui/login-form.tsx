@@ -15,13 +15,14 @@ import { focusFirstInvalid } from '../lib/focus-first-invalid';
 import { validateEmail } from '@/shared/lib';
 import { determineValidationState } from '@/shared/lib';
 import type { ValidationState } from '@/shared/types';
+import { ROUTES } from '@/shared/config/routes';
 
 interface LoginFormProps {
     callbackUrl?: string;
     className?: string;
 }
 
-export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
+export function LoginForm({ callbackUrl = ROUTES.home, className }: LoginFormProps) {
     const router = useRouter();
     const loginMutation = useLogin();
 
@@ -102,7 +103,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
             });
             const isAdmin = result?.principal?.roles?.includes('ADMIN') ?? false;
             const target = safeRedirectPath(callbackUrl);
-            router.push(isAdmin && target === '/' ? '/admin/dashboard' : target);
+            router.push(isAdmin && target === ROUTES.home ? ROUTES.admin.dashboard : target);
         } catch (error) {
             setFormError(getFormErrorMessage(error, 'Invalid credentials. Please try again.'));
         }
@@ -195,7 +196,7 @@ export function LoginForm({ callbackUrl = '/', className }: LoginFormProps) {
 
             <div className="flex justify-end">
                 <Link
-                    href="/forgot-password"
+                    href={ROUTES.forgotPassword}
                     className="text-sm font-semibold text-primary hover:text-primary/80 hover:underline"
                 >
                     Forgot Password?

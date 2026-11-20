@@ -4,6 +4,7 @@ import type { ReactNode } from 'react';
 import { AdminSidebar } from '@/features/admin';
 import { getSession, isAdminSession } from '@/shared/server';
 import { AdminTopBar } from './admin-top-bar';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = {
     robots: { index: false, follow: false },
@@ -17,11 +18,11 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     const session = await getSession();
 
     if (!session) {
-        redirect('/login');
+        redirect(ROUTES.login);
     }
 
     if (!isAdminSession(session)) {
-        redirect('/forbidden');
+        redirect(ROUTES.forbidden);
     }
 
     return (

@@ -10,6 +10,7 @@ import { CopyButton } from '@/shared/ui/copy-button';
 import { StatCard } from '@/shared/ui/stat-card';
 import { formatAmountsByCurrency, personDisplayName, personInitials } from '@/shared/lib';
 import type { RentalCustomerInfo } from '@/entities/rental';
+import { ROUTES } from '@/shared/config/routes';
 
 interface CustomerInfoCardProps {
     customer: RentalCustomerInfo;
@@ -30,7 +31,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                     </CardTitle>
                     {customer.id > 0 && (
                         <Button variant="ghost" size="sm" asChild>
-                            <Link href={`/admin/users/${customer.id}`}>
+                            <Link href={ROUTES.admin.user(customer.id)}>
                                 <ExternalLink className="h-4 w-4 mr-1" />
                                 View Profile
                             </Link>

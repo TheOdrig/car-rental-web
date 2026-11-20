@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { VehicleDetailContent } from './vehicle-detail-content';
+import { ROUTES } from '@/shared/config/routes';
 
 export const metadata: Metadata = { title: 'Vehicle Details' };
 
@@ -16,7 +17,7 @@ export default async function VehicleDetailPage({ params }: PageProps) {
     const { id } = await params;
 
     if (!isNumericId(id)) {
-        redirect('/admin/fleet');
+        redirect(ROUTES.admin.fleet);
     }
 
     return <VehicleDetailContent id={id} />;

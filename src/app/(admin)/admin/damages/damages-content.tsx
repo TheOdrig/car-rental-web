@@ -14,6 +14,7 @@ import { PageHeader } from '@/shared/ui/page-header';
 import { toast } from 'sonner';
 import { DAMAGE_CATEGORIES, DAMAGE_SEVERITIES, DAMAGE_STATUSES, type DamageSearchFilters } from '@/entities/damage';
 import { pickCode } from '@/shared/lib';
+import { ROUTES, withQuery } from '@/shared/config/routes';
 
 function parsePositiveInt(value: string | null | undefined): number | undefined {
     if (!value || !/^[0-9]+$/.test(value)) return undefined;
@@ -52,7 +53,7 @@ function DamagesList() {
     const handlePageChange = useCallback((newPage: number) => {
         const params = new URLSearchParams(searchParams?.toString());
         params.set('page', String(newPage));
-        router.push(`/admin/damages?${params.toString()}`);
+        router.push(withQuery(ROUTES.admin.damages, params.toString()));
     }, [router, searchParams]);
 
     return (
@@ -62,7 +63,7 @@ function DamagesList() {
                 breadcrumb={
                     <Breadcrumb
                         items={[
-                            { label: 'Dashboard', href: '/admin/dashboard' },
+                            { label: 'Dashboard', href: ROUTES.admin.dashboard },
                             { label: 'Damage Reports' },
                         ]}
                     />
@@ -81,7 +82,7 @@ function DamagesList() {
                             <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} aria-hidden="true" />
                         </Button>
                         <Button variant="outline" size="sm" asChild>
-                            <Link href="/admin/damages/statistics">
+                            <Link href={ROUTES.admin.damageStatistics}>
                                 <BarChart3 className="h-4 w-4" />
                                 View Statistics
                             </Link>
@@ -98,7 +99,7 @@ function DamagesList() {
                             : `Showing damages for vehicle #${filters.carId}.`}
                     </span>
                     <Button variant="link" size="sm" asChild>
-                        <Link href="/admin/damages">Show all damages</Link>
+                        <Link href={ROUTES.admin.damages}>Show all damages</Link>
                     </Button>
                 </div>
             )}

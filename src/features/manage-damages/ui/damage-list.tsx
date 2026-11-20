@@ -6,6 +6,7 @@ import { DamageDisputeForm } from './damage-dispute-form';
 import type { DamageReport } from '@/entities/damage';
 import { AlertTriangle } from 'lucide-react';
 import { EmptyState } from '@/shared/ui/empty-state';
+import { ROUTES } from '@/shared/config/routes';
 
 interface DamageListProps {
     damages: DamageReport[];
@@ -37,7 +38,7 @@ export function DamageList({ damages, isLoading }: DamageListProps) {
                 <DamageCard
                     key={damage.id}
                     damage={damage}
-                    href={`/damages/${damage.id}`}
+                    href={ROUTES.damages.detail(damage.id)}
                     onDispute={setDisputing}
                 />
             ))}
