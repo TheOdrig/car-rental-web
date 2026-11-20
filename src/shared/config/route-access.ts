@@ -1,6 +1,5 @@
 import { ROUTES } from '@/shared/config/routes';
 
-
 export type RouteAccess = 'public' | 'guest-only' | 'auth-flow' | 'protected' | 'admin' | 'admin-api';
 
 const ADMIN_PAGE_ROUTES = [ROUTES.admin.root];

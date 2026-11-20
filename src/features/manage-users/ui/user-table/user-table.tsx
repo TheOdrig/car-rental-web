@@ -23,7 +23,6 @@ interface UserTableProps {
     className?: string;
 }
 
-
 export const UserTable = memo(function UserTable({
     searchQuery = '',
     roleFilter = 'all',

@@ -30,7 +30,6 @@ import type {
     Role,
 } from '@/entities/user';
 
-
 export type {
     FleetStatus,
     VehicleStatistics,

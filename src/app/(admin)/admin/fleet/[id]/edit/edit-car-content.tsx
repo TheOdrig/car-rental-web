@@ -33,9 +33,7 @@ export function EditCarContent() {
     const parsedId = useNumericParam(params.id);
     const carId = Number.isNaN(parsedId) ? null : parsedId;
 
-
     const { data: car, isLoading: isLoadingCar } = useVehicleDetail(carId || 0);
-
 
     const updateCarMutation = useUpdateCar();
 

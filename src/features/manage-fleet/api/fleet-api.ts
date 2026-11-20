@@ -4,18 +4,12 @@ import { keepPreviousData, useQuery, useMutation, useQueryClient } from '@tansta
 import { clientGet, clientPost, clientDelete, getApiErrorMessage } from '@/shared/api';
 import { showToast } from '@/shared/lib';
 import { toAdminRentalStatus, type AdminRentalStatus } from '@/entities/rental';
-import { carKeys, type AdminCar, type VehicleDetailResponse } from '@/entities/car';
+import { carKeys, fleetKeys, type AdminCar, type FleetFilters, type VehicleDetailResponse } from '@/entities/car';
 import type { PageResponse, CurrencyType } from '@/shared/types';
-import { fleetKeys } from './fleet-keys';
-import type { FleetFilters } from './fleet-keys';
 import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
 import type { Schemas, WithRequired } from '@/shared/api/contract';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 import { withQuery } from '@/shared/lib/url';
-
-
-
-
 
 export interface CreateCarRequest {
     brand: string;
@@ -53,10 +47,6 @@ export interface RentalHistoryItem {
 }
 
 export type PaginatedResponse<T> = PageResponse<T>;
-
-
-
-
 
 async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<AdminCar>> {
     const params = new URLSearchParams();
@@ -170,10 +160,6 @@ async function fetchVehicleRentalHistory(id: number, page: number): Promise<Pagi
         })),
     };
 }
-
-
-
-
 
 export function useFleetList(filters?: FleetFilters) {
     return useQuery({

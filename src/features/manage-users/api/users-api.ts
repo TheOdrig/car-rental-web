@@ -24,10 +24,6 @@ import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 import { withQuery } from '@/shared/lib/url';
 
-
-
-
-
 async function fetchUserList(filters?: UserFilters): Promise<PageResponse<User>> {
     const params = new URLSearchParams();
 
@@ -116,10 +112,6 @@ async function unbanUser(params: UnbanUserRequest): Promise<User> {
 async function addAdminNote(params: AddNoteRequest): Promise<AdminNote> {
     return clientPost<AdminNote>(ENDPOINTS.admin.userNotes(params.userId), { text: params.text });
 }
-
-
-
-
 
 export function useUserList(filters?: UserFilters) {
     return useQuery({

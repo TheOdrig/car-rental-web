@@ -125,8 +125,7 @@ async function fetchCarCalendar(id: number, month?: string): Promise<CarAvailabi
 
         const data = await clientGet<CarAvailabilityCalendar>(url);
         return data ?? null;
-    } catch (error) {
-        console.error('Error fetching car calendar:', error);
+    } catch {
         return null;
     }
 }

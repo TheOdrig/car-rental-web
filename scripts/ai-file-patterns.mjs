@@ -1,17 +1,21 @@
-const toolFolders = ['kiro', 'agent', 'agents', 'claude', 'codex', 'cursor', 'windsurf', 'obsidian'];
+const toolFolders = ['kiro', 'agent', 'agents', 'claude', 'codex', 'cursor', 'windsurf', 'obsidian', 'gemini'];
 const rootFolders = ['kiro.steering', 'specs', 'UIdesign'];
 const instructionFiles = ['AGENTS.md', 'CLAUDE.md', 'GEMINI.md', 'CHANGELOG.md', 'CONTRIBUTING.md', '.cursorrules', '.windsurfrules'];
 
 function escapeDots(value) {
-  return value.split('.').join('\.');
+  return value.split('.').join('\\.');
 }
 
 const forbidden = [
-  ...toolFolders.map((name) => new RegExp(`(^|/)\.${name}/`, 'i')),
+  ...toolFolders.map((name) => new RegExp(`(^|/)\\.${name}/`, 'i')),
   ...rootFolders.map((name) => new RegExp(`(^|/)${escapeDots(name)}/`, 'i')),
   ...instructionFiles.map((name) => new RegExp(`(^|/)${escapeDots(name)}$`, 'i')),
   /(^|\/)\.aider[^/]*(\/|$)/i,
   /(^|\/)\.github\/copilot-instructions\.md$/i,
+  /(^|\/)\.github\/instructions\//i,
+  /(^|\/)\.clinerules(\/|$)/i,
+  /^prompts\//i,
+  /(^|\/)steering\//i,
   /^notes\//i,
   /Zone\.Identifier$/i,
 ];

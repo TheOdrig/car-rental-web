@@ -33,7 +33,6 @@ import { DEFAULT_CURRENCY, PAGE_SIZE } from '@/shared/config/constants';
 import { ROUTES } from '@/shared/config/routes';
 import { useUrlState } from '@/shared/lib/use-url-state';
 
-
 export function MyRentalsContent() {
     const router = useRouter();
     const pathname = usePathname();

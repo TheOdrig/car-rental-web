@@ -63,3 +63,4 @@ export {
     carKeys
 } from './api/use-cars';
 export { usePricingPreview, pricingKeys } from './api/use-pricing';
+export { fleetKeys, type FleetFilters } from './api/fleet-keys';

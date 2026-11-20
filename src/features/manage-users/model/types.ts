@@ -3,19 +3,11 @@ import type { PageResponse } from '@/shared/types';
 import type { AdminRentalStatus } from '@/entities/rental';
 import type { AccountStatusType } from '@/entities/user';
 
-
-
-
-
 export type UserRole = 'ADMIN' | 'CUSTOMER' | 'SUPPORT';
 export type UserStatus = 'ACTIVE' | 'PENDING' | 'BANNED';
 export type DocumentVerificationStatus = 'YES' | 'NO' | 'PENDING';
 export type Role = 'USER' | 'ADMIN';
 export type { AdminRentalStatus, AccountStatusType };
-
-
-
-
 
 export type User = Omit<
     WithRequired<Schemas['AdminUserListItem'], 'id' | 'email' | 'createdAt'>,
@@ -26,10 +18,6 @@ export type User = Omit<
     isEmailVerified: boolean;
 };
 
-
-
-
-
 export type UserStats = Required<Schemas['UserStatsResponse']>;
 
 export type {
@@ -39,10 +27,6 @@ export type {
     AdminNote,
     CustomerDetailResponse,
 } from '@/entities/user';
-
-
-
-
 
 export interface RentalHistoryItem {
     id: number;
@@ -59,10 +43,6 @@ export interface RentalHistoryItem {
 }
 
 export type PaginatedResponse<T> = PageResponse<T>;
-
-
-
-
 
 export type BanUserRequest = Schemas['BanUserRequest'] & { userId: number; displayName?: string };
 

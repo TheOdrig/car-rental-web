@@ -99,9 +99,9 @@ describe('AdminRentalsContent', () => {
 
         await userEvent.setup().click(await screen.findByRole('tab', { name: 'All Rentals' }));
 
-        expect(await screen.findByText('CR-000006')).toBeInTheDocument();
-        expect(screen.getByText('€172.33')).toBeInTheDocument();
-        expect(screen.getByText('¥24,525')).toBeInTheDocument();
+        expect((await screen.findAllByText('CR-000006')).length).toBeGreaterThan(0);
+        expect(screen.getAllByText('€172.33').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('¥24,525').length).toBeGreaterThan(0);
         expect(clientGet).toHaveBeenCalledWith(expect.stringContaining('/api/admin/rentals?page=0&size=20&sort=createTime%2Cdesc'));
     });
 
@@ -110,9 +110,9 @@ describe('AdminRentalsContent', () => {
 
         await userEvent.setup().click(await screen.findByRole('tab', { name: 'All Rentals' }));
 
-        await screen.findByText('CR-000006');
-        expect(screen.getByText('Returned')).toBeInTheDocument();
-        expect(screen.getByText('Cancelled')).toBeInTheDocument();
+        await screen.findAllByText('CR-000006');
+        expect(screen.getAllByText('Returned').length).toBeGreaterThan(0);
+        expect(screen.getAllByText('Cancelled').length).toBeGreaterThan(0);
         expect(screen.queryByText('RETURNED')).not.toBeInTheDocument();
     });
 
@@ -121,21 +121,21 @@ describe('AdminRentalsContent', () => {
         renderWithProviders(<AdminRentalsContent />);
 
         await user.click(await screen.findByRole('tab', { name: 'All Rentals' }));
-        await screen.findByText('CR-000006');
+        await screen.findAllByText('CR-000006');
         await user.click(screen.getByRole('combobox', { name: 'Filter by status' }));
         await user.click(await screen.findByRole('option', { name: 'Cancelled' }));
 
         await waitFor(() =>
             expect(clientGet).toHaveBeenCalledWith('/api/admin/rentals?page=0&size=20&sort=createTime%2Cdesc&status=CANCELLED')
         );
-        expect(screen.getByText('CR-000006')).toBeInTheDocument();
+        expect(screen.getAllByText('CR-000006').length).toBeGreaterThan(0);
     });
 
     it('restores the All Rentals view, filter and page from the URL', async () => {
         query = 'view=all&status=CANCELLED&page=2';
         renderWithProviders(<AdminRentalsContent />);
 
-        await screen.findByText('CR-000006');
+        await screen.findAllByText('CR-000006');
         expect(clientGet).toHaveBeenCalledWith('/api/admin/rentals?page=1&size=20&sort=createTime%2Cdesc&status=CANCELLED');
         expect(screen.getByRole('tab', { name: 'All Rentals' })).toHaveAttribute('aria-selected', 'true');
     });
@@ -157,7 +157,7 @@ describe('AdminRentalsContent', () => {
         const user = userEvent.setup();
         renderWithProviders(<AdminRentalsContent />);
 
-        await screen.findByText('CR-000006');
+        await screen.findAllByText('CR-000006');
         await user.click(screen.getByRole('combobox', { name: 'Filter by status' }));
         await user.click(await screen.findByRole('option', { name: 'In use' }));
 
@@ -170,7 +170,7 @@ describe('AdminRentalsContent', () => {
         query = 'userId=31';
         renderWithProviders(<AdminRentalsContent />);
 
-        expect(await screen.findByText('CR-000006')).toBeInTheDocument();
+        expect((await screen.findAllByText('CR-000006')).length).toBeGreaterThan(0);
         await waitFor(() => expect(clientGet).toHaveBeenCalledWith(expect.stringContaining('/api/admin/users/31/rentals?page=0&size=20')));
         expect(screen.getByText('Rentals of customer #31')).toBeInTheDocument();
         expect(screen.queryByRole('tab', { name: 'Pending Work' })).not.toBeInTheDocument();

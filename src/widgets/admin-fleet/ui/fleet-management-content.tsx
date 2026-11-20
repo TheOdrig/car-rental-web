@@ -62,18 +62,13 @@ export function FleetManagementContent() {
     const deleteCarMutation = useDeleteCar();
     const updateStatusMutation = useChangeCarStatus();
 
-
     const handleRefresh = async () => {
-        try {
-            await Promise.all([
-                refetchFleet(),
-                refetchCars(),
-            ]);
-            toast.success('Fleet data refreshed');
-        } catch (error) {
-            console.error('[Fleet] Refresh failed:', error);
+        const results = await Promise.all([refetchFleet(), refetchCars()]);
+        if (results.some((result) => result.isError)) {
             toast.error('Failed to refresh');
+            return;
         }
+        toast.success('Fleet data refreshed');
     };
 
     const handleDeleteCar = (carId: number) => {

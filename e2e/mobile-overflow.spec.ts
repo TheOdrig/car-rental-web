@@ -34,7 +34,7 @@ interface SmallTarget {
 }
 
 function findSmallTargets(args: { min: number; minTextLinkWidth: number }): SmallTarget[] {
-    const selector = 'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=tab], [role=checkbox], [role=switch], [role=combobox]';
+    const selector = 'button, a[href], input:not([type=hidden]), select, textarea, [role=button], [role=tab], [role=checkbox], [role=switch], [role=combobox], [role=slider]';
     const small: SmallTarget[] = [];
 
     function visible(element: Element, rect: DOMRect): boolean {

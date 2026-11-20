@@ -2,12 +2,10 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, isApiError } from '@/shared/api';
-import { adminKeys } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 import { showToast, toastMessages } from '@/shared/lib';
-import { carKeys } from '@/entities/car';
-import { getAdminActionErrorMessage, RENTAL_VALIDATION_FAILED_CODE, rentalKeys, type Rental, type RentalStatus } from '@/entities/rental';
-import { processKeys } from './process-keys';
+import { carKeys, fleetKeys } from '@/entities/car';
+import { adminKeys, getAdminActionErrorMessage, processKeys, RENTAL_VALIDATION_FAILED_CODE, rentalKeys, type Rental, type RentalStatus } from '@/entities/rental';
 import type {
     QuickActionResult,
     RentalDetailResponse,
@@ -20,10 +18,6 @@ import type {
 import { STALE_TIME } from '@/shared/config/constants';
 import { ENDPOINTS } from '@/shared/api/endpoints';
 import { withQuery } from '@/shared/lib/url';
-
-
-
-
 
 async function approveRental({ rentalId, notes }: ApproveRentalRequest): Promise<QuickActionResult> {
     return clientPost<QuickActionResult>(ENDPOINTS.admin.rentalApprove(rentalId), { notes });
@@ -49,10 +43,6 @@ async function fetchRentalDetail(id: number): Promise<RentalDetailResponse> {
     return clientGet<RentalDetailResponse>(ENDPOINTS.admin.rentalDetail(id));
 }
 
-
-
-
-
 export function useApproveRental() {
     const queryClient = useQueryClient();
 
@@ -62,6 +52,7 @@ export function useApproveRental() {
             showToast.success(toastMessages.rental.approveSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
         },
         onError: (error: Error) => {
@@ -79,6 +70,7 @@ export function useProcessPickup() {
             showToast.success(toastMessages.rental.pickupSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
         },
         onError: (error: Error) => {
@@ -101,6 +93,7 @@ export function useProcessReturn() {
             showToast.success(toastMessages.rental.returnSuccess);
             void queryClient.invalidateQueries({ queryKey: processKeys.all });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
         },
@@ -122,6 +115,7 @@ export function useProcessEarlyReturn() {
                 predicate: (query) => query.queryKey[1] !== 'early-return-preview',
             });
             void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
+            void queryClient.invalidateQueries({ queryKey: fleetKeys.all });
             void queryClient.invalidateQueries({ queryKey: carKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.dashboard() });
         },

@@ -1,8 +1,5 @@
 
 
-
-
-
 export {
     useApproveRental,
     useRejectRental,
@@ -14,7 +11,6 @@ export {
     useAdminRentals,
     ADMIN_RENTALS_PAGE_SIZE,
 } from './api/process-api';
-
 
 export { ApproveRentalDialog } from './ui/approve-rental-dialog';
 export { RejectRentalDialog } from './ui/reject-rental-dialog';
@@ -51,7 +47,6 @@ export {
     type AdminRentalsView,
 } from './lib/admin-rentals-view';
 
-
 export {
     RentalInfoCard,
     CustomerInfoCard,
@@ -60,7 +55,6 @@ export {
     TimelineCard,
     RentalActionButtons,
 } from './ui/rental-detail';
-
 
 export type {
     QuickActionResult,

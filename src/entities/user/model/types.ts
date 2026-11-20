@@ -41,7 +41,6 @@ export type AvatarUploadResponse = WithRequired<Schemas['AvatarUploadResponse'],
 
 export type PasswordChangeData = Schemas['PasswordChangeRequest'];
 
-
 export type SpentByCurrency = WithRequired<Schemas['RentalSpendTotals'], 'rentalCount' | 'totalSpent'> & {
     currency: CurrencyType;
 };
@@ -49,7 +48,6 @@ export type SpentByCurrency = WithRequired<Schemas['RentalSpendTotals'], 'rental
 export type CustomerStatistics = Omit<Required<Schemas['UserStatistics']>, 'spentByCurrency'> & {
     spentByCurrency: SpentByCurrency[];
 };
-
 
 export type CustomerVerification = Omit<Required<Schemas['VerificationInfo']>, 'documentsVerified'> & {
     documentsVerified: DocumentVerificationStatus;

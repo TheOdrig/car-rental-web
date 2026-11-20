@@ -1,7 +1,6 @@
 import type { RentalRequest } from '@/entities/rental';
 import type { CurrencyType } from '@/shared/types';
 
-
 export interface Addon {
     id: string;
     name: string;

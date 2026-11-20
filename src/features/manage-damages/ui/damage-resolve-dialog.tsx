@@ -33,7 +33,6 @@ export function createResolveSchema(chargedLiability: number | undefined, curren
     });
 }
 
-
 type ResolveFormData = z.infer<ReturnType<typeof createResolveSchema>>;
 
 interface DamageResolveDialogProps {

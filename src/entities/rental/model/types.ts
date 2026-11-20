@@ -99,7 +99,6 @@ export interface ActionButton {
     hint?: string;
 }
 
-
 export type AdminRentalStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED' | 'UNKNOWN';
 
 export const ADMIN_RENTAL_STATUS_LABELS: Record<AdminRentalStatus, string> = {
@@ -280,7 +279,6 @@ export interface ProcessReturnData {
     hasDamage?: boolean;
     notes?: string;
 }
-
 
 type RentalStatusMatchesContract = `${RentalStatus}` extends NonNullable<Schemas['RentalResponse']['status']> ? true : never;
 export const rentalStatusMatchesContract: RentalStatusMatchesContract = true;

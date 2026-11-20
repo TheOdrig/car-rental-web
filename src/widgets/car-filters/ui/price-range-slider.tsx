@@ -72,6 +72,7 @@ export function PriceRangeSlider({
                 max={max}
                 step={step}
                 value={currentValue}
+                thumbLabels={['Minimum price', 'Maximum price']}
                 onValueChange={handleValueChange}
                 onValueCommit={handleValueCommit}
                 className="cursor-pointer"

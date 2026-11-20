@@ -32,6 +32,13 @@ describe('AI-file guard patterns', () => {
         '.windsurfrules',
         'kiro.steering/product.md',
         'image.png:Zone.Identifier',
+        '.gemini/settings.json',
+        '.clinerules',
+        '.clinerules/rules.md',
+        '.github/instructions/ts.instructions.md',
+        'prompts/system.md',
+        'steering/product.md',
+        'docs/steering/tech.md',
     ])('blocks %s', (path) => {
         expect(isForbiddenPath(path)).toBe(true);
     });
@@ -51,6 +58,11 @@ describe('AI-file guard patterns', () => {
         'mydocs/readme.md',
         'src/shared/ui/aider.tsx',
         'src/GEMINI.md.txt',
+        'src/prompts/index.ts',
+        'docs/prompts/readme.md',
+        'xkiro/a.md',
+        'GEMINIxmd',
+        '.github/workflows/ci.yml',
     ])('allows %s', (path) => {
         expect(isForbiddenPath(path)).toBe(false);
     });

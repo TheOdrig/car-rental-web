@@ -28,7 +28,6 @@ export interface CarDetailSkeletonProps {
     className?: string;
 }
 
-
 export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, actionSlot, className }: CarDetailProps) {
 
     const { format: formatPrice } = useCurrency();
@@ -153,7 +152,6 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
         }
         return new Date();
     });
-
 
     const nextMonth = () => {
         const newDate = addMonths(currentDate, 1);

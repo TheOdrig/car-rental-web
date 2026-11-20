@@ -24,9 +24,7 @@ export type {
     RentalDetailResponse,
 } from './model/types';
 
-
 export * from './ui';
-
 
 export {
     useDashboardSummary,

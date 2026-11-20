@@ -2,7 +2,6 @@ import { glob } from 'glob';
 import { readFileSync } from 'fs';
 import { resolve } from 'path';
 
-
 export async function scanFiles(
   pattern: string,
   options?: {
@@ -42,11 +41,9 @@ export async function scanFiles(
   return files;
 }
 
-
 export function readFile(filePath: string): string {
   return readFileSync(resolve(filePath), 'utf-8');
 }
-
 
 export function fileExists(filePath: string): boolean {
   try {
@@ -57,16 +54,13 @@ export function fileExists(filePath: string): boolean {
   }
 }
 
-
 export function hasUseClientDirective(filePath: string): boolean {
   const content = readFile(filePath);
   return content.includes("'use client'") || content.includes('"use client"');
 }
 
-
 export function usesClientFeatures(filePath: string): boolean {
   const content = readFile(filePath);
-
 
   const clientHooks = [
     'useState',
@@ -91,7 +85,6 @@ export function usesClientFeatures(filePath: string): boolean {
 
   if (hasHooks) return true;
 
-
   const radixImports = [
     '@radix-ui/',
     'react-hook-form',
@@ -102,7 +95,6 @@ export function usesClientFeatures(filePath: string): boolean {
   const hasRadixImports = radixImports.some((pkg) => content.includes(`from "${pkg}`) || content.includes(`from '${pkg}`));
 
   if (hasRadixImports) return true;
-
 
   const eventHandlers = [
     'onClick',
@@ -123,7 +115,6 @@ export function usesClientFeatures(filePath: string): boolean {
 
   if (hasEventHandlers) return true;
 
-
   const browserAPIs = [
     'window\\.',
     'document\\.',
@@ -140,19 +131,16 @@ export function usesClientFeatures(filePath: string): boolean {
   return hasBrowserAPIs;
 }
 
-
 export function isAsyncComponent(filePath: string): boolean {
   const content = readFile(filePath);
 
   return /export\s+default\s+async\s+function/.test(content);
 }
 
-
 export function hasFetchCalls(filePath: string): boolean {
   const content = readFile(filePath);
   return /\bfetch\s*\(/.test(content) || /\bawait\s+fetch\s*\(/.test(content);
 }
-
 
 export function isInFeatureOrWidget(filePath: string): boolean {
   return filePath.includes('/features/') || filePath.includes('/widgets/');

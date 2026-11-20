@@ -16,7 +16,6 @@ export type {
 export { damageStatusPresentation, damageSeverityPresentation } from './model/status-presentation';
 export { DAMAGE_STATUSES, DAMAGE_SEVERITIES, DAMAGE_CATEGORIES } from './model/types';
 
-
 export {
     getDamageCategoryLabel,
     getDamageStatusLabel,

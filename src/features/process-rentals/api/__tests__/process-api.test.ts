@@ -6,9 +6,9 @@ import { showToast } from '@/shared/lib';
 import { ADMIN_CAR_NOT_AVAILABLE_MESSAGE } from '@/entities/rental';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createElement, type ReactNode } from 'react';
-import { rentalKeys } from '@/entities/rental';
+import { fleetKeys } from '@/entities/car';
+import { processKeys, rentalKeys } from '@/entities/rental';
 import { useRentalActions } from '../../lib/use-rental-actions';
-import { processKeys } from '../process-keys';
 import { useApproveRental, useProcessPickup, useProcessReturn, useRejectRental, useRentalDetail } from '../process-api';
 
 vi.mock('@/shared/api', async (importOriginal) => {
@@ -38,6 +38,30 @@ const mockGet = vi.mocked(clientGet);
 function carNotAvailable(status: number, message: string): ApiError {
     return new ApiError({ status, message, timestamp: new Date().toISOString(), code: 'CAR_NOT_AVAILABLE' });
 }
+
+describe('fleet refresh after rental transitions', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it.each([
+        ['approve', useApproveRental, { rentalId: 1 }],
+        ['pickup', useProcessPickup, { rentalId: 1 }],
+        ['return', useProcessReturn, { rentalId: 1, data: undefined }],
+    ] as const)('invalidates the fleet lists after %s succeeds', async (_name, useHook, input) => {
+        mockClientPost.mockResolvedValueOnce({ success: true });
+        const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
+        const wrapper = ({ children }: { children: ReactNode }) => createElement(QueryClientProvider, { client }, children);
+        const invalidate = vi.spyOn(client, 'invalidateQueries');
+        const { result } = renderHook(() => useHook(), { wrapper });
+
+        result.current.mutate(input as never);
+
+        await waitFor(() => expect(mockToast.success).toHaveBeenCalled());
+        const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
+        expect(keys).toContainEqual(fleetKeys.all);
+    });
+});
 
 describe('admin rental actions error handling', () => {
     beforeEach(() => {
@@ -168,7 +192,6 @@ describe('pickup refused by the API on the rental dates', () => {
         mockClientPost.mockRejectedValueOnce(refusal());
         const { client, wrapper } = observedWrapper();
         const invalidate = vi.spyOn(client, 'invalidateQueries');
-        const errorLog = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         const { result } = renderHook(() => useRentalActions(), { wrapper });
 
         await result.current.pickup(5);
@@ -177,7 +200,6 @@ describe('pickup refused by the API on the rental dates', () => {
         const keys = invalidate.mock.calls.map(([filters]) => filters?.queryKey);
         expect(keys).toContainEqual(processKeys.all);
         expect(keys).toContainEqual(rentalKeys.all);
-        errorLog.mockRestore();
     });
 });
 
@@ -225,7 +247,6 @@ describe('early return', () => {
         await waitFor(() => expect(mockToast.error).toHaveBeenCalledWith('Failed to record the early return', 'Not in use'));
     });
 });
-
 
 describe('early return preview', () => {
     beforeEach(() => {

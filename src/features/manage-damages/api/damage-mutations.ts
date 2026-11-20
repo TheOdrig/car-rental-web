@@ -5,7 +5,7 @@ import { clientPost, clientPut, clientDelete, getApiErrorMessage, getSafeErrorMe
 import { ENDPOINTS } from '@/shared/api/endpoints';
 import { withQuery } from '@/shared/lib/url';
 import { showToast } from '@/shared/lib';
-import { adminKeys } from '@/entities/rental';
+import { adminKeys, processKeys, rentalKeys } from '@/entities/rental';
 import {
     damageKeys,
     type DamageReport,
@@ -192,7 +192,8 @@ export function useChargeDamage() {
             }
             void queryClient.invalidateQueries({ queryKey: damageKeys.all });
             void queryClient.invalidateQueries({ queryKey: adminKeys.revenue() });
-            void queryClient.invalidateQueries({ queryKey: adminKeys.rentals() });
+            void queryClient.invalidateQueries({ queryKey: processKeys.all });
+            void queryClient.invalidateQueries({ queryKey: rentalKeys.all });
         },
         onError: (error: Error) => {
             showToast.error('Failed to charge customer', getApiErrorMessage(error));

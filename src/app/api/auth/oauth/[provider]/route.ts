@@ -2,7 +2,7 @@ import { NextResponse, type NextRequest } from 'next/server';
 import { logger } from '@/shared/lib/logger';
 import { ROUTES } from '@/shared/config/routes';
 import { safeRedirectPath } from '@/shared/lib/safe-redirect';
-import { API, buildUpstreamUrl, clientIpHeaders } from '@/shared/server';
+import { API, buildUpstreamUrl, clientIpHeaders, getServerEnv } from '@/shared/server';
 import { oauthProblemRedirectCode } from '../../_lib/oauth-errors';
 import { isOAuthProvider } from '../../_lib/oauth-providers';
 import { setOAuthNextCookie, setOAuthStateCookie } from '../../_lib/oauth-state';
@@ -27,6 +27,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
             redirect: 'manual',
             headers: await clientIpHeaders(),
             cache: 'no-store',
+            signal: AbortSignal.timeout(getServerEnv().API_TIMEOUT_MS),
         });
         const location = response.headers.get('location');
 

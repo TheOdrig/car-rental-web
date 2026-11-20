@@ -43,6 +43,7 @@ export * from './lib/rental-errors';
 export * from './lib/damage-reporting';
 export * from './lib/admin-status';
 export * from './api/admin-keys';
+export { processKeys } from './api/process-keys';
 export {
     useMyRentals,
     useAllMyRentals,

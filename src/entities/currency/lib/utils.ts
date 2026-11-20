@@ -49,7 +49,6 @@ export function describeRateBasis(source: RateSource | undefined): string {
     }
 }
 
-
 export function describeConversionBasis(source: RateSource | undefined): string {
     switch (source) {
         case 'FALLBACK':

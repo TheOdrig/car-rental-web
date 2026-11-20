@@ -232,6 +232,8 @@ describe('proxy', () => {
             const response = await proxy(requestFor('/admin/users', { refresh_token: 'r1' }));
 
             expect(location(response)).toBe('/forbidden');
+            expect(response.headers.get('set-cookie')).toContain(`access_token=${userToken}`);
+            expect(response.headers.get('set-cookie')).toContain('refresh_token=r2');
         });
 
         it('lets a verified admin through', async () => {
@@ -300,6 +302,8 @@ describe('proxy', () => {
             const response = await proxy(requestFor('/api/admin/users', { refresh_token: 'user-r1' }));
 
             expect(response.status).toBe(403);
+            expect(response.headers.get('set-cookie')).toContain(`access_token=${userToken}`);
+            expect(response.headers.get('set-cookie')).toContain('refresh_token=r2');
         });
 
         it('answers 401 when only a refresh token exists and it is rejected', async () => {

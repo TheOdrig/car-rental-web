@@ -65,6 +65,16 @@ describe('OAuth login flow binding', () => {
         expect(setCookie).toContain('Max-Age=600');
     });
 
+    it('passes a timeout signal upstream and maps a timeout to oauth_unavailable', async () => {
+        fetchMock.mockRejectedValueOnce(new DOMException('timed out', 'TimeoutError'));
+
+        const response = await start(startRequest(), params('google'));
+
+        expect(fetchMock.mock.calls[0][1].signal).toBeInstanceOf(AbortSignal);
+        expect(loginError(response)).toBe('oauth_unavailable');
+        expect(response.headers.get('set-cookie')).toBeNull();
+    });
+
     it('refuses to start when the authorize redirect carries no state', async () => {
         fetchMock.mockResolvedValueOnce(authorizeRedirect(null));
 

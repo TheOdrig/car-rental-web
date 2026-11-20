@@ -28,6 +28,16 @@ function redirectToLogin(request: NextRequest, clearCookies: boolean): NextRespo
     return response;
 }
 
+function withRenewedCookies(response: NextResponse, renewed: AuthResponse | null): NextResponse {
+    if (renewed) {
+        for (const { name, value, options } of buildAuthCookies(renewed)) {
+            response.cookies.set(name, value, options);
+        }
+    }
+
+    return response;
+}
+
 function passThrough(request: NextRequest, renewed: AuthResponse | null): NextResponse {
     if (!renewed) {
         return NextResponse.next();
@@ -103,7 +113,9 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
             return jsonError(401, 'Not authenticated', refreshRejected);
         }
 
-        return isAdminSession(session) ? passThrough(request, renewed) : jsonError(403, 'Forbidden');
+        return isAdminSession(session)
+            ? passThrough(request, renewed)
+            : withRenewedCookies(jsonError(403, 'Forbidden'), renewed);
     }
 
     if (!session) {
@@ -111,7 +123,7 @@ export async function proxy(request: NextRequest): Promise<NextResponse> {
     }
 
     if (access === 'admin' && !isAdminSession(session)) {
-        return NextResponse.redirect(new URL(ROUTES.forbidden, request.url));
+        return withRenewedCookies(NextResponse.redirect(new URL(ROUTES.forbidden, request.url)), renewed);
     }
 
     return passThrough(request, renewed);

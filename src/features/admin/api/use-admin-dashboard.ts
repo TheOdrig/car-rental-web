@@ -239,6 +239,5 @@ export function useInvalidateAdmin() {
         fleet: () => queryClient.refetchQueries({ queryKey: adminKeys.fleet() }),
         pending: () => queryClient.refetchQueries({ queryKey: adminKeys.pending() }),
         cars: () => queryClient.refetchQueries({ queryKey: carKeys.all }),
-        adminCars: () => queryClient.refetchQueries({ queryKey: adminKeys.cars() }),
     };
 }

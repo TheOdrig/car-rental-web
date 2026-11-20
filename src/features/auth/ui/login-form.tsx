@@ -121,8 +121,6 @@ export function LoginForm({ callbackUrl = ROUTES.home, className }: LoginFormPro
         }
     };
 
-
-
     return (
         <form noValidate onSubmit={handleSubmit} className={cn('space-y-5', className)}>
             <FormError

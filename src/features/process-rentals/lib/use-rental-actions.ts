@@ -12,12 +12,12 @@ export function useRentalActions() {
     const pickupMutation = useProcessPickup();
     const returnMutation = useProcessReturn();
 
-    const run = useCallback(async (rentalId: number, label: string, action: () => Promise<unknown>) => {
+    const run = useCallback(async (rentalId: number, action: () => Promise<unknown>) => {
         setActionInProgress(rentalId);
         try {
             await action();
-        } catch (error) {
-            console.error(`Failed to ${label}:`, error);
+        } catch {
+            return;
         } finally {
             setActionInProgress(null);
         }
@@ -26,12 +26,12 @@ export function useRentalActions() {
     return {
         actionInProgress,
         approve: (rentalId: number, notes?: string) =>
-            run(rentalId, 'approve rental', () => approveMutation.mutateAsync({ rentalId, notes })),
+            run(rentalId, () => approveMutation.mutateAsync({ rentalId, notes })),
         reject: (rentalId: number, reason: string) =>
-            run(rentalId, 'reject rental', () => rejectMutation.mutateAsync({ rentalId, reason })),
+            run(rentalId, () => rejectMutation.mutateAsync({ rentalId, reason })),
         pickup: (rentalId: number, notes?: string) =>
-            run(rentalId, 'process pickup', () => pickupMutation.mutateAsync({ rentalId, notes })),
+            run(rentalId, () => pickupMutation.mutateAsync({ rentalId, notes })),
         processReturn: (rentalId: number, data?: string | ProcessReturnData) =>
-            run(rentalId, 'process return', () => returnMutation.mutateAsync({ rentalId, data })),
+            run(rentalId, () => returnMutation.mutateAsync({ rentalId, data })),
     };
 }

@@ -15,7 +15,6 @@ export function getBookingErrorMessage(error: unknown): string {
     return getRentalRequestErrorMessage(error, 'Failed to create booking');
 }
 
-
 export const CALENDAR_MONTHS_AHEAD = 3;
 
 export function monthKeysBetween(start: Date, end: Date, now: Date = new Date()): string[] {
