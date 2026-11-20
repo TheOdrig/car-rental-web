@@ -18,6 +18,7 @@ export {
 
 export { ApproveRentalDialog } from './ui/approve-rental-dialog';
 export { RejectRentalDialog } from './ui/reject-rental-dialog';
+export { RejectReasonDialog } from './ui/reject-reason-dialog';
 export { ProcessPickupDialog } from './ui/process-pickup-dialog';
 export { ProcessReturnDialog } from './ui/process-return-dialog';
 export { ConfirmActionDialog } from './ui/confirm-action-dialog';
@@ -26,6 +27,30 @@ export { EarlyReturnPreviewPanel } from './ui/early-return-preview-panel';
 export { AllRentalsTable } from './ui/all-rentals-table';
 export { PendingRentalsTable, PendingQueueEmpty, PendingRentalsSkeleton } from './ui/pending-rentals';
 export { useRentalActions } from './lib/use-rental-actions';
+export {
+    CONFIRM_COPY,
+    REJECT_COPY,
+    isPaymentExpected,
+    hasPenalty,
+    shouldShowPenaltyHistory,
+    getPickupBlockedReason,
+    toCustomerInfo,
+    toVehicleInfo,
+    toTimelineEvents,
+    findTimelineTimestamp,
+    type ConfirmableAction,
+} from './lib/admin-rental-detail';
+export {
+    ALL_STATUSES,
+    QUEUES,
+    parseAdminRentalsParams,
+    buildAdminRentalsQuery,
+    queueCount,
+    describeEmptyQueues,
+    type QueueFilter,
+    type Queue,
+    type AdminRentalsView,
+} from './lib/admin-rentals-view';
 
 
 export {

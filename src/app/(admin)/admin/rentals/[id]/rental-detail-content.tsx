@@ -4,12 +4,9 @@ import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, DollarSign, TriangleAlert } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
-import {
-    Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/shared/ui/dialog';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { PageHeader } from '@/shared/ui/page-header';
-import { DetailPageSkeleton, DetailPageError, PenaltyWaiveDialog, PenaltyHistorySection, RentalDamageReports, type TimelineEventType } from '@/features/admin';
+import { DetailPageSkeleton, DetailPageError, PenaltyWaiveDialog, PenaltyHistorySection, RentalDamageReports } from '@/features/admin';
 import {
     RentalInfoCard,
     CustomerInfoCard,
@@ -27,41 +24,24 @@ import {
     EarlyReturnPreviewPanel,
     ConfirmActionDialog,
     CancelReasonField,
+    RejectReasonDialog,
+    CONFIRM_COPY,
+    isPaymentExpected,
+    hasPenalty,
+    shouldShowPenaltyHistory,
+    getPickupBlockedReason,
+    toCustomerInfo,
+    toVehicleInfo,
+    toTimelineEvents,
+    findTimelineTimestamp,
+    type ConfirmableAction,
 } from '@/features/process-rentals';
 import { fieldErrorMessages } from '@/shared/api';
-import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
+import { useRentalPayment } from '@/entities/payment';
 import { DamageReportForm } from '@/entities/damage';
-import { canReportDamage, isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
+import { canReportDamage, isBeforeRentalEnd, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
 import { formatAmount, formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
-
-const CONFIRM_COPY = {
-    approve: {
-        title: 'Approve this rental request?',
-        description: 'The customer is notified and can pay once the payment window opens. This cannot be undone.',
-        confirm: 'Confirm Approval',
-    },
-    pickup: {
-        title: 'Hand the vehicle over?',
-        description: 'This records the pickup and captures the customer payment that was authorized for this rental.',
-        confirm: 'Confirm Pickup',
-    },
-    return: {
-        title: 'Record the return?',
-        description: 'This closes the rental and makes the vehicle available again. Late penalties, if any, are calculated from the return time.',
-        confirm: 'Confirm Return',
-    },
-    earlyReturn: {
-        title: 'Return the vehicle early?',
-        description: 'The rental ends today and the unused days are refunded to the customer according to the rental rules. This cannot be undone.',
-        confirm: 'Return Early',
-    },
-    cancel: {
-        title: 'Cancel this rental?',
-        description: 'The customer is notified and any authorized payment is released. This cannot be undone.',
-        confirm: 'Cancel Rental',
-    },
-} as const;
 
 export function RentalDetailContent({ id }: { id: string }) {
     const rentalId = parseInt(id, 10);
@@ -74,10 +54,10 @@ export function RentalDetailContent({ id }: { id: string }) {
     const earlyReturn = useProcessEarlyReturn();
     const cancelRental = useCancelRental();
     const singleFlight = useSingleFlight();
-    const [confirming, setConfirming] = useState<'approve' | 'pickup' | 'return' | 'earlyReturn' | 'cancel' | null>(null);
+    const [confirming, setConfirming] = useState<ConfirmableAction | null>(null);
     const headingRef = useRef<HTMLHeadingElement>(null);
     const earlyReturnPreview = useEarlyReturnPreview(rentalId, confirming === 'earlyReturn' && rental?.status === 'ACTIVE');
-    const paymentExpected = !!rental && rental.status !== 'PENDING' && rental.status !== 'CANCELLED' && rental.status !== 'UNKNOWN';
+    const paymentExpected = isPaymentExpected(rental?.status);
     const paymentQuery = useRentalPayment(rentalId, { enabled: !isNaN(rentalId) && paymentExpected });
 
     const [waiveDialogOpen, setWaiveDialogOpen] = useState(false);
@@ -130,21 +110,15 @@ export function RentalDetailContent({ id }: { id: string }) {
         );
     }
 
-    const rentalWithPenalty = rental;
-
-    const hasPenalty = (rental.penaltyAmount ?? 0) > 0;
-    const showPenaltyHistory = !hasPenalty && ['COMPLETED', 'ACTIVE'].includes(rental.status);
+    const penaltyPresent = hasPenalty(rental);
+    const showPenaltyHistory = shouldShowPenaltyHistory(rental);
     const referenceNumber = formatRentalReference(rentalId);
     const showReportDamage = canReportDamage(
         rental.status,
-        rental.timeline.find((event) => event.type === 'returned')?.timestamp
+        findTimelineTimestamp(rental.timeline, 'returned')
     );
 
     const focusHeading = () => headingRef.current?.focus();
-
-    const handleReject = () => {
-        setRejectDialogOpen(true);
-    };
 
     const confirmReject = () => {
         if (!rejectionReason.trim()) return;
@@ -183,37 +157,13 @@ export function RentalDetailContent({ id }: { id: string }) {
         });
     };
 
-    const customerInfo = {
-        ...rental.customer,
-        name: personDisplayName(rental.customer),
-        isEmailVerified: rental.customer.emailVerified,
-        isPhoneVerified: rental.customer.phoneVerified,
-        isVerified: rental.customer.emailVerified,
-    };
-
-    const vehicleInfo = {
-        ...rental.vehicle,
-        name: `${rental.vehicle.brand} ${rental.vehicle.model}`,
-    };
-
-    const pickupBlockedReason =
-        rental.status !== 'CONFIRMED'
-            ? undefined
-            : isBeforeRentalStart(rental.startDate)
-              ? PICKUP_BEFORE_START_MESSAGE
-              : isAfterRentalEnd(rental.endDate)
-                ? PICKUP_AFTER_END_MESSAGE
-                : !paymentQuery.isLoading && !isPaymentSecured(paymentQuery.data?.status)
-                  ? PICKUP_PAYMENT_REQUIRED_MESSAGE
-                  : undefined;
-
-    const timelineEvents = rental.timeline.map((event, index) => ({
-        ...event,
-        id: index,
-        type: event.type as TimelineEventType,
-        title: event.title || 'Status Update',
-        description: event.description || '',
-    }));
+    const customerInfo = toCustomerInfo(rental.customer);
+    const vehicleInfo = toVehicleInfo(rental.vehicle);
+    const pickupBlockedReason = getPickupBlockedReason(rental, {
+        isLoading: paymentQuery.isLoading,
+        status: paymentQuery.data?.status,
+    });
+    const timelineEvents = toTimelineEvents(rental.timeline);
 
     return (
         <div className="space-y-6 p-6">
@@ -247,7 +197,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                         <RentalActionButtons
                             status={rental.status}
                             onApprove={() => setConfirming('approve')}
-                            onReject={handleReject}
+                            onReject={() => setRejectDialogOpen(true)}
                             onPickup={() => setConfirming('pickup')}
                             onReturn={() => setConfirming('return')}
                             onEarlyReturn={() => setConfirming('earlyReturn')}
@@ -261,7 +211,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                                 Report Damage
                             </Button>
                         )}
-                        {hasPenalty && (
+                        {penaltyPresent && (
                             <Button
                                 variant="destructive"
                                 size="sm"
@@ -280,7 +230,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                 <RentalInfoCard
                     rentalId={rental.id}
                     status={rental.status}
-                    createdAt={rental.timeline.find(e => e.type === 'created')?.timestamp ?? rental.startDate}
+                    createdAt={findTimelineTimestamp(rental.timeline, 'created') ?? rental.startDate}
                     startDate={rental.startDate}
                     endDate={rental.endDate}
                     duration={rental.duration}
@@ -298,8 +248,8 @@ export function RentalDetailContent({ id }: { id: string }) {
                 <PaymentInfoCard
                     rentalId={rental.id}
                     pricing={rental.pricing}
-                    penaltyAmount={rentalWithPenalty.penaltyAmount}
-                    lateReturnStatus={rentalWithPenalty.lateReturnStatus}
+                    penaltyAmount={rental.penaltyAmount}
+                    lateReturnStatus={rental.lateReturnStatus}
                     paymentEnabled={paymentExpected}
                     paymentDueBy={rental.paymentDueBy}
                 />
@@ -317,7 +267,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                 />
             )}
 
-            {hasPenalty && (
+            {penaltyPresent && (
                 <>
                     <PenaltyHistorySection
                         rentalId={rentalId}
@@ -327,7 +277,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                         open={waiveDialogOpen}
                         onOpenChange={setWaiveDialogOpen}
                         rentalId={rentalId}
-                        originalPenalty={rentalWithPenalty.penaltyAmount ?? 0}
+                        originalPenalty={rental.penaltyAmount ?? 0}
                         currency={rental.pricing.currency}
                     />
                 </>
@@ -399,41 +349,17 @@ export function RentalDetailContent({ id }: { id: string }) {
                 )}
             </ConfirmActionDialog>
 
-            <Dialog open={rejectDialogOpen} onOpenChange={setRejectDialogOpen}>
-                <DialogContent className="sm:max-w-md">
-                    <DialogHeader>
-                        <DialogTitle>Cancel Rental</DialogTitle>
-                        <DialogDescription>
-                            Please provide a reason for cancelling this rental.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="py-4">
-                        <Input
-                            placeholder="Enter cancellation reason..."
-                            value={rejectionReason}
-                            onChange={(e) => setRejectionReason(e.target.value)}
-                        />
-                    </div>
-                    <DialogFooter>
-                        <Button
-                            variant="outline"
-                            onClick={() => {
-                                setRejectDialogOpen(false);
-                                setRejectionReason('');
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="destructive"
-                            onClick={confirmReject}
-                            disabled={!rejectionReason.trim() || rejectRental.isPending}
-                        >
-                            {rejectRental.isPending ? 'Cancelling...' : 'Confirm Cancel'}
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <RejectReasonDialog
+                open={rejectDialogOpen}
+                onOpenChange={(open) => {
+                    setRejectDialogOpen(open);
+                    if (!open) setRejectionReason('');
+                }}
+                reason={rejectionReason}
+                onReasonChange={setRejectionReason}
+                onConfirm={confirmReject}
+                isPending={rejectRental.isPending}
+            />
         </div>
     );
 }

@@ -6,7 +6,7 @@ import { clientPost } from '@/shared/api';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { Breadcrumb } from '@/shared/ui/breadcrumb';
-import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
+import { DashboardHeader, DashboardMetricsGrid, QuickActionsCard, RevenueChart, processRevenueData, revenueCurrencies, latestRevenueGrowth, useDashboardSummary, useFleetStatus, useInvalidateAdmin, usePendingApprovals, usePendingPickups, usePendingReturns, useRevenueData } from '@/features/admin';
 import { FleetStatusCard } from '@/features/manage-fleet';
 import { PendingRentalsTable } from '@/features/process-rentals';
 import type { RevenuePeriod } from '@/features/admin';
@@ -104,9 +104,7 @@ export function AdminDashboardContent() {
 
     const latestRevenue = useMemo(() => {
         if (currencies.length !== 1) return null;
-        const monthly = (revenueAnalytics?.monthlyRevenue ?? []).filter((item) => item.currency === currencies[0]);
-        const latest = monthly.length > 0 ? monthly[monthly.length - 1] : null;
-        return latest && Number.isFinite(latest.growthPercentage) ? latest : null;
+        return latestRevenueGrowth(revenueAnalytics?.monthlyRevenue, currencies[0]);
     }, [currencies, revenueAnalytics]);
 
     return (

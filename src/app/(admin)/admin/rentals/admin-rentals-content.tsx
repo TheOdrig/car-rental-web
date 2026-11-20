@@ -17,24 +17,30 @@ import {
     useProcessPickup,
     useProcessReturn,
 } from '@/features/process-rentals';
-import type { ProcessReturnData } from '@/features/process-rentals';
+import {
+    ALL_STATUSES,
+    QUEUES,
+    buildAdminRentalsQuery,
+    describeEmptyQueues,
+    parseAdminRentalsParams,
+    queueCount,
+    type AdminRentalsView,
+    type ProcessReturnData,
+    type Queue,
+    type QueueFilter,
+} from '@/features/process-rentals';
 import { showToast } from '@/shared/lib';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { PageHeader } from '@/shared/ui/page-header';
 import { RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
 import { PAGE_SIZE } from '@/shared/config/constants';
 
-type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
-type View = 'pending' | 'all-rentals';
-
-const ALL_STATUSES = 'all';
-
 const RENTAL_STATUS_OPTIONS = [
     { value: ALL_STATUSES, label: 'All statuses' },
     ...Object.values(RentalStatus).map((value) => ({ value, label: RENTAL_STATUS_LABELS[value] })),
 ];
 
-const statusOptions: { value: StatusFilter; label: string }[] = [
+const statusOptions: { value: QueueFilter; label: string }[] = [
     { value: 'all', label: 'All Pending' },
     { value: 'approvals', label: 'Pending Approvals' },
     { value: 'pickups', label: 'Pending Pickups' },
@@ -42,48 +48,22 @@ const statusOptions: { value: StatusFilter; label: string }[] = [
     { value: 'overdue', label: 'Overdue' },
 ];
 
-const QUEUE_FILTERS: StatusFilter[] = ['approvals', 'pickups', 'returns', 'overdue'];
-
-type Queue = 'approvals' | 'pickups' | 'returns' | 'overdue';
-
-const QUEUES: { key: Queue; label: string; noun: string }[] = [
-    { key: 'approvals', label: 'Approvals', noun: 'approvals' },
-    { key: 'pickups', label: 'Pickups', noun: 'pickups' },
-    { key: 'returns', label: 'Returns', noun: 'returns' },
-    { key: 'overdue', label: 'Overdue', noun: 'overdue rentals' },
-];
-
 export function AdminRentalsContent() {
     const searchParams = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
-    const userIdParam = searchParams?.get('userId');
-    const userId = userIdParam && /^[0-9]+$/.test(userIdParam) ? Number(userIdParam) : undefined;
-    const statusParam = searchParams?.get('status') ?? '';
-    const queueParam = searchParams?.get('queue') ?? '';
-    const pageParam = Number.parseInt(searchParams?.get('page') ?? '', 10);
-    const [view, setView] = useState<View>(
-        userId !== undefined || searchParams?.get('view') === 'all' ? 'all-rentals' : 'pending'
-    );
-    const [rentalsPage, setRentalsPage] = useState(Number.isFinite(pageParam) && pageParam > 1 ? pageParam - 1 : 0);
-    const [rentalStatus, setRentalStatus] = useState<string>(
-        (Object.values(RentalStatus) as string[]).includes(statusParam) ? statusParam : ALL_STATUSES
-    );
+    const [initial] = useState(() => parseAdminRentalsParams(searchParams));
+    const { userId } = initial;
+    const [view, setView] = useState<AdminRentalsView>(initial.view);
+    const [rentalsPage, setRentalsPage] = useState(initial.page);
+    const [rentalStatus, setRentalStatus] = useState<string>(initial.rentalStatus);
     const serverStatus = rentalStatus !== ALL_STATUSES ? (rentalStatus as RentalStatus) : undefined;
     const allRentals = useAdminRentals({ page: rentalsPage, userId, status: serverStatus });
-    const [statusFilter, setStatusFilter] = useState<StatusFilter>(
-        (QUEUE_FILTERS as string[]).includes(queueParam) ? (queueParam as StatusFilter) : 'all'
-    );
+    const [statusFilter, setStatusFilter] = useState<QueueFilter>(initial.queue);
     const currentQuery = searchParams?.toString() ?? '';
 
     useEffect(() => {
-        const params = new URLSearchParams();
-        if (userId !== undefined) params.set('userId', String(userId));
-        if (view === 'all-rentals' && userId === undefined) params.set('view', 'all');
-        if (view === 'all-rentals' && rentalStatus !== ALL_STATUSES) params.set('status', rentalStatus);
-        if (view === 'all-rentals' && rentalsPage > 0) params.set('page', String(rentalsPage + 1));
-        if (view === 'pending' && statusFilter !== 'all') params.set('queue', statusFilter);
-        const next = params.toString();
+        const next = buildAdminRentalsQuery({ userId, view, rentalStatus, page: rentalsPage, queue: statusFilter });
         if (next === currentQuery) return;
         router.replace(next ? `${pathname}?${next}` : pathname, { scroll: false });
     }, [view, rentalStatus, rentalsPage, statusFilter, userId, currentQuery, pathname, router]);
@@ -151,10 +131,10 @@ export function AdminRentalsContent() {
     };
 
     const counts = {
-        approvals: approvals?.totalElements ?? approvals?.content.length ?? 0,
-        pickups: pickups?.totalElements ?? pickups?.content.length ?? 0,
-        returns: returns?.totalElements ?? returns?.content.length ?? 0,
-        overdue: overdue?.totalElements ?? overdue?.content.length ?? 0,
+        approvals: queueCount(approvals),
+        pickups: queueCount(pickups),
+        returns: queueCount(returns),
+        overdue: queueCount(overdue),
     };
 
     const failed = {
@@ -290,7 +270,7 @@ export function AdminRentalsContent() {
                     <Filter className="h-4 w-4 text-muted-foreground" />
                     <Select
                         value={statusFilter}
-                        onValueChange={(value) => setStatusFilter(value as StatusFilter)}
+                        onValueChange={(value) => setStatusFilter(value as QueueFilter)}
                     >
                         <SelectTrigger aria-label="Filter rentals by status" className="w-48 bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground">
                             <SelectValue />
@@ -389,7 +369,7 @@ export function AdminRentalsContent() {
 
                 {emptyQueues.length > 0 && (
                     <PendingQueueEmpty>
-                        No pending {emptyQueues.map((queue) => queue.noun).join(', ').replace(/, ([^,]*)$/, ' or $1')}.
+                        No pending {describeEmptyQueues(emptyQueues.map((queue) => queue.noun))}.
                     </PendingQueueEmpty>
                 )}
             </div>

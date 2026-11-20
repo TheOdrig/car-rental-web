@@ -13,7 +13,7 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { ErrorBoundary } from '@/shared/ui/error-boundary';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
-import { DamageStatusBadge, DamageSeverityBadge, useMyDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
+import { DamageStatusBadge, DamageSeverityBadge, useMyDamageDetail, getDamageCategoryLabel, canDisputeDamage, hasDisputeActivity } from '@/entities/damage';
 import { VehicleLabel } from '@/entities/car';
 import { DamageDisputeForm } from '@/features/manage-damages';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
@@ -62,15 +62,8 @@ export function MyDamageDetailContent({ id }: { id: string }) {
         );
     }
 
-    const canDispute = damage.status === 'CHARGED';
-    const hasDispute = Boolean(
-        damage.disputeReason ||
-            damage.disputeComments ||
-            damage.disputedAt ||
-            damage.resolutionNotes ||
-            damage.resolvedAt ||
-            damage.refundAmount !== undefined
-    );
+    const canDispute = canDisputeDamage(damage);
+    const hasDispute = hasDisputeActivity(damage);
     const damageCurrency = damage.currency ?? DEFAULT_CURRENCY;
     const resolved = Boolean(damage.resolvedAt);
 

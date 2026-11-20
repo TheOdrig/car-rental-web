@@ -1,5 +1,5 @@
 import { personDisplayName } from '@/shared/lib/person-name';
-import { User, UserRole } from '../model/types';
+import { type AccountStatusType, User, UserRole } from '../model/types';
 
 export const isAdmin = (user: User | null): boolean => {
     return user?.roles.includes(UserRole.ADMIN) ?? false;
@@ -31,3 +31,7 @@ export const getInitials = (user: User | null): string => {
 
     return displayName.slice(0, 2).toUpperCase();
 };
+
+export const isBannedAccount = (accountStatus: { status: AccountStatusType }): boolean => accountStatus.status === 'BANNED';
+
+export const isActiveAccount = (accountStatus: { status: AccountStatusType }): boolean => accountStatus.status === 'ACTIVE';

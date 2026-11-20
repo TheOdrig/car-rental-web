@@ -18,6 +18,7 @@ import {
     UnbanCustomerDialog,
     useCustomerDetail,
 } from '@/features/manage-users';
+import { isActiveAccount, isBannedAccount } from '@/entities/user';
 import { formatDate, personDisplayName } from '@/shared/lib';
 
 export function CustomerDetailContent({ id }: { id: string }) {
@@ -65,8 +66,8 @@ export function CustomerDetailContent({ id }: { id: string }) {
     }
 
     const customerName = personDisplayName(customer);
-    const isBanned = customer.accountStatus.status === 'BANNED';
-    const isActive = customer.accountStatus.status === 'ACTIVE';
+    const isBanned = isBannedAccount(customer.accountStatus);
+    const isActive = isActiveAccount(customer.accountStatus);
 
     const handleBanSuccess = () => {
         setIsBanDialogOpen(false);

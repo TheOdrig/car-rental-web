@@ -11,7 +11,7 @@ import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { Skeleton } from '@/shared/ui/skeleton';
 import { formatCurrencyWithDecimals, formatDate, formatDateTime, formatRentalReference } from '@/shared/lib';
 import {
-    DamageStatusBadge, useDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
+    DamageStatusBadge, useDamageDetail, getDamageCategoryLabel, canAssessDamage, canReassessDamage, canResolveDamageDispute, canChargeDamage, hasDisputeActivity } from '@/entities/damage';
 import { DamagePhotoUpload, DamageAssessDialog, DamageResolveDialog, DamageChargeDialog } from '@/features/admin';
 import { DamageSeverityBadge } from '@/entities/damage';
 import { DEFAULT_CURRENCY } from '@/shared/config/constants';
@@ -47,19 +47,11 @@ export function DamageDetailContent({ id }: { id: string }) {
         );
     }
 
-    const canAssess = damage.status === 'REPORTED' || damage.status === 'UNDER_ASSESSMENT';
-    const canReassess = damage.status === 'ASSESSED';
-    const hasDispute = Boolean(
-        damage.disputeReason ||
-        damage.disputeComments ||
-        damage.disputedAt ||
-        damage.resolutionNotes ||
-        damage.resolvedAt ||
-        damage.refundAmount !== undefined
-    );
-    const canResolve = damage.status === 'DISPUTED';
-    const liability = damage.customerLiability ?? 0;
-    const canCharge = damage.status === 'ASSESSED' && liability > 0;
+    const canAssess = canAssessDamage(damage);
+    const canReassess = canReassessDamage(damage);
+    const hasDispute = hasDisputeActivity(damage);
+    const canResolve = canResolveDamageDispute(damage);
+    const canCharge = canChargeDamage(damage);
     const chargeCurrency = damage.currency ?? DEFAULT_CURRENCY;
 
     return (
@@ -304,7 +296,7 @@ export function DamageDetailContent({ id }: { id: string }) {
 
             <DamageChargeDialog
                 damageId={damage.id}
-                amount={liability}
+                amount={damage.customerLiability ?? 0}
                 currency={chargeCurrency}
                 open={showChargeDialog}
                 onOpenChange={setShowChargeDialog}

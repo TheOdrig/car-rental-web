@@ -24,6 +24,15 @@ export {
 } from './lib/utils';
 
 export {
+    canAssessDamage,
+    canReassessDamage,
+    canResolveDamageDispute,
+    canChargeDamage,
+    canDisputeDamage,
+    hasDisputeActivity,
+} from './lib/damage-rules';
+
+export {
     useDamages,
     useDamageDetail,
     useDisputeDamage,

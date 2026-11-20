@@ -59,6 +59,15 @@ export function revenueCurrencies(analytics: {
     return [...seen].sort();
 }
 
+export function latestRevenueGrowth(
+    monthlyRevenue: MonthlyRevenue[] | undefined,
+    currency: MonthlyRevenue['currency'],
+): MonthlyRevenue | null {
+    const monthly = (monthlyRevenue ?? []).filter((item) => item.currency === currency);
+    const latest = monthly.length > 0 ? monthly[monthly.length - 1] : null;
+    return latest && Number.isFinite(latest.growthPercentage) ? latest : null;
+}
+
 export function calculateFleetPercentages(data: {
     totalCars: number;
     availableCars: number;

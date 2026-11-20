@@ -3,7 +3,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CalendarDays, Car, Wallet } from 'lucide-react';
-import { logger, formatCurrencyWithDecimals, formatDate } from '@/shared/lib';
+import { logger, formatCurrencyWithDecimals, formatDate, paginate, parsePageIndex } from '@/shared/lib';
 import { useAllMyRentals, useCancelRental } from '@/entities/rental';
 import { Pagination } from '@/shared/ui/pagination';
 import { ErrorMessage } from '@/shared/ui/error-message';
@@ -41,8 +41,7 @@ export function MyRentalsContent() {
     const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
     const [rentalToCancel, setRentalToCancel] = useState<Rental | null>(null);
     const activeTab = parseRentalTab(searchParams?.get('tab'));
-    const pageParam = Number.parseInt(searchParams?.get('page') ?? '', 10);
-    const page = Number.isFinite(pageParam) && pageParam > 1 ? pageParam - 1 : 0;
+    const page = parsePageIndex(searchParams?.get('page'));
 
     const goTo = useCallback(
         (tab: RentalTab, pageIndex: number) => {
@@ -66,11 +65,9 @@ export function MyRentalsContent() {
         [rentals, activeTab]
     );
 
-    const totalPages = Math.max(1, Math.ceil(filteredRentals.length / PAGE_SIZE.DEFAULT));
-    const currentPage = Math.min(page, totalPages - 1);
-    const pagedRentals = useMemo(
-        () => filteredRentals.slice(currentPage * PAGE_SIZE.DEFAULT, (currentPage + 1) * PAGE_SIZE.DEFAULT),
-        [filteredRentals, currentPage]
+    const { items: pagedRentals, totalPages, currentPage } = useMemo(
+        () => paginate(filteredRentals, page, PAGE_SIZE.DEFAULT),
+        [filteredRentals, page]
     );
 
     const handleTabChange = useCallback((tab: RentalTab) => goTo(tab, 0), [goTo]);

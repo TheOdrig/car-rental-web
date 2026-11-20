@@ -1,5 +1,6 @@
 export * from './format';
 export * from './utils';
+export * from './pagination';
 export * from './logger';
 export * from './toast';
 export * from './validation-ui';
