@@ -42,16 +42,16 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                 <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
                         <AvatarImage src={customer.avatarUrl} alt={name} />
-                        <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
+                        <AvatarFallback className="bg-success-subtle text-success-subtle-foreground">
                             {initials}
                         </AvatarFallback>
                     </Avatar>
                     <div>
-                        <div className="font-medium text-slate-900 dark:text-slate-100">
+                        <div className="font-medium text-foreground">
                             {name}
                         </div>
                         <div className="flex items-center gap-2">
-                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                            <span className="text-sm text-muted-foreground">
                                 ID: {customer.id}
                             </span>
                             <CopyButton value={String(customer.id)} />
@@ -61,10 +61,10 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
 
                 <div className="space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                        <Mail className="h-4 w-4 text-slate-400" />
+                        <Mail className="h-4 w-4 text-muted-foreground" />
                         <a
                             href={`mailto:${customer.email}`}
-                            className="text-slate-700 dark:text-slate-300 hover:underline"
+                            className="text-muted-foreground hover:underline"
                         >
                             {customer.email}
                         </a>
@@ -72,10 +72,10 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                     </div>
                     {customer.phone && (
                         <div className="flex items-center gap-2 text-sm">
-                            <Phone className="h-4 w-4 text-slate-400" />
+                            <Phone className="h-4 w-4 text-muted-foreground" />
                             <a
                                 href={`tel:${customer.phone}`}
-                                className="text-slate-700 dark:text-slate-300 hover:underline"
+                                className="text-muted-foreground hover:underline"
                             >
                                 {customer.phone}
                             </a>
@@ -84,7 +84,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                     )}
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <div className="flex items-center gap-2 pt-2 border-t border-border">
                     {isVerified ? (
                         <Badge variant="success">
                             <ShieldCheck className="h-3 w-3 mr-1" />
@@ -98,7 +98,7 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
+                <div className="grid grid-cols-2 gap-2 pt-2 border-t border-border">
                     <StatCard
                         label="Rentals"
                         value={customer.stats.totalRentals}

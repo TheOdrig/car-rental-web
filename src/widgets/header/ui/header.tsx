@@ -38,10 +38,10 @@ function AccountAvatar() {
     const { data: profile } = useProfile();
 
     return (
-        <Avatar className="h-8 w-8 bg-slate-200 dark:bg-slate-700">
+        <Avatar className="h-8 w-8 bg-accent">
             <AvatarImage src={profile?.avatarUrl} alt="" />
-            <AvatarFallback className="bg-slate-200 dark:bg-slate-700">
-                <User className="h-4 w-4 text-slate-600 dark:text-slate-300" aria-hidden="true" />
+            <AvatarFallback className="bg-accent">
+                <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
             </AvatarFallback>
         </Avatar>
     );
@@ -57,7 +57,7 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:supports-[backdrop-filter]:bg-slate-950/60">
+        <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
             <div className="container flex h-16 items-center justify-between">
                 <div className="flex min-w-0 items-center gap-2 sm:gap-4">
                     <MobileNav
@@ -90,7 +90,7 @@ export function Header() {
                     <CurrencySelector />
                     <ThemeToggle />
                     {isLoading ? (
-                        <div className="h-9 w-20 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+                        <div className="h-9 w-20 animate-pulse rounded bg-accent" />
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -98,40 +98,40 @@ export function Header() {
                                     <AccountAvatar />
                                 </Button>
                             </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56 bg-white dark:bg-slate-900 border dark:border-slate-700" align="end" forceMount>
+                            <DropdownMenuContent className="w-56 bg-card border " align="end" forceMount>
                                 <DropdownMenuLabel className="font-normal">
                                     <div className="flex flex-col space-y-1">
-                                        <p className="text-sm font-medium leading-none text-slate-900 dark:text-white">{user?.username}</p>
-                                        <p className="text-xs leading-none text-slate-600 dark:text-slate-400">{user?.email}</p>
+                                        <p className="text-sm font-medium leading-none text-foreground">{user?.username}</p>
+                                        <p className="text-xs leading-none text-muted-foreground">{user?.email}</p>
                                     </div>
                                 </DropdownMenuLabel>
-                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                <DropdownMenuSeparator className="bg-accent" />
                                 {isAdmin && (
                                     <>
-                                        <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
+                                        <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
                                             <Link href="/admin/dashboard">Admin Dashboard</Link>
                                         </DropdownMenuItem>
-                                        <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
+                                        <DropdownMenuSeparator className="bg-accent" />
                                     </>
                                 )}
-                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
+                                <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
                                     <Link href="/rentals">My Rentals</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
+                                <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
                                     <Link href="/damages">My Damages</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem asChild className="text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 focus:bg-slate-100 dark:focus:bg-slate-800">
+                                <DropdownMenuItem asChild className="text-muted-foreground hover:bg-muted focus:bg-muted">
                                     <Link href="/settings/profile">Profile</Link>
                                 </DropdownMenuItem>
-                                <DropdownMenuSeparator className="bg-slate-200 dark:bg-slate-700" />
-                                <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 focus:bg-red-50 dark:focus:bg-red-900/20">
+                                <DropdownMenuSeparator className="bg-accent" />
+                                <DropdownMenuItem onClick={handleLogout} className="text-danger-subtle-foreground focus:text-danger-subtle-foreground hover:bg-danger-subtle focus:bg-danger-subtle">
                                     Log Out
                                 </DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     ) : (
                         <div className="hidden md:flex items-center gap-2">
-                            <Button variant="ghost" asChild className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800">
+                            <Button variant="ghost" asChild className="text-muted-foreground hover:text-foreground hover:bg-muted">
                                 <Link href="/login">Log In</Link>
                             </Button>
                             <Button asChild>

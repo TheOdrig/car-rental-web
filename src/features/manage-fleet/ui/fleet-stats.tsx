@@ -19,13 +19,13 @@ interface StatCardConfig {
 }
 
 const statCards: StatCardConfig[] = [
-    { title: 'Total', key: 'totalCars', dotColor: 'bg-slate-500' },
-    { title: 'Available', key: 'availableCars', dotColor: 'bg-emerald-500' },
-    { title: 'Rented', key: 'rentedCars', dotColor: 'bg-blue-500' },
-    { title: 'Reserved', key: 'reservedCars', dotColor: 'bg-violet-500' },
-    { title: 'Maintenance', key: 'maintenanceCars', dotColor: 'bg-amber-500' },
-    { title: 'Inspection', key: 'inspectionCars', dotColor: 'bg-cyan-500' },
-    { title: 'Damaged', key: 'damagedCars', dotColor: 'bg-red-500' },
+    { title: 'Total', key: 'totalCars', dotColor: 'bg-muted-foreground' },
+    { title: 'Available', key: 'availableCars', dotColor: 'bg-success' },
+    { title: 'Rented', key: 'rentedCars', dotColor: 'bg-info' },
+    { title: 'Reserved', key: 'reservedCars', dotColor: 'bg-info' },
+    { title: 'Maintenance', key: 'maintenanceCars', dotColor: 'bg-warning' },
+    { title: 'Inspection', key: 'inspectionCars', dotColor: 'bg-info' },
+    { title: 'Damaged', key: 'damagedCars', dotColor: 'bg-destructive' },
 ];
 
 const GRID = 'grid gap-3 grid-cols-2 sm:grid-cols-4 lg:grid-cols-7';

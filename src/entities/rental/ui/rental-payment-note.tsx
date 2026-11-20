@@ -19,7 +19,7 @@ export function RentalPaymentNote({ status, paymentStatus, paymentDueBy, classNa
         if (!showState) return null;
         return (
             <p
-                className={cn('flex items-center gap-1.5 text-sm font-medium text-emerald-700 dark:text-emerald-400', className)}
+                className={cn('flex items-center gap-1.5 text-sm font-medium text-success-subtle-foreground', className)}
                 data-testid="rental-payment-state"
             >
                 <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden="true" />

@@ -120,10 +120,10 @@ export function RentalForm({ car, className }: RentalFormProps) {
 
     return (
         <form onSubmit={handleSubmit} className={cn('space-y-6', className)}>
-            <div className="p-4 rounded-lg bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div className="p-4 rounded-lg bg-muted border border-border">
                 <div>
-                    <p className="font-semibold text-slate-900 dark:text-white">{car.brand} {car.model}</p>
-                    <p className="text-sm font-medium text-slate-600 dark:text-slate-300">
+                    <p className="font-semibold text-foreground">{car.brand} {car.model}</p>
+                    <p className="text-sm font-medium text-muted-foreground">
                         {formatPrice(car.price, car.currencyType)}/day
                     </p>
                 </div>
@@ -138,8 +138,8 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 variant="outline"
                                 className={cn(
                                     'h-12 justify-start text-left font-normal',
-                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
-                                    !startDate && 'text-muted-foreground dark:text-slate-400',
+                                    'dark:bg-input/30 dark:hover:bg-input/50',
+                                    !startDate && 'text-muted-foreground',
                                     errors.startDate && 'border-destructive'
                                 )}
                             >
@@ -185,8 +185,8 @@ export function RentalForm({ car, className }: RentalFormProps) {
                                 variant="outline"
                                 className={cn(
                                     'h-12 justify-start text-left font-normal',
-                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
-                                    !endDate && 'text-muted-foreground dark:text-slate-400',
+                                    'dark:bg-input/30 dark:hover:bg-input/50',
+                                    !endDate && 'text-muted-foreground',
                                     errors.endDate && 'border-destructive'
                                 )}
                             >

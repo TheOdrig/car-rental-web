@@ -32,9 +32,9 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
     );
 
     return (
-        <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+        <Card className="bg-card border-border">
             <CardHeader className="pb-3">
-                <CardTitle className="flex items-center gap-2 text-lg text-slate-900 dark:text-slate-100">
+                <CardTitle className="flex items-center gap-2 text-lg text-foreground">
                     <History className="h-5 w-5" />
                     Penalty Waiver History
                 </CardTitle>
@@ -43,10 +43,10 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
                 {sortedHistory.map((waiver) => (
                     <div
                         key={waiver.id}
-                        className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700"
+                        className="p-4 rounded-lg bg-raised border border-border"
                     >
                         <div className="flex items-start justify-between mb-2">
-                            <div className="text-sm text-slate-500 dark:text-slate-400">
+                            <div className="text-sm text-muted-foreground">
                                 {formatDateTime(waiver.waivedAt)}
                             </div>
                             {waiver.remainingPenalty === 0 && (
@@ -58,36 +58,36 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
 
                         <div className="grid grid-cols-3 gap-4 mb-3">
                             <div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400">Original</div>
-                                <div className="font-medium text-slate-900 dark:text-slate-100">
+                                <div className="text-xs text-muted-foreground">Original</div>
+                                <div className="font-medium text-foreground">
                                     {formatCurrency(waiver.originalPenalty, currency)}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400">Waived</div>
-                                <div className="font-medium text-orange-600 dark:text-orange-400">
+                                <div className="text-xs text-muted-foreground">Waived</div>
+                                <div className="font-medium text-warning-subtle-foreground">
                                     -{formatCurrency(waiver.waivedAmount, currency)}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400">Remaining</div>
-                                <div className="font-medium text-slate-900 dark:text-slate-100">
+                                <div className="text-xs text-muted-foreground">Remaining</div>
+                                <div className="font-medium text-foreground">
                                     {formatCurrency(waiver.remainingPenalty, currency)}
                                 </div>
                             </div>
                         </div>
 
                         <div className="mb-3">
-                            <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Reason</div>
-                            <div className="text-sm text-slate-700 dark:text-slate-300">
+                            <div className="text-xs text-muted-foreground mb-1">Reason</div>
+                            <div className="text-sm text-muted-foreground">
                                 {waiver.reason}
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center justify-between text-xs text-muted-foreground">
                             <div>Admin ID: #{waiver.adminId}</div>
                             {waiver.refundInitiated && (
-                                <div className="flex items-center gap-1 text-green-600 dark:text-green-400">
+                                <div className="flex items-center gap-1 text-success-subtle-foreground">
                                     {waiver.refundTransactionId ? (
                                         <>
                                             <CheckCircle className="h-3 w-3" />
@@ -111,13 +111,13 @@ export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHis
 
 function PenaltyHistorySkeleton() {
     return (
-        <Card className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700">
+        <Card className="bg-card border-border">
             <CardHeader className="pb-3">
                 <Skeleton className="h-6 w-48" />
             </CardHeader>
             <CardContent className="space-y-4">
                 {Array.from({ length: 2 }).map((_, i) => (
-                    <div key={i} className="p-4 rounded-lg bg-slate-50 dark:bg-slate-800/50">
+                    <div key={i} className="p-4 rounded-lg bg-raised">
                         <Skeleton className="h-4 w-32 mb-3" />
                         <div className="grid grid-cols-3 gap-4 mb-3">
                             <Skeleton className="h-8 w-full" />

@@ -115,7 +115,7 @@ function StepIndicator({ step, currentStep, complete, isLast }: StepIndicatorPro
             <div
                 className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all',
-                    isCompleted && 'border-emerald-600 bg-emerald-600 text-white',
+                    isCompleted && 'border-success-subtle-foreground/30 bg-success text-white',
                     isCurrent && 'border-primary bg-primary/10 text-primary',
                     isPending && 'border-muted bg-muted text-muted-foreground'
                 )}
@@ -131,7 +131,7 @@ function StepIndicator({ step, currentStep, complete, isLast }: StepIndicatorPro
                 <div
                     className={cn(
                         'mt-1 h-12 w-0.5 transition-colors',
-                        isCompleted ? 'bg-emerald-600' : 'bg-muted'
+                        isCompleted ? 'bg-success' : 'bg-muted'
                     )}
                 />
             )}
@@ -187,7 +187,7 @@ function StepContent({
             <p
                 className={cn(
                     'font-medium',
-                    isCompleted && 'text-emerald-700 dark:text-emerald-400',
+                    isCompleted && 'text-success-subtle-foreground',
                     isCurrent && 'text-primary',
                     isPending && 'text-muted-foreground'
                 )}

@@ -248,27 +248,27 @@ describe('processRevenueData by currency', () => {
 describe('getAlertStyles', () => {
     it('should return correct styles for critical variant', () => {
         const styles = getAlertStyles('critical');
-        expect(styles.border).toBe('border-red-500');
-        expect(styles.bg).toBe('bg-red-50 dark:bg-red-950/20');
-        expect(styles.iconColor).toBe('text-red-500');
+        expect(styles.border).toBe('border-danger-subtle-foreground/30');
+        expect(styles.bg).toBe('bg-danger-subtle');
+        expect(styles.iconColor).toBe('text-danger-subtle-foreground');
     });
     it('should return correct styles for warning variant', () => {
         const styles = getAlertStyles('warning');
-        expect(styles.border).toBe('border-amber-500');
-        expect(styles.bg).toBe('bg-amber-50 dark:bg-amber-950/20');
-        expect(styles.iconColor).toBe('text-amber-500');
+        expect(styles.border).toBe('border-warning-subtle-foreground/30');
+        expect(styles.bg).toBe('bg-warning-subtle');
+        expect(styles.iconColor).toBe('text-warning-subtle-foreground');
     });
     it('should return correct styles for info variant', () => {
         const styles = getAlertStyles('info');
-        expect(styles.border).toBe('border-blue-500');
-        expect(styles.bg).toBe('bg-blue-50 dark:bg-blue-950/20');
-        expect(styles.iconColor).toBe('text-blue-500');
+        expect(styles.border).toBe('border-info-subtle-foreground/30');
+        expect(styles.bg).toBe('bg-info-subtle');
+        expect(styles.iconColor).toBe('text-info-subtle-foreground');
     });
     it('should return correct styles for success variant', () => {
         const styles = getAlertStyles('success');
-        expect(styles.border).toBe('border-green-500');
-        expect(styles.bg).toBe('bg-green-50 dark:bg-green-950/20');
-        expect(styles.iconColor).toBe('text-green-500');
+        expect(styles.border).toBe('border-success-subtle-foreground/30');
+        expect(styles.bg).toBe('bg-success-subtle');
+        expect(styles.iconColor).toBe('text-success-subtle-foreground');
     });
 });
 describe('niceAxisTicks', () => {

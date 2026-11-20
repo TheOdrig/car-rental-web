@@ -60,9 +60,9 @@ export function BanCustomerDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-slate-900">
+            <DialogContent className="max-w-md bg-card">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                    <DialogTitle className="flex items-center gap-2 text-danger-subtle-foreground">
                         <Ban className="h-5 w-5" />
                         Ban Customer
                     </DialogTitle>
@@ -72,12 +72,12 @@ export function BanCustomerDialog({
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg p-3">
+                    <div className="bg-warning-subtle border border-warning-subtle-foreground/30 rounded-lg p-3">
                         <div className="flex items-start gap-2">
-                            <AlertTriangle className="h-5 w-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                            <AlertTriangle className="h-5 w-5 text-warning-subtle-foreground flex-shrink-0 mt-0.5" />
                             <div className="text-sm">
-                                <p className="font-medium text-amber-800 dark:text-amber-200">Customer Statistics</p>
-                                <ul className="mt-1 text-amber-700 dark:text-amber-300 space-y-0.5">
+                                <p className="font-medium text-warning-subtle-foreground">Customer Statistics</p>
+                                <ul className="mt-1 text-warning-subtle-foreground space-y-0.5">
                                     <li>Total Rentals: {statistics.totalRentals}</li>
                                     <li>Damage Reports: {statistics.totalDamageReports}</li>
                                     <li>Late Returns: {statistics.lateReturns}</li>
@@ -87,8 +87,8 @@ export function BanCustomerDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="ban-reason" className="text-slate-700 dark:text-slate-300">
-                            Ban Reason <span className="text-red-500">*</span>
+                        <Label htmlFor="ban-reason" className="text-muted-foreground">
+                            Ban Reason <span className="text-danger-subtle-foreground">*</span>
                         </Label>
                         <Textarea
                             id="ban-reason"
@@ -97,7 +97,7 @@ export function BanCustomerDialog({
                             onChange={(e) => setReason(e.target.value)}
                             className="min-h-[100px]"
                         />
-                        <p className="text-xs text-slate-500 dark:text-slate-400">
+                        <p className="text-xs text-muted-foreground">
                             {reason.length}/10 minimum characters
                         </p>
                     </div>

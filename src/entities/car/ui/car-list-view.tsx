@@ -81,7 +81,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
                                 </p>
                             </div>
                             {data.rating && (
-                                <div className="flex items-center gap-1 text-amber-500">
+                                <div className="flex items-center gap-1 text-warning-subtle-foreground">
                                     <Star className="h-4 w-4 fill-current" />
                                     <span className="text-sm font-medium">{data.rating.toFixed(1)}</span>
                                 </div>
@@ -116,7 +116,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
 
                     <div className="flex items-center justify-between pt-4 border-t">
                         <div>
-                            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                            <span className="text-2xl font-bold text-foreground">
                                 {formatCurrency(data.price, data.currency)}
                                 <span className="text-sm font-normal text-muted-foreground ml-1">
                                     /day

@@ -99,11 +99,11 @@ export function FleetManagementContent() {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Fleet Management</h1>
-                    <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Fleet Management</h1>
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
                         <span>Manage your vehicle inventory</span>
                         {lastUpdated && (
-                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-card px-2 py-0.5 rounded-md border border-gray-200/50 dark:border-gray-700/50">
+                            <span className="flex items-center gap-1.5 text-[11px] font-medium bg-card px-2 py-0.5 rounded-md border border-border">
                                 <Clock className="h-3 w-3" aria-hidden="true" />
                                 Updated {lastUpdated}
                             </span>
@@ -121,7 +121,7 @@ export function FleetManagementContent() {
                         <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} aria-hidden="true" />
                     </Button>
 
-                    <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-blue-500/20 cursor-pointer" asChild>
+                    <Button size="sm" className="gap-2 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" asChild>
                         <Link href="/admin/fleet/new">
                             <Plus className="h-4 w-4" aria-hidden="true" />
                             Add New Car
@@ -162,7 +162,7 @@ export function FleetManagementContent() {
                         setPage(0);
                     }}>
                         <SelectTrigger
-                            className="w-[160px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by status"
                         >
                             <Filter className="h-4 w-4 mr-2" aria-hidden="true" />
@@ -185,7 +185,7 @@ export function FleetManagementContent() {
                         }}
                     >
                         <SelectTrigger
-                            className="w-[160px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by occupancy"
                         >
                             <SelectValue placeholder="Occupancy" />
@@ -207,7 +207,7 @@ export function FleetManagementContent() {
                         }}
                     >
                         <SelectTrigger
-                            className="w-[160px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            className="w-[160px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                             aria-label="Filter by brand"
                         >
                             <SelectValue placeholder="Brand" />

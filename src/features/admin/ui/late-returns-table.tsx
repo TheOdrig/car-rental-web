@@ -46,60 +46,60 @@ export function LateReturnsTable({
 
     return (
         <div className="space-y-4">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+            <div className="rounded-lg border border-border bg-card">
                 <Table className="stack-table">
                     <TableHeader>
                         <TableRow className="hover:bg-transparent">
-                            <TableHead className="text-slate-700 dark:text-slate-300">Customer</TableHead>
-                            <TableHead className="text-slate-700 dark:text-slate-300">Vehicle</TableHead>
-                            <TableHead className="text-slate-700 dark:text-slate-300">End Date</TableHead>
-                            <TableHead className="text-slate-700 dark:text-slate-300">Late Time</TableHead>
-                            <TableHead className="text-slate-700 dark:text-slate-300">Penalty</TableHead>
-                            <TableHead className="text-slate-700 dark:text-slate-300">Status</TableHead>
+                            <TableHead className="text-muted-foreground">Customer</TableHead>
+                            <TableHead className="text-muted-foreground">Vehicle</TableHead>
+                            <TableHead className="text-muted-foreground">End Date</TableHead>
+                            <TableHead className="text-muted-foreground">Late Time</TableHead>
+                            <TableHead className="text-muted-foreground">Penalty</TableHead>
+                            <TableHead className="text-muted-foreground">Status</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {data.map((item) => (
                             <TableRow
                                 key={item.rentalId}
-                                className="cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/50"
+                                className="cursor-pointer hover:bg-raised"
                                 onClick={() => handleRowClick(item.rentalId)}
                             >
                                 <TableCell>
                                     <div>
-                                        <div className="font-medium text-slate-900 dark:text-slate-100">
+                                        <div className="font-medium text-foreground">
                                             {item.customerName}
                                         </div>
-                                        <div className="text-sm text-slate-500 dark:text-slate-400">
+                                        <div className="text-sm text-muted-foreground">
                                             {item.customerEmail}
                                         </div>
                                     </div>
                                 </TableCell>
                                 <TableCell data-label="Vehicle" data-wide>
                                     <div>
-                                        <div className="font-medium text-slate-900 dark:text-slate-100">
+                                        <div className="font-medium text-foreground">
                                             {item.carBrand} {item.carModel}
                                         </div>
-                                        <div className="text-sm text-slate-500 dark:text-slate-400">
+                                        <div className="text-sm text-muted-foreground">
                                             {item.licensePlate}
                                         </div>
                                     </div>
                                 </TableCell>
-                                <TableCell data-label="End Date" className="text-slate-700 dark:text-slate-300">
+                                <TableCell data-label="End Date" className="text-muted-foreground">
                                     {formatDate(item.endDate)}
                                 </TableCell>
                                 <TableCell data-label="Late Time">
-                                    <div className="flex items-center gap-1 text-slate-700 dark:text-slate-300">
+                                    <div className="flex items-center gap-1 text-muted-foreground">
                                         <Clock className="h-4 w-4" />
                                         {formatLateTime(item.lateHours)}
                                     </div>
                                 </TableCell>
                                 <TableCell data-label="Penalty">
-                                    <div className="font-medium text-slate-900 dark:text-slate-100">
+                                    <div className="font-medium text-foreground">
                                         {formatCurrency(item.penaltyAmount, item.currency)}
                                     </div>
                                     {item.penaltyPaid && (
-                                        <span className="text-xs text-green-600 dark:text-green-400">Paid</span>
+                                        <span className="text-xs text-success-subtle-foreground">Paid</span>
                                     )}
                                 </TableCell>
                                 <TableCell data-label="Status">
@@ -113,7 +113,7 @@ export function LateReturnsTable({
 
             {totalPages > 1 && (
                 <div className="flex items-center justify-between">
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                    <p className="text-sm text-muted-foreground">
                         Page {page + 1} of {totalPages}
                     </p>
                     <div className="flex items-center gap-2">
@@ -144,7 +144,7 @@ export function LateReturnsTable({
 
 function LateReturnsTableSkeleton() {
     return (
-        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+        <div className="rounded-lg border border-border bg-card">
             <Table>
                 <TableHeader>
                     <TableRow className="hover:bg-transparent">
@@ -182,13 +182,13 @@ function LateReturnsTableSkeleton() {
 function LateReturnsEmptyState() {
     return (
         <div className="flex flex-col items-center justify-center py-12 text-center">
-            <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3 mb-4">
-                <AlertTriangle className="h-6 w-6 text-green-600 dark:text-green-400" />
+            <div className="rounded-full bg-success-subtle p-3 mb-4">
+                <AlertTriangle className="h-6 w-6 text-success-subtle-foreground" />
             </div>
-            <h3 className="text-lg font-medium text-slate-900 dark:text-slate-100">
+            <h3 className="text-lg font-medium text-foreground">
                 No Late Returns
             </h3>
-            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            <p className="text-sm text-muted-foreground mt-1">
                 All rentals are being returned on time. Great job!
             </p>
         </div>

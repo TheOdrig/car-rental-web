@@ -23,7 +23,7 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <History className="h-5 w-5 text-teal-500" />
+                    <History className="h-5 w-5 text-info-subtle-foreground" />
                     Rental History
                 </CardTitle>
             </CardHeader>
@@ -42,30 +42,30 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                     </div>
                 ) : !data || data.content.length === 0 ? (
                     <div className="text-center py-8">
-                        <History className="h-10 w-10 text-slate-400 mx-auto mb-3" />
-                        <p className="text-sm text-slate-500 dark:text-slate-400">No rental history for this vehicle</p>
+                        <History className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                        <p className="text-sm text-muted-foreground">No rental history for this vehicle</p>
                     </div>
                 ) : (
                     <>
                         <div className="overflow-x-auto">
                             <table className="w-full text-sm">
                                 <thead>
-                                    <tr className="border-b border-slate-200 dark:border-slate-700">
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Rental</th>
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Customer</th>
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Dates</th>
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Duration</th>
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Amount</th>
-                                        <th className="text-left py-3 px-2 text-slate-500 dark:text-slate-400 font-medium">Status</th>
+                                    <tr className="border-b border-border">
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Rental</th>
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Customer</th>
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Dates</th>
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Duration</th>
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Amount</th>
+                                        <th className="text-left py-3 px-2 text-muted-foreground font-medium">Status</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {data.content.map((rental) => (
-                                        <tr key={rental.id} className="border-b border-slate-100 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800/50">
+                                        <tr key={rental.id} className="border-b border-border hover:bg-raised">
                                             <td className="py-3 px-2">
                                                 <Link
                                                     href={`/admin/rentals/${rental.id}`}
-                                                    className="font-mono text-blue-600 dark:text-blue-400 hover:underline"
+                                                    className="font-mono text-info-subtle-foreground hover:underline"
                                                 >
                                                     {formatRentalReference(rental.id)}
                                                 </Link>
@@ -73,18 +73,18 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                                             <td className="py-3 px-2">
                                                 <Link
                                                     href={`/admin/users/${rental.customerId}`}
-                                                    className="text-slate-900 dark:text-slate-100 hover:underline"
+                                                    className="text-foreground hover:underline"
                                                 >
                                                     {rental.customerName}
                                                 </Link>
                                             </td>
-                                            <td className="py-3 px-2 text-slate-600 dark:text-slate-400">
+                                            <td className="py-3 px-2 text-muted-foreground">
                                                 {formatDate(rental.startDate)} - {formatDate(rental.endDate)}
                                             </td>
-                                            <td className="py-3 px-2 text-slate-600 dark:text-slate-400">
+                                            <td className="py-3 px-2 text-muted-foreground">
                                                 {rental.duration} days
                                             </td>
-                                            <td className="py-3 px-2 font-medium text-slate-900 dark:text-slate-100">
+                                            <td className="py-3 px-2 font-medium text-foreground">
                                                 {formatAmount(rental.totalAmount, rental.currency)}
                                             </td>
                                             <td className="py-3 px-2">
@@ -97,8 +97,8 @@ export function VehicleRentalHistoryTable({ vehicleId }: VehicleRentalHistoryTab
                         </div>
 
                         {data.totalPages > 1 && (
-                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-200 dark:border-slate-700">
-                                <span className="text-sm text-slate-500 dark:text-slate-400">
+                            <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                                <span className="text-sm text-muted-foreground">
                                     Page {page + 1} of {data.totalPages} ({data.totalElements} total)
                                 </span>
                                 <div className="flex gap-2">

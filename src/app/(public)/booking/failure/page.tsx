@@ -18,7 +18,7 @@ export default async function BookingFailurePage({ searchParams }: FailurePagePr
     const { error } = params;
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="min-h-screen bg-raised">
             <BookingFailure errorMessage={error} />
         </div>
     );

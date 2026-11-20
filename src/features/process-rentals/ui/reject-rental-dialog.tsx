@@ -61,48 +61,48 @@ export function RejectRentalDialog({
             }
             onOpenChange(val);
         }}>
-            <DialogContent className="max-w-md bg-white dark:bg-slate-950 border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden">
+            <DialogContent className="max-w-md bg-card border-border shadow-2xl overflow-hidden">
 
                 <DialogHeader className="pt-2">
-                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-rose-500/10 dark:bg-rose-500/20 mb-4 shadow-sm border border-rose-500/20">
-                        <AlertTriangle className="h-7 w-7 text-rose-600 dark:text-rose-500" />
+                    <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-danger-subtle mb-4 shadow-sm border border-danger-subtle-foreground/30">
+                        <AlertTriangle className="h-7 w-7 text-danger-subtle-foreground" />
                     </div>
                     <DialogTitle className="text-2xl font-bold text-center">
                         Reject Rental Request
                     </DialogTitle>
-                    <DialogDescription className="text-center text-slate-500 dark:text-slate-400 px-4">
+                    <DialogDescription className="text-center text-muted-foreground px-4">
                         This action will inform the customer that their request has been declined. This cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-5 space-y-4 shadow-sm relative overflow-hidden group">
+                    <div className="rounded-lg border border-border bg-raised p-5 space-y-4 shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                            <Car className="h-10 w-10 text-slate-900 dark:text-white" />
+                            <Car className="h-10 w-10 text-foreground" />
                         </div>
 
                         <div className="flex items-center justify-between gap-4 relative z-10">
                             <div className="flex items-center gap-2.5">
-                                <div className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-400 dark:text-slate-500">
+                                <div className="p-1.5 rounded-lg bg-popover border border-border shadow-sm text-muted-foreground">
                                     <Car className="h-4 w-4" />
                                 </div>
-                                <span className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                                <span className="text-sm font-bold text-foreground truncate">
                                     {item.carBrand} {item.carModel}
                                 </span>
                             </div>
-                            <span className="text-[10px] font-mono font-bold tracking-tighter text-slate-500 dark:text-slate-400 bg-slate-200/50 dark:bg-slate-800/50 px-2 py-0.5 rounded border border-transparent dark:border-slate-700/50">
+                            <span className="text-[10px] font-mono font-bold tracking-tighter text-muted-foreground bg-muted px-2 py-0.5 rounded border border-transparent">
                                 {item.licensePlate}
                             </span>
                         </div>
 
                         <div className="flex items-center gap-2.5 relative z-10">
-                            <div className="p-1.5 rounded-lg bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm text-slate-400 dark:text-slate-500">
+                            <div className="p-1.5 rounded-lg bg-popover border border-border shadow-sm text-muted-foreground">
                                 <User className="h-4 w-4" />
                             </div>
-                            <span className="text-sm text-slate-700 dark:text-slate-300 font-medium">{item.customerName}</span>
+                            <span className="text-sm text-muted-foreground font-medium">{item.customerName}</span>
                         </div>
 
-                        <div className="flex items-center gap-2.5 text-xs text-slate-500 dark:text-slate-500 pt-3 border-t border-slate-200/60 dark:border-slate-800/60 relative z-10">
+                        <div className="flex items-center gap-2.5 text-xs text-muted-foreground pt-3 border-t border-border relative z-10">
                             <Calendar className="h-3.5 w-3.5" />
                             <span className="font-medium tracking-tight">
                                 {formatShortDate(item.startDate)} - {formatDate(item.endDate)}
@@ -111,15 +111,15 @@ export function RejectRentalDialog({
                     </div>
 
                     <div className="space-y-3">
-                        <Label htmlFor="reject-reason" className="text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2">
-                            Rejection Reason <span className="text-rose-500">*</span>
+                        <Label htmlFor="reject-reason" className="text-sm font-bold text-muted-foreground flex items-center gap-2">
+                            Rejection Reason <span className="text-danger-subtle-foreground">*</span>
                         </Label>
                         <Textarea
                             id="reject-reason"
                             placeholder="Please explain the reason for rejection (this will be sent to the customer)..."
                             className={cn(
-                                "h-32 resize-none bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 focus-visible:ring-rose-500 focus-visible:border-rose-500 placeholder:text-slate-400 dark:placeholder:text-slate-600 transition-all rounded-xl",
-                                error && "border-rose-500/50 ring-1 ring-rose-500/20 focus-visible:ring-rose-500"
+                                "h-32 resize-none bg-raised border-border focus-visible:ring-danger-subtle-foreground/30 focus-visible:border-danger-subtle-foreground/30 placeholder:text-muted-foreground transition-all rounded-xl",
+                                error && "border-danger-subtle-foreground/30 ring-1 ring-danger-subtle-foreground/30 focus-visible:ring-danger-subtle-foreground/30"
                             )}
                             value={reason}
                             onChange={(e) => {
@@ -128,7 +128,7 @@ export function RejectRentalDialog({
                             }}
                         />
                         {error && (
-                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-rose-600 dark:text-rose-400 animate-in fade-in slide-in-from-top-1">
+                            <div className="flex items-center gap-1.5 text-[11px] font-bold text-danger-subtle-foreground animate-in fade-in slide-in-from-top-1">
                                 <AlertTriangle className="h-3 w-3" />
                                 {error}
                             </div>
@@ -136,12 +136,12 @@ export function RejectRentalDialog({
                     </div>
                 </div>
 
-                <DialogFooter className="gap-3 sm:gap-3 p-2 bg-slate-50/50 dark:bg-slate-900/50 -mx-6 -mb-6 mt-2 border-t border-slate-100 dark:border-slate-800/50">
+                <DialogFooter className="gap-3 sm:gap-3 p-2 bg-raised -mx-6 -mb-6 mt-2 border-t border-border">
                     <Button
                         variant="ghost"
                         onClick={() => onOpenChange(false)}
                         disabled={isLoading}
-                        className="font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-800"
+                        className="font-semibold text-muted-foreground hover:bg-accent"
                     >
                         Cancel
                     </Button>
@@ -149,7 +149,7 @@ export function RejectRentalDialog({
                         variant="destructive"
                         onClick={handleConfirm}
                         disabled={isLoading}
-                        className="bg-rose-600 hover:bg-rose-700 text-white font-semibold h-11 px-6 gap-2"
+                        className="bg-destructive hover:bg-destructive text-white font-semibold h-11 px-6 gap-2"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">

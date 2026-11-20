@@ -83,7 +83,7 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold text-slate-900 dark:text-slate-100">
+                    <span className="text-4xl font-bold text-foreground">
                         {formatPrice(car.price, sourceCurrency)}
                     </span>
                     <span className="text-muted-foreground">/day</span>
@@ -124,9 +124,9 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
                 {actionSlot}
 
                 {!isAvailable && !actionSlot && (
-                    <Card className="border-amber-200 bg-amber-50/50">
+                    <Card className="border-warning-subtle-foreground/30 bg-warning-subtle">
                         <CardContent className="py-4">
-                            <p className="text-center text-amber-600">
+                            <p className="text-center text-warning-subtle-foreground">
                                 {getCarUnavailableMessage(car.carStatusType)}
                             </p>
                         </CardContent>
@@ -192,16 +192,16 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
         <div className="space-y-4">
             <div className="flex items-center justify-between">
                 <div className="flex min-w-0 flex-col">
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white">
+                    <span className="text-sm font-semibold text-foreground">
                         {format(currentDate, 'MMMM yyyy')}
                     </span>
                     <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] uppercase tracking-wider text-muted-foreground">
                         <div className="flex items-center gap-1">
-                            <div className="h-2 w-2 rounded-full bg-green-500" />
+                            <div className="h-2 w-2 rounded-full bg-success" />
                             <span>Available</span>
                         </div>
                         <div className="flex items-center gap-1">
-                            <div className="h-2 w-2 rounded-full bg-red-500" />
+                            <div className="h-2 w-2 rounded-full bg-destructive" />
                             <span>Booked</span>
                         </div>
                         <div className="flex items-center gap-1">
@@ -239,7 +239,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
             </div>
 
             {isMax && (
-                <p className="text-[10px] text-amber-600 bg-amber-50 px-2 py-1 rounded border border-amber-100 mt-1">
+                <p className="text-[10px] text-warning-subtle-foreground bg-warning-subtle px-2 py-1 rounded border border-warning-subtle-foreground/30 mt-1">
                     Calendar is limited to the current month + 3 months ahead.
                 </p>
             )}
@@ -274,8 +274,8 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                                         past
                                             ? 'bg-muted text-muted-foreground'
                                             : day.status === DAY_AVAILABILITY.AVAILABLE
-                                                ? 'bg-green-500/10 text-green-700 dark:text-green-400 hover:bg-green-500/20'
-                                                : 'bg-red-500/10 text-red-700 dark:text-red-400'
+                                                ? 'bg-success-subtle text-success-subtle-foreground hover:bg-success-subtle'
+                                                : 'bg-danger-subtle text-danger-subtle-foreground'
                                     )}
                                     title={`${formatDate(day.date)}: ${label}`}
                                 >

@@ -16,7 +16,7 @@ export default function StatisticsLoading() {
                 </div>
             </div>
 
-            <div className="flex gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-900/50">
+            <div className="flex gap-4 p-4 rounded-xl bg-card/50">
                 <div className="space-y-2">
                     <Skeleton className="h-4 w-20" />
                     <Skeleton className="h-9 w-[160px]" />
@@ -29,7 +29,7 @@ export default function StatisticsLoading() {
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
                 {Array.from({ length: 7 }).map((_, i) => (
-                    <div key={i} className="p-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                    <div key={i} className="p-4 rounded-lg border border-border bg-card">
                         <div className="flex items-center gap-3">
                             <Skeleton className="h-9 w-9 rounded-lg" />
                             <div className="space-y-1">

@@ -110,7 +110,7 @@ export const UserTable = memo(function UserTable({
 
     return (
         <>
-            <Card className={cn('bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800', className)}>
+            <Card className={cn('bg-card border-border', className)}>
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between gap-2">
                         <CardTitle className="text-lg">User Accounts</CardTitle>

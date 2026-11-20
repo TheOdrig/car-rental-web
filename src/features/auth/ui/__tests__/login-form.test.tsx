@@ -344,7 +344,7 @@ describe('LoginForm', () => {
             fireEvent.blur(usernameInput);
 
             await waitFor(() => {
-                expect(usernameInput).toHaveClass('border-green-500');
+                expect(usernameInput).toHaveClass('border-success');
             });
         });
 
@@ -356,7 +356,7 @@ describe('LoginForm', () => {
             fireEvent.blur(passwordInput);
 
             await waitFor(() => {
-                expect(passwordInput).toHaveClass('border-green-500');
+                expect(passwordInput).toHaveClass('border-success');
             });
         });
 

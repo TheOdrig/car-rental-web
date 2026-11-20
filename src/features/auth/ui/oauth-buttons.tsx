@@ -109,7 +109,7 @@ export function OAuthDivider({ className, text = 'Or continue with' }: OAuthDivi
                 <div className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-white dark:bg-slate-950 text-slate-600 dark:text-slate-400">
+                <span className="px-4 bg-card text-muted-foreground">
                     {text}
                 </span>
             </div>

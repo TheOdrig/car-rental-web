@@ -184,7 +184,7 @@ export const RentalCard = memo(function RentalCard({
                             />
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
-                                <span className="text-xl font-bold text-slate-900 dark:text-white">
+                                <span className="text-xl font-bold text-foreground">
                                     {formatPrice(totalPrice, currency || 'USD')}
                                 </span>
                                 <ActionButtons
@@ -253,7 +253,7 @@ export const RentalCard = memo(function RentalCard({
                                     {days} {days === 1 ? 'day' : 'days'}
                                 </span>
                             </div>
-                            <span className="font-semibold text-slate-900 dark:text-white">
+                            <span className="font-semibold text-foreground">
                                 {formatPrice(totalPrice, currency || 'USD')}
                             </span>
                         </div>

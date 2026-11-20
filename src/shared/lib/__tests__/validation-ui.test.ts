@@ -18,8 +18,8 @@ describe('validation-ui utilities', () => {
         it('should return valid config with green color', () => {
             const config = getValidationConfig('valid');
             expect(config.state).toBe('valid');
-            expect(config.borderColor).toBe('border-green-500');
-            expect(config.color).toBe('text-green-600');
+            expect(config.borderColor).toBe('border-success');
+            expect(config.color).toBe('text-success-subtle-foreground');
         });
         it('should return invalid config with destructive color', () => {
             const config = getValidationConfig('invalid');
@@ -86,7 +86,7 @@ describe('validation-ui utilities', () => {
     });
     describe('getValidationBorderClasses', () => {
         it('should return green border for valid state', () => {
-            expect(getValidationBorderClasses('valid')).toBe('border-green-500');
+            expect(getValidationBorderClasses('valid')).toBe('border-success');
         });
         it('should return destructive border for invalid state', () => {
             expect(getValidationBorderClasses('invalid')).toBe('border-destructive');
@@ -97,7 +97,7 @@ describe('validation-ui utilities', () => {
     });
     describe('getValidationMessageClasses', () => {
         it('should return green text for valid state', () => {
-            expect(getValidationMessageClasses('valid')).toContain('text-green');
+            expect(getValidationMessageClasses('valid')).toContain('text-success');
         });
         it('should return destructive text for invalid state', () => {
             expect(getValidationMessageClasses('invalid')).toBe('text-destructive');
@@ -184,7 +184,7 @@ describe('validation-ui utilities', () => {
     describe('getValidationRingClasses', () => {
         it('should return green ring for valid state', () => {
             const classes = getValidationRingClasses('valid');
-            expect(classes).toContain('ring-green-500');
+            expect(classes).toContain('ring-success');
         });
         it('should return destructive ring for invalid state', () => {
             const classes = getValidationRingClasses('invalid');

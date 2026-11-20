@@ -17,8 +17,7 @@ export function FormSuccess({ message, onDismiss, className }: FormSuccessProps)
             role="status"
             aria-live="polite"
             className={cn(
-                'flex items-center gap-3 rounded-lg border border-green-200 bg-green-50 p-4 text-green-700',
-                'dark:border-green-900/50 dark:bg-green-950/50 dark:text-green-400',
+                'flex items-center gap-3 rounded-lg border border-success-subtle-foreground/30 bg-success-subtle p-4 text-success-subtle-foreground',
                 className
             )}
         >
@@ -28,7 +27,7 @@ export function FormSuccess({ message, onDismiss, className }: FormSuccessProps)
                 <button
                     type="button"
                     onClick={onDismiss}
-                    className="shrink-0 rounded-md p-1 hover:bg-green-100 dark:hover:bg-green-900/50"
+                    className="shrink-0 rounded-md p-1 hover:bg-success-subtle"
                     aria-label="Dismiss message"
                 >
                     <X className="h-4 w-4" aria-hidden="true" />

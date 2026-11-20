@@ -75,28 +75,28 @@ export function DamageStatisticsContent() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-green-500" />
+                                    <div className="h-3 w-3 rounded-full bg-success" />
                                     <span>Minor</span>
                                 </div>
                                 <span className="font-medium">{stats.minorCount}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-yellow-500" />
+                                    <div className="h-3 w-3 rounded-full bg-warning" />
                                     <span>Moderate</span>
                                 </div>
                                 <span className="font-medium">{stats.moderateCount}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-orange-500" />
+                                    <div className="h-3 w-3 rounded-full bg-warning" />
                                     <span>Major</span>
                                 </div>
                                 <span className="font-medium">{stats.majorCount}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <div className="h-3 w-3 rounded-full bg-red-500" />
+                                    <div className="h-3 w-3 rounded-full bg-destructive" />
                                     <span>Total Loss</span>
                                 </div>
                                 <span className="font-medium">{stats.totalLossCount}</span>
@@ -112,14 +112,14 @@ export function DamageStatisticsContent() {
                         <div className="space-y-4">
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <AlertTriangle className="h-4 w-4 text-yellow-500" />
+                                    <AlertTriangle className="h-4 w-4 text-warning-subtle-foreground" />
                                     <span>Disputed</span>
                                 </div>
                                 <span className="font-medium">{stats.disputedCount}</span>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center gap-2">
-                                    <CheckCircle className="h-4 w-4 text-green-500" />
+                                    <CheckCircle className="h-4 w-4 text-success-subtle-foreground" />
                                     <span>Resolved</span>
                                 </div>
                                 <span className="font-medium">{stats.resolvedCount}</span>

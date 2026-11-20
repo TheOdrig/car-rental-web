@@ -27,7 +27,7 @@ export function VehicleDetailsCard({ carSummary }: VehicleDetailsCardProps) {
                         />
                     </div>
                     <div className="min-w-0 flex-1">
-                        <p className="text-xl font-semibold text-slate-900 dark:text-white transition-colors group-hover:text-primary">
+                        <p className="text-xl font-semibold text-foreground transition-colors group-hover:text-primary">
                             {carSummary?.brand} {carSummary?.model}
                         </p>
                         <p className="text-muted-foreground">

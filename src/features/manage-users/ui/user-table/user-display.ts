@@ -17,36 +17,36 @@ export interface UserForAction {
 export const ROLE_CONFIG: Record<UserRole, DisplayConfig> = {
     ADMIN: {
         label: 'Admin',
-        dotColor: 'bg-purple-500',
-        textColor: 'text-purple-700 dark:text-purple-400',
+        dotColor: 'bg-info',
+        textColor: 'text-info-subtle-foreground',
     },
     CUSTOMER: {
         label: 'Customer',
-        dotColor: 'bg-blue-500',
-        textColor: 'text-blue-700 dark:text-blue-400',
+        dotColor: 'bg-info',
+        textColor: 'text-info-subtle-foreground',
     },
     SUPPORT: {
         label: 'Support',
-        dotColor: 'bg-cyan-500',
-        textColor: 'text-cyan-700 dark:text-cyan-400',
+        dotColor: 'bg-info',
+        textColor: 'text-info-subtle-foreground',
     },
 };
 
 export const STATUS_CONFIG: Record<UserStatus, DisplayConfig> = {
     ACTIVE: {
         label: 'Active',
-        dotColor: 'bg-emerald-500',
-        textColor: 'text-emerald-700 dark:text-emerald-400',
+        dotColor: 'bg-success',
+        textColor: 'text-success-subtle-foreground',
     },
     PENDING: {
         label: 'Pending',
-        dotColor: 'bg-amber-500',
-        textColor: 'text-amber-700 dark:text-amber-400',
+        dotColor: 'bg-warning',
+        textColor: 'text-warning-subtle-foreground',
     },
     BANNED: {
         label: 'Banned',
-        dotColor: 'bg-red-500',
-        textColor: 'text-red-700 dark:text-red-400',
+        dotColor: 'bg-destructive',
+        textColor: 'text-danger-subtle-foreground',
     },
 };
 

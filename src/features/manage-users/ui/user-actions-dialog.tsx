@@ -50,8 +50,8 @@ export function BanUserDialog({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 dark:bg-red-900/30">
-                            <Ban className="h-5 w-5 text-red-600 dark:text-red-400" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-danger-subtle">
+                            <Ban className="h-5 w-5 text-danger-subtle-foreground" />
                         </div>
                         <div>
                             <DialogTitle>Ban User</DialogTitle>
@@ -63,9 +63,9 @@ export function BanUserDialog({
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="flex items-start gap-3 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-800 dark:bg-amber-950/20">
-                        <AlertTriangle className="mt-0.5 h-4 w-4 text-amber-600 dark:text-amber-400" />
-                        <p className="text-sm text-amber-800 dark:text-amber-200">
+                    <div className="flex items-start gap-3 rounded-lg border border-warning-subtle-foreground/30 bg-warning-subtle p-3">
+                        <AlertTriangle className="mt-0.5 h-4 w-4 text-warning-subtle-foreground" />
+                        <p className="text-sm text-warning-subtle-foreground">
                             The user will be logged out immediately and won&apos;t be able to log in until unbanned.
                         </p>
                     </div>
@@ -128,8 +128,8 @@ export function UnbanUserDialog({
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30">
-                            <UserCheck className="h-5 w-5 text-green-600 dark:text-green-400" />
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-success-subtle">
+                            <UserCheck className="h-5 w-5 text-success-subtle-foreground" />
                         </div>
                         <div>
                             <DialogTitle>Unban User</DialogTitle>
@@ -160,7 +160,7 @@ export function UnbanUserDialog({
                     <Button
                         onClick={onConfirm}
                         disabled={isLoading}
-                        className="bg-green-600 hover:bg-green-700"
+                        className="bg-success hover:bg-success"
                     >
                         {isLoading ? 'Unbanning...' : 'Unban User'}
                     </Button>

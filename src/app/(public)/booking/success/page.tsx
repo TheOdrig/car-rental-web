@@ -19,7 +19,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
 
     if (!ref || !/^\d+$/.test(ref)) {
         return (
-            <div className="min-h-[60vh] flex items-center justify-center px-4 bg-slate-50 dark:bg-slate-950">
+            <div className="min-h-[60vh] flex items-center justify-center px-4 bg-raised">
                 <div className="text-center">
                     <h1 className="text-2xl font-bold text-foreground mb-4">No booking reference</h1>
                     <p className="text-muted-foreground mb-6">
@@ -37,7 +37,7 @@ export default async function BookingSuccessPage({ searchParams }: SuccessPagePr
     }
 
     return (
-        <div className="min-h-screen bg-slate-50 dark:bg-slate-950">
+        <div className="min-h-screen bg-raised">
             <BookingSuccessLoader referenceNumber={ref} />
         </div>
     );

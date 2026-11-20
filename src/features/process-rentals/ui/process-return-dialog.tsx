@@ -63,35 +63,35 @@ export function ProcessReturnDialog({
             if (!val) resetState();
             onOpenChange(val);
         }}>
-            <DialogContent className="max-w-md bg-white dark:bg-slate-900 border dark:border-slate-700">
+            <DialogContent className="max-w-md bg-card border ">
                 <DialogHeader>
-                    <DialogTitle className="text-slate-900 dark:text-white">Process Vehicle Return</DialogTitle>
-                    <DialogDescription className="text-slate-600 dark:text-slate-400">
+                    <DialogTitle className="text-foreground">Process Vehicle Return</DialogTitle>
+                    <DialogDescription className="text-muted-foreground">
                         Confirm the vehicle return and note any issues.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-5 py-4">
-                    <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700">
+                    <div className="bg-muted rounded-xl p-4 border border-border">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
                                     <Car className="h-5 w-5 text-primary" />
                                 </div>
                                 <div>
-                                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                    <p className="text-sm font-semibold text-foreground">
                                         {item.carBrand} {item.carModel}
                                     </p>
-                                    <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                                    <p className="text-xs text-muted-foreground font-medium">
                                         {item.licensePlate}
                                     </p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                                <p className="text-sm font-semibold text-foreground">
                                     {item.customerName}
                                 </p>
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                <p className="text-xs text-muted-foreground">
                                     {formatRentalReference(item.rentalId)}
                                 </p>
                             </div>
@@ -99,16 +99,16 @@ export function ProcessReturnDialog({
                     </div>
 
                     <div className="space-y-3">
-                        <div className="flex items-center space-x-3 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-3">
+                        <div className="flex items-center space-x-3 rounded-lg border border-border bg-raised p-3">
                             <Checkbox
                                 id="hasDamage"
                                 checked={hasDamage}
                                 onCheckedChange={(checked) => setHasDamage(checked as boolean)}
-                                className="border-slate-400 dark:border-slate-500"
+                                className="border-muted-foreground"
                             />
                             <Label
                                 htmlFor="hasDamage"
-                                className="text-sm font-medium cursor-pointer text-slate-700 dark:text-slate-300"
+                                className="text-sm font-medium cursor-pointer text-muted-foreground"
                             >
                                 Vehicle has new damage to report
                             </Label>
@@ -117,7 +117,7 @@ export function ProcessReturnDialog({
                         {hasDamage && onReportDamage && (
                             <Button
                                 variant="outline"
-                                className="w-full border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/40 gap-2 h-10 cursor-pointer"
+                                className="w-full border-danger-subtle-foreground/30 bg-danger-subtle text-danger-subtle-foreground hover:bg-danger-subtle gap-2 h-10 cursor-pointer"
                                 onClick={() => onReportDamage(item.rentalId)}
                             >
                                 <AlertCircle className="h-4 w-4" />
@@ -129,14 +129,14 @@ export function ProcessReturnDialog({
                     <div className="space-y-2">
                         <Label
                             htmlFor="return-notes"
-                            className="text-sm font-medium text-slate-700 dark:text-slate-300"
+                            className="text-sm font-medium text-muted-foreground"
                         >
-                            Return Notes <span className="text-slate-500 dark:text-slate-500">(optional)</span>
+                            Return Notes <span className="text-muted-foreground">(optional)</span>
                         </Label>
                         <Textarea
                             id="return-notes"
                             placeholder="Add any notes about the vehicle condition, fuel level, issues, etc."
-                            className="h-24 bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                            className="h-24 bg-background dark:bg-input/30 border-border text-foreground placeholder:text-muted-foreground"
                             value={notes}
                             onChange={(e) => setNotes(e.target.value)}
                         />
@@ -148,7 +148,7 @@ export function ProcessReturnDialog({
                         variant="outline"
                         onClick={() => onOpenChange(false)}
                         disabled={isLoading}
-                        className="cursor-pointer border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        className="cursor-pointer border-border text-muted-foreground hover:bg-muted"
                     >
                         Cancel
                     </Button>

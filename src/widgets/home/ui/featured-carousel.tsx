@@ -53,7 +53,7 @@ export function FeaturedCarousel({
                     <div>
                         <h2 className="text-2xl md:text-3xl font-bold">{title}</h2>
                         {subtitle && (
-                            <p className="text-slate-600 dark:text-slate-400 mt-1">{subtitle}</p>
+                            <p className="text-muted-foreground mt-1">{subtitle}</p>
                         )}
                     </div>
 
@@ -128,7 +128,7 @@ function FeaturedCarouselSkeleton() {
 
 function FeaturedCarouselEmpty() {
     return (
-        <div className="text-center py-12 text-slate-600 dark:text-slate-400">
+        <div className="text-center py-12 text-muted-foreground">
             <p>No featured cars available at the moment.</p>
             <Button variant="link" className="mt-2" asChild>
                 <Link href="/cars">Browse all cars</Link>

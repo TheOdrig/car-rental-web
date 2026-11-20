@@ -120,7 +120,7 @@ export function ProfilePicture({
                     size="sm"
                     onClick={handleRemove}
                     disabled={isLoading}
-                    className="text-destructive hover:text-destructive dark:text-red-400 dark:hover:text-red-400 hover:!bg-destructive/10 dark:hover:!bg-destructive/20"
+                    className="text-destructive hover:text-destructive hover:!bg-destructive/10 dark:hover:!bg-destructive/20"
                 >
                     {isDeleting ? (
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />

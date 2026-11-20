@@ -46,20 +46,20 @@ import { Pagination } from '@/shared/ui/pagination';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
     AVAILABLE: {
-        dotColor: 'bg-emerald-500',
-        textColor: 'text-emerald-700 dark:text-emerald-400',
+        dotColor: 'bg-success',
+        textColor: 'text-success-subtle-foreground',
     },
     MAINTENANCE: {
-        dotColor: 'bg-orange-500',
-        textColor: 'text-orange-700 dark:text-orange-400',
+        dotColor: 'bg-warning',
+        textColor: 'text-warning-subtle-foreground',
     },
     DAMAGED: {
-        dotColor: 'bg-rose-500',
-        textColor: 'text-rose-700 dark:text-rose-400',
+        dotColor: 'bg-destructive',
+        textColor: 'text-danger-subtle-foreground',
     },
     INSPECTION: {
-        dotColor: 'bg-cyan-500',
-        textColor: 'text-cyan-700 dark:text-cyan-400',
+        dotColor: 'bg-info',
+        textColor: 'text-info-subtle-foreground',
     },
 };
 
@@ -149,8 +149,8 @@ export const FleetTable = memo(function FleetTable({
             )}>
                 <CardHeader className="pb-3">
                     <div className="flex items-center justify-between">
-                        <CardTitle className="text-lg text-gray-900 dark:text-white">Fleet Inventory</CardTitle>
-                        <span className="text-sm text-gray-500 dark:text-gray-400">
+                        <CardTitle className="text-lg text-foreground">Fleet Inventory</CardTitle>
+                        <span className="text-sm text-muted-foreground">
                             Showing {cars.length} of {totalCars} vehicles
                         </span>
                     </div>
@@ -159,13 +159,13 @@ export const FleetTable = memo(function FleetTable({
                     <div className="overflow-x-auto">
                         <Table className="stack-table">
                             <TableHeader>
-                                <TableRow className="border-b border-slate-200 dark:border-slate-700">
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Car Details</TableHead>
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">License Plate</TableHead>
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Service</TableHead>
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Occupancy</TableHead>
-                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Price/Day</TableHead>
-                                    <TableHead className="text-right text-slate-600 dark:text-slate-300 font-semibold">Actions</TableHead>
+                                <TableRow className="border-b border-border">
+                                    <TableHead className="text-muted-foreground font-semibold">Car Details</TableHead>
+                                    <TableHead className="text-muted-foreground font-semibold">License Plate</TableHead>
+                                    <TableHead className="text-muted-foreground font-semibold">Service</TableHead>
+                                    <TableHead className="text-muted-foreground font-semibold">Occupancy</TableHead>
+                                    <TableHead className="text-muted-foreground font-semibold">Price/Day</TableHead>
+                                    <TableHead className="text-right text-muted-foreground font-semibold">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -211,7 +211,7 @@ export const FleetTable = memo(function FleetTable({
                                                 </div>
                                             </TableCell>
                                             <TableCell data-label="License Plate">
-                                                <code className="font-mono text-sm bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 rounded border border-slate-200 dark:border-slate-700">
+                                                <code className="font-mono text-sm bg-muted text-foreground px-2 py-1 rounded border border-border">
                                                     {car.licensePlate}
                                                 </code>
                                             </TableCell>
@@ -220,7 +220,7 @@ export const FleetTable = memo(function FleetTable({
                                                     className={cn(
                                                         "inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium",
                                                         " bg-card",
-                                                        "border border-slate-200/50 dark:border-slate-700/50 shadow-sm",
+                                                        "border border-border shadow-sm",
                                                         statusConfig[car.carStatusType]?.textColor
                                                     )}
                                                 >

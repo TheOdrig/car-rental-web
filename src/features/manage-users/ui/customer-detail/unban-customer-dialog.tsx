@@ -63,9 +63,9 @@ export function UnbanCustomerDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleClose}>
-            <DialogContent className="max-w-md bg-white dark:bg-slate-900">
+            <DialogContent className="max-w-md bg-card">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
+                    <DialogTitle className="flex items-center gap-2 text-success-subtle-foreground">
                         <UserCheck className="h-5 w-5" />
                         Unban Customer
                     </DialogTitle>
@@ -75,15 +75,15 @@ export function UnbanCustomerDialog({
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 space-y-2">
+                    <div className="bg-raised border border-border rounded-lg p-3 space-y-2">
                         <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Original Ban Reason</span>
-                            <p className="text-sm text-slate-900 dark:text-slate-100 mt-1">
+                            <span className="text-xs text-muted-foreground block">Original Ban Reason</span>
+                            <p className="text-sm text-foreground mt-1">
                                 {accountStatus.banReason || 'No reason provided'}
                             </p>
                         </div>
                         {accountStatus.bannedAt && (
-                            <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                                 <Clock className="h-4 w-4" />
                                 <span>Banned on: {formatDateTime(accountStatus.bannedAt)}</span>
                             </div>
@@ -91,7 +91,7 @@ export function UnbanCustomerDialog({
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="unban-note" className="text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="unban-note" className="text-muted-foreground">
                             Unban Note (Optional)
                         </Label>
                         <Textarea
@@ -111,7 +111,7 @@ export function UnbanCustomerDialog({
                     <Button
                         onClick={handleConfirm}
                         disabled={unbanCustomer.isPending}
-                        className="bg-emerald-600 hover:bg-emerald-700"
+                        className="bg-success hover:bg-success"
                     >
                         <UserCheck className="h-4 w-4 mr-2" />
                         {unbanCustomer.isPending ? 'Unbanning...' : 'Unban Customer'}

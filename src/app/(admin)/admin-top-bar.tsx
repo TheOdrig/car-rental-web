@@ -59,7 +59,7 @@ export function AdminTopBar({ username }: { username: string }) {
                             <Link href="/settings/profile">Profile</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+                        <DropdownMenuItem onClick={handleLogout} className="text-danger-subtle-foreground focus:text-danger-subtle-foreground">
                             Log Out
                         </DropdownMenuItem>
                     </DropdownMenuContent>

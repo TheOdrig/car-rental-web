@@ -59,7 +59,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
             </CardHeader>
             <CardContent className="space-y-4">
                 {isAdding && (
-                    <div className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-slate-50 dark:bg-slate-800/50">
+                    <div className="border border-border rounded-lg p-4 bg-raised">
                         <Textarea
                             placeholder="Enter admin note (min 3, max 1000 characters)..."
                             value={noteText}
@@ -68,7 +68,7 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
                             maxLength={1000}
                         />
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-slate-500 dark:text-slate-400">
+                            <span className="text-xs text-muted-foreground">
                                 {noteText.length}/1000 characters
                             </span>
                             <div className="flex gap-2">
@@ -94,29 +94,29 @@ export function CustomerNotesCard({ customerId, notes, onNoteAdded }: CustomerNo
 
                 {sortedNotes.length === 0 ? (
                     <div className="text-center py-8">
-                        <MessageSquare className="h-10 w-10 text-slate-400 mx-auto mb-3" />
-                        <p className="text-sm text-slate-500 dark:text-slate-400">No admin notes yet</p>
+                        <MessageSquare className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
+                        <p className="text-sm text-muted-foreground">No admin notes yet</p>
                     </div>
                 ) : (
                     <div className="space-y-3">
                         {sortedNotes.map((note) => (
                             <div
                                 key={note.id}
-                                className="border border-slate-200 dark:border-slate-700 rounded-lg p-4 bg-white dark:bg-slate-900"
+                                className="border border-border rounded-lg p-4 bg-card"
                             >
                                 <div className="flex items-center justify-between mb-2">
                                     <div className="flex items-center gap-2 text-sm">
-                                        <User className="h-4 w-4 text-slate-400" />
-                                        <span className="font-medium text-slate-900 dark:text-slate-100">
+                                        <User className="h-4 w-4 text-muted-foreground" />
+                                        <span className="font-medium text-foreground">
                                             {note.adminUsername}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
+                                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
                                         <Clock className="h-3 w-3" />
                                         {formatDateTime(note.createdAt)}
                                     </div>
                                 </div>
-                                <p className="text-sm text-slate-700 dark:text-slate-300 whitespace-pre-wrap">
+                                <p className="text-sm text-muted-foreground whitespace-pre-wrap">
                                     {note.text}
                                 </p>
                             </div>

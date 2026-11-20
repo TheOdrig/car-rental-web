@@ -93,7 +93,7 @@ function AuthorizedView({ rentalId }: { rentalId: number }) {
     return (
         <Shell rentalId={rentalId}>
             <div className="flex items-start gap-3" role="status" data-testid="payment-state-authorized">
-                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-green-600" aria-hidden="true" />
+                <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-success-subtle-foreground" aria-hidden="true" />
                 <div>
                     <p className="font-semibold">Payment held; charged at pickup</p>
                     <p className="text-sm text-muted-foreground">

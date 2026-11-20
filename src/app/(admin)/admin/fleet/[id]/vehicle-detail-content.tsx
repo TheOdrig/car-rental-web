@@ -93,11 +93,11 @@ export function VehicleDetailContent({ id }: { id: string }) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+                        <h1 className="text-3xl font-bold tracking-tight text-foreground">
                             {vehicleName}
                         </h1>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                         {vehicle.year} • {vehicle.licensePlate} • {vehicle.color}
                     </p>
                 </div>

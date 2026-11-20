@@ -18,7 +18,7 @@ export function SimilarCarsSection({ carId, className }: SimilarCarsSectionProps
 
     return (
         <section aria-label="Similar vehicles" className={cn('py-8', className)}>
-            <h2 className="mb-6 text-2xl font-bold text-slate-900 dark:text-slate-100">Similar Vehicles</h2>
+            <h2 className="mb-6 text-2xl font-bold text-foreground">Similar Vehicles</h2>
 
             <div
                 className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto snap-x snap-mandatory"

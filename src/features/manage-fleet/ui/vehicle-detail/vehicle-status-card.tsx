@@ -22,7 +22,7 @@ export function VehicleStatusCard({ currentStatus }: VehicleStatusCardProps) {
         <Card className="border-border bg-card">
             <CardHeader className="pb-3">
                 <CardTitle className="flex items-center gap-2 text-lg">
-                    <Activity className="h-5 w-5 text-rose-500" />
+                    <Activity className="h-5 w-5 text-danger-subtle-foreground" />
                     Current Status
                 </CardTitle>
             </CardHeader>
@@ -31,24 +31,24 @@ export function VehicleStatusCard({ currentStatus }: VehicleStatusCardProps) {
                     <CarStatusBadge status={currentStatus.status} className="px-4 py-1 text-base" />
                 </div>
 
-                <p className="text-sm text-slate-600 dark:text-slate-400">
+                <p className="text-sm text-muted-foreground">
                     {currentStatus.description || statusDescriptions[currentStatus.status as CarStatus]}
                 </p>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-2">
+                <div className="border-t border-border pt-4 space-y-2">
                     <div className="flex items-center gap-2 text-sm">
-                        <Clock className="h-4 w-4 text-slate-400" />
-                        <span className="text-slate-500 dark:text-slate-400">Last changed:</span>
-                        <span className="text-slate-900 dark:text-slate-100">
+                        <Clock className="h-4 w-4 text-muted-foreground" />
+                        <span className="text-muted-foreground">Last changed:</span>
+                        <span className="text-foreground">
                             {formatDateTime(currentStatus.lastChangedAt)}
                         </span>
                     </div>
 
                     {currentStatus.lastChangedBy && (
                         <div className="flex items-center gap-2 text-sm">
-                            <User className="h-4 w-4 text-slate-400" />
-                            <span className="text-slate-500 dark:text-slate-400">Changed by:</span>
-                            <span className="text-slate-900 dark:text-slate-100">{currentStatus.lastChangedBy}</span>
+                            <User className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-muted-foreground">Changed by:</span>
+                            <span className="text-foreground">{currentStatus.lastChangedBy}</span>
                         </div>
                     )}
                 </div>

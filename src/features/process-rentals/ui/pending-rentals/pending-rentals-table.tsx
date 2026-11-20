@@ -32,7 +32,7 @@ interface PendingRentalsTableProps {
     className?: string;
 }
 
-const HEAD_CLASS = 'text-slate-600 dark:text-slate-300 font-semibold';
+const HEAD_CLASS = 'text-muted-foreground font-semibold';
 
 export function PendingQueueEmpty({ children, className }: { children: ReactNode; className?: string }) {
     return (
@@ -107,7 +107,7 @@ export const PendingRentalsTable = memo(function PendingRentalsTable({
                     <div>
                         <Table className="max-xl:block">
                             <TableHeader className="max-xl:sr-only">
-                                <TableRow className="border-b border-slate-200 dark:border-slate-700">
+                                <TableRow className="border-b border-border">
                                     <TableHead className={HEAD_CLASS}>Customer</TableHead>
                                     <TableHead className={HEAD_CLASS}>Vehicle</TableHead>
                                     <TableHead className={HEAD_CLASS}>Dates</TableHead>

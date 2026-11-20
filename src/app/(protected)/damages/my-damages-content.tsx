@@ -38,7 +38,7 @@ export function MyDamagesContent() {
             <div className="container py-8">
                 <div className="mb-8">
                     <div className="flex items-center gap-3 mb-2">
-                        <AlertTriangle className="h-8 w-8 text-orange-500" />
+                        <AlertTriangle className="h-8 w-8 text-warning-subtle-foreground" />
                         <h1 className="text-3xl font-bold">Damage Reports</h1>
                     </div>
                     <p className="text-muted-foreground">

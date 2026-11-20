@@ -78,7 +78,7 @@ function SettingsSidebar() {
                             'flex items-center gap-3 rounded-lg px-4 py-3 text-sm font-medium transition-colors',
                             isActive
                                 ? 'bg-primary/10 text-primary'
-                                : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white'
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                         )}
                     >
                         <Icon className="h-5 w-5" />

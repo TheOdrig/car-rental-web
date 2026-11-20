@@ -34,7 +34,7 @@ export default function PaymentMethodsPage() {
 
             <Card>
                 <CardContent className="flex items-center gap-3 py-4">
-                    <Shield className="h-5 w-5 text-green-600" aria-hidden="true" />
+                    <Shield className="h-5 w-5 text-success-subtle-foreground" aria-hidden="true" />
                     <div className="text-sm">
                         <p className="font-medium">Secure Payments</p>
                         <p className="text-muted-foreground">

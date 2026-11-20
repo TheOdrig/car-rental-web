@@ -126,22 +126,22 @@ export function PenaltyWaiveDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[425px] bg-white dark:bg-slate-900">
+            <DialogContent className="sm:max-w-[425px] bg-card">
                 <DialogHeader>
-                    <DialogTitle className="text-slate-900 dark:text-slate-100">
+                    <DialogTitle className="text-foreground">
                         Waive Penalty
                     </DialogTitle>
-                    <DialogDescription className="text-slate-600 dark:text-slate-400">
+                    <DialogDescription className="text-muted-foreground">
                         Waive all or part of the late return penalty for this rental.
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                    <div className="p-3 rounded-lg bg-slate-100 dark:bg-slate-800">
-                        <div className="text-sm text-slate-600 dark:text-slate-400">
+                    <div className="p-3 rounded-lg bg-muted">
+                        <div className="text-sm text-muted-foreground">
                             Original Penalty
                         </div>
-                        <div className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                        <div className="text-xl font-bold text-foreground">
                             {formatCurrency(originalPenalty, currency)}
                         </div>
                     </div>
@@ -154,7 +154,7 @@ export function PenaltyWaiveDialog({
                         />
                         <Label
                             htmlFor="fullWaiver"
-                            className="text-slate-700 dark:text-slate-300 cursor-pointer"
+                            className="text-muted-foreground cursor-pointer"
                         >
                             Full Waiver (waive entire penalty)
                         </Label>
@@ -162,7 +162,7 @@ export function PenaltyWaiveDialog({
 
                     {!isFullWaiver && (
                         <div className="space-y-2">
-                            <Label htmlFor="waiverAmount" className="text-slate-700 dark:text-slate-300">
+                            <Label htmlFor="waiverAmount" className="text-muted-foreground">
                                 Waiver Amount
                             </Label>
                             <Input
@@ -174,44 +174,44 @@ export function PenaltyWaiveDialog({
                                 {...register('waiverAmount', { valueAsNumber: true })}
                                 aria-invalid={waiverAmountError ? true : undefined}
                                 aria-describedby={waiverAmountError ? 'waiverAmount-error' : undefined}
-                                className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700"
+                                className="bg-background dark:bg-input/30 border-border"
                             />
                             {apiErrors.waiverAmount && !exceedsPenalty ? (
-                                <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400" role="alert" data-testid="waiver-amount-api-error">
+                                <p id="waiverAmount-error" className="text-sm text-danger-subtle-foreground" role="alert" data-testid="waiver-amount-api-error">
                                     {apiErrors.waiverAmount}
                                 </p>
                             ) : exceedsPenalty ? (
-                                <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400" role="alert">
+                                <p id="waiverAmount-error" className="text-sm text-danger-subtle-foreground" role="alert">
                                     The waiver cannot be more than the penalty of {formatCurrency(originalPenalty, currency)}
                                 </p>
                             ) : (
                                 errors.waiverAmount && (
-                                    <p id="waiverAmount-error" className="text-sm text-red-600 dark:text-red-400">{errors.waiverAmount.message}</p>
+                                    <p id="waiverAmount-error" className="text-sm text-danger-subtle-foreground">{errors.waiverAmount.message}</p>
                                 )
                             )}
                         </div>
                     )}
 
                     <div className="space-y-2">
-                        <Label htmlFor="reason" className="text-slate-700 dark:text-slate-300">
+                        <Label htmlFor="reason" className="text-muted-foreground">
                             Reason (required)
                         </Label>
                         <Textarea
                             id="reason"
                             placeholder="Explain why this penalty is being waived (10-500 characters)"
                             {...register('reason')}
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 min-h-[100px]"
+                            className="bg-background dark:bg-input/30 border-border min-h-[100px]"
                         />
                         {(errors.reason?.message ?? apiErrors.reason) && (
-                            <p className="text-sm text-red-500">{errors.reason?.message ?? apiErrors.reason}</p>
+                            <p className="text-sm text-danger-subtle-foreground">{errors.reason?.message ?? apiErrors.reason}</p>
                         )}
                     </div>
 
-                    <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                        <div className="text-sm text-blue-600 dark:text-blue-400">
+                    <div className="p-3 rounded-lg bg-info-subtle border border-info-subtle-foreground/30">
+                        <div className="text-sm text-info-subtle-foreground">
                             Remaining Penalty After Waiver
                         </div>
-                        <div className="text-xl font-bold text-blue-700 dark:text-blue-300">
+                        <div className="text-xl font-bold text-info-subtle-foreground">
                             {formatCurrency(Math.max(0, remainingPenalty), currency)}
                         </div>
                     </div>

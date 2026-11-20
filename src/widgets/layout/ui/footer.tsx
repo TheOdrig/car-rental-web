@@ -16,7 +16,7 @@ export function Footer() {
     const currentYear = new Date().getFullYear();
 
     return (
-        <footer className="border-t border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950">
+        <footer className="border-t border-border bg-raised">
             <div className="container py-12 md:py-16">
                 <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
                     <div className="col-span-2">
@@ -30,7 +30,7 @@ export function Footer() {
                             />
                             <span>Car Rental</span>
                         </Link>
-                        <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">
+                        <p className="mt-4 text-sm text-muted-foreground">
                             Rent a car by the day. Requests are reviewed by an admin, and payment opens shortly before pickup.
                         </p>
                     </div>
@@ -42,7 +42,7 @@ export function Footer() {
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100"
+                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
                                         {link.label}
                                     </Link>
@@ -58,7 +58,7 @@ export function Footer() {
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100"
+                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
                                     >
                                         {link.label}
                                     </Link>
@@ -69,8 +69,8 @@ export function Footer() {
 
                 </div>
 
-                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-slate-200 dark:border-slate-800 pt-8 md:flex-row">
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
+                <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-border pt-8 md:flex-row">
+                    <p className="text-sm text-muted-foreground">
                         © {currentYear} Car Rental. All rights reserved.
                     </p>
                     <div className="flex gap-6">
@@ -78,7 +78,7 @@ export function Footer() {
                             href="https://github.com/TheOdrig"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-slate-600 dark:text-slate-400 transition-colors hover:text-slate-900 dark:hover:text-slate-100"
+                            className="text-muted-foreground transition-colors hover:text-foreground"
                             aria-label="GitHub"
                         >
                             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

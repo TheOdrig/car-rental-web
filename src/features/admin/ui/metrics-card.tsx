@@ -44,7 +44,7 @@ export function MetricsCard({
                         {trend && (
                             <div className={cn(
                                 'flex items-center gap-1 text-xs font-medium',
-                                trend.direction === 'up' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'
+                                trend.direction === 'up' ? 'text-success-subtle-foreground' : 'text-danger-subtle-foreground'
                             )}>
                                 {trend.direction === 'up' ? (
                                     <TrendingUp className="h-3 w-3" />
@@ -139,7 +139,7 @@ export function DashboardMetricsGrid({
                 value={pendingApprovals}
                 icon={<Clock className="h-4 w-4" aria-hidden="true" />}
                 onClick={() => onCardClick?.('approvals')}
-                className={pendingApprovals > 0 ? 'border-amber-500/60' : undefined}
+                className={pendingApprovals > 0 ? 'border-warning-subtle-foreground/30' : undefined}
             />
         </div>
     );

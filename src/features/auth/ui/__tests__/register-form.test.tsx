@@ -269,7 +269,7 @@ describe('RegisterForm', () => {
             fireEvent.blur(usernameInput);
 
             await waitFor(() => {
-                expect(usernameInput).toHaveClass('border-green-500');
+                expect(usernameInput).toHaveClass('border-success');
             });
         });
 
@@ -281,7 +281,7 @@ describe('RegisterForm', () => {
             fireEvent.blur(emailInput);
 
             await waitFor(() => {
-                expect(emailInput).toHaveClass('border-green-500');
+                expect(emailInput).toHaveClass('border-success');
             });
         });
 
@@ -294,7 +294,7 @@ describe('RegisterForm', () => {
             fireEvent.blur(confirmInput);
 
             await waitFor(() => {
-                expect(confirmInput).toHaveClass('border-green-500');
+                expect(confirmInput).toHaveClass('border-success');
             });
         });
 

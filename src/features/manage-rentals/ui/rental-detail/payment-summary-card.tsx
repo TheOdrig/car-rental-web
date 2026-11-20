@@ -36,7 +36,7 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                 <div className="space-y-3">
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Daily rate</span>
-                        <span className="font-medium text-slate-900 dark:text-white">
+                        <span className="font-medium text-foreground">
                             {formatPrice(dailyPrice, currency)}
                             {rounded ? ' approx.' : ''}
                         </span>
@@ -49,14 +49,14 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                     )}
                     <div className="flex justify-between">
                         <span className="text-muted-foreground">Duration</span>
-                        <span className="font-medium text-slate-900 dark:text-white">
+                        <span className="font-medium text-foreground">
                             {days} {days === 1 ? 'day' : 'days'}
                         </span>
                     </div>
                     {originalPrice !== undefined && (
                         <div className="flex justify-between">
                             <span className="text-muted-foreground">Subtotal</span>
-                            <span className="font-medium text-slate-900 dark:text-white">
+                            <span className="font-medium text-foreground">
                                 {formatPrice(originalPrice, currency)}
                             </span>
                         </div>
@@ -66,7 +66,7 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                             {listed.map((entry) => (
                                 <li key={entry.code} className="flex justify-between">
                                     <span className="text-muted-foreground">{entry.label}</span>
-                                    <span className={entry.amount < 0 ? 'text-emerald-700 dark:text-emerald-400' : 'font-medium text-slate-900 dark:text-white'}>
+                                    <span className={entry.amount < 0 ? 'text-success-subtle-foreground' : 'font-medium text-foreground'}>
                                         {entry.amount < 0 ? '-' : '+'}{formatPrice(Math.abs(entry.amount), currency)}
                                     </span>
                                 </li>
@@ -74,14 +74,14 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                         </ul>
                     )}
                     {listed.length === 0 && totalSavings !== undefined && totalSavings > 0 && (
-                        <div className="flex justify-between text-emerald-700 dark:text-emerald-400">
+                        <div className="flex justify-between text-success-subtle-foreground">
                             <span>Savings</span>
                             <span>-{formatPrice(totalSavings, currency)}</span>
                         </div>
                     )}
                     <div className="flex justify-between border-t pt-3 text-lg font-bold">
                         <span>Total</span>
-                        <span className="text-slate-900 dark:text-white">{formatPrice(totalPrice, currency)}</span>
+                        <span className="text-foreground">{formatPrice(totalPrice, currency)}</span>
                     </div>
                 </div>
             </CardContent>

@@ -25,7 +25,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
         <Card
             className={cn(
                 'py-4 transition-all',
-                isHighlighted && 'border-emerald-500/50 dark:border-emerald-400/50 ring-1 ring-emerald-500/20 dark:ring-emerald-400/30'
+                isHighlighted && 'border-success-subtle-foreground/30 ring-1 ring-success-subtle-foreground/30'
             )}
         >
             <CardContent className="flex items-center gap-4 px-4">
@@ -33,7 +33,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
                     className={cn(
                         'flex h-12 w-12 shrink-0 items-center justify-center rounded-lg',
                         isHighlighted
-                            ? 'bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400'
+                            ? 'bg-success-subtle text-success-subtle-foreground'
                             : 'bg-muted text-muted-foreground'
                     )}
                 >
@@ -45,7 +45,7 @@ function StatCard({ icon, label, value, isHighlighted }: StatCardProps) {
                         className={cn(
                             'text-2xl font-bold',
                             isHighlighted
-                                ? 'text-emerald-600 dark:text-emerald-400'
+                                ? 'text-success-subtle-foreground'
                                 : 'text-foreground'
                         )}
                     >

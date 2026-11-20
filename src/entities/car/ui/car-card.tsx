@@ -122,7 +122,7 @@ export const CarCard = memo(function CarCard({
 
                 <div className="mt-auto flex items-baseline justify-between gap-2">
                     <div>
-                        <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                        <span className="text-xl font-bold text-foreground">
                             {format(price, sourceCurrency)}
                         </span>
                         <span className="text-sm text-muted-foreground">/day</span>

@@ -22,7 +22,7 @@ export function ThemeToggle() {
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" disabled aria-label="Toggle theme">
-        <span className="h-4 w-4 animate-pulse rounded bg-slate-200 dark:bg-slate-800" />
+        <span className="h-4 w-4 animate-pulse rounded bg-accent" />
       </Button>
     );
   }

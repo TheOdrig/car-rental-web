@@ -43,17 +43,17 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                             />
                         </div>
                     ) : (
-                        <div className="w-24 h-16 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center flex-shrink-0">
-                            <Car className="h-8 w-8 text-slate-400" />
+                        <div className="w-24 h-16 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                            <Car className="h-8 w-8 text-muted-foreground" />
                         </div>
                     )}
                     <div>
-                        <div className="font-semibold text-slate-900 dark:text-slate-100">
+                        <div className="font-semibold text-foreground">
                             {vehicle.brand} {vehicle.model}
-                            {vehicle.year ? <span className="ml-2 text-xs font-normal text-slate-500 dark:text-slate-400">{vehicle.year}</span> : null}
+                            {vehicle.year ? <span className="ml-2 text-xs font-normal text-muted-foreground">{vehicle.year}</span> : null}
                         </div>
                         {vehicle.status && (
-                            <div className="mt-1 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                            <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
                                 <span>Fleet status</span>
                                 <CarStatusBadge status={vehicle.status} />
                             </div>
@@ -61,13 +61,13 @@ export function VehicleInfoCard({ vehicle }: VehicleInfoCardProps) {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2 pt-2 border-t border-slate-200 dark:border-slate-700">
-                    <span className="text-xs text-slate-500 dark:text-slate-400">License</span>
-                    <span className="font-mono text-sm text-slate-900 dark:text-slate-100">{vehicle.licensePlate}</span>
+                <div className="flex items-center gap-2 pt-2 border-t border-border">
+                    <span className="text-xs text-muted-foreground">License</span>
+                    <span className="font-mono text-sm text-foreground">{vehicle.licensePlate}</span>
                     <CopyButton value={vehicle.licensePlate} />
                 </div>
 
-                <div className="flex items-center gap-4 text-sm text-slate-600 dark:text-slate-400">
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     {vehicle.fuelType && (
                         <div className="flex items-center gap-1">
                             <Fuel className="h-3 w-3" />

@@ -193,7 +193,7 @@ export function MyRentalsContent() {
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         {rentalToCancel && (
-                            <div className="my-4 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 p-4 space-y-2">
+                            <div className="my-4 rounded-lg border border-border bg-raised p-4 space-y-2">
                                 <div className="flex items-center gap-2 text-sm">
                                     <Car className="h-4 w-4" aria-hidden="true" />
                                     <span className="font-semibold">Vehicle:</span>

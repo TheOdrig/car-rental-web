@@ -94,7 +94,7 @@ export function BasicInfoSection({ data, errors, onUpdate }: BasicInfoSectionPro
                         value={data.year.toString()}
                         onValueChange={(value) => onUpdate('year', parseInt(value))}
                     >
-                        <SelectTrigger id="year" aria-label="Select year" className="bg-background border-slate-200 dark:border-slate-600 text-slate-900 dark:text-slate-100">
+                        <SelectTrigger id="year" aria-label="Select year" className="bg-background border-border text-foreground">
                             <SelectValue placeholder="Select year" />
                         </SelectTrigger>
                         <SelectContent>

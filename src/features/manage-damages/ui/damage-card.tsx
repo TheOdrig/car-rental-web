@@ -22,8 +22,8 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
     const summary = (
         <>
             <div className="flex min-w-0 flex-1 items-start gap-3">
-                <div className="shrink-0 p-2 rounded-lg bg-orange-100 dark:bg-orange-900/30">
-                    <AlertTriangle className="h-5 w-5 text-orange-600 dark:text-orange-400" aria-hidden="true" />
+                <div className="shrink-0 p-2 rounded-lg bg-warning-subtle">
+                    <AlertTriangle className="h-5 w-5 text-warning-subtle-foreground" aria-hidden="true" />
                 </div>
                 <div className="flex-1 min-w-0">
                     <div className="mb-1 flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">

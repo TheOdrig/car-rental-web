@@ -74,7 +74,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                         'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                         isActive
                                             ? 'bg-primary/10 text-primary'
-                                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
+                                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                     )}
                                 >
                                     <Icon className="h-4 w-4" />
@@ -87,7 +87,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                     {isAuthenticated && (
                         <>
                             <div className="my-2 border-t" />
-                            <p className="px-3 py-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                            <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                 Account
                             </p>
                             {userLinks.map((link) => {
@@ -102,7 +102,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                                 'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                                 isActive
                                                     ? 'bg-primary/10 text-primary'
-                                                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
+                                                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                             )}
                                         >
                                             <Icon className="h-4 w-4" />
@@ -115,7 +115,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                             {isAdmin && (
                                 <>
                                     <div className="my-2 border-t" />
-                                    <p className="px-3 py-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                                    <p className="px-3 py-1 text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                                         Admin
                                     </p>
                                     {adminLinks.map((link) => {
@@ -130,7 +130,7 @@ export function MobileNav({ trigger }: MobileNavProps) {
                                                         'flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors',
                                                         isActive
                                                             ? 'bg-primary/10 text-primary'
-                                                            : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100'
+                                                            : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                                                     )}
                                                 >
                                                     <Icon className="h-4 w-4" />
@@ -149,18 +149,18 @@ export function MobileNav({ trigger }: MobileNavProps) {
                     {isAuthenticated ? (
                         <div className="space-y-3">
                             <div className="flex items-center gap-3">
-                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
+                                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent">
                                     <User className="h-4 w-4" />
                                 </span>
                                 <div className="flex-1 truncate">
                                     <p className="text-sm font-medium truncate">{user?.username}</p>
-                                    <p className="text-xs text-slate-600 dark:text-slate-400 truncate">{user?.email}</p>
+                                    <p className="text-xs text-muted-foreground truncate">{user?.email}</p>
                                 </div>
                             </div>
                             <SheetClose asChild>
                                 <Button
                                     variant="outline"
-                                    className="w-full text-red-600 hover:text-red-600 hover:bg-red-50"
+                                    className="w-full text-danger-subtle-foreground hover:text-danger-subtle-foreground hover:bg-danger-subtle"
                                     onClick={handleLogout}
                                 >
                                     Log Out

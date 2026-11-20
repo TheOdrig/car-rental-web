@@ -76,43 +76,43 @@ export function ProcessPickupDialog({
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    <div className="bg-slate-100 dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 space-y-3">
+                    <div className="bg-muted rounded-xl p-4 border border-border space-y-3">
                         <div className="flex items-center gap-3">
-                            <div className="h-8 w-8 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-sm">
+                            <div className="h-8 w-8 rounded-lg bg-card flex items-center justify-center border border-border shadow-sm">
                                 <User className="h-4 w-4 text-primary" />
                             </div>
                             <div className="min-w-0">
-                                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Customer</p>
-                                <p className="text-sm font-semibold truncate text-slate-900 dark:text-white">{item.customerName}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Customer</p>
+                                <p className="text-sm font-semibold truncate text-foreground">{item.customerName}</p>
                             </div>
                         </div>
                         <div className="flex items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                                <div className="h-8 w-8 rounded-lg bg-white dark:bg-slate-900 flex items-center justify-center border border-slate-200 dark:border-slate-600 shadow-sm">
+                                <div className="h-8 w-8 rounded-lg bg-card flex items-center justify-center border border-border shadow-sm">
                                     <Car className="h-4 w-4 text-primary" />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Vehicle</p>
-                                    <p className="text-sm font-semibold truncate text-slate-900 dark:text-white">{item.carBrand} {item.carModel}</p>
+                                    <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Vehicle</p>
+                                    <p className="text-sm font-semibold truncate text-foreground">{item.carBrand} {item.carModel}</p>
                                 </div>
                             </div>
                             <div className="text-right">
-                                <p className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Plate</p>
-                                <p className="text-sm font-semibold text-slate-900 dark:text-white">{item.licensePlate}</p>
+                                <p className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Plate</p>
+                                <p className="text-sm font-semibold text-foreground">{item.licensePlate}</p>
                             </div>
                         </div>
-                        <div className="pt-2 border-t border-dashed border-slate-300 dark:border-slate-600 flex items-center gap-2 text-slate-500 dark:text-slate-400">
+                        <div className="pt-2 border-t border-dashed border-border flex items-center gap-2 text-muted-foreground">
                             <Hash className="h-3 w-3" />
                             <span className="text-[11px] font-medium">Reservation ID: RENT-{item.rentalId}</span>
                         </div>
                     </div>
 
-                    <p className="rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-900 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-100" data-testid="pickup-payment-note">
+                    <p className="rounded-md border border-warning-subtle-foreground/30 bg-warning-subtle p-3 text-xs text-warning-subtle-foreground" data-testid="pickup-payment-note">
                         Pickup captures the customer payment. It only works when the payment is authorized.
                     </p>
 
                     <div className="space-y-4">
-                        <h3 className="text-sm font-semibold flex items-center gap-2 text-slate-900 dark:text-white">
+                        <h3 className="text-sm font-semibold flex items-center gap-2 text-foreground">
                             <ClipboardCheck className="h-4 w-4 text-primary" />
                             Handover Checklist
                         </h3>
@@ -121,8 +121,8 @@ export function ProcessPickupDialog({
                             <div className={cn(
                                 "flex items-start gap-3 p-3 rounded-lg border transition-colors",
                                 idVerified
-                                    ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
-                                    : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                                    ? "bg-success-subtle border-success-subtle-foreground/30"
+                                    : "bg-raised border-border"
                             )}>
                                 <Checkbox
                                     id="id-verify"
@@ -131,10 +131,10 @@ export function ProcessPickupDialog({
                                     onCheckedChange={(checked) => setIdVerified(checked as boolean)}
                                 />
                                 <div className="grid gap-1.5 leading-none">
-                                    <Label htmlFor="id-verify" className="text-sm font-semibold cursor-pointer text-slate-900 dark:text-slate-100">
+                                    <Label htmlFor="id-verify" className="text-sm font-semibold cursor-pointer text-foreground">
                                         Customer ID Verified
                                     </Label>
-                                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                                    <p className="text-xs text-muted-foreground">
                                         Verify physical driver&apos;s license matches customer profile.
                                     </p>
                                 </div>
@@ -143,8 +143,8 @@ export function ProcessPickupDialog({
                             <div className={cn(
                                 "flex items-start gap-3 p-3 rounded-lg border transition-colors",
                                 conditionInspected
-                                    ? "bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700"
-                                    : "bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-slate-700"
+                                    ? "bg-success-subtle border-success-subtle-foreground/30"
+                                    : "bg-raised border-border"
                             )}>
                                 <Checkbox
                                     id="inspection"
@@ -153,10 +153,10 @@ export function ProcessPickupDialog({
                                     onCheckedChange={(checked) => setConditionInspected(checked as boolean)}
                                 />
                                 <div className="grid gap-1.5 leading-none">
-                                    <Label htmlFor="inspection" className="text-sm font-semibold cursor-pointer text-slate-900 dark:text-slate-100">
+                                    <Label htmlFor="inspection" className="text-sm font-semibold cursor-pointer text-foreground">
                                         Vehicle condition inspected
                                     </Label>
-                                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                                    <p className="text-xs text-muted-foreground">
                                         Ensure all existing damages are documented and car is clean.
                                     </p>
                                 </div>

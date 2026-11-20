@@ -33,23 +33,23 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
             <CardContent className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Avg. Daily Rate</span>
-                        <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        <span className="text-xs text-muted-foreground block mb-1">Avg. Daily Rate</span>
+                        <span className="text-lg font-semibold text-foreground">
                             {formatCurrency(pricing.dailyRate, pricing.currency)}
                         </span>
                     </div>
                     <div>
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Duration</span>
-                        <span className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                        <span className="text-xs text-muted-foreground block mb-1">Duration</span>
+                        <span className="text-lg font-semibold text-foreground">
                             {pricing.totalDays} days
                         </span>
                     </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
+                <div className="border-t border-border pt-4 space-y-3">
                     <div className="flex justify-between items-center">
-                        <span className="text-sm text-slate-600 dark:text-slate-400">Subtotal</span>
-                        <span className="text-sm text-slate-900 dark:text-slate-100">
+                        <span className="text-sm text-muted-foreground">Subtotal</span>
+                        <span className="text-sm text-foreground">
                             {formatCurrency(pricing.subtotal, pricing.currency)}
                         </span>
                     </div>
@@ -58,15 +58,15 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                         <ul className="space-y-1" data-testid="price-adjustments">
                             {pricing.adjustments?.filter((entry) => entry.amount !== 0).map((entry) => (
                                 <li key={entry.code} className="flex items-center justify-between text-sm">
-                                    <span className="text-slate-600 dark:text-slate-400">{entry.label}</span>
-                                    <span className={entry.amount < 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-900 dark:text-slate-100'}>
+                                    <span className="text-muted-foreground">{entry.label}</span>
+                                    <span className={entry.amount < 0 ? 'text-success-subtle-foreground' : 'text-foreground'}>
                                         {entry.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(entry.amount), pricing.currency)}
                                     </span>
                                 </li>
                             ))}
                         </ul>
                     ) : (pricing.appliedAdjustments?.length ?? 0) > 0 && (
-                        <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-400" data-testid="applied-adjustments">
+                        <ul className="space-y-1 text-xs text-muted-foreground" data-testid="applied-adjustments">
                             {pricing.appliedAdjustments?.map((entry) => (
                                 <li key={entry}>{entry}</li>
                             ))}
@@ -75,37 +75,37 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
 
                     {pricing.discounts > 0 && (pricing.adjustments?.length ?? 0) === 0 && (
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-emerald-600 dark:text-emerald-400">Discount</span>
-                            <span className="text-sm text-emerald-600 dark:text-emerald-400">
+                            <span className="text-sm text-success-subtle-foreground">Discount</span>
+                            <span className="text-sm text-success-subtle-foreground">
                                 -{formatCurrency(pricing.discounts, pricing.currency)}
                             </span>
                         </div>
                     )}
 
-                    <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
-                        <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Rental Total</span>
-                        <span className="font-semibold text-slate-900 dark:text-slate-100">
+                    <div className="flex justify-between items-center pt-2 border-t border-border">
+                        <span className="text-sm font-medium text-muted-foreground">Rental Total</span>
+                        <span className="font-semibold text-foreground">
                             {formatCurrency(pricing.finalTotal, pricing.currency)}
                         </span>
                     </div>
                 </div>
 
                 {hasPenalty && (
-                    <div className="border-t border-red-200 dark:border-red-900/50 pt-4 space-y-3">
+                    <div className="border-t border-danger-subtle-foreground/30 pt-4 space-y-3">
                         <div className="flex justify-between items-center">
                             <div className="flex items-center gap-2">
-                                <AlertTriangle className="h-4 w-4 text-red-500" />
-                                <span className="text-sm text-red-600 dark:text-red-400">Late Return Penalty</span>
+                                <AlertTriangle className="h-4 w-4 text-danger-subtle-foreground" />
+                                <span className="text-sm text-danger-subtle-foreground">Late Return Penalty</span>
                                 {lateReturnStatus && <LateReturnStatusBadge status={lateReturnStatus} />}
                             </div>
-                            <span className="text-sm font-medium text-red-600 dark:text-red-400">
+                            <span className="text-sm font-medium text-danger-subtle-foreground">
                                 +{formatCurrency(penaltyAmount ?? 0, pricing.currency)}
                             </span>
                         </div>
 
-                        <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
-                            <span className="text-base font-semibold text-slate-900 dark:text-slate-100">Grand Total</span>
-                            <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                        <div className="flex justify-between items-center pt-2 border-t border-border">
+                            <span className="text-base font-semibold text-foreground">Grand Total</span>
+                            <span className="text-xl font-bold text-foreground">
                                 {formatCurrency(grandTotal, pricing.currency)}
                             </span>
                         </div>
@@ -113,9 +113,9 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                 )}
 
                 {!hasPenalty && (
-                    <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
-                        <span className="text-base font-semibold text-slate-900 dark:text-slate-100">Total Amount</span>
-                        <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                    <div className="flex justify-between items-center pt-2 border-t border-border">
+                        <span className="text-base font-semibold text-foreground">Total Amount</span>
+                        <span className="text-xl font-bold text-foreground">
                             {formatCurrency(pricing.finalTotal, pricing.currency)}
                         </span>
                     </div>

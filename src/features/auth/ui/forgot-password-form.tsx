@@ -52,17 +52,17 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
     if (isSubmitted) {
         return (
             <div className={cn('space-y-6', className)}>
-                <div className="flex flex-col items-center gap-4 rounded-lg border border-green-200 bg-green-50 p-6 text-center dark:border-green-800 dark:bg-green-950/50">
-                    <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
+                <div className="flex flex-col items-center gap-4 rounded-lg border border-success-subtle-foreground/30 bg-success-subtle p-6 text-center">
+                    <CheckCircle className="h-12 w-12 text-success-subtle-foreground" />
                     <div className="space-y-2">
-                        <h2 className="text-xl font-semibold text-green-800 dark:text-green-200">
+                        <h2 className="text-xl font-semibold text-success-subtle-foreground">
                             Check your email
                         </h2>
-                        <p className="text-sm text-green-700 dark:text-green-300">
+                        <p className="text-sm text-success-subtle-foreground">
                             We&apos;ve sent a password reset link to{' '}
                             <span className="font-medium">{email}</span>
                         </p>
-                        <p className="text-xs text-green-600 dark:text-green-400">
+                        <p className="text-xs text-success-subtle-foreground">
                             The link will expire in 1 hour
                         </p>
                     </div>
@@ -71,7 +71,7 @@ export function ForgotPasswordForm({ className }: ForgotPasswordFormProps) {
                 <Button
                     type="button"
                     variant="outline"
-                    className="w-full border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-900 dark:text-slate-100"
+                    className="w-full border-border bg-background dark:bg-input/30 hover:bg-accent text-foreground"
                     onClick={() => {
                         setIsSubmitted(false);
                         setEmail('');

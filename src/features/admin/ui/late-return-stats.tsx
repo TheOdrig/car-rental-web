@@ -33,29 +33,29 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
             label: 'Total Late Returns',
             value: data.totalLateReturns.toString(),
             icon: Clock,
-            color: 'text-blue-600 dark:text-blue-400',
-            bgColor: 'bg-blue-100 dark:bg-blue-900/30',
+            color: 'text-info-subtle-foreground',
+            bgColor: 'bg-info-subtle',
         },
         {
             label: 'Severely Late',
             value: data.severelyLateCount.toString(),
             icon: AlertTriangle,
-            color: 'text-red-600 dark:text-red-400',
-            bgColor: 'bg-red-100 dark:bg-red-900/30',
+            color: 'text-danger-subtle-foreground',
+            bgColor: 'bg-danger-subtle',
         },
         {
             label: 'Avg. Late Hours',
             value: `${data.averageLateHours.toFixed(1)}h`,
             icon: TrendingUp,
-            color: 'text-purple-600 dark:text-purple-400',
-            bgColor: 'bg-purple-100 dark:bg-purple-900/30',
+            color: 'text-info-subtle-foreground',
+            bgColor: 'bg-info-subtle',
         },
         {
             label: 'Late Return Rate',
             value: `${data.lateReturnPercentage.toFixed(1)}%`,
             icon: Percent,
-            color: 'text-slate-600 dark:text-slate-400',
-            bgColor: 'bg-slate-100 dark:bg-slate-800',
+            color: 'text-muted-foreground',
+            bgColor: 'bg-muted',
         },
     ];
 
@@ -67,22 +67,22 @@ export function LateReturnStats({ data, isLoading }: LateReturnStatsProps) {
                 label: `Total Penalties (${currency})`,
                 value: formatCurrency(entry.totalPenaltyAmount ?? 0, currency),
                 icon: DollarSign,
-                color: 'text-orange-600 dark:text-orange-400',
-                bgColor: 'bg-orange-100 dark:bg-orange-900/30',
+                color: 'text-warning-subtle-foreground',
+                bgColor: 'bg-warning-subtle',
             },
             {
                 label: `Collected (${currency})`,
                 value: formatCurrency(entry.collectedPenaltyAmount ?? 0, currency),
                 icon: CheckCircle,
-                color: 'text-green-600 dark:text-green-400',
-                bgColor: 'bg-green-100 dark:bg-green-900/30',
+                color: 'text-success-subtle-foreground',
+                bgColor: 'bg-success-subtle',
             },
             {
                 label: `Pending (${currency})`,
                 value: formatCurrency(entry.pendingPenaltyAmount ?? 0, currency),
                 icon: Timer,
-                color: 'text-yellow-600 dark:text-yellow-400',
-                bgColor: 'bg-yellow-100 dark:bg-yellow-900/30',
+                color: 'text-warning-subtle-foreground',
+                bgColor: 'bg-warning-subtle',
             },
         ];
     });
@@ -109,7 +109,7 @@ function StatGrid({ stats, columns }: { stats: StatItem[]; columns: string }) {
             {stats.map((stat) => (
                 <Card
                     key={stat.label}
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"
+                    className="bg-card border-border"
                 >
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">
@@ -117,10 +117,10 @@ function StatGrid({ stats, columns }: { stats: StatItem[]; columns: string }) {
                                 <stat.icon className={`h-5 w-5 ${stat.color}`} />
                             </div>
                             <div>
-                                <div className="text-2xl font-bold text-slate-900 dark:text-slate-100">
+                                <div className="text-2xl font-bold text-foreground">
                                     {stat.value}
                                 </div>
-                                <div className="text-xs text-slate-500 dark:text-slate-400">
+                                <div className="text-xs text-muted-foreground">
                                     {stat.label}
                                 </div>
                             </div>
@@ -138,7 +138,7 @@ function LateReturnStatsSkeleton() {
             {Array.from({ length: 4 }).map((_, i) => (
                 <Card
                     key={i}
-                    className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700"
+                    className="bg-card border-border"
                 >
                     <CardContent className="p-4">
                         <div className="flex items-center gap-3">

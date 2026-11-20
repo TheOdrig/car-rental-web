@@ -16,19 +16,19 @@ interface NoteBlockProps {
 
 const TONES: Record<NoteBlockProps['tone'], { box: string; label: string; text: string }> = {
     green: {
-        box: 'bg-green-50 dark:bg-green-950 border-green-200 dark:border-green-800',
-        label: 'text-green-700 dark:text-green-300',
-        text: 'text-green-600 dark:text-green-400',
+        box: 'bg-success-subtle border-success-subtle-foreground/30',
+        label: 'text-success-subtle-foreground',
+        text: 'text-success-subtle-foreground',
     },
     purple: {
-        box: 'bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800',
-        label: 'text-purple-700 dark:text-purple-300',
-        text: 'text-purple-600 dark:text-purple-400',
+        box: 'bg-info-subtle border-info-subtle-foreground/30',
+        label: 'text-info-subtle-foreground',
+        text: 'text-info-subtle-foreground',
     },
     slate: {
-        box: 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-700',
-        label: 'text-slate-700 dark:text-slate-300',
-        text: 'text-slate-600 dark:text-slate-400',
+        box: 'bg-raised border-border',
+        label: 'text-muted-foreground',
+        text: 'text-muted-foreground',
     },
 };
 

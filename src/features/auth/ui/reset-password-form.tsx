@@ -73,13 +73,13 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
     if (isSuccess) {
         return (
             <div className={cn('space-y-6', className)}>
-                <div className="flex flex-col items-center gap-4 rounded-lg border border-green-200 bg-green-50 p-6 text-center dark:border-green-800 dark:bg-green-950/50">
-                    <CheckCircle className="h-12 w-12 text-green-600 dark:text-green-400" />
+                <div className="flex flex-col items-center gap-4 rounded-lg border border-success-subtle-foreground/30 bg-success-subtle p-6 text-center">
+                    <CheckCircle className="h-12 w-12 text-success-subtle-foreground" />
                     <div className="space-y-2">
-                        <h2 className="text-xl font-semibold text-green-800 dark:text-green-200">
+                        <h2 className="text-xl font-semibold text-success-subtle-foreground">
                             Password Reset Successful
                         </h2>
-                        <p className="text-sm text-green-700 dark:text-green-300">
+                        <p className="text-sm text-success-subtle-foreground">
                             Your password has been reset successfully.
                         </p>
                     </div>

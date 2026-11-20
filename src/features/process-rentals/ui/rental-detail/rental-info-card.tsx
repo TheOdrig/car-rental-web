@@ -54,9 +54,9 @@ export function RentalInfoCard({
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Reference</span>
+                    <span className="text-sm text-muted-foreground">Reference</span>
                     <div className="flex items-center gap-1">
-                        <span className="font-mono font-medium text-slate-900 dark:text-slate-100">
+                        <span className="font-mono font-medium text-foreground">
                             {referenceNumber}
                         </span>
                         <CopyButton value={referenceNumber} />
@@ -64,36 +64,36 @@ export function RentalInfoCard({
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
+                    <span className="text-sm text-muted-foreground">Status</span>
                     <AdminRentalStatusBadge status={status} />
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Duration</span>
-                    <div className="flex items-center gap-1 text-slate-900 dark:text-slate-100">
-                        <Calendar className="h-4 w-4 text-slate-400" />
+                    <span className="text-sm text-muted-foreground">Duration</span>
+                    <div className="flex items-center gap-1 text-foreground">
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
                         <span className="font-medium">{duration} days</span>
                     </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Created</span>
-                    <span className="text-sm text-slate-900 dark:text-slate-100">
+                    <span className="text-sm text-muted-foreground">Created</span>
+                    <span className="text-sm text-foreground">
                         {formatDateTime(createdAt)}
                     </span>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                <div className="border-t border-border pt-4">
                     <div className="grid grid-cols-2 gap-4">
                         <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Start Date</span>
-                            <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground block mb-1">Start Date</span>
+                            <span className="text-sm font-medium text-foreground">
                                 {formatDate(startDate)}
                             </span>
                         </div>
                         <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">End Date</span>
-                            <span className="text-sm font-medium text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground block mb-1">End Date</span>
+                            <span className="text-sm font-medium text-foreground">
                                 {formatDate(endDate)}
                             </span>
                         </div>
@@ -101,35 +101,35 @@ export function RentalInfoCard({
                 </div>
 
                 {pricing && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-2">
+                    <div className="border-t border-border pt-4 space-y-2">
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-slate-500 dark:text-slate-400">Daily Rate</span>
-                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground">Daily Rate</span>
+                            <span className="text-sm text-foreground">
                                 {formatCurrency(pricing.dailyRate, pricing.currency)}
                             </span>
                         </div>
                         <div className="flex items-center justify-between">
-                            <span className="text-xs text-slate-500 dark:text-slate-400">Subtotal</span>
-                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground">Subtotal</span>
+                            <span className="text-sm text-foreground">
                                 {formatCurrency(pricing.subtotal, pricing.currency)}
                             </span>
                         </div>
                         {pricing.discounts > 0 && (
                             <div className="flex items-center justify-between">
-                                <span className="text-xs text-emerald-600 dark:text-emerald-400">Discount</span>
-                                <span className="text-sm text-emerald-600 dark:text-emerald-400">
+                                <span className="text-xs text-success-subtle-foreground">Discount</span>
+                                <span className="text-sm text-success-subtle-foreground">
                                     -{formatCurrency(pricing.discounts, pricing.currency)}
                                 </span>
                             </div>
                         )}
-                        <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700">
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Total</span>
-                            <span className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                        <div className="flex items-center justify-between pt-2 border-t border-border">
+                            <span className="text-sm font-medium text-muted-foreground">Total</span>
+                            <span className="text-sm font-bold text-foreground">
                                 {formatCurrency(pricing.finalTotal, pricing.currency)}
                             </span>
                         </div>
                         {pricing.exchangeRate && pricing.exchangeRate !== 1 && (
-                            <div className="text-xs text-slate-500 dark:text-slate-400 text-right">
+                            <div className="text-xs text-muted-foreground text-right">
                                 Exchange rate: {pricing.exchangeRate.toFixed(4)}
                             </div>
                         )}
@@ -137,18 +137,18 @@ export function RentalInfoCard({
                 )}
 
                 {(pickupLocation || dropoffLocation) && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <div className="border-t border-border pt-4">
                         <div className="grid grid-cols-2 gap-4">
                             {pickupLocation && (
                                 <div>
-                                    <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Pickup</span>
-                                    <span className="text-sm text-slate-900 dark:text-slate-100">{pickupLocation}</span>
+                                    <span className="text-xs text-muted-foreground block mb-1">Pickup</span>
+                                    <span className="text-sm text-foreground">{pickupLocation}</span>
                                 </div>
                             )}
                             {dropoffLocation && (
                                 <div>
-                                    <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Drop-off</span>
-                                    <span className="text-sm text-slate-900 dark:text-slate-100">{dropoffLocation}</span>
+                                    <span className="text-xs text-muted-foreground block mb-1">Drop-off</span>
+                                    <span className="text-sm text-foreground">{dropoffLocation}</span>
                                 </div>
                             )}
                         </div>
@@ -156,22 +156,22 @@ export function RentalInfoCard({
                 )}
 
                 {(cancelledBy || cancellationReason) && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <div className="border-t border-border pt-4">
                         <RentalCancellationNotice audience="admin" cancelledBy={cancelledBy} reason={cancellationReason} />
                     </div>
                 )}
 
                 {bookingNotes && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4" data-testid="booking-notes">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Customer Notes</span>
-                        <p className="whitespace-pre-wrap break-words text-sm text-slate-700 dark:text-slate-300">{bookingNotes}</p>
+                    <div className="border-t border-border pt-4" data-testid="booking-notes">
+                        <span className="text-xs text-muted-foreground block mb-1">Customer Notes</span>
+                        <p className="whitespace-pre-wrap break-words text-sm text-muted-foreground">{bookingNotes}</p>
                     </div>
                 )}
 
                 {notes && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                        <span className="text-xs text-slate-500 dark:text-slate-400 block mb-1">Notes</span>
-                        <p className="text-sm text-slate-700 dark:text-slate-300">{notes}</p>
+                    <div className="border-t border-border pt-4">
+                        <span className="text-xs text-muted-foreground block mb-1">Notes</span>
+                        <p className="text-sm text-muted-foreground">{notes}</p>
                     </div>
                 )}
             </CardContent>

@@ -84,7 +84,7 @@ export function RevenueChart({
                     <CardTitle className="text-lg font-semibold">
                         Revenue Trends ({currency})
                     </CardTitle>
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
+                    <p className="text-2xl font-bold text-foreground mt-1">
                         {money(totalRevenue)}
                     </p>
                 </div>
@@ -93,7 +93,7 @@ export function RevenueChart({
                     onValueChange={(value) => handlePeriodChange(value as RevenuePeriod)}
                 >
                     <SelectTrigger
-                        className="w-[140px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                        className="w-[140px] bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground"
                         aria-label="Select time period"
                     >
                         <SelectValue placeholder="Select period" />
@@ -204,7 +204,7 @@ export function RevenueChart({
                                 </div>
                                 <div className="h-1.5 w-full bg-muted rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-amber-500 rounded-full transition-all duration-1000"
+                                        className="h-full bg-warning rounded-full transition-all duration-1000"
                                         style={{ width: `${Math.min(breakdown.penaltyPercentage, 100)}%` }}
                                     />
                                 </div>
@@ -214,26 +214,26 @@ export function RevenueChart({
                             </div>
                         </div>
 
-                        <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4 space-y-3">
-                            <h2 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                        <div className="rounded-lg border border-border bg-raised p-4 space-y-3">
+                            <h2 className="text-sm font-semibold text-foreground flex items-center gap-2">
                                 Damage Summary
                             </h2>
                             <div className="grid grid-cols-3 gap-4 text-center">
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Recovered</p>
-                                    <p className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+                                    <p className="text-sm font-bold text-success-subtle-foreground">
                                         +{money(breakdown.damageRecovered)}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Repair Costs</p>
-                                    <p className="text-sm font-bold text-red-600 dark:text-red-400">
+                                    <p className="text-sm font-bold text-danger-subtle-foreground">
                                         -{money(breakdown.damageRepairCosts)}
                                     </p>
                                 </div>
                                 <div>
                                     <p className="text-[10px] text-muted-foreground font-medium uppercase">Net Impact</p>
-                                    <p className={`text-sm font-bold ${breakdown.netDamageImpact >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                                    <p className={`text-sm font-bold ${breakdown.netDamageImpact >= 0 ? 'text-success-subtle-foreground' : 'text-danger-subtle-foreground'}`}>
                                         {breakdown.netDamageImpact >= 0 ? '+' : ''}{money(breakdown.netDamageImpact)}
                                     </p>
                                 </div>
@@ -242,7 +242,7 @@ export function RevenueChart({
 
                         <div className="flex items-center justify-between pt-2 border-t border-dashed">
                             <span className="text-sm font-semibold text-muted-foreground">Net Revenue</span>
-                            <span className={`text-lg font-bold ${breakdown.netRevenue >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                            <span className={`text-lg font-bold ${breakdown.netRevenue >= 0 ? 'text-success-subtle-foreground' : 'text-danger-subtle-foreground'}`}>
                                 {money(breakdown.netRevenue)}
                             </span>
                         </div>

@@ -227,11 +227,11 @@ export function RentalDetailContent({ id }: { id: string }) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
                 <div className="space-y-1">
                     <div className="flex items-center gap-3">
-                        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white focus:outline-none">
+                        <h1 ref={headingRef} tabIndex={-1} className="text-3xl font-bold tracking-tight text-foreground focus:outline-none">
                             {referenceNumber}
                         </h1>
                     </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <p className="text-sm text-muted-foreground">
                         {rental.vehicle.brand} {rental.vehicle.model} • {personDisplayName(rental.customer)}
                     </p>
                 </div>
@@ -375,7 +375,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                     <div
                         role="note"
                         data-testid="early-return-warning"
-                        className="space-y-2 rounded-md border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-100"
+                        className="space-y-2 rounded-md border border-warning-subtle-foreground/30 bg-warning-subtle p-3 text-sm text-warning-subtle-foreground"
                     >
                         <p>
                             This rental runs until {formatDate(rental.endDate)}. A normal return keeps the full price. To refund the unused days, use Return Early instead.

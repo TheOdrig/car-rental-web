@@ -74,7 +74,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                     {canCancel && (
                         <Button
                             variant="outline"
-                            className="bg-red-50 dark:bg-red-950 border-red-300 dark:border-red-700 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900 hover:text-red-700 dark:hover:text-red-300"
+                            className="bg-danger-subtle border-danger-subtle-foreground/30 text-danger-subtle-foreground hover:bg-danger-subtle hover:text-danger-subtle-foreground"
                             onClick={() => setShowCancelDialog(true)}
                         >
                             <X className="mr-2 h-4 w-4" aria-hidden="true" />

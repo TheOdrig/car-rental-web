@@ -13,8 +13,8 @@ interface CustomerDetailInfoCardProps {
 }
 
 const roleBadgeColors: Record<Role, string> = {
-    ADMIN: 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-900/30',
-    USER: 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/30',
+    ADMIN: 'text-danger-subtle-foreground bg-danger-subtle',
+    USER: 'text-info-subtle-foreground bg-info-subtle',
 };
 
 export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps) {
@@ -34,16 +34,16 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                 <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16">
                         <AvatarImage src={customer.avatarUrl ?? undefined} alt={name} />
-                        <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xl">
+                        <AvatarFallback className="bg-success-subtle text-success-subtle-foreground text-xl">
                             {initials}
                         </AvatarFallback>
                     </Avatar>
                     <div className="min-w-0 flex-1">
-                        <h2 className="text-xl font-semibold [overflow-wrap:anywhere] text-slate-900 dark:text-slate-100">
+                        <h2 className="text-xl font-semibold [overflow-wrap:anywhere] text-foreground">
                             {name}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">
-                            <span className="text-sm text-slate-500 dark:text-slate-400">
+                            <span className="text-sm text-muted-foreground">
                                 ID: {customer.id}
                             </span>
                             <CopyButton value={String(customer.id)} />
@@ -55,13 +55,13 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                     </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 space-y-3">
+                <div className="border-t border-border pt-4 space-y-3">
                     <div className="flex items-center gap-3">
-                        <Mail className="h-4 w-4 shrink-0 text-slate-400" />
+                        <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
                         <div className="min-w-0 flex-1">
                             <a
                                 href={`mailto:${customer.email}`}
-                                className="break-all text-slate-900 dark:text-slate-100 hover:underline"
+                                className="break-all text-foreground hover:underline"
                             >
                                 {customer.email}
                             </a>
@@ -76,11 +76,11 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
 
                     {customer.phone && (
                         <div className="flex items-center gap-3">
-                            <Phone className="h-4 w-4 text-slate-400" />
+                            <Phone className="h-4 w-4 text-muted-foreground" />
                             <div className="flex-1">
                                 <a
                                     href={`tel:${customer.phone}`}
-                                    className="text-slate-900 dark:text-slate-100 hover:underline"
+                                    className="text-foreground hover:underline"
                                 >
                                     {customer.phone}
                                 </a>
@@ -95,21 +95,21 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
                     )}
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4 grid grid-cols-2 gap-4">
+                <div className="border-t border-border pt-4 grid grid-cols-2 gap-4">
                     <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4 text-slate-400" />
+                        <Calendar className="h-4 w-4 text-muted-foreground" />
                         <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Registered</span>
-                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground block">Registered</span>
+                            <span className="text-sm text-foreground">
                                 {formatDate(customer.registrationDate)}
                             </span>
                         </div>
                     </div>
                     <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4 text-slate-400" />
+                        <Clock className="h-4 w-4 text-muted-foreground" />
                         <div>
-                            <span className="text-xs text-slate-500 dark:text-slate-400 block">Last Login</span>
-                            <span className="text-sm text-slate-900 dark:text-slate-100">
+                            <span className="text-xs text-muted-foreground block">Last Login</span>
+                            <span className="text-sm text-foreground">
                                 {customer.lastLoginDate ? formatDateTime(customer.lastLoginDate) : 'Never logged in'}
                             </span>
                         </div>

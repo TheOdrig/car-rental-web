@@ -88,28 +88,28 @@ export function calculateFleetPercentages(data: {
 export function getAlertStyles(type: 'critical' | 'warning' | 'info' | 'success') {
     const styles = {
         critical: {
-            border: 'border-red-500',
-            bg: 'bg-red-50 dark:bg-red-950/20',
-            text: 'text-red-900 dark:text-red-100',
-            iconColor: 'text-red-500',
+            border: 'border-danger-subtle-foreground/30',
+            bg: 'bg-danger-subtle',
+            text: 'text-danger-subtle-foreground',
+            iconColor: 'text-danger-subtle-foreground',
         },
         warning: {
-            border: 'border-amber-500',
-            bg: 'bg-amber-50 dark:bg-amber-950/20',
-            text: 'text-amber-900 dark:text-amber-100',
-            iconColor: 'text-amber-500',
+            border: 'border-warning-subtle-foreground/30',
+            bg: 'bg-warning-subtle',
+            text: 'text-warning-subtle-foreground',
+            iconColor: 'text-warning-subtle-foreground',
         },
         info: {
-            border: 'border-blue-500',
-            bg: 'bg-blue-50 dark:bg-blue-950/20',
-            text: 'text-blue-900 dark:text-blue-100',
-            iconColor: 'text-blue-500',
+            border: 'border-info-subtle-foreground/30',
+            bg: 'bg-info-subtle',
+            text: 'text-info-subtle-foreground',
+            iconColor: 'text-info-subtle-foreground',
         },
         success: {
-            border: 'border-green-500',
-            bg: 'bg-green-50 dark:bg-green-950/20',
-            text: 'text-green-900 dark:text-green-100',
-            iconColor: 'text-green-500',
+            border: 'border-success-subtle-foreground/30',
+            bg: 'bg-success-subtle',
+            text: 'text-success-subtle-foreground',
+            iconColor: 'text-success-subtle-foreground',
         },
     };
 

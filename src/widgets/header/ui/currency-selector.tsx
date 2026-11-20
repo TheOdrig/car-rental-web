@@ -44,14 +44,14 @@ export function CurrencySelector() {
                         onClick={() => setCurrency(curr.code)}
                         className={cn(
                             'flex items-center justify-between cursor-pointer',
-                            currency === curr.code && 'bg-slate-100 dark:bg-slate-800'
+                            currency === curr.code && 'bg-muted'
                         )}
                     >
                         <div className="flex items-center gap-2">
                             <span className="text-sm font-medium">{curr.code}</span>
-                            <span className="text-sm text-slate-600 dark:text-slate-400">{curr.name}</span>
+                            <span className="text-sm text-muted-foreground">{curr.name}</span>
                         </div>
-                        <span className="text-sm text-slate-500 dark:text-slate-400">
+                        <span className="text-sm text-muted-foreground">
                             {curr.symbol}
                         </span>
                     </DropdownMenuItem>

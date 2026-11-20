@@ -19,7 +19,7 @@ describe('Input Component - Validation States', () => {
             render(<Input placeholder="Enter text" validationState="valid" />);
             const input = screen.getByPlaceholderText('Enter text');
             expect(input).toHaveAttribute('data-validation-state', 'valid');
-            expect(input).toHaveClass('border-green-500');
+            expect(input).toHaveClass('border-success');
         });
         it('should not have aria-invalid for valid state', () => {
             render(<Input placeholder="Enter text" validationState="valid" />);
@@ -115,7 +115,7 @@ describe('Input Component - Validation States', () => {
             render(<Input placeholder="Enter text" className="custom-class" validationState="valid" />);
             const input = screen.getByPlaceholderText('Enter text');
             expect(input).toHaveClass('custom-class');
-            expect(input).toHaveClass('border-green-500');
+            expect(input).toHaveClass('border-success');
         });
     });
     describe('Accessibility', () => {

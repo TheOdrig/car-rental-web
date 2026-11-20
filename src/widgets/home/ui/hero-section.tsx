@@ -11,7 +11,7 @@ const HERO_PHOTO = 'https://images.unsplash.com/photo-1639056067266-43a821cf0a1f
 
 export function HeroSection({ className, backgroundImage = HERO_PHOTO }: HeroSectionProps) {
     return (
-        <section className={cn('relative flex min-h-[560px] items-center overflow-hidden bg-slate-950', className)}>
+        <section className={cn('relative flex min-h-[560px] items-center overflow-hidden bg-black', className)}>
             <div className="absolute inset-0 z-0">
                 <DynamicImage
                     src={backgroundImage}
@@ -22,7 +22,7 @@ export function HeroSection({ className, backgroundImage = HERO_PHOTO }: HeroSec
                     fetchPriority="high"
                     className="object-cover object-[50%_62%]"
                 />
-                <div className="absolute inset-0 bg-slate-950/65" />
+                <div className="absolute inset-0 bg-black/65" />
             </div>
 
             <div className="container relative z-10 mx-auto px-4 py-16">

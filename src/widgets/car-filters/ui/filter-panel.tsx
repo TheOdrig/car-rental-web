@@ -46,7 +46,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                 value={filters.brand ?? ''}
                 onValueChange={(value) => setFilter('brand', value)}
             >
-                <SelectTrigger aria-label="Filter by brand" className="w-[160px] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <SelectTrigger aria-label="Filter by brand" className="w-[160px] dark:bg-input/30 dark:hover:bg-input/50">
                     <SelectValue placeholder="Brand" />
                 </SelectTrigger>
                 <SelectContent>
@@ -62,7 +62,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                 value={filters.transmissionType ?? ''}
                 onValueChange={(value) => setFilter('transmissionType', value)}
             >
-                <SelectTrigger aria-label="Filter by transmission" className="w-[160px] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <SelectTrigger aria-label="Filter by transmission" className="w-[160px] dark:bg-input/30 dark:hover:bg-input/50">
                     <SelectValue placeholder="Transmission" />
                 </SelectTrigger>
                 <SelectContent>
@@ -78,7 +78,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                 value={filters.fuelType ?? ''}
                 onValueChange={(value) => setFilter('fuelType', value)}
             >
-                <SelectTrigger aria-label="Filter by fuel type" className="w-[160px] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <SelectTrigger aria-label="Filter by fuel type" className="w-[160px] dark:bg-input/30 dark:hover:bg-input/50">
                     <SelectValue placeholder="Fuel Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -94,7 +94,7 @@ export function CarFilters({ className, layout = 'horizontal' }: CarFiltersProps
                 value={filters.bodyType ?? ''}
                 onValueChange={(value) => setFilter('bodyType', value)}
             >
-                <SelectTrigger aria-label="Filter by body type" className="w-[160px] dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                <SelectTrigger aria-label="Filter by body type" className="w-[160px] dark:bg-input/30 dark:hover:bg-input/50">
                     <SelectValue placeholder="Body Type" />
                 </SelectTrigger>
                 <SelectContent>

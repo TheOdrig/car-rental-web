@@ -154,24 +154,24 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
         <form onSubmit={onSubmit}>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
                 <div className="lg:col-span-7 xl:col-span-8 space-y-8">
-                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+                    <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
                         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                             <Clock className="h-5 w-5 text-primary" />
-                            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                            <h2 className="text-xl font-bold text-foreground">
                                 How this works
                             </h2>
                         </div>
-                        <ol className="space-y-3 text-sm text-slate-600 dark:text-slate-400 list-decimal pl-5">
+                        <ol className="space-y-3 text-sm text-muted-foreground list-decimal pl-5">
                             <li>You send a rental request for the dates shown here.</li>
                             <li>An administrator reviews it and approves or rejects it.</li>
                             <li>Payment comes after approval, from your rental page.</li>
                         </ol>
                     </section>
 
-                    <section className="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 md:p-8">
+                    <section className="bg-card rounded-xl shadow-sm border border-border p-6 md:p-8">
                         <div className="flex items-center gap-3 mb-6 pb-4 border-b border-border/50">
                             <FileText className="h-5 w-5 text-primary" />
-                            <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">
+                            <h2 className="text-xl font-bold text-foreground">
                                 Notes for the administrator
                             </h2>
                         </div>
@@ -188,10 +188,10 @@ export function CheckoutForm({ carId, startDate, endDate }: CheckoutFormProps) {
                                 rows={4}
                                 disabled={isSubmitting}
                             />
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                                 {notes.length}/{NOTES_MAX_LENGTH}
                             </p>
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                                 The administrator sees this note with your request, and it stays on your rental page.
                             </p>
                         </div>

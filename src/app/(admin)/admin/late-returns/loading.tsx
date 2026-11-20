@@ -23,7 +23,7 @@ export default function LateReturnsLoading() {
                 <Skeleton className="h-9 w-[150px]" />
             </div>
 
-            <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4">
+            <div className="rounded-lg border border-border bg-card p-4">
                 <div className="space-y-4">
                     {Array.from({ length: 5 }).map((_, i) => (
                         <div key={i} className="flex gap-4">

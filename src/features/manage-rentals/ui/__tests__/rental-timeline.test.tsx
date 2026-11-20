@@ -141,14 +141,14 @@ describe('RentalTimeline', () => {
                 />
             );
             expect(screen.getByText(/^Returned Jan 4, 2030/)).toBeInTheDocument();
-            expect(screen.getByText('Return & Complete')).toHaveClass('text-emerald-700');
+            expect(screen.getByText('Return & Complete')).toHaveClass('text-success-subtle-foreground');
         });
     });
     describe('visual indicators', () => {
         it('should apply completed styling for past steps', () => {
             render(<RentalTimeline status={RentalStatus.IN_USE} />);
             const bookingStep = screen.getByText('Booking Confirmed');
-            expect(bookingStep).toHaveClass('text-emerald-700');
+            expect(bookingStep).toHaveClass('text-success-subtle-foreground');
         });
         it('should apply current styling for active step', () => {
             render(<RentalTimeline status={RentalStatus.CONFIRMED} />);

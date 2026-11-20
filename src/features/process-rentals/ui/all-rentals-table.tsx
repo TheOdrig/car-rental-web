@@ -18,7 +18,7 @@ interface AllRentalsTableProps {
     emptyMessage?: string;
 }
 
-const HEAD_CLASS = 'text-slate-600 dark:text-slate-300 font-semibold';
+const HEAD_CLASS = 'text-muted-foreground font-semibold';
 
 export function AllRentalsTable({
     rentals,

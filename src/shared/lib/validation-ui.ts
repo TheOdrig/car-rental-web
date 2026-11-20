@@ -9,9 +9,9 @@ export function getValidationConfig(state: ValidationState): ValidationConfig {
         },
         valid: {
             state: 'valid',
-            borderColor: 'border-green-500',
+            borderColor: 'border-success',
             backgroundColor: 'bg-transparent',
-            color: 'text-green-600',
+            color: 'text-success-subtle-foreground',
         },
         invalid: {
             state: 'invalid',
@@ -84,7 +84,7 @@ export function getValidationBorderClasses(state: ValidationState): string {
 
 export function getValidationMessageClasses(state: ValidationState): string {
     if (state === 'valid') {
-        return 'text-green-600 dark:text-green-500';
+        return 'text-success-subtle-foreground';
     }
     if (state === 'invalid' || state === 'empty') {
         return 'text-destructive';
@@ -129,7 +129,7 @@ export function determineValidationState(options: {
 export function getValidationRingClasses(state: ValidationState): string {
     switch (state) {
         case 'valid':
-            return 'ring-green-500/20 focus-visible:ring-green-500/30';
+            return 'ring-success/20 focus-visible:ring-success/20';
         case 'invalid':
         case 'empty':
             return 'ring-destructive/20 focus-visible:ring-destructive/30';

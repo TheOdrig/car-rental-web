@@ -34,9 +34,9 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                     </CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div className="flex flex-col items-center justify-center py-12 bg-slate-100 dark:bg-slate-800 rounded-lg">
-                        <ImageIcon className="h-12 w-12 text-slate-400 mb-3" />
-                        <p className="text-sm text-slate-500 dark:text-slate-400">No images available</p>
+                    <div className="flex flex-col items-center justify-center py-12 bg-muted rounded-lg">
+                        <ImageIcon className="h-12 w-12 text-muted-foreground mb-3" />
+                        <p className="text-sm text-muted-foreground">No images available</p>
                     </div>
                 </CardContent>
             </Card>
@@ -51,14 +51,14 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                         <ImageIcon className="h-5 w-5 text-muted-foreground" />
                         Vehicle Images
                     </CardTitle>
-                    <span className="text-sm text-slate-500 dark:text-slate-400">
+                    <span className="text-sm text-muted-foreground">
                         {currentIndex + 1} / {allImages.length}
                     </span>
                 </div>
             </CardHeader>
             <CardContent>
                 <div className="relative">
-                    <div className="relative aspect-video rounded-lg overflow-hidden bg-slate-100 dark:bg-slate-800">
+                    <div className="relative aspect-video rounded-lg overflow-hidden bg-muted">
                         <DynamicImage
                             src={allImages[currentIndex]}
                             alt={`${vehicleName} - Image ${currentIndex + 1}`}
@@ -99,8 +99,8 @@ export function VehicleImagesCard({ images, vehicleName }: VehicleImagesCardProp
                                 key={idx}
                                 onClick={() => setCurrentIndex(idx)}
                                 className={`relative w-16 h-12 rounded-md overflow-hidden flex-shrink-0 border-2 transition-colors ${idx === currentIndex
-                                    ? 'border-indigo-500'
-                                    : 'border-transparent hover:border-slate-300 dark:hover:border-slate-600'
+                                    ? 'border-info-subtle-foreground/30'
+                                    : 'border-transparent hover:border-border'
                                     }`}
                             >
                                 <DynamicImage

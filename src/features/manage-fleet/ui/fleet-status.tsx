@@ -76,37 +76,37 @@ export const FleetStatusCard = memo(function FleetStatusCard({
                     label="Available"
                     value={availableCars}
                     total={totalCars}
-                    bgColor="bg-emerald-500"
+                    bgColor="bg-success"
                 />
                 <StatusItem
                     label="Rented"
                     value={rentedCars}
                     total={totalCars}
-                    bgColor="bg-violet-500"
+                    bgColor="bg-info"
                 />
                 <StatusItem
                     label="Reserved"
                     value={reservedCars}
                     total={totalCars}
-                    bgColor="bg-blue-500"
+                    bgColor="bg-info"
                 />
                 <StatusItem
                     label="Maintenance"
                     value={maintenanceCars}
                     total={totalCars}
-                    bgColor="bg-amber-500"
+                    bgColor="bg-warning"
                 />
                 <StatusItem
                     label="Inspection"
                     value={inspectionCars}
                     total={totalCars}
-                    bgColor="bg-cyan-500"
+                    bgColor="bg-info"
                 />
                 <StatusItem
                     label="Damaged"
                     value={damagedCars}
                     total={totalCars}
-                    bgColor="bg-rose-500"
+                    bgColor="bg-destructive"
                 />
 
                 <div className="pt-4 border-t">
@@ -137,12 +137,12 @@ export const FleetStatusCompact = memo(function FleetStatusCompact({
     const { availableCars, rentedCars, reservedCars = 0, maintenanceCars, inspectionCars = 0, damagedCars } = data;
 
     const items = [
-        { label: 'Available', value: availableCars, icon: CheckCircle, color: 'text-emerald-500' },
-        { label: 'Rented', value: rentedCars, icon: Car, color: 'text-violet-500' },
-        { label: 'Reserved', value: reservedCars, icon: Clock, color: 'text-blue-500' },
-        { label: 'Maintenance', value: maintenanceCars, icon: Settings, color: 'text-amber-500' },
-        { label: 'Inspection', value: inspectionCars, icon: PieChart, color: 'text-cyan-500' },
-        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, color: 'text-rose-500' },
+        { label: 'Available', value: availableCars, icon: CheckCircle, color: 'text-success-subtle-foreground' },
+        { label: 'Rented', value: rentedCars, icon: Car, color: 'text-info-subtle-foreground' },
+        { label: 'Reserved', value: reservedCars, icon: Clock, color: 'text-info-subtle-foreground' },
+        { label: 'Maintenance', value: maintenanceCars, icon: Settings, color: 'text-warning-subtle-foreground' },
+        { label: 'Inspection', value: inspectionCars, icon: PieChart, color: 'text-info-subtle-foreground' },
+        { label: 'Damaged', value: damagedCars, icon: AlertTriangle, color: 'text-danger-subtle-foreground' },
     ];
 
     return (

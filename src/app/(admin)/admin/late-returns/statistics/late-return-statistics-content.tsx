@@ -38,8 +38,8 @@ function StatisticsContent() {
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-card p-6 rounded-lg border border-border shadow-sm">
                 <div className="space-y-1">
-                    <h1 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Late Return Statistics</h1>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Late Return Statistics</h1>
+                    <p className="text-sm text-muted-foreground">
                         Analyze late return trends and penalty metrics
                     </p>
                 </div>
@@ -62,9 +62,9 @@ function StatisticsContent() {
                 </div>
             </div>
 
-            <div className="flex flex-wrap items-end gap-4 p-4 rounded-xl bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700">
+            <div className="flex flex-wrap items-end gap-4 p-4 rounded-xl bg-card/50 border border-border">
                 <div className="space-y-2">
-                    <Label htmlFor="startDate" className="text-slate-700 dark:text-slate-300">
+                    <Label htmlFor="startDate" className="text-muted-foreground">
                         Start Date
                     </Label>
                     <Input
@@ -72,11 +72,11 @@ function StatisticsContent() {
                         type="date"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="w-[160px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600"
+                        className="w-[160px] bg-background dark:bg-input/30 border-border"
                     />
                 </div>
                 <div className="space-y-2">
-                    <Label htmlFor="endDate" className="text-slate-700 dark:text-slate-300">
+                    <Label htmlFor="endDate" className="text-muted-foreground">
                         End Date
                     </Label>
                     <Input
@@ -84,7 +84,7 @@ function StatisticsContent() {
                         type="date"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="w-[160px] bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-600"
+                        className="w-[160px] bg-background dark:bg-input/30 border-border"
                     />
                 </div>
             </div>

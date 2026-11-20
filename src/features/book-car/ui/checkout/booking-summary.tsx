@@ -37,16 +37,16 @@ export function BookingSummary({
 
     return (
         <div className="sticky top-24 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+            <div className="bg-card rounded-xl shadow-lg border border-border overflow-hidden">
                 <div className="p-6 pb-0">
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-1">
+                    <h3 className="text-lg font-bold text-foreground mb-1">
                         {car.brand} {car.model}
                     </h3>
                     <div className="flex items-center gap-2">
-                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-xs font-medium">
+                        <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs font-medium">
                             {car.transmissionType}
                         </span>
-                        <span className="bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 px-2 py-0.5 rounded text-xs font-medium">
+                        <span className="bg-muted text-muted-foreground px-2 py-0.5 rounded text-xs font-medium">
                             {car.fuelType}
                         </span>
                     </div>
@@ -71,10 +71,10 @@ export function BookingSummary({
                             <div className="w-0.5 h-full bg-border my-1" />
                         </div>
                         <div className="pb-4">
-                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                            <p className="text-xs font-semibold text-muted-foreground mb-1">
                                 Start Date
                             </p>
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                            <p className="text-sm font-bold text-foreground">
                                 {formatDate(startDate)}
                             </p>
                         </div>
@@ -82,22 +82,22 @@ export function BookingSummary({
 
                     <div className="flex gap-3">
                         <div className="flex flex-col items-center">
-                            <div className="w-2.5 h-2.5 rounded-full border-2 border-primary bg-white dark:bg-slate-900" />
+                            <div className="w-2.5 h-2.5 rounded-full border-2 border-primary bg-card" />
                         </div>
                         <div>
-                            <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 mb-1">
+                            <p className="text-xs font-semibold text-muted-foreground mb-1">
                                 End Date
                             </p>
-                            <p className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                            <p className="text-sm font-bold text-foreground">
                                 {formatDate(endDate)}
                             </p>
                         </div>
                     </div>
                 </div>
 
-                <div className="bg-slate-50 dark:bg-slate-950 px-6 py-6 border-t border-slate-200 dark:border-slate-700">
+                <div className="bg-raised px-6 py-6 border-t border-border">
                     <div className="space-y-3 text-sm">
-                        <div className="flex justify-between text-slate-600 dark:text-slate-400">
+                        <div className="flex justify-between text-muted-foreground">
                             <span>
                                 Car Rental ({priceBreakdown.rentalDays}{' '}
                                 {priceBreakdown.rentalDays === 1 ? 'day' : 'days'})
@@ -113,25 +113,25 @@ export function BookingSummary({
 
                     {isPricingLoading ? (
                         <div className="space-y-2 mb-4">
-                            <div className="h-4 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-32" />
-                            <div className="h-3 bg-slate-200 dark:bg-slate-700 rounded animate-pulse w-48" />
+                            <div className="h-4 bg-accent rounded animate-pulse w-32" />
+                            <div className="h-3 bg-accent rounded animate-pulse w-48" />
                         </div>
                     ) : priceBreakdown.appliedDiscounts && priceBreakdown.appliedDiscounts.length > 0 && (
                         <div className="mb-4">
                             <div className="flex items-center gap-1.5 mb-2">
-                                <Sparkles className="h-4 w-4 text-emerald-500" />
-                                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider">Price adjustments</span>
+                                <Sparkles className="h-4 w-4 text-success-subtle-foreground" />
+                                <span className="text-xs font-semibold text-success-subtle-foreground uppercase tracking-wider">Price adjustments</span>
                             </div>
                             <div className="space-y-1.5">
                                 {priceBreakdown.appliedDiscounts.map((discount, index) => (
                                     <div key={index} className="flex justify-between items-center text-sm">
-                                        <span className="text-slate-600 dark:text-slate-400 flex items-center gap-1.5">
+                                        <span className="text-muted-foreground flex items-center gap-1.5">
                                             <Tag className="h-3 w-3" />
                                             {discount.description}
                                         </span>
                                         <span className={`font-medium tabular-nums ${discount.isDiscount
-                                            ? 'text-emerald-600 dark:text-emerald-400'
-                                            : 'text-amber-600 dark:text-amber-400'
+                                            ? 'text-success-subtle-foreground'
+                                            : 'text-warning-subtle-foreground'
                                             }`}>
                                             {discount.percentage}
                                         </span>
@@ -142,32 +142,32 @@ export function BookingSummary({
                     )}
 
                     <div className="flex justify-between items-end mb-6">
-                        <span className="text-base font-bold text-slate-900 dark:text-slate-100">Estimated total</span>
+                        <span className="text-base font-bold text-foreground">Estimated total</span>
                         <div className="text-right">
                             {priceBreakdown.originalTotal && priceBreakdown.totalSavings && priceBreakdown.totalSavings > 0 && (
                                 <div className="flex items-center justify-end gap-2 mb-1">
-                                    <span className="text-sm line-through text-slate-600 dark:text-slate-400 tabular-nums">
+                                    <span className="text-sm line-through text-muted-foreground tabular-nums">
                                         {formatSource(priceBreakdown.originalTotal, sourceCurrency)}
                                     </span>
-                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-300">
+                                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold bg-success-subtle text-success-subtle-foreground">
                                         <Sparkles className="h-3 w-3" />
                                         Save {formatSource(priceBreakdown.totalSavings, sourceCurrency)}
                                     </span>
                                 </div>
                             )}
-                            <span className="text-2xl font-bold text-slate-900 dark:text-slate-100 tracking-tight tabular-nums">
+                            <span className="text-2xl font-bold text-foreground tracking-tight tabular-nums">
                                 {isPricingLoading ? (
-                                    <span className="inline-block h-8 w-24 bg-slate-200 dark:bg-slate-700 rounded animate-pulse" />
+                                    <span className="inline-block h-8 w-24 bg-accent rounded animate-pulse" />
                                 ) : (
                                     formatSource(priceBreakdown.total, sourceCurrency)
                                 )}
                             </span>
                             {!isPricingLoading && isConverted(sourceCurrency) && (
-                                <p className="text-xs text-slate-500 dark:text-slate-400">
+                                <p className="text-xs text-muted-foreground">
                                     {formatPrice(priceBreakdown.total, sourceCurrency)} {describeRateBasis(rateSource)}
                                 </p>
                             )}
-                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                            <p className="text-xs text-muted-foreground">
                                 Charged in {sourceCurrency}. {isPricingFailed
                                     ? 'The pricing service is unavailable, so this is calculated from the daily rate. The final price is set when your request is reviewed.'
                                     : 'Estimated, final price on review.'}
@@ -219,7 +219,7 @@ export function BookingSummary({
                         )}
                     </Button>
 
-                    <div className="mt-4 flex justify-center items-center gap-2 text-slate-500 dark:text-slate-400 text-xs">
+                    <div className="mt-4 flex justify-center items-center gap-2 text-muted-foreground text-xs">
                         <Lock className="h-4 w-4" />
                         No payment now: an administrator reviews your request and payment comes after approval (Stripe test mode demo)
                     </div>

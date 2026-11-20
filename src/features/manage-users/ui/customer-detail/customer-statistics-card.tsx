@@ -73,7 +73,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                     />
                 </div>
                 <div className="mt-4" data-testid="spent-by-currency">
-                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
                         <DollarSign className="h-4 w-4" />
                         Net Paid by Currency
                     </p>
@@ -94,7 +94,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                     )}
                 </div>
                 <div className="mt-4" data-testid="damage-cost-by-currency">
-                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-slate-600 dark:text-slate-400">
+                    <p className="mb-2 flex items-center gap-2 text-sm font-medium text-muted-foreground">
                         <DollarSign className="h-4 w-4" />
                         Damage Cost by Currency
                     </p>

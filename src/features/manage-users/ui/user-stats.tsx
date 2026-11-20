@@ -21,9 +21,9 @@ interface StatCardConfig {
 }
 
 const statCards: StatCardConfig[] = [
-    { title: 'Total Users', key: 'totalUsers', icon: Users, dotColor: 'bg-slate-500' },
-    { title: 'Active Users', key: 'activeUsers', icon: UserCheck, dotColor: 'bg-emerald-500' },
-    { title: 'Banned Users', key: 'bannedUsers', icon: UserX, dotColor: 'bg-red-500' },
+    { title: 'Total Users', key: 'totalUsers', icon: Users, dotColor: 'bg-muted-foreground' },
+    { title: 'Active Users', key: 'activeUsers', icon: UserCheck, dotColor: 'bg-success' },
+    { title: 'Banned Users', key: 'bannedUsers', icon: UserX, dotColor: 'bg-destructive' },
 ];
 
 export const UserStatsCards = memo(function UserStatsCards({

@@ -18,7 +18,7 @@ function VerificationRow({ label, verified }: { label: string; verified: boolean
                 variant="outline"
                 className={
                     verified
-                        ? 'border-emerald-300 text-emerald-700 dark:border-emerald-700 dark:text-emerald-400'
+                        ? 'border-success-subtle-foreground/30 text-success-subtle-foreground'
                         : 'text-muted-foreground'
                 }
             >

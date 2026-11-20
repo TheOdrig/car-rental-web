@@ -53,7 +53,7 @@ describe('LoginForm - Validation State Integration', () => {
             await user.type(usernameInput, 'test@example.com');
             fireEvent.blur(usernameInput);
             await waitFor(() => {
-                expect(usernameInput).toHaveClass('border-green-500');
+                expect(usernameInput).toHaveClass('border-success');
             });
         });
         it('should show valid state after typing valid password and blurring', async () => {
@@ -62,7 +62,7 @@ describe('LoginForm - Validation State Integration', () => {
             await user.type(passwordInput, 'validpassword123');
             fireEvent.blur(passwordInput);
             await waitFor(() => {
-                expect(passwordInput).toHaveClass('border-green-500');
+                expect(passwordInput).toHaveClass('border-success');
             });
         });
         it('should show error state after submit with empty fields', async () => {

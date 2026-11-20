@@ -31,8 +31,7 @@ export function FormError({ id, message, onDismiss, className, focusOnShow = fal
             role="alert"
             aria-live="assertive"
             className={cn(
-                'flex items-center gap-3 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-                'dark:border-red-900/50 dark:bg-red-950/50 dark:text-red-400',
+                'flex items-center gap-3 rounded-lg border border-danger-subtle-foreground/30 bg-danger-subtle p-4 text-danger-subtle-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-ring',
                 className
             )}
         >
@@ -42,7 +41,7 @@ export function FormError({ id, message, onDismiss, className, focusOnShow = fal
                 <button
                     type="button"
                     onClick={onDismiss}
-                    className="shrink-0 rounded-md p-1 hover:bg-red-100 dark:hover:bg-red-900/50"
+                    className="shrink-0 rounded-md p-1 hover:bg-danger-subtle"
                     aria-label="Dismiss error"
                 >
                     <X className="h-4 w-4" aria-hidden="true" />

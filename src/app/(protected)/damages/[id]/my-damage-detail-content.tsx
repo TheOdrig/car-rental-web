@@ -89,7 +89,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                     </Button>
                     <div className="flex-1">
                         <div className="flex items-center gap-3">
-                            <AlertTriangle className="h-6 w-6 text-orange-500" />
+                            <AlertTriangle className="h-6 w-6 text-warning-subtle-foreground" />
                             <h1 className="text-2xl font-bold">Damage Report</h1>
                         </div>
                         <p className="text-sm text-muted-foreground mt-1">

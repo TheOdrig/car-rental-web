@@ -54,7 +54,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                     <div className="min-w-0">
                         <Link
                             href={`/admin/users/${user.id}`}
-                            className="block max-w-[14rem] truncate font-semibold text-slate-900 dark:text-slate-100 hover:text-primary hover:underline transition-colors"
+                            className="block max-w-[14rem] truncate font-semibold text-foreground hover:text-primary hover:underline transition-colors"
                         >
                             {displayName}
                         </Link>
@@ -64,13 +64,13 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
             </TableCell>
             <TableCell data-label="Email">
                 <div className="flex items-center gap-2">
-                    <span className="max-w-[16rem] truncate text-sm text-slate-900 dark:text-slate-100">
+                    <span className="max-w-[16rem] truncate text-sm text-foreground">
                         {user.email}
                     </span>
                     {user.isEmailVerified ? (
-                        <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" aria-label="Email verified" />
+                        <CheckCircle2 className="h-4 w-4 shrink-0 text-success-subtle-foreground" aria-label="Email verified" />
                     ) : (
-                        <CircleAlert className="h-4 w-4 shrink-0 text-amber-500" aria-label="Email not verified" />
+                        <CircleAlert className="h-4 w-4 shrink-0 text-warning-subtle-foreground" aria-label="Email not verified" />
                     )}
                 </div>
             </TableCell>
@@ -116,7 +116,7 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             {status === 'BANNED' ? (
-                                <DropdownMenuItem className="text-green-600" onClick={() => onUnban(target)}>
+                                <DropdownMenuItem className="text-success-subtle-foreground" onClick={() => onUnban(target)}>
                                     <UserCheck className="mr-2 h-4 w-4" aria-hidden="true" />
                                     Unban User
                                 </DropdownMenuItem>

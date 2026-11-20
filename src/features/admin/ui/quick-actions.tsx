@@ -78,9 +78,9 @@ function ActionDialog({
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
-            <DialogContent className="sm:max-w-[500px] bg-white dark:bg-slate-900 border dark:border-slate-700">
+            <DialogContent className="sm:max-w-[500px] bg-card border ">
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2 text-slate-900 dark:text-white">
+                    <DialogTitle className="flex items-center gap-2 text-foreground">
                         {isPickup ? (
                             <Car className="h-5 w-5 text-primary" />
                         ) : (
@@ -88,36 +88,36 @@ function ActionDialog({
                         )}
                         {title}
                     </DialogTitle>
-                    <DialogDescription className="text-slate-600 dark:text-slate-400">{description}</DialogDescription>
+                    <DialogDescription className="text-muted-foreground">{description}</DialogDescription>
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
-                    <div className="rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-4">
+                    <div className="rounded-lg border border-border bg-raised p-4">
                         <div className="grid grid-cols-2 gap-4 text-sm">
                             <div>
-                                <p className="text-slate-500 dark:text-slate-400">Customer</p>
-                                <p className="font-medium text-slate-900 dark:text-white">{item.customerName}</p>
+                                <p className="text-muted-foreground">Customer</p>
+                                <p className="font-medium text-foreground">{item.customerName}</p>
                             </div>
                             <div>
-                                <p className="text-slate-500 dark:text-slate-400">Vehicle</p>
-                                <p className="font-medium text-slate-900 dark:text-white">
+                                <p className="text-muted-foreground">Vehicle</p>
+                                <p className="font-medium text-foreground">
                                     {item.carBrand} {item.carModel}
                                 </p>
                             </div>
                             <div>
-                                <p className="text-slate-500 dark:text-slate-400">License Plate</p>
-                                <p className="font-medium text-slate-900 dark:text-white">{item.licensePlate}</p>
+                                <p className="text-muted-foreground">License Plate</p>
+                                <p className="font-medium text-foreground">{item.licensePlate}</p>
                             </div>
                             <div>
-                                <p className="text-slate-500 dark:text-slate-400">Rental ID</p>
-                                <p className="font-medium text-slate-900 dark:text-white">#{item.rentalId}</p>
+                                <p className="text-muted-foreground">Rental ID</p>
+                                <p className="font-medium text-foreground">#{item.rentalId}</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="notes" className="text-slate-700 dark:text-slate-300">
-                            Notes <span className="text-slate-500 dark:text-slate-500">(optional)</span>
+                        <Label htmlFor="notes" className="text-muted-foreground">
+                            Notes <span className="text-muted-foreground">(optional)</span>
                         </Label>
                         <Textarea
                             id="notes"
@@ -126,7 +126,7 @@ function ActionDialog({
                             placeholder={notesPlaceholder}
                             rows={3}
                             disabled={isLoading}
-                            className="bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400"
+                            className="bg-background dark:bg-input/30 border-border text-foreground placeholder:text-muted-foreground"
                         />
                     </div>
                 </div>
@@ -136,7 +136,7 @@ function ActionDialog({
                         variant="outline"
                         onClick={() => handleOpenChange(false)}
                         disabled={isLoading}
-                        className="cursor-pointer border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        className="cursor-pointer border-border text-muted-foreground hover:bg-muted"
                     >
                         Cancel
                     </Button>
@@ -182,14 +182,14 @@ function QuickActionButton({
                 </div>
                 <span className={cn(
                     "text-3xl font-bold tracking-tight",
-                    variant === 'default' ? "text-primary-foreground" : "text-slate-900 dark:text-white"
+                    variant === 'default' ? "text-primary-foreground" : "text-foreground"
                 )}>
                     {count}
                 </span>
             </div>
             <span className={cn(
                 "text-xs font-semibold uppercase tracking-wider",
-                variant === 'default' ? "text-primary-foreground/90" : "text-slate-500 dark:text-slate-400"
+                variant === 'default' ? "text-primary-foreground/90" : "text-muted-foreground"
             )}>
                 {label}
             </span>
@@ -254,8 +254,8 @@ export const QuickActionsCard = memo(function QuickActionsCard({
                 </CardHeader>
                 <CardContent>
                     {pickupItems.length === 0 && returnItems.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center py-8 text-center bg-slate-50 dark:bg-slate-800/30 rounded-xl border border-dashed border-slate-200 dark:border-slate-700">
-                            <p className="text-sm text-slate-600 dark:text-slate-300">No pickups or returns are waiting.</p>
+                        <div className="flex flex-col items-center justify-center py-8 text-center bg-raised rounded-xl border border-dashed border-border">
+                            <p className="text-sm text-muted-foreground">No pickups or returns are waiting.</p>
                         </div>
                     ) : (
                         <div className="flex flex-wrap gap-4">

@@ -29,9 +29,9 @@ const SORT_DIRECTION_OPTIONS = [
     { value: 'ASC', label: 'Ascending' },
 ];
 
-const triggerClassName = "bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100";
+const triggerClassName = "bg-background border-border hover:bg-accent transition-colors cursor-pointer text-foreground";
 
-const inputClassName = "bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors text-slate-900 dark:text-slate-100";
+const inputClassName = "bg-background border-border hover:bg-accent transition-colors text-foreground";
 
 export function LateReturnFilters() {
     const router = useRouter();

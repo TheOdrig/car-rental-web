@@ -68,7 +68,7 @@ export function AddCarContent() {
                 <Button
                     variant="outline"
                     onClick={() => router.back()}
-                    className="gap-2 bg-background border-border text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
+                    className="gap-2 bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
                 >
                     <ArrowLeft className="h-4 w-4" aria-hidden="true" />
                     Back
@@ -137,7 +137,7 @@ export function AddCarContent() {
                         variant="outline"
                         onClick={() => router.back()}
                         disabled={createCar.isPending}
-                        className="bg-background border-border text-slate-700 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-700/80 hover:text-slate-900 dark:hover:text-white"
+                        className="bg-background border-border text-foreground hover:bg-accent hover:text-foreground"
                     >
                         Cancel
                     </Button>

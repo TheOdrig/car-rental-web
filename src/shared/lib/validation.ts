@@ -101,20 +101,20 @@ export function calculatePasswordStrength(password: string): PasswordStrength {
 
 export function getPasswordStrengthColor(strength: PasswordStrength): string {
   const colors: Record<PasswordStrength, string> = {
-    weak: 'bg-red-500',
-    fair: 'bg-orange-500',
-    good: 'bg-yellow-500',
-    strong: 'bg-green-500',
+    weak: 'bg-destructive',
+    fair: 'bg-warning',
+    good: 'bg-warning',
+    strong: 'bg-success',
   };
   return colors[strength];
 }
 
 export function getPasswordStrengthTextColor(strength: PasswordStrength): string {
   const colors: Record<PasswordStrength, string> = {
-    weak: 'text-red-500',
-    fair: 'text-orange-500',
-    good: 'text-yellow-500',
-    strong: 'text-green-500',
+    weak: 'text-danger-subtle-foreground',
+    fair: 'text-warning-subtle-foreground',
+    good: 'text-warning-subtle-foreground',
+    strong: 'text-success-subtle-foreground',
   };
   return colors[strength];
 }

@@ -49,26 +49,26 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
     }
 
     return (
-        <div className="rounded-md border border-slate-200 dark:border-slate-700">
+        <div className="rounded-md border border-border">
             <Table className="stack-table">
                 <TableHeader>
-                    <TableRow className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Vehicle</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Customer</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Description</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Severity</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Status</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Reported</TableHead>
+                    <TableRow className="border-b border-border bg-raised">
+                        <TableHead className="text-muted-foreground font-semibold">Vehicle</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Customer</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Description</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Severity</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Status</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Reported</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {damages.map((damage) => (
                         <TableRow
                             key={damage.id}
-                            className="cursor-pointer border-b border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800/50"
+                            className="cursor-pointer border-b border-border hover:bg-accent"
                             onClick={() => handleRowClick(damage)}
                         >
-                            <TableCell className="font-medium text-slate-900 dark:text-white">
+                            <TableCell className="font-medium text-foreground">
                                 <Link
                                     href={`/admin/fleet/${damage.carId}`}
                                     className="hover:text-primary hover:underline transition-colors"
@@ -77,10 +77,10 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                                     <VehicleLabel carSummary={damage.carSummary} licensePlate={damage.carLicensePlate} stacked />
                                 </Link>
                             </TableCell>
-                            <TableCell data-label="Customer" className="text-slate-700 dark:text-slate-300">
+                            <TableCell data-label="Customer" className="text-muted-foreground">
                                 {damage.customerName}
                             </TableCell>
-                            <TableCell data-label="Description" data-wide className="max-w-[200px] truncate text-slate-700 dark:text-slate-300">
+                            <TableCell data-label="Description" data-wide className="max-w-[200px] truncate text-muted-foreground">
                                 <Link
                                     href={`/admin/damages/${damage.id}`}
                                     className="hover:text-primary hover:underline"
@@ -95,7 +95,7 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
                             <TableCell data-label="Status">
                                 <DamageStatusBadge status={damage.status} />
                             </TableCell>
-                            <TableCell data-label="Reported" className="text-slate-600 dark:text-slate-400">
+                            <TableCell data-label="Reported" className="text-muted-foreground">
                                 {formatDate(damage.reportedAt)}
                             </TableCell>
                         </TableRow>
@@ -108,21 +108,21 @@ export function DamageTable({ damages, isLoading, onRowClick }: DamageTableProps
 
 function DamageTableSkeleton() {
     return (
-        <div className="rounded-md border border-slate-200 dark:border-slate-700">
+        <div className="rounded-md border border-border">
             <Table>
                 <TableHeader>
-                    <TableRow className="border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Vehicle</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Customer</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Description</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Severity</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Status</TableHead>
-                        <TableHead className="text-slate-700 dark:text-slate-300 font-semibold">Reported</TableHead>
+                    <TableRow className="border-b border-border bg-raised">
+                        <TableHead className="text-muted-foreground font-semibold">Vehicle</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Customer</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Description</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Severity</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Status</TableHead>
+                        <TableHead className="text-muted-foreground font-semibold">Reported</TableHead>
                     </TableRow>
                 </TableHeader>
                 <TableBody>
                     {Array.from({ length: 5 }).map((_, i) => (
-                        <TableRow key={i} className="border-b border-slate-200 dark:border-slate-700">
+                        <TableRow key={i} className="border-b border-border">
                             <TableCell><Skeleton className="h-4 w-20" /></TableCell>
                             <TableCell><Skeleton className="h-4 w-24" /></TableCell>
                             <TableCell><Skeleton className="h-4 w-32" /></TableCell>

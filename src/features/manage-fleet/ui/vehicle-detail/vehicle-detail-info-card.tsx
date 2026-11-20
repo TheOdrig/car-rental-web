@@ -22,9 +22,9 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Vehicle ID</span>
+                    <span className="text-sm text-muted-foreground">Vehicle ID</span>
                     <div className="flex items-center gap-1">
-                        <span className="font-mono font-medium text-slate-900 dark:text-slate-100">
+                        <span className="font-mono font-medium text-foreground">
                             #{vehicle.id}
                         </span>
                         <CopyButton value={String(vehicle.id)} />
@@ -32,32 +32,32 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
                 </div>
 
                 <div className="flex items-center justify-between">
-                    <span className="text-sm text-slate-500 dark:text-slate-400">Status</span>
+                    <span className="text-sm text-muted-foreground">Status</span>
                     <CarStatusBadge status={vehicle.status} />
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
-                    <h2 className="text-sm font-medium text-slate-900 dark:text-slate-100 mb-3">
+                <div className="border-t border-border pt-4">
+                    <h2 className="text-sm font-medium text-foreground mb-3">
                         {vehicle.brand} {vehicle.model} ({vehicle.year})
                     </h2>
                     <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center gap-2">
-                            <Hash className="h-4 w-4 text-slate-400" />
+                            <Hash className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">License Plate</span>
+                                <span className="text-xs text-muted-foreground block">License Plate</span>
                                 <div className="flex items-center gap-1">
-                                    <span className="font-mono text-sm text-slate-900 dark:text-slate-100">{vehicle.licensePlate}</span>
+                                    <span className="font-mono text-sm text-foreground">{vehicle.licensePlate}</span>
                                     <CopyButton value={vehicle.licensePlate} />
                                 </div>
                             </div>
                         </div>
                         {vehicle.vin && (
                             <div className="flex items-center gap-2">
-                                <Hash className="h-4 w-4 text-slate-400" />
+                                <Hash className="h-4 w-4 text-muted-foreground" />
                                 <div>
-                                    <span className="text-xs text-slate-500 dark:text-slate-400 block">VIN</span>
+                                    <span className="text-xs text-muted-foreground block">VIN</span>
                                     <div className="flex items-center gap-1">
-                                        <span className="font-mono text-xs text-slate-900 dark:text-slate-100 truncate max-w-[100px]">{vehicle.vin}</span>
+                                        <span className="font-mono text-xs text-foreground truncate max-w-[100px]">{vehicle.vin}</span>
                                         <CopyButton value={vehicle.vin} />
                                     </div>
                                 </div>
@@ -66,56 +66,56 @@ export function VehicleDetailInfoCard({ vehicle }: VehicleDetailInfoCardProps) {
                     </div>
                 </div>
 
-                <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                <div className="border-t border-border pt-4">
                     <div className="grid grid-cols-2 gap-3">
                         <div className="flex items-center gap-2">
-                            <Fuel className="h-4 w-4 text-slate-400" />
+                            <Fuel className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Fuel Type</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">{vehicle.fuelType}</span>
+                                <span className="text-xs text-muted-foreground block">Fuel Type</span>
+                                <span className="text-sm text-foreground">{vehicle.fuelType}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Settings2 className="h-4 w-4 text-slate-400" />
+                            <Settings2 className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Transmission</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">{vehicle.transmissionType}</span>
+                                <span className="text-xs text-muted-foreground block">Transmission</span>
+                                <span className="text-sm text-foreground">{vehicle.transmissionType}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Car className="h-4 w-4 text-slate-400" />
+                            <Car className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Body Type</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">{vehicle.bodyType}</span>
+                                <span className="text-xs text-muted-foreground block">Body Type</span>
+                                <span className="text-sm text-foreground">{vehicle.bodyType}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Users className="h-4 w-4 text-slate-400" />
+                            <Users className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Seats</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">{vehicle.seats}</span>
+                                <span className="text-xs text-muted-foreground block">Seats</span>
+                                <span className="text-sm text-foreground">{vehicle.seats}</span>
                             </div>
                         </div>
                         <div className="flex items-center gap-2">
-                            <Palette className="h-4 w-4 text-slate-400" />
+                            <Palette className="h-4 w-4 text-muted-foreground" />
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Color</span>
-                                <span className="text-sm text-slate-900 dark:text-slate-100">{vehicle.color}</span>
+                                <span className="text-xs text-muted-foreground block">Color</span>
+                                <span className="text-sm text-foreground">{vehicle.color}</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 {vehicle.pricing && (
-                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                    <div className="border-t border-border pt-4">
                         <div className="flex items-center gap-2 mb-3">
-                            <CreditCard className="h-4 w-4 text-slate-400" />
-                            <span className="text-sm font-medium text-slate-700 dark:text-slate-300">Pricing</span>
+                            <CreditCard className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-sm font-medium text-muted-foreground">Pricing</span>
                         </div>
                         <div className="grid grid-cols-1 gap-3">
                             <div>
-                                <span className="text-xs text-slate-500 dark:text-slate-400 block">Daily Rate</span>
-                                <span className="text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                <span className="text-xs text-muted-foreground block">Daily Rate</span>
+                                <span className="text-sm font-semibold text-foreground">
                                     {formatCurrency(vehicle.pricing.dailyRate, vehicle.pricing.currency)}
                                 </span>
                             </div>

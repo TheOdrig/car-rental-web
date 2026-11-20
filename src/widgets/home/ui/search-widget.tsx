@@ -73,13 +73,13 @@ export function SearchWidget({ className }: SearchWidgetProps) {
     return (
         <div
             className={cn(
-                'bg-white dark:bg-slate-900 rounded-xl p-6 shadow-2xl border dark:border-slate-700',
+                'bg-card rounded-xl p-6 shadow-2xl border ',
                 className
             )}
         >
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
                         Pickup Date
                     </label>
                     <Popover>
@@ -88,8 +88,8 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                                 variant="outline"
                                 className={cn(
                                     'w-full justify-start text-left font-normal',
-                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
-                                    !pickupDate && 'text-muted-foreground dark:text-slate-400',
+                                    'dark:bg-input/30 dark:hover:bg-input/50',
+                                    !pickupDate && 'text-muted-foreground',
                                     errors.pickupDate && 'border-destructive'
                                 )}
                             >
@@ -115,7 +115,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
                         Return Date
                     </label>
                     <Popover>
@@ -124,8 +124,8 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                                 variant="outline"
                                 className={cn(
                                     'w-full justify-start text-left font-normal',
-                                    'dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700',
-                                    !returnDate && 'text-muted-foreground dark:text-slate-400',
+                                    'dark:bg-input/30 dark:hover:bg-input/50',
+                                    !returnDate && 'text-muted-foreground',
                                     errors.returnDate && 'border-destructive'
                                 )}
                             >
@@ -153,13 +153,13 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                 </div>
 
                 <div className="lg:col-span-1">
-                    <label className="block text-sm font-medium text-slate-700 dark:text-slate-200 mb-1.5">
+                    <label className="block text-sm font-medium text-foreground mb-1.5">
                         Vehicle Type
                     </label>
                     <div className="relative">
-                        <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-400 z-10" />
+                        <Car className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
                         <Select value={vehicleType} onValueChange={setVehicleType}>
-                            <SelectTrigger aria-label="Vehicle type" className="pl-10 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200 dark:hover:bg-slate-700">
+                            <SelectTrigger aria-label="Vehicle type" className="pl-10 dark:bg-input/30 dark:hover:bg-input/50">
                                 <SelectValue placeholder="Select type" />
                             </SelectTrigger>
                             <SelectContent>

@@ -90,7 +90,7 @@ function NavLinks({ pathname, collapsed = false, label, onNavigate }: NavLinksPr
                             'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
                             isActive
                                 ? 'bg-primary text-primary-foreground'
-                                : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100',
+                                : 'text-muted-foreground hover:bg-muted hover:text-foreground',
                             collapsed && 'justify-center px-2'
                         )}
                         title={collapsed ? item.label : undefined}
@@ -108,20 +108,20 @@ function NavLinks({ pathname, collapsed = false, label, onNavigate }: NavLinksPr
 
 function AdminUser({ username, collapsed = false }: { username: string; collapsed?: boolean }) {
     return (
-        <div className="border-t border-slate-200 dark:border-slate-700 p-2">
+        <div className="border-t border-border p-2">
             <div
                 className={cn(
                     'flex items-center gap-3 rounded-lg px-3 py-2',
                     collapsed && 'justify-center px-2'
                 )}
             >
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200 dark:bg-slate-800">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent">
                     <User className="h-4 w-4" aria-hidden="true" />
                 </div>
                 {!collapsed && (
                     <div className="flex-1 truncate">
                         <p className="text-sm font-medium truncate">{username}</p>
-                        <p className="text-xs text-slate-600 dark:text-slate-400">Administrator</p>
+                        <p className="text-xs text-muted-foreground">Administrator</p>
                     </div>
                 )}
             </div>
@@ -141,7 +141,7 @@ export function AdminMobileMenu({ username }: AdminSidebarProps) {
                 </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-72 p-0">
-                <SheetHeader className="border-b border-slate-200 dark:border-slate-700">
+                <SheetHeader className="border-b border-border">
                     <SheetTitle>Admin Panel</SheetTitle>
                     <SheetDescription className="sr-only">Navigate between admin areas</SheetDescription>
                 </SheetHeader>
@@ -169,11 +169,11 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
         <>
             <aside
                 className={cn(
-                    'hidden md:flex flex-col shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-300',
+                    'hidden md:flex flex-col shrink-0 border-r border-border bg-card transition-all duration-300',
                     collapsed ? 'w-16' : 'w-64'
                 )}
             >
-                <div className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4">
+                <div className="flex h-14 items-center justify-between border-b border-border px-4">
                     {!collapsed && (
                         <Link href="/admin/dashboard" className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">

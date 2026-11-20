@@ -96,20 +96,20 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle className="text-slate-900 dark:text-white">Report Damage</DialogTitle>
-                    <DialogDescription className="text-slate-600 dark:text-slate-400">
+                    <DialogTitle className="text-foreground">Report Damage</DialogTitle>
+                    <DialogDescription className="text-muted-foreground">
                         Create a new damage report for this rental. Provide as much detail as possible.
                     </DialogDescription>
                 </DialogHeader>
 
                 <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                     <div className="space-y-2">
-                        <Label htmlFor="description" className="text-slate-700 dark:text-slate-300">Description *</Label>
+                        <Label htmlFor="description" className="text-muted-foreground">Description *</Label>
                         <Textarea
                             id="description"
                             placeholder="Describe the damage in detail..."
                             {...register('description')}
-                            className="min-h-[100px] bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                            className="min-h-[100px] bg-card border-border text-foreground placeholder:text-muted-foreground"
                         />
                         {errors.description && (
                             <p className="text-sm text-destructive">{errors.description.message}</p>
@@ -117,12 +117,12 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
                     </div>
 
                     <div className="space-y-2">
-                        <Label htmlFor="damageLocation" className="text-slate-700 dark:text-slate-300">Damage Location</Label>
+                        <Label htmlFor="damageLocation" className="text-muted-foreground">Damage Location</Label>
                         <Input
                             id="damageLocation"
                             placeholder="e.g., Rear bumper, driver side"
                             {...register('damageLocation')}
-                            className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+                            className="bg-card border-border text-foreground placeholder:text-muted-foreground"
                         />
                         {errors.damageLocation && (
                             <p className="text-sm text-destructive">{errors.damageLocation.message}</p>
@@ -131,12 +131,12 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
 
                     <div className="grid grid-cols-2 gap-4">
                         <div className="space-y-2">
-                            <Label className="text-slate-700 dark:text-slate-300">Initial Severity</Label>
+                            <Label className="text-muted-foreground">Initial Severity</Label>
                             <Select
                                 value={severity}
                                 onValueChange={(value) => setSeverity(value as DamageSeverity)}
                             >
-                                <SelectTrigger aria-label="Initial severity" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
+                                <SelectTrigger aria-label="Initial severity" className="bg-card border-border text-foreground">
                                     <SelectValue placeholder="Select severity" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -150,12 +150,12 @@ export function DamageReportForm({ rentalId, open, onOpenChange, onSuccess }: Da
                         </div>
 
                         <div className="space-y-2">
-                            <Label className="text-slate-700 dark:text-slate-300">Category</Label>
+                            <Label className="text-muted-foreground">Category</Label>
                             <Select
                                 value={category}
                                 onValueChange={(value) => setCategory(value as DamageCategory)}
                             >
-                                <SelectTrigger aria-label="Damage category" className="bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100">
+                                <SelectTrigger aria-label="Damage category" className="bg-card border-border text-foreground">
                                     <SelectValue placeholder="Select category" />
                                 </SelectTrigger>
                                 <SelectContent>
