@@ -25,12 +25,12 @@ export function BookingFailure({ errorMessage }: BookingFailureProps) {
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
             <div className="max-w-lg w-full">
                 <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
-                    <div className="bg-destructive px-8 py-12 text-center text-white">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6">
+                    <div className="bg-destructive px-8 py-12 text-center text-destructive-foreground">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-destructive-foreground/20 mb-6">
                             <XCircle className="h-12 w-12" />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking Failed</h1>
-                        <p className="text-danger-subtle-foreground text-lg">We couldn&apos;t complete your booking.</p>
+                        <p className="text-destructive-foreground text-lg">We couldn&apos;t complete your booking.</p>
                     </div>
 
                     <div className="px-8 py-8 space-y-6">

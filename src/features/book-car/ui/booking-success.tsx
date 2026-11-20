@@ -35,12 +35,12 @@ export function BookingSuccess({
         <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
             <div className="max-w-2xl w-full">
                 <div className="bg-card rounded-lg shadow-sm border border-border overflow-hidden">
-                    <div className="bg-success px-8 py-12 text-center text-white">
-                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 motion-safe:animate-[bounce_1s_ease-in-out]">
+                    <div className="bg-success px-8 py-12 text-center text-success-foreground">
+                        <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-success-foreground/20 mb-6 motion-safe:animate-[bounce_1s_ease-in-out]">
                             <CheckCircle className="h-12 w-12" />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-bold mb-2">Booking requested</h1>
-                        <p className="text-success-subtle-foreground text-lg">Your rental request has been submitted and is waiting for confirmation.</p>
+                        <p className="text-success-foreground text-lg">Your rental request has been submitted and is waiting for confirmation.</p>
                     </div>
 
                     <div className="px-8 py-8 space-y-8">

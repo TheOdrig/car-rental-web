@@ -115,7 +115,7 @@ function StepIndicator({ step, currentStep, complete, isLast }: StepIndicatorPro
             <div
                 className={cn(
                     'flex h-10 w-10 items-center justify-center rounded-full border-2 transition-all',
-                    isCompleted && 'border-success-subtle-foreground/30 bg-success text-white',
+                    isCompleted && 'border-success-subtle-foreground/30 bg-success text-success-foreground',
                     isCurrent && 'border-primary bg-primary/10 text-primary',
                     isPending && 'border-muted bg-muted text-muted-foreground'
                 )}
