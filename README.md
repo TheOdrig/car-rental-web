@@ -34,8 +34,8 @@ The source follows Feature-Sliced Design (`app`, `widgets`, `features`, `entitie
 graph LR
     B[Browser] -->|cookies, same origin| P[proxy.ts]
     P --> R[Route handlers /api/*]
-    R -->|Bearer token| A[Car Rental API]
-    P -.->|refresh when the access token expired| A
+    R -->|Bearer token when available| A[Car Rental API]
+    P -.->|renewal for protected paths| A
 ```
 
 ## Highlights
@@ -45,7 +45,7 @@ graph LR
 | Layer boundaries | ESLint restricts cross-layer imports. Architecture tests check slice entry points and entity cross-imports (`@x`). | [`eslint.config.mjs`](eslint.config.mjs), [`fsd-boundaries.test.ts`](src/__tests__/architecture/fsd-boundaries.test.ts), [`misc.test.ts`](src/__tests__/architecture/misc.test.ts) |
 | Session handling | Tokens live in httpOnly cookies. Concurrent refreshes share one request per refresh token. | [`auth-cookies.ts`](src/shared/server/auth-cookies.ts), [`upstream.ts`](src/shared/server/upstream.ts) |
 | Request guards | Guarded mutations reject cross-origin requests with 403. Guarded POST, PUT and PATCH requests reject unsupported media types with 415. | [`route.test.ts`](src/shared/server/__tests__/route.test.ts) |
-| API contract | Types are generated from a committed OpenAPI snapshot; drift fails `verify` | [`scripts/contract.mjs`](scripts/contract.mjs), [`upstream-contract.test.ts`](src/shared/server/__tests__/upstream-contract.test.ts) |
+| API contract | Types are generated from a committed OpenAPI snapshot. The gate checks for drift. | [`scripts/contract.mjs`](scripts/contract.mjs), [`upstream-contract.test.ts`](src/shared/server/__tests__/upstream-contract.test.ts) |
 | Errors | RFC 9457 problem details become a typed `ApiError`; an unreachable API is a 503, a timeout a 504 | [`route.test.ts`](src/shared/server/__tests__/route.test.ts), [`upstream.test.ts`](src/shared/server/__tests__/upstream.test.ts) |
 | Payments | Stripe Payment Element with `redirect: 'if_required'`, polled with back-off, `pk_test_` keys only | [`pay-rental.test.tsx`](src/features/pay-rental/__tests__/pay-rental.test.tsx), [`env-stripe.test.ts`](src/shared/server/__tests__/env-stripe.test.ts) |
 | Safe redirects | The callback checks redirect paths for same origin. The OAuth callback compares equal-length state buffers with `timingSafeEqual`. | [`oauth-state.ts`](src/app/api/auth/_lib/oauth-state.ts), [OAuth callback](src/app/api/auth/callback/%5Bprovider%5D/route.ts) |
@@ -60,11 +60,15 @@ Next.js (App Router), React, TypeScript, TanStack Query, Zustand, Zod, Tailwind 
 bash scripts/verify.sh
 ```
 
-On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). It checks the Node version and that no AI or planning files are tracked, then runs lint with zero warnings, the contract check, type check, the unit and architecture tests, a dependency audit and the production build. There is no hosted CI; this local gate is the check. End-to-end tests against the real API run with `npm run test:e2e:stack`.
+On Windows use [`scripts/verify.ps1`](scripts/verify.ps1). It checks the Node version and that no local-only or planning files are tracked, then runs lint with zero warnings, the contract check, type check, the unit and architecture tests, a dependency audit and the production build. There is no hosted CI; this local gate is the check. End-to-end tests against the real API run with `npm run test:e2e:stack`.
 
 Before `npm run test:e2e:stack`, start the API with its rate limiter trusting `X-Client-IP` from the web server's address range (the [Playwright config](playwright.stack.config.ts) sets the web server's proxy hops).
 
 Environment variables are listed in [`.env.example`](.env.example).
+
+## Documentation
+
+[Architecture and developer documentation](docs/README.md) · [Security policy](SECURITY.md)
 
 ## License
 

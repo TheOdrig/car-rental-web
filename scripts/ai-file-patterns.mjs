@@ -12,11 +12,12 @@ const forbidden = [
   ...instructionFiles.map((name) => new RegExp(`(^|/)${escapeDots(name)}$`, 'i')),
   /(^|\/)\.aider[^/]*(\/|$)/i,
   /(^|\/)\.github\/copilot-instructions\.md$/i,
-  /(^|\/)docs\//i,
+  /^notes\//i,
   /Zone\.Identifier$/i,
 ];
 
 export function isForbiddenPath(path) {
   const normalized = path.split(String.fromCharCode(92)).join('/');
+  if (/^CONTRIBUTING\.md$/i.test(normalized)) return false;
   return forbidden.some((pattern) => pattern.test(normalized));
 }

@@ -11,7 +11,7 @@ const hits = files.filter(isForbiddenPath);
 if (hits.length > 0) {
   console.error('check-no-ai-files: forbidden paths are tracked by git:');
   for (const h of hits) console.error(`  ${h}`);
-  console.error('Specs and AI-tooling files must stay local (see .git/info/exclude). Remove with: git rm -r --cached <path>');
+  console.error('Private notes, specs and tool-local files must stay local (see .git/info/exclude). Remove with: git rm -r --cached <path>');
   process.exit(1);
 }
 console.log(`check-no-ai-files: OK (${files.length} tracked files checked)`);

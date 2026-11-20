@@ -18,13 +18,16 @@ describe('AI-file guard patterns', () => {
         '.github/copilot-instructions.md',
         '.kiro/steering/a.md',
         'sub/.agents/skills/x.md',
-        'docs/index.md',
-        'src/docs/notes.md',
+        'notes/log.md',
+        'notes/adr/decision.md',
+        'NOTES/private.md',
+        'docs/.claude/settings.json',
+        'docs/AGENTS.md',
         'specs/plan.md',
         'Claude.md',
         '.Cursor/rules/a.mdc',
         'CHANGELOG.md',
-        'CONTRIBUTING.md',
+        'nested/CONTRIBUTING.md',
         '.cursorrules',
         '.windsurfrules',
         'kiro.steering/product.md',
@@ -35,19 +38,25 @@ describe('AI-file guard patterns', () => {
 
     it.each([
         'README.md',
+        'CONTRIBUTING.md',
+        'SECURITY.md',
+        'docs/README.md',
+        'docs/adr/ADR-001-fsd-architecture.md',
         'LICENSE',
         'docs-public/screenshots/home.png',
         'src/app/page.tsx',
+        'src/app/api/admin/users/[id]/notes/route.ts',
         '.github/workflows_disabled/README.md',
         'scripts/verify.sh',
         'mydocs/readme.md',
         'src/shared/ui/aider.tsx',
-        'notes/GEMINI.md.txt',
+        'src/GEMINI.md.txt',
     ])('allows %s', (path) => {
         expect(isForbiddenPath(path)).toBe(false);
     });
 
     it('treats Windows separators like slashes', () => {
         expect(isForbiddenPath(['apps', 'web', 'AGENTS.md'].join(String.fromCharCode(92)))).toBe(true);
+        expect(isForbiddenPath(['notes', 'log.md'].join(String.fromCharCode(92)))).toBe(true);
     });
 });
