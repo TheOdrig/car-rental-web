@@ -134,7 +134,7 @@ export function CurrencyProvider({
             if (!rates || currency === from) {
                 return formatInCurrency(amount, from);
             }
-            return `≈ ${formatInCurrency(convert(amount, from), currency)}`;
+            return `${formatInCurrency(convert(amount, from), currency)} approx.`;
         },
         [rates, convert, currency]
     );

@@ -7,7 +7,7 @@ describe('PaymentSummaryCard', () => {
         render(<PaymentSummaryCard dailyPrice={88.49} days={3} originalPrice={265.48} totalPrice={265.48} currency="USD" />);
 
         expect(screen.getByTestId('rounded-daily-rate-note')).toHaveTextContent('3 × $88.49');
-        expect(screen.getByText('≈ $88.49')).toBeInTheDocument();
+        expect(screen.getByText('$88.49 approx.')).toBeInTheDocument();
     });
 
     it('stays quiet when the numbers add up', () => {

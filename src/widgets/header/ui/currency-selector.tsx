@@ -6,6 +6,8 @@ import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
 import { useCurrency } from '@/entities/currency';
@@ -54,6 +56,10 @@ export function CurrencySelector() {
                         </span>
                     </DropdownMenuItem>
                 ))}
+                <DropdownMenuSeparator />
+                <DropdownMenuLabel className="text-xs font-normal text-muted-foreground">
+                    Converted prices are approximate. You are charged in the currency the car is priced in.
+                </DropdownMenuLabel>
             </DropdownMenuContent>
         </DropdownMenu>
     );
