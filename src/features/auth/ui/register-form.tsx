@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { Eye, EyeOff, Loader2 } from 'lucide-react';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Checkbox } from '@/shared/ui/checkbox';
 import { FormField } from '@/shared/ui/form-field';
 import { getFormErrorMessage } from '@/shared/api';
 import { useRegister } from '../api/use-auth';
@@ -226,7 +227,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-0 flex min-w-11 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                         {showPassword ? (
@@ -264,7 +265,7 @@ export function RegisterForm({ className }: RegisterFormProps) {
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute inset-y-0 right-10 flex items-center px-2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-10 flex min-w-11 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                         aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                     >
                         {showConfirmPassword ? (
@@ -277,18 +278,17 @@ export function RegisterForm({ className }: RegisterFormProps) {
             </FormField>
 
             <div className="flex items-start gap-3">
-                <input
+                <Checkbox
                     id="terms"
-                    type="checkbox"
                     checked={acceptedTerms}
-                    onChange={(e) => {
-                        setAcceptedTerms(e.target.checked);
+                    onCheckedChange={(checked) => {
+                        setAcceptedTerms(checked === true);
                         if (errors.terms) {
                             setErrors(prev => ({ ...prev, terms: '' }));
                         }
                     }}
                     disabled={registerMutation.isPending}
-                    className="mt-1 h-4 w-4 rounded border-input text-primary focus:ring-primary"
+                    className="mt-1"
                     aria-describedby={errors.terms ? 'terms-error' : undefined}
                 />
                 <div className="text-sm">

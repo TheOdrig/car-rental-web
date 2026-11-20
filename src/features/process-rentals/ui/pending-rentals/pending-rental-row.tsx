@@ -23,7 +23,7 @@ const LABEL = 'max-xl:before:mb-0.5 max-xl:before:block max-xl:before:text-xs ma
 const CELL = 'max-xl:block max-xl:p-0 max-xl:whitespace-normal';
 
 const LINK_CLASS =
-    'flex min-h-6 items-center truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
+    'flex min-h-11 items-center md:min-h-6 truncate text-sm font-semibold transition-colors hover:text-primary hover:underline';
 
 export function PendingRentalRow({ item, type, isProcessing, onAction }: PendingRentalRowProps) {
 
@@ -34,7 +34,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                     <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border bg-muted">
                         <User className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
                     </div>
-                    <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
+                    <div className="min-w-0 max-w-[10rem] max-xl:max-w-none 2xl:max-w-[14rem]">
                         {item.customerId && item.customerId > 0 ? (
                             <Link href={ROUTES.admin.user(item.customerId)} className={LINK_CLASS}>
                                 {item.customerName}
@@ -42,7 +42,7 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                         ) : (
                             <span className="block truncate text-sm font-semibold">{item.customerName}</span>
                         )}
-                        <p className="truncate text-xs text-muted-foreground">{item.customerEmail}</p>
+                        <p className="min-w-0 truncate text-xs text-muted-foreground">{item.customerEmail}</p>
                     </div>
                 </div>
             </TableCell>
@@ -63,13 +63,13 @@ export function PendingRentalRow({ item, type, isProcessing, onAction }: Pending
                             <Car className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
                         </div>
                     )}
-                    <div className="min-w-0 max-w-[10rem] 2xl:max-w-[14rem]">
+                    <div className="min-w-0 max-w-[10rem] max-xl:max-w-none 2xl:max-w-[14rem]">
                         <Link href={ROUTES.admin.fleetDetail(item.carId)} className={LINK_CLASS}>
                             {item.carBrand} {item.carModel}
                         </Link>
                         <Link
                             href={ROUTES.admin.rental(item.rentalId)}
-                            className="flex min-h-6 items-center text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
+                            className="flex min-h-11 items-center md:min-h-6 text-[10px] font-bold uppercase tracking-tight text-muted-foreground transition-colors hover:text-primary"
                         >
                             {item.licensePlate} • {formatRentalReference(item.rentalId)}
                         </Link>

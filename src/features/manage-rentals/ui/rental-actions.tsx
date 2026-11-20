@@ -110,7 +110,7 @@ export function RentalActionsSkeleton({
     orientation = 'horizontal',
 }: RentalActionsSkeletonProps) {
     const buttonWidth = size === 'sm' ? 'w-20' : size === 'lg' ? 'w-32' : 'w-24';
-    const buttonHeight = size === 'sm' ? 'h-8' : size === 'lg' ? 'h-12' : 'h-10';
+    const buttonHeight = size === 'sm' ? 'h-11 md:h-8' : size === 'lg' ? 'h-12' : 'h-11 md:h-10';
 
     return (
         <div

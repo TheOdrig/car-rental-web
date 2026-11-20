@@ -124,7 +124,7 @@ export function LateReturnFilters() {
                     variant="ghost"
                     size="sm"
                     onClick={clearFilters}
-                    className="h-9 px-2"
+                    className="h-11 px-2 md:h-9"
                 >
                     <X className="h-4 w-4 mr-1" />
                     Clear

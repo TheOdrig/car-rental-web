@@ -87,7 +87,7 @@ export function ActiveFilters({ className }: ActiveFiltersProps) {
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="h-7 px-2 text-muted-foreground hover:text-foreground"
+                    className="h-11 px-2 md:h-7 text-muted-foreground hover:text-foreground"
                     onClick={clearFilters}
                 >
                     Clear all

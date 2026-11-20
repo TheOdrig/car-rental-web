@@ -99,13 +99,13 @@ export function CarDetail({ car, calendar, isCalendarLoading, onMonthChange, act
                     <CardContent>
                         <div className="grid grid-cols-2 gap-4">
                             {specs.map((spec) => (
-                                <div key={spec.label} className="flex items-center gap-3">
+                                <div key={spec.label} className="flex min-w-0 items-center gap-2 xs:gap-3">
                                     <div className="rounded-lg bg-muted p-2">
                                         <spec.icon className="h-5 w-5 text-muted-foreground" />
                                     </div>
-                                    <div>
+                                    <div className="min-w-0">
                                         <p className="text-sm text-muted-foreground">{spec.label}</p>
-                                        <p className="font-medium">{spec.value}</p>
+                                        <p className="whitespace-nowrap font-medium">{spec.value}</p>
                                     </div>
                                 </div>
                             ))}
@@ -218,7 +218,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-11 w-11 md:h-8 md:w-8"
                         aria-label="Previous month"
                         onClick={previousMonth}
                         disabled={isPast || isLoading}
@@ -230,7 +230,7 @@ function AvailabilityCalendar({ calendar, isLoading = false, onMonthChange }: Av
                         type="button"
                         variant="outline"
                         size="icon"
-                        className="h-8 w-8"
+                        className="h-11 w-11 md:h-8 md:w-8"
                         aria-label="Next month"
                         onClick={nextMonth}
                         disabled={isMax || isLoading}

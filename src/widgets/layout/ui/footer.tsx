@@ -38,12 +38,12 @@ export function Footer() {
 
                     <nav aria-label="Explore">
                         <h2 className="font-semibold mb-4">Explore</h2>
-                        <ul className="space-y-3">
+                        <ul className="space-y-0 md:space-y-3">
                             {footerLinks.explore.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                        className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground md:min-h-0"
                                     >
                                         {link.label}
                                     </Link>
@@ -54,12 +54,12 @@ export function Footer() {
 
                     <nav aria-label="Legal">
                         <h2 className="font-semibold mb-4">Legal</h2>
-                        <ul className="space-y-3">
+                        <ul className="space-y-0 md:space-y-3">
                             {footerLinks.legal.map((link) => (
                                 <li key={link.href}>
                                     <Link
                                         href={link.href}
-                                        className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+                                        className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground md:min-h-0"
                                     >
                                         {link.label}
                                     </Link>
@@ -79,7 +79,7 @@ export function Footer() {
                             href="https://github.com/TheOdrig"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="text-muted-foreground transition-colors hover:text-foreground"
+                            className="inline-flex size-11 items-center justify-center text-muted-foreground transition-colors hover:text-foreground md:size-auto"
                             aria-label="GitHub"
                         >
                             <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">

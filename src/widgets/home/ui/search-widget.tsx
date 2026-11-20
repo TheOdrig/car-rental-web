@@ -152,7 +152,7 @@ export function SearchWidget({ className }: SearchWidgetProps) {
                     <Button
                         onClick={handleSearch}
                         size="lg"
-                        className="w-full h-10"
+                        className="w-full h-12 md:h-10"
                     >
                         <Search className="h-4 w-4 mr-2" />
                         Search

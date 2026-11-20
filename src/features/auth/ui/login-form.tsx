@@ -183,7 +183,7 @@ export function LoginForm({ callbackUrl = ROUTES.home, className }: LoginFormPro
                     <button
                         type="button"
                         onClick={() => setShowPassword(!showPassword)}
-                        className="absolute inset-y-0 right-10 flex items-center px-2 text-muted-foreground hover:text-foreground transition-colors"
+                        className="absolute inset-y-0 right-10 flex min-w-11 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
                         aria-label={showPassword ? 'Hide password' : 'Show password'}
                     >
                         {showPassword ? (
@@ -198,7 +198,7 @@ export function LoginForm({ callbackUrl = ROUTES.home, className }: LoginFormPro
             <div className="flex justify-end">
                 <Link
                     href={ROUTES.forgotPassword}
-                    className="text-sm font-semibold text-primary hover:text-primary/80 hover:underline"
+                    className="inline-flex min-h-11 items-center text-sm font-semibold text-primary hover:text-primary/80 hover:underline"
                 >
                     Forgot Password?
                 </Link>

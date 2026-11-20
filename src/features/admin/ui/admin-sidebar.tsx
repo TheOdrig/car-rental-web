@@ -88,7 +88,7 @@ function NavLinks({ pathname, collapsed = false, label, onNavigate }: NavLinksPr
                         href={item.href}
                         onClick={onNavigate}
                         className={cn(
-                            'flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                            'flex min-h-11 items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors md:min-h-0',
                             isActive
                                 ? 'bg-primary text-primary-foreground'
                                 : 'text-muted-foreground hover:bg-muted hover:text-foreground',

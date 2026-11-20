@@ -69,7 +69,7 @@ export function Header() {
                             </Button>
                         }
                     />
-                    <Link href={ROUTES.home} className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
+                    <Link href={ROUTES.home} className="flex min-h-11 min-w-0 items-center gap-1.5 whitespace-nowrap text-lg font-bold sm:gap-2 sm:text-xl">
                         <Image
                             src="/images/logo.svg"
                             alt=""
@@ -77,7 +77,7 @@ export function Header() {
                             height={48}
                             className="h-9 w-auto shrink-0 sm:h-12 dark:invert"
                         />
-                        <span className="sr-only min-[400px]:not-sr-only">Car Rental</span>
+                        <span className="sr-only 2xs:not-sr-only">Car Rental</span>
                     </Link>
                 </div>
 
@@ -95,7 +95,7 @@ export function Header() {
                     ) : isAuthenticated ? (
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon-sm" aria-label="Account menu" className="relative h-8 w-8 shrink-0 rounded-full p-0 hover:bg-transparent dark:hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                                <Button variant="ghost" size="icon-sm" aria-label="Account menu" className="relative h-11 w-11 shrink-0 md:h-8 md:w-8 rounded-full p-0 hover:bg-transparent dark:hover:bg-transparent focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                                     <AccountAvatar />
                                 </Button>
                             </DropdownMenuTrigger>

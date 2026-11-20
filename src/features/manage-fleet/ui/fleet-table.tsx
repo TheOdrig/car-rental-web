@@ -200,7 +200,7 @@ export const FleetTable = memo(function FleetTable({
                                                     <div>
                                                         <Link
                                                             href={ROUTES.admin.fleetDetail(car.id)}
-                                                            className="font-semibold hover:text-primary hover:underline transition-colors"
+                                                            className="inline-flex min-h-11 items-center font-semibold hover:text-primary hover:underline transition-colors md:min-h-0"
                                                         >
                                                             {car.brand} {car.model}
                                                         </Link>
@@ -235,7 +235,7 @@ export const FleetTable = memo(function FleetTable({
                                                 {car.currentRentalId && car.occupancy && car.occupancy !== 'FREE' ? (
                                                     <Link
                                                         href={ROUTES.admin.rental(car.currentRentalId)}
-                                                        className="text-primary hover:underline"
+                                                        className="inline-flex min-h-11 items-center text-primary hover:underline md:min-h-0"
                                                         aria-label={`${carOccupancyLabel(car.occupancy)}, rental ${formatRentalReference(car.currentRentalId)}`}
                                                     >
                                                         {carOccupancyLabel(car.occupancy)}
@@ -252,7 +252,7 @@ export const FleetTable = memo(function FleetTable({
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
-                                                        className="h-8 w-8 p-0"
+                                                        className="h-11 w-11 p-0 md:h-8 md:w-8"
                                                         aria-label={`Edit ${car.brand} ${car.model}`}
                                                         asChild
                                                     >
@@ -265,7 +265,7 @@ export const FleetTable = memo(function FleetTable({
                                                             <Button
                                                                 variant="ghost"
                                                                 size="sm"
-                                                                className="h-8 w-8 p-0"
+                                                                className="h-11 w-11 p-0 md:h-8 md:w-8"
                                                                 aria-label={`More actions for ${car.brand} ${car.model}`}
                                                                 data-car-actions={car.id}
                                                             >

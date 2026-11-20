@@ -64,7 +64,7 @@ export function FilterSidebar({ className }: FilterSidebarProps) {
                         variant="ghost"
                         size="sm"
                         onClick={clearFilters}
-                        className="h-8 px-2 text-muted-foreground hover:text-foreground"
+                        className="h-11 px-2 md:h-8 text-muted-foreground hover:text-foreground"
                     >
                         <RotateCcw className="h-4 w-4 mr-1" />
                         Reset All

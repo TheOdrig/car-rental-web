@@ -94,14 +94,14 @@ export function UserTableRow({ user, onBan, onUnban }: UserTableRowProps) {
             </TableCell>
             <TableCell data-wide className="text-right">
                 <div className="flex items-center justify-end gap-1 transition-opacity md:opacity-0 md:group-hover:opacity-100 md:focus-within:opacity-100">
-                    <Button variant="ghost" size="icon" className="h-8 w-8" asChild>
+                    <Button variant="ghost" size="icon" className="h-11 w-11 md:h-8 md:w-8" asChild>
                         <a href={`mailto:${user.email}`} aria-label={`Send email to ${displayName}`}>
                             <Mail className="h-4 w-4" aria-hidden="true" />
                         </a>
                     </Button>
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon" className="h-8 w-8">
+                            <Button variant="ghost" size="icon" className="h-11 w-11 md:h-8 md:w-8">
                                 <MoreHorizontal className="h-4 w-4" aria-hidden="true" />
                                 <span className="sr-only">More options for {displayName}</span>
                             </Button>

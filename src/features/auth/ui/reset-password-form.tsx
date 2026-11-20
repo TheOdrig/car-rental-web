@@ -126,7 +126,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                     <button
                         type="button"
                         onClick={() => setShowNewPassword(!showNewPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center text-muted-foreground hover:text-foreground"
                         aria-label={showNewPassword ? 'Hide password' : 'Show password'}
                     >
                         {showNewPassword ? (
@@ -162,7 +162,7 @@ export function ResetPasswordForm({ token, className }: ResetPasswordFormProps) 
                     <button
                         type="button"
                         onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        className="absolute right-0 top-1/2 flex size-11 -translate-y-1/2 items-center justify-center text-muted-foreground hover:text-foreground"
                         aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
                     >
                         {showConfirmPassword ? (

@@ -21,6 +21,6 @@ describe('CopyButton', () => {
     it('should have correct size class', () => {
         renderWithProviders(<CopyButton value="test" />);
         const button = screen.getByRole('button');
-        expect(button).toHaveClass('h-6', 'w-6');
+        expect(button).toHaveClass('md:h-6', 'md:w-6');
     });
 });

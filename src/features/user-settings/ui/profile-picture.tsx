@@ -97,7 +97,7 @@ export function ProfilePicture({
                     type="button"
                     onClick={handleClick}
                     disabled={isLoading}
-                    className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110 disabled:opacity-50 disabled:hover:scale-100"
+                    className="absolute bottom-0 right-0 flex h-11 w-11 items-center justify-center rounded-full border-2 border-background bg-primary text-primary-foreground shadow-md transition-transform hover:scale-110 disabled:opacity-50 disabled:hover:scale-100"
                     aria-label="Change profile picture"
                 >
                     <Camera className="h-5 w-5" />

@@ -19,7 +19,7 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
                 variant={value === 'grid' ? 'secondary' : 'ghost'}
                 size="sm"
                 onClick={() => onChange('grid')}
-                className="h-8 w-8 p-0"
+                className="h-11 w-11 p-0 md:h-8 md:w-8"
                 aria-label="Grid view"
                 aria-pressed={value === 'grid'}
             >
@@ -29,7 +29,7 @@ export function ViewToggle({ value, onChange, className }: ViewToggleProps) {
                 variant={value === 'list' ? 'secondary' : 'ghost'}
                 size="sm"
                 onClick={() => onChange('list')}
-                className="h-8 w-8 p-0"
+                className="h-11 w-11 p-0 md:h-8 md:w-8"
                 aria-label="List view"
                 aria-pressed={value === 'list'}
             >

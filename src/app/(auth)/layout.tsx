@@ -52,12 +52,12 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
             <div className="w-full lg:w-1/2 flex flex-col min-h-dvh bg-card">
                 <div className="p-6 flex justify-between items-center">
-                    <Link href={ROUTES.home} className="text-foreground">
+                    <Link href={ROUTES.home} className="inline-flex min-h-11 items-center text-foreground">
                         <span className="font-bold text-lg">{APP_NAME}</span>
                     </Link>
                     <Link
                         href={ROUTES.home}
-                        className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                        className="inline-flex min-h-11 items-center text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                     >
                         Back to Home
                     </Link>
