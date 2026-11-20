@@ -19,6 +19,7 @@ import { Upload, X, ImageIcon, Loader2 } from 'lucide-react';
 import { useUploadPhotos, useDeletePhoto } from '@/entities/damage';
 import { cn } from '@/shared/lib';
 import type { DamagePhoto } from '@/entities/damage';
+import { MAX_IMAGE_UPLOAD_BYTES, MAX_IMAGE_UPLOAD_MB } from '@/shared/config/constants';
 
 interface DamagePhotoUploadProps {
     damageId: number;
@@ -27,7 +28,6 @@ interface DamagePhotoUploadProps {
     maxPhotos?: number;
 }
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
 const ACCEPTED_FILE_TYPES = {
     'image/jpeg': ['.jpg', '.jpeg'],
     'image/png': ['.png'],
@@ -70,7 +70,7 @@ export function DamagePhotoUpload({
     const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
         onDrop,
         accept: ACCEPTED_FILE_TYPES,
-        maxSize: MAX_FILE_SIZE,
+        maxSize: MAX_IMAGE_UPLOAD_BYTES,
         maxFiles: remainingSlots,
         disabled: remainingSlots <= 0 || uploadPhotos.isPending,
     });
@@ -148,12 +148,12 @@ export function DamagePhotoUpload({
 
             {fileRejections.length > 0 && (
                 <p className="text-sm text-destructive">
-                    Some files were rejected. Max size: 5MB, formats: JPG, PNG, WEBP
+                    Some files were rejected. Max size: {MAX_IMAGE_UPLOAD_MB}MB, formats: JPG, PNG, WEBP
                 </p>
             )}
 
             <p className="text-xs text-muted-foreground">
-                Accepted formats: JPG, PNG, WEBP. Max size: 5MB per file. Max {maxPhotos} photos.
+                Accepted formats: JPG, PNG, WEBP. Max size: {MAX_IMAGE_UPLOAD_MB}MB per file. Max {maxPhotos} photos.
             </p>
 
             <AlertDialog open={deletePhotoId !== null} onOpenChange={() => setDeletePhotoId(null)}>

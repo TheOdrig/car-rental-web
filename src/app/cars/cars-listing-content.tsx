@@ -30,6 +30,7 @@ import { useCars, useCarSearchResults, getSortParams, parseCarListParams, buildC
 import { getApiErrorMessage } from '@/shared/api';
 import { useFilterStore } from '@/widgets/car-filters';
 import type { Car, AvailableCar, AvailabilitySearchRequest } from '@/entities/car';
+import { PAGE_SIZE } from '@/shared/config/constants';
 
 export function CarsListingContent() {
     const searchParams = useSearchParams();
@@ -108,7 +109,7 @@ export function CarsListingContent() {
             minProductionYear: filters.minProductionYear,
             maxProductionYear: filters.maxProductionYear,
             page: page,
-            size: 12,
+            size: PAGE_SIZE.CAR_LISTING,
             sortBy: sortField,
             sortDirection: sortDirection,
         };
@@ -270,7 +271,7 @@ export function CarsListingContent() {
                         <div className="mt-8 flex flex-col items-center gap-4">
                             <PaginationInfo
                                 currentPage={page}
-                                pageSize={12}
+                                pageSize={PAGE_SIZE.CAR_LISTING}
                                 totalElements={totalCars}
                             />
                             <Pagination

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { DynamicImage } from '@/shared/ui/dynamic-image';
+import { AUTH_IMAGE_URL, APP_NAME } from '@/shared/config/constants';
 
 export const metadata: Metadata = {
     robots: { index: false, follow: false },
@@ -16,7 +17,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
         <div className="min-h-screen flex flex-col lg:flex-row">
             <div className="hidden lg:flex lg:w-1/2 relative items-center justify-center overflow-hidden">
                 <DynamicImage
-                    src="https://images.unsplash.com/photo-1705624843697-4461f9dce482?auto=format&fit=crop&q=80&w=1400"
+                    src={AUTH_IMAGE_URL}
                     alt=""
                     fill
                     sizes="50vw"
@@ -27,7 +28,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
                 <div className="relative z-20 p-12 max-w-lg text-white">
                     <div className="mb-6">
-                        <p className="text-xl font-bold tracking-wide">Car Rental</p>
+                        <p className="text-xl font-bold tracking-wide">{APP_NAME}</p>
                     </div>
                     <p className="text-4xl md:text-5xl font-bold leading-tight mb-6">
                         Your rentals, in one place.
@@ -51,7 +52,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
             <div className="w-full lg:w-1/2 flex flex-col min-h-screen bg-card">
                 <div className="p-6 flex justify-between items-center">
                     <Link href="/" className="text-foreground">
-                        <span className="font-bold text-lg">Car Rental</span>
+                        <span className="font-bold text-lg">{APP_NAME}</span>
                     </Link>
                     <Link
                         href="/"
@@ -69,7 +70,7 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
 
                 <div className="p-6 text-center lg:text-left">
                     <p className="text-xs text-muted-foreground">
-                        © {new Date().getFullYear()} Car Rental. All rights reserved.
+                        © {new Date().getFullYear()} {APP_NAME}. All rights reserved.
                     </p>
                 </div>
             </div>

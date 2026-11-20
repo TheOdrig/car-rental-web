@@ -22,11 +22,10 @@ import { showToast } from '@/shared/lib';
 import { ErrorMessage } from '@/shared/ui/error-message';
 import { PageHeader } from '@/shared/ui/page-header';
 import { RENTAL_STATUS_LABELS, RentalStatus } from '@/entities/rental';
+import { PAGE_SIZE } from '@/shared/config/constants';
 
 type StatusFilter = 'all' | 'approvals' | 'pickups' | 'returns' | 'overdue';
 type View = 'pending' | 'all-rentals';
-
-const PENDING_PAGE_SIZE = 50;
 
 const ALL_STATUSES = 'all';
 
@@ -91,10 +90,10 @@ export function AdminRentalsContent() {
 
     const [actionInProgress, setActionInProgress] = useState<number | null>(null);
 
-    const approvalsQuery = usePendingApprovals({ size: PENDING_PAGE_SIZE });
-    const pickupsQuery = usePendingPickups({ size: PENDING_PAGE_SIZE });
-    const returnsQuery = usePendingReturns({ size: PENDING_PAGE_SIZE });
-    const overdueQuery = useOverdueRentals({ size: PENDING_PAGE_SIZE });
+    const approvalsQuery = usePendingApprovals({ size: PAGE_SIZE.PENDING_QUEUE });
+    const pickupsQuery = usePendingPickups({ size: PAGE_SIZE.PENDING_QUEUE });
+    const returnsQuery = usePendingReturns({ size: PAGE_SIZE.PENDING_QUEUE });
+    const overdueQuery = useOverdueRentals({ size: PAGE_SIZE.PENDING_QUEUE });
     const { data: approvals, isLoading: approvalsLoading } = approvalsQuery;
     const { data: pickups, isLoading: pickupsLoading } = pickupsQuery;
     const { data: returns, isLoading: returnsLoading } = returnsQuery;

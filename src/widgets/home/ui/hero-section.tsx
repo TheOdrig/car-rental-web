@@ -1,15 +1,14 @@
 import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { cn } from '@/shared/lib';
 import { SearchWidget } from './search-widget';
+import { HERO_IMAGE_URL } from '@/shared/config/constants';
 
 interface HeroSectionProps {
     className?: string;
     backgroundImage?: string;
 }
 
-const HERO_PHOTO = 'https://images.unsplash.com/photo-1639056067266-43a821cf0a1f?auto=format&fit=crop&q=80&w=2000';
-
-export function HeroSection({ className, backgroundImage = HERO_PHOTO }: HeroSectionProps) {
+export function HeroSection({ className, backgroundImage = HERO_IMAGE_URL }: HeroSectionProps) {
     return (
         <section className={cn('relative flex min-h-[560px] items-center overflow-hidden bg-black', className)}>
             <div className="absolute inset-0 z-0">

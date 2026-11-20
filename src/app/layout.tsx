@@ -6,6 +6,7 @@ import { Toaster } from "@/shared/ui/sonner";
 import { Header } from '@/widgets/header';
 import { Footer, HideOnAuthRoutes } from "@/widgets/layout";
 import React from "react";
+import { APP_NAME } from "@/shared/config/constants";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,8 +20,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Car Rental - Rent a car by the day",
-    template: "%s | Car Rental",
+    default: `${APP_NAME} - Rent a car by the day`,
+    template: `%s | ${APP_NAME}`,
   },
   description:
     "Browse the fleet, request your dates and pay once the rental is approved.",
@@ -31,21 +32,21 @@ export const metadata: Metadata = {
     "car hire",
     "affordable car rental",
   ],
-  authors: [{ name: "Car Rental" }],
-  creator: "Car Rental",
+  authors: [{ name: APP_NAME }],
+  creator: APP_NAME,
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"),
   openGraph: {
     type: "website",
     locale: "en_US",
     url: "/",
-    siteName: "Car Rental",
-    title: "Car Rental - Rent a car by the day",
+    siteName: APP_NAME,
+    title: `${APP_NAME} - Rent a car by the day`,
     description:
       "Browse the fleet, request your dates and pay once the rental is approved.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Car Rental - Rent a car by the day",
+    title: `${APP_NAME} - Rent a car by the day`,
     description:
       "Browse the fleet, request your dates and pay once the rental is approved.",
   },

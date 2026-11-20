@@ -8,7 +8,7 @@ import { carKeys, type AdminCar, type VehicleDetailResponse } from '@/entities/c
 import type { PageResponse, CurrencyType } from '@/shared/types';
 import { fleetKeys } from './fleet-keys';
 import type { FleetFilters } from './fleet-keys';
-import { STALE_TIME } from '@/shared/config/constants';
+import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
 
 
 
@@ -164,7 +164,7 @@ interface ApiVehicleRentalHistoryItem {
 
 async function fetchVehicleRentalHistory(id: number, page: number): Promise<PaginatedResponse<RentalHistoryItem>> {
     const data = await clientGet<PaginatedResponse<ApiVehicleRentalHistoryItem>>(
-        `/api/admin/cars/${id}/rentals?page=${page}&size=10`
+        `/api/admin/cars/${id}/rentals?page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}`
     );
 
     return {

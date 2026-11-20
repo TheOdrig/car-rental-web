@@ -29,9 +29,8 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
-import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { DEFAULT_CURRENCY, PAGE_SIZE } from '@/shared/config/constants';
 
-const PAGE_SIZE = 10;
 
 export function MyRentalsContent() {
     const router = useRouter();
@@ -67,10 +66,10 @@ export function MyRentalsContent() {
         [rentals, activeTab]
     );
 
-    const totalPages = Math.max(1, Math.ceil(filteredRentals.length / PAGE_SIZE));
+    const totalPages = Math.max(1, Math.ceil(filteredRentals.length / PAGE_SIZE.DEFAULT));
     const currentPage = Math.min(page, totalPages - 1);
     const pagedRentals = useMemo(
-        () => filteredRentals.slice(currentPage * PAGE_SIZE, (currentPage + 1) * PAGE_SIZE),
+        () => filteredRentals.slice(currentPage * PAGE_SIZE.DEFAULT, (currentPage + 1) * PAGE_SIZE.DEFAULT),
         [filteredRentals, currentPage]
     );
 

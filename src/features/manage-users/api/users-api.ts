@@ -19,7 +19,7 @@ import type {
     AdminNote,
     AdminRentalStatus,
 } from '../model/types';
-import { STALE_TIME } from '@/shared/config/constants';
+import { STALE_TIME, PAGE_SIZE } from '@/shared/config/constants';
 
 
 
@@ -89,7 +89,7 @@ async function fetchCustomerRentalHistory(
 ): Promise<PaginatedResponse<RentalHistoryItem>> {
     const statusParam = status ? `&status=${status}` : '';
     const data = await clientGet<PaginatedResponse<ApiRentalHistoryItem>>(
-        `/api/admin/users/${id}/rentals?page=${page}&size=10${statusParam}`
+        `/api/admin/users/${id}/rentals?page=${page}&size=${PAGE_SIZE.RENTAL_HISTORY}${statusParam}`
     );
 
     return {

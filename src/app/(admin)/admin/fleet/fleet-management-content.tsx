@@ -19,11 +19,11 @@ import {
 import { toast } from 'sonner';
 import { CAR_OCCUPANCIES, CAR_OCCUPANCY_LABELS, CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, useFilterOptions, type CarOccupancy, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
+import { PAGE_SIZE } from '@/shared/config/constants';
 
 type StatusFilter = 'all' | CarStatus;
 type OccupancyFilter = 'all' | CarOccupancy;
 
-const PAGE_SIZE = 25;
 const SEARCH_DEBOUNCE_MS = 300;
 
 export function FleetManagementContent() {
@@ -42,7 +42,7 @@ export function FleetManagementContent() {
         occupancy: occupancyFilter !== 'all' ? occupancyFilter : undefined,
         search: debouncedSearch || undefined,
         page,
-        size: PAGE_SIZE,
+        size: PAGE_SIZE.ADMIN_FLEET,
     });
 
     useEffect(() => {

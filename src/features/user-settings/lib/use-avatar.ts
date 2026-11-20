@@ -5,9 +5,9 @@ import { clientDelete, clientPost, getSafeErrorMessage } from '@/shared/api';
 import { showToast, toastMessages } from '@/shared/lib';
 import { profileKeys } from './use-profile';
 import type { AvatarUploadResponse } from '@/entities/user';
+import { MAX_IMAGE_UPLOAD_BYTES, MAX_IMAGE_UPLOAD_MB } from '@/shared/config/constants';
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
 export interface AvatarValidationError {
     type: 'invalid_type' | 'file_too_large';
@@ -22,10 +22,10 @@ export function validateAvatarFile(file: File): AvatarValidationError | null {
         };
     }
 
-    if (file.size > MAX_FILE_SIZE) {
+    if (file.size > MAX_IMAGE_UPLOAD_BYTES) {
         return {
             type: 'file_too_large',
-            message: 'File size must be less than 5MB',
+            message: `File size must be less than ${MAX_IMAGE_UPLOAD_MB}MB`,
         };
     }
 

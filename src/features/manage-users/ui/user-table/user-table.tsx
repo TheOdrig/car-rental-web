@@ -13,6 +13,7 @@ import type { UserForAction } from './user-display';
 import { UserTablePagination } from './user-table-pagination';
 import { UserTableRow } from './user-table-row';
 import { UserTableSkeleton } from './user-table-skeleton';
+import { PAGE_SIZE } from '@/shared/config/constants';
 
 interface UserTableProps {
     searchQuery?: string;
@@ -22,7 +23,6 @@ interface UserTableProps {
     className?: string;
 }
 
-const PAGE_SIZE = 20;
 
 export const UserTable = memo(function UserTable({
     searchQuery = '',
@@ -44,7 +44,7 @@ export const UserTable = memo(function UserTable({
         role: roleFilter !== 'all' ? roleFilter : undefined,
         status: statusFilter !== 'all' ? statusFilter : undefined,
         page: currentPage,
-        size: PAGE_SIZE,
+        size: PAGE_SIZE.ADMIN_USERS,
     });
 
     const banMutation = useBanUser();
