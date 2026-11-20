@@ -50,7 +50,7 @@ describe('AI-file guard patterns', () => {
         'docs/README.md',
         'docs/adr/ADR-001-fsd-architecture.md',
         'LICENSE',
-        'docs-public/screenshots/home.png',
+        'docs/images/screenshots/home.png',
         'src/app/page.tsx',
         'src/app/api/admin/users/[id]/notes/route.ts',
         '.github/workflows_disabled/README.md',

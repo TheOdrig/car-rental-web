@@ -4,11 +4,11 @@ The customer and admin web client for the [Car Rental API](https://github.com/Th
 
 This is a portfolio project, built to show how a Next.js client is structured, kept in step with an API contract and verified. It is not deployed anywhere, and Stripe runs in test mode only.
 
-![Home page](docs-public/screenshots/home.webp)
+![Home page](docs/images/screenshots/home.webp)
 
 | Browse cars | Car detail | Admin dashboard | Phone (390 px) |
 | --- | --- | --- | --- |
-| ![Cars list](docs-public/screenshots/cars.webp) | ![Car detail](docs-public/screenshots/car-detail.webp) | ![Admin dashboard](docs-public/screenshots/admin-dashboard.webp) | ![Cars on a phone](docs-public/screenshots/cars-mobile.webp) |
+| ![Cars list](docs/images/screenshots/cars.webp) | ![Car detail](docs/images/screenshots/car-detail.webp) | ![Admin dashboard](docs/images/screenshots/admin-dashboard.webp) | ![Cars on a phone](docs/images/screenshots/cars-mobile.webp) |
 
 Screenshots were taken against the API running from Docker Compose with its seed data.
 
