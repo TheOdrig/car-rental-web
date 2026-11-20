@@ -27,6 +27,7 @@ export {
     type RentalVehicleInfo,
     type RentalCustomerInfo,
     type RentalPricing,
+    type PriceAdjustment,
     type RentalPaymentInfo,
     type TimelineEvent,
     type TimelineEventType,
@@ -35,6 +36,7 @@ export {
     type ProcessReturnData,
 } from './model/types';
 export * from './lib/utils';
+export { toPriceAdjustments } from './lib/price-adjustments';
 export * from './lib/rental-rules';
 export * from './lib/rental-errors';
 export * from './lib/damage-reporting';

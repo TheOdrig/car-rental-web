@@ -1,6 +1,6 @@
 import type { Schemas } from '@/shared/api';
 import { ownValue } from '@/shared/lib/utils';
-import { getCancelledByLabel, toAdminRentalStatus, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
+import { getCancelledByLabel, toAdminRentalStatus, toPriceAdjustments, type RentalDetailResponse, type TimelineEventType } from '@/entities/rental';
 
 type Rental = Schemas['RentalResponse'];
 type Customer = Schemas['AdminUserDetailResponse'];
@@ -90,6 +90,7 @@ export function buildRentalDetail({
             finalTotal: total,
             currency: rental.currency ?? 'USD',
             appliedAdjustments: (rental.appliedDiscounts ?? []).filter((entry) => !/^no /i.test(entry.trim())),
+            adjustments: toPriceAdjustments(rental.priceAdjustments),
         },
         customer: {
             id: customer?.id ?? user?.id ?? 0,

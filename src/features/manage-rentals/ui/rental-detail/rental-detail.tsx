@@ -15,6 +15,7 @@ import {
     RentalCancellationNotice,
     RentalPaymentNote,
     RentalStatus,
+    toPriceAdjustments,
     useCancelRental,
 } from '@/entities/rental';
 import { RentalPaymentStatus, isPayableStatus } from '@/entities/payment';
@@ -145,6 +146,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
                         originalPrice={rental.originalPrice}
                         totalPrice={totalPrice}
                         totalSavings={rental.totalSavings}
+                        adjustments={toPriceAdjustments(rental.priceAdjustments)}
                         currency={currency}
                     />
                     <Card>

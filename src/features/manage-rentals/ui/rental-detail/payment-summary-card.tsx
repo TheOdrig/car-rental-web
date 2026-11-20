@@ -2,6 +2,7 @@
 
 import { CreditCard } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
+import type { PriceAdjustment } from '@/entities/rental';
 import { formatPrice } from './format';
 
 interface PaymentSummaryCardProps {
@@ -10,6 +11,7 @@ interface PaymentSummaryCardProps {
     originalPrice?: number;
     totalPrice: number;
     totalSavings?: number;
+    adjustments?: PriceAdjustment[];
     currency: string;
 }
 
@@ -18,7 +20,8 @@ export function dailyRateIsRounded(dailyPrice: number, days: number, originalPri
     return Math.abs(dailyPrice * days - reference) >= 0.005;
 }
 
-export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice, totalSavings, currency }: PaymentSummaryCardProps) {
+export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice, totalSavings, adjustments, currency }: PaymentSummaryCardProps) {
+    const listed = (adjustments ?? []).filter((entry) => entry.amount !== 0);
     const rounded = dailyRateIsRounded(dailyPrice, days, originalPrice, totalPrice, totalSavings);
 
     return (
@@ -58,8 +61,20 @@ export function PaymentSummaryCard({ dailyPrice, days, originalPrice, totalPrice
                             </span>
                         </div>
                     )}
-                    {totalSavings !== undefined && totalSavings > 0 && (
-                        <div className="flex justify-between text-green-600">
+                    {listed.length > 0 && (
+                        <ul className="space-y-2" data-testid="price-adjustments">
+                            {listed.map((entry) => (
+                                <li key={entry.code} className="flex justify-between">
+                                    <span className="text-muted-foreground">{entry.label}</span>
+                                    <span className={entry.amount < 0 ? 'text-emerald-700 dark:text-emerald-400' : 'font-medium text-slate-900 dark:text-white'}>
+                                        {entry.amount < 0 ? '-' : '+'}{formatPrice(Math.abs(entry.amount), currency)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                    {listed.length === 0 && totalSavings !== undefined && totalSavings > 0 && (
+                        <div className="flex justify-between text-emerald-700 dark:text-emerald-400">
                             <span>Savings</span>
                             <span>-{formatPrice(totalSavings, currency)}</span>
                         </div>

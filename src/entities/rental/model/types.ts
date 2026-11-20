@@ -157,6 +157,8 @@ export interface RentalCustomerInfo {
     };
 }
 
+export type PriceAdjustment = WithRequired<Schemas['PriceAdjustment'], 'code' | 'label' | 'amount'>;
+
 export interface RentalPricing {
     dailyRate: number;
     totalDays: number;
@@ -166,6 +168,7 @@ export interface RentalPricing {
     currency: string;
     exchangeRate?: number;
     appliedAdjustments?: string[];
+    adjustments?: PriceAdjustment[];
 }
 
 export interface RentalPaymentInfo {
@@ -204,6 +207,7 @@ export interface RentalDetailResponse {
         finalTotal: number;
         currency: CurrencyType;
         appliedAdjustments?: string[];
+        adjustments?: PriceAdjustment[];
     };
     customer: {
         id: number;

@@ -54,7 +54,18 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                         </span>
                     </div>
 
-                    {(pricing.appliedAdjustments?.length ?? 0) > 0 && (
+                    {(pricing.adjustments?.length ?? 0) > 0 ? (
+                        <ul className="space-y-1" data-testid="price-adjustments">
+                            {pricing.adjustments?.filter((entry) => entry.amount !== 0).map((entry) => (
+                                <li key={entry.code} className="flex items-center justify-between text-sm">
+                                    <span className="text-slate-600 dark:text-slate-400">{entry.label}</span>
+                                    <span className={entry.amount < 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-slate-900 dark:text-slate-100'}>
+                                        {entry.amount < 0 ? '-' : '+'}{formatCurrency(Math.abs(entry.amount), pricing.currency)}
+                                    </span>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (pricing.appliedAdjustments?.length ?? 0) > 0 && (
                         <ul className="space-y-1 text-xs text-slate-600 dark:text-slate-400" data-testid="applied-adjustments">
                             {pricing.appliedAdjustments?.map((entry) => (
                                 <li key={entry}>{entry}</li>
@@ -62,7 +73,7 @@ export function PaymentInfoCard({ rentalId, pricing, penaltyAmount, lateReturnSt
                         </ul>
                     )}
 
-                    {pricing.discounts > 0 && (
+                    {pricing.discounts > 0 && (pricing.adjustments?.length ?? 0) === 0 && (
                         <div className="flex justify-between items-center">
                             <span className="text-sm text-emerald-600 dark:text-emerald-400">Discount</span>
                             <span className="text-sm text-emerald-600 dark:text-emerald-400">

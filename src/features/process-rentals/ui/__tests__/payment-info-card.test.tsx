@@ -30,6 +30,30 @@ describe('PaymentInfoCard pay-by', () => {
     });
 });
 
+describe('PaymentInfoCard adjustments', () => {
+    it('lists signed adjustments instead of the free-text labels', () => {
+        renderWithProviders(
+            <PaymentInfoCard
+                rentalId={9}
+                pricing={{
+                    ...pricing,
+                    appliedAdjustments: ['Weekend +11.3%'],
+                    adjustments: [
+                        { code: 'WEEKEND', label: 'Weekend surcharge', amount: 56.5 },
+                        { code: 'EARLY', label: 'Early booking', amount: -25 },
+                    ],
+                }}
+                paymentEnabled={false}
+            />
+        );
+
+        const list = screen.getByTestId('price-adjustments');
+        expect(list).toHaveTextContent('Weekend surcharge+$56.50');
+        expect(list).toHaveTextContent('Early booking-$25.00');
+        expect(screen.queryByTestId('applied-adjustments')).not.toBeInTheDocument();
+    });
+});
+
 describe('PaymentInfoCard totals', () => {
     it('lists the applied adjustments and labels the total as the rental total', () => {
         renderWithProviders(
