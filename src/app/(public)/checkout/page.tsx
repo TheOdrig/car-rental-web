@@ -75,7 +75,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                 <nav aria-label="Breadcrumb" className="flex mb-8 text-sm font-medium text-muted-foreground">
                     <ol className="flex items-center space-x-2">
                         <li>
-                            <Link href={ROUTES.cars.list} className="hover:text-primary transition-colors">
+                            <Link href={ROUTES.cars.list} className="inline-flex min-h-11 items-center hover:text-primary transition-colors">
                                 Select Car
                             </Link>
                         </li>
@@ -85,7 +85,7 @@ export default async function CheckoutPage({ searchParams }: CheckoutPageProps) 
                         <li>
                             <Link
                                 href={ROUTES.cars.detail(carId)}
-                                className="hover:text-primary transition-colors"
+                                className="inline-flex min-h-11 items-center hover:text-primary transition-colors"
                             >
                                 Details
                             </Link>

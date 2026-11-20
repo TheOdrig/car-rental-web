@@ -7,11 +7,10 @@ import {
     User,
     Shield,
     CreditCard,
-    ChevronRight,
-    Home,
 } from 'lucide-react';
 import { cn } from '@/shared/lib';
 import { PageHeader } from '@/shared/ui/page-header';
+import { Breadcrumb } from '@/shared/ui/breadcrumb';
 import { ROUTES } from '@/shared/config/routes';
 
 interface SettingsLayoutProps {
@@ -24,42 +23,15 @@ const SETTINGS_TABS = [
     { label: 'Payment Methods', href: ROUTES.settings.payment, icon: CreditCard },
 ];
 
-function Breadcrumb({ currentTab }: { currentTab?: string }) {
+function SettingsBreadcrumb({ currentTab }: { currentTab?: string }) {
     return (
-        <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex items-center gap-2 text-sm text-muted-foreground">
-                <li>
-                    <Link
-                        href={ROUTES.home}
-                        className="flex items-center gap-1 transition-colors hover:text-foreground"
-                    >
-                        <Home className="h-4 w-4" />
-                        <span className="sr-only">Home</span>
-                    </Link>
-                </li>
-                <li>
-                    <ChevronRight className="h-4 w-4" />
-                </li>
-                <li>
-                    <Link
-                        href={ROUTES.settings.root}
-                        className="transition-colors hover:text-foreground"
-                    >
-                        Settings
-                    </Link>
-                </li>
-                {currentTab && (
-                    <>
-                        <li>
-                            <ChevronRight className="h-4 w-4" />
-                        </li>
-                        <li>
-                            <span className="font-medium text-foreground">{currentTab}</span>
-                        </li>
-                    </>
-                )}
-            </ol>
-        </nav>
+        <Breadcrumb
+            className="mb-6"
+            items={[
+                { label: 'Settings', href: ROUTES.settings.root },
+                ...(currentTab ? [{ label: currentTab }] : []),
+            ]}
+        />
     );
 }
 
@@ -98,7 +70,7 @@ export default function SettingsLayout({ children }: SettingsLayoutProps) {
 
     return (
         <div className="container py-8">
-            <Breadcrumb currentTab={currentTab} />
+            <SettingsBreadcrumb currentTab={currentTab} />
 
             <PageHeader area="customer" className="mb-8" title="Settings" description="Manage your account settings and preferences" />
 
