@@ -3,7 +3,7 @@
 import { useRouter, notFound } from 'next/navigation';
 import { useRental } from '@/entities/rental';
 import { useProfile } from '@/features/user-settings';
-import { formatRentalReference } from '@/shared/lib';
+import { formatRentalReference, personFullName } from '@/shared/lib';
 import { RentalDetail, RentalDetailSkeleton } from '@/features/manage-rentals';
 import { Breadcrumb } from '@/shared/ui';
 import { Skeleton } from '@/shared/ui/skeleton';
@@ -28,7 +28,7 @@ export function RentalDetailContent({ id }: { id: string }) {
 
     const { data: rental, isLoading, error, refetch } = useRental(rentalId);
     const { data: profile } = useProfile();
-    const driverName = [profile?.firstName, profile?.lastName].filter(Boolean).join(' ');
+    const driverName = personFullName(profile);
 
     const handleCancelSuccess = () => {
         router.push('/rentals');

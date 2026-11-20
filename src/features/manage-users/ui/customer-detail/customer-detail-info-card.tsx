@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { Badge } from '@/shared/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { CopyButton } from '@/shared/ui/copy-button';
-import { formatDateTime, formatDate } from '@/shared/lib';
+import { formatDateTime, formatDate, personDisplayName, personInitials } from '@/shared/lib';
 import type { CustomerDetailResponse, Role } from '@/entities/user';
 
 interface CustomerDetailInfoCardProps {
@@ -18,7 +18,8 @@ const roleBadgeColors: Record<Role, string> = {
 };
 
 export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps) {
-    const initials = `${customer.firstName?.[0] ?? ''}${customer.lastName?.[0] ?? ''}`.toUpperCase() || 'U';
+    const name = personDisplayName(customer);
+    const initials = personInitials(customer);
     const primaryRole = customer.roles[0] ?? 'USER';
 
     return (
@@ -32,14 +33,14 @@ export function CustomerDetailInfoCard({ customer }: CustomerDetailInfoCardProps
             <CardContent className="space-y-4">
                 <div className="flex items-center gap-4">
                     <Avatar className="h-16 w-16">
-                        <AvatarImage src={customer.avatarUrl ?? undefined} alt={`${customer.firstName} ${customer.lastName}`} />
+                        <AvatarImage src={customer.avatarUrl ?? undefined} alt={name} />
                         <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400 text-xl">
                             {initials}
                         </AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                         <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">
-                            {customer.firstName} {customer.lastName}
+                            {name}
                         </h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="text-sm text-slate-500 dark:text-slate-400">

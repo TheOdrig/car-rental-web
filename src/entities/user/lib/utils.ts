@@ -1,3 +1,4 @@
+import { personDisplayName } from '@/shared/lib/person-name';
 import { User, UserRole } from '../model/types';
 
 export const isAdmin = (user: User | null): boolean => {
@@ -7,12 +8,7 @@ export const isAdmin = (user: User | null): boolean => {
 export const getDisplayName = (user: User | null): string => {
     if (!user) return 'Guest';
 
-    if (user.firstName && user.lastName) {
-        return `${user.firstName} ${user.lastName}`;
-    }
-    if (user.firstName) return user.firstName;
-    if (user.lastName) return user.lastName;
-    return user.username || user.email;
+    return personDisplayName(user);
 };
 
 export const getInitials = (user: User | null): string => {

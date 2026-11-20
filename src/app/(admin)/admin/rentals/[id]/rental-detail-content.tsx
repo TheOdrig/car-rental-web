@@ -31,7 +31,7 @@ import { fieldErrorMessages } from '@/shared/api';
 import { isPaymentSecured, useRentalPayment } from '@/entities/payment';
 import { DamageReportForm } from '@/entities/damage';
 import { canReportDamage, isAfterRentalEnd, isBeforeRentalEnd, isBeforeRentalStart, PICKUP_AFTER_END_MESSAGE, PICKUP_BEFORE_START_MESSAGE, PICKUP_PAYMENT_REQUIRED_MESSAGE, CANCEL_REASON_MAX_LENGTH, useCancelRental } from '@/entities/rental';
-import { formatDate, formatRentalReference } from '@/shared/lib';
+import { formatDate, formatRentalReference, personDisplayName } from '@/shared/lib';
 import { useSingleFlight } from '@/shared/lib/use-single-flight';
 
 const CONFIRM_COPY = {
@@ -184,7 +184,7 @@ export function RentalDetailContent({ id }: { id: string }) {
 
     const customerInfo = {
         ...rental.customer,
-        name: `${rental.customer.firstName} ${rental.customer.lastName}`,
+        name: personDisplayName(rental.customer),
         isEmailVerified: rental.customer.emailVerified,
         isPhoneVerified: rental.customer.phoneVerified,
         isVerified: rental.customer.emailVerified,
@@ -232,7 +232,7 @@ export function RentalDetailContent({ id }: { id: string }) {
                         </h1>
                     </div>
                     <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {rental.vehicle.brand} {rental.vehicle.model} • {rental.customer.firstName} {rental.customer.lastName}
+                        {rental.vehicle.brand} {rental.vehicle.model} • {personDisplayName(rental.customer)}
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">

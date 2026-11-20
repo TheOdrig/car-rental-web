@@ -44,6 +44,9 @@ describe('isChromelessRoute', () => {
         expect(isChromelessRoute('/login')).toBe(true);
         expect(isChromelessRoute('/register')).toBe(true);
         expect(isChromelessRoute('/reset-password')).toBe(true);
+        expect(isChromelessRoute('/admin/dashboard')).toBe(true);
+        expect(isChromelessRoute('/admin')).toBe(true);
+        expect(isChromelessRoute('/administrator')).toBe(false);
         expect(isChromelessRoute('/cars')).toBe(false);
         expect(isChromelessRoute('/loginx')).toBe(false);
         expect(isChromelessRoute(null)).toBe(false);

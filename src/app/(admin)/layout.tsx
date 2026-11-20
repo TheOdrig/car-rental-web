@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { AdminSidebar } from '@/features/admin';
 import { getSession, isAdminSession } from '@/shared/server';
+import { AdminTopBar } from './admin-top-bar';
 
 export const metadata: Metadata = {
     robots: { index: false, follow: false },
@@ -26,7 +27,8 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     return (
         <div className="flex min-h-screen flex-col md:flex-row">
             <AdminSidebar username={session.username} />
-            <div className="min-w-0 flex-1 overflow-auto bg-background">
+            <div className="min-w-0 flex-1 bg-background">
+                <AdminTopBar username={session.username} />
                 <div className="container py-6">
                     {children}
                 </div>

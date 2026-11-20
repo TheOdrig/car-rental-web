@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/shared/ui/avatar';
 import { CopyButton } from '@/shared/ui/copy-button';
 import { StatCard } from '@/shared/ui/stat-card';
-import { formatAmountsByCurrency } from '@/shared/lib';
+import { formatAmountsByCurrency, personDisplayName, personInitials } from '@/shared/lib';
 import type { RentalCustomerInfo } from '@/entities/rental';
 
 interface CustomerInfoCardProps {
@@ -16,7 +16,8 @@ interface CustomerInfoCardProps {
 }
 
 export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
-    const initials = `${customer.firstName?.[0] ?? ''}${customer.lastName?.[0] ?? ''}`.toUpperCase() || 'U';
+    const name = personDisplayName(customer);
+    const initials = personInitials(customer);
     const isVerified = customer.isEmailVerified && customer.isPhoneVerified;
 
     return (
@@ -40,14 +41,14 @@ export function CustomerInfoCard({ customer }: CustomerInfoCardProps) {
             <CardContent className="space-y-4">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-12 w-12">
-                        <AvatarImage src={customer.avatarUrl} alt={`${customer.firstName} ${customer.lastName}`} />
+                        <AvatarImage src={customer.avatarUrl} alt={name} />
                         <AvatarFallback className="bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                             {initials}
                         </AvatarFallback>
                     </Avatar>
                     <div>
                         <div className="font-medium text-slate-900 dark:text-slate-100">
-                            {customer.firstName} {customer.lastName}
+                            {name}
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-slate-500 dark:text-slate-400">

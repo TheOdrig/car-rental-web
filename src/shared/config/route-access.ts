@@ -6,7 +6,7 @@ const GUEST_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
 const AUTH_FLOW_ROUTES = ['/reset-password'];
 const PROTECTED_ROUTES = ['/rentals', '/damages', '/settings', '/dashboard', '/checkout', '/booking'];
 const PUBLIC_ROUTES = ['/search', '/cars', '/forbidden', '/api', '/terms', '/privacy'];
-const CHROMELESS_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password'];
+const CHROMELESS_ROUTES = ['/login', '/register', '/forgot-password', '/reset-password', '/admin'];
 
 function matches(pathname: string, route: string): boolean {
     return pathname === route || pathname.startsWith(`${route}/`);

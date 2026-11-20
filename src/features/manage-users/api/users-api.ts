@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { clientGet, clientPost, getApiErrorMessage } from '@/shared/api';
-import { showToast } from '@/shared/lib';
+import { personFullName, showToast } from '@/shared/lib';
 import { toAdminRentalStatus } from '@/entities/rental';
 import type { PageResponse } from '@/shared/types';
 import { usersKeys } from './users-keys';
@@ -113,8 +113,7 @@ async function fetchCustomerRentalHistory(
 }
 
 function displayName(result: Partial<User> | undefined, fallback?: string): string {
-    const full = [result?.firstName, result?.lastName].filter(Boolean).join(' ');
-    return full || fallback || result?.email || 'The user';
+    return personFullName(result) || fallback || result?.email || 'The user';
 }
 
 async function banUser(params: BanUserRequest): Promise<User> {

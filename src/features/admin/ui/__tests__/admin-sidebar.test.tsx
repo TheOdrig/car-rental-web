@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { AdminSidebar } from '../admin-sidebar';
+import { AdminMobileMenu, AdminSidebar } from '../admin-sidebar';
 
 vi.mock('next/navigation', () => ({ usePathname: () => '/admin/dashboard' }));
 
@@ -37,7 +37,7 @@ describe('AdminSidebar', () => {
 
     it('offers the navigation through a menu button on narrow screens', async () => {
         const user = userEvent.setup();
-        render(<AdminSidebar username="admin" />);
+        render(<AdminMobileMenu username="admin" />);
 
         await user.click(screen.getByRole('button', { name: 'Open admin menu' }));
 

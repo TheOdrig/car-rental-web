@@ -21,4 +21,10 @@ describe('DriverDetailsCard', () => {
         expect(screen.queryByText('Full Name')).not.toBeInTheDocument();
         expect(screen.getByTestId('driver-username')).toHaveTextContent('ada_l');
     });
+
+    it('hides a full name that is only the username', () => {
+        render(<DriverDetailsCard userSummary={{ id: 1, username: 'ada_l', email: 'ada@example.com', fullName: 'ada_l' }} />);
+
+        expect(screen.queryByText('Full Name')).not.toBeInTheDocument();
+    });
 });

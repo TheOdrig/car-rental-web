@@ -1,0 +1,70 @@
+'use client';
+
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { ExternalLink, User } from 'lucide-react';
+import { AdminMobileMenu } from '@/features/admin';
+import { useAuth } from '@/features/auth';
+import { ThemeToggle } from '@/widgets/header';
+import { Button } from '@/shared/ui/button';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/shared/ui/dropdown-menu';
+
+export function AdminTopBar({ username }: { username: string }) {
+    const router = useRouter();
+    const { user, logout } = useAuth();
+
+    const handleLogout = async () => {
+        await logout();
+        router.push('/');
+    };
+
+    return (
+        <div className="sticky top-0 z-40 flex h-14 items-center justify-between gap-2 border-b border-border bg-background/95 px-4 backdrop-blur md:px-6">
+            <div className="flex items-center gap-2 md:hidden">
+                <AdminMobileMenu username={username} />
+                <Link href="/admin/dashboard" className="font-semibold">
+                    Admin Panel
+                </Link>
+            </div>
+            <div className="ml-auto flex items-center gap-1 sm:gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                    <Link href="/">
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        View site
+                    </Link>
+                </Button>
+                <ThemeToggle />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="icon-sm" aria-label="Account menu" className="h-8 w-8 rounded-full bg-muted">
+                            <User className="h-4 w-4" aria-hidden="true" />
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                        <DropdownMenuLabel className="font-normal">
+                            <div className="flex flex-col space-y-1">
+                                <p className="text-sm font-medium leading-none">{user?.username ?? username}</p>
+                                {user?.email && <p className="text-xs leading-none text-muted-foreground">{user.email}</p>}
+                            </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                            <Link href="/settings/profile">Profile</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem onClick={handleLogout} className="text-red-600 dark:text-red-400 focus:text-red-600 dark:focus:text-red-400">
+                            Log Out
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </div>
+    );
+}

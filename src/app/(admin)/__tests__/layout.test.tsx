@@ -12,6 +12,10 @@ vi.mock('@/features/admin', () => ({
     AdminSidebar: ({ username }: { username: string }) => <nav>{username}</nav>,
 }));
 
+vi.mock('../admin-top-bar', () => ({
+    AdminTopBar: () => <div>top bar</div>,
+}));
+
 describe('AdminLayout', () => {
     beforeEach(() => {
         vi.mocked(redirect).mockImplementation((path: string) => {

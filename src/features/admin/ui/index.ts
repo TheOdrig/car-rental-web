@@ -1,4 +1,4 @@
-export { AdminSidebar } from './admin-sidebar';
+export { AdminSidebar, AdminMobileMenu } from './admin-sidebar';
 export { MetricsCard, MetricsCardSkeleton, DashboardMetricsGrid } from './metrics-card';
 export { DashboardHeader } from './dashboard-header';
 export { QuickActionsCard, QuickActionItem, QuickActionsSkeleton } from './quick-actions';

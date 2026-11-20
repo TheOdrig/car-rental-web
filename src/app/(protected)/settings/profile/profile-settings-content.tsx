@@ -8,14 +8,8 @@ import { AlertCircle } from 'lucide-react';
 import { Alert, AlertDescription, AlertTitle } from '@/shared/ui/alert';
 import { Button } from '@/shared/ui/button';
 import { fieldErrorMap } from '@/shared/api';
+import { personDisplayName, personInitials } from '@/shared/lib';
 import type { ProfileFormData } from '@/features/user-settings';
-
-function initialsOf(...parts: (string | undefined)[]): string {
-    const [first, second, fallback] = parts;
-    const letters = [first, second].filter(Boolean).map((part) => part![0]);
-    const source = letters.length > 0 ? letters : fallback ? [fallback[0]] : [];
-    return source.join('').toUpperCase();
-}
 
 export function ProfileSettingsContent() {
     const { data: profile, isLoading, error, refetch } = useProfile();
@@ -68,7 +62,7 @@ export function ProfileSettingsContent() {
                 <CardContent className="flex flex-col items-center py-8 sm:flex-row sm:gap-8">
                     <ProfilePicture
                         avatarUrl={profile?.avatarUrl}
-                        initials={initialsOf(profile?.firstName, profile?.lastName, profile?.username)}
+                        initials={personInitials(profile)}
                         onUpload={handleAvatarUpload}
                         onDelete={handleAvatarDelete}
                         isUploading={uploadAvatar.isPending}
@@ -76,9 +70,7 @@ export function ProfileSettingsContent() {
                     />
                     <div className="mt-4 text-center sm:mt-0 sm:text-left">
                         <h2 className="text-xl font-semibold">
-                            {profile?.firstName && profile?.lastName
-                                ? `${profile.firstName} ${profile.lastName}`
-                                : profile?.username || 'User'}
+                            {personDisplayName(profile, 'User')}
                         </h2>
                         <p className="text-muted-foreground">{profile?.email || 'No email'}</p>
                         <p className="mt-2 text-sm text-muted-foreground">

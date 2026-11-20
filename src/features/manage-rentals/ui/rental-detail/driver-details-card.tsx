@@ -12,7 +12,8 @@ interface DriverDetailsCardProps {
 export function DriverDetailsCard({ userSummary, fullName }: DriverDetailsCardProps) {
     const email = userSummary?.email;
     const username = userSummary?.username;
-    const name = fullName || userSummary?.fullName;
+    const candidate = (fullName || userSummary?.fullName || '').trim();
+    const name = candidate && candidate !== username && candidate !== email ? candidate : undefined;
 
     if (!name && !username && !email) return null;
 

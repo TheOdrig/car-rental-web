@@ -129,10 +129,32 @@ function AdminUser({ username, collapsed = false }: { username: string; collapse
     );
 }
 
+export function AdminMobileMenu({ username }: AdminSidebarProps) {
+    const pathname = usePathname();
+    const [menuOpen, setMenuOpen] = useState(false);
+
+    return (
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+            <SheetTrigger asChild>
+                <Button variant="ghost" size="icon" className="md:hidden" aria-label="Open admin menu">
+                    <Menu className="h-5 w-5" aria-hidden="true" />
+                </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 p-0">
+                <SheetHeader className="border-b border-slate-200 dark:border-slate-700">
+                    <SheetTitle>Admin Panel</SheetTitle>
+                    <SheetDescription className="sr-only">Navigate between admin areas</SheetDescription>
+                </SheetHeader>
+                <NavLinks pathname={pathname} label="Admin mobile navigation" onNavigate={() => setMenuOpen(false)} />
+                <AdminUser username={username} />
+            </SheetContent>
+        </Sheet>
+    );
+}
+
 export function AdminSidebar({ username }: AdminSidebarProps) {
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(false);
-    const [menuOpen, setMenuOpen] = useState(false);
 
     useEffect(() => {
         if (typeof window.matchMedia !== 'function') return;
@@ -145,32 +167,13 @@ export function AdminSidebar({ username }: AdminSidebarProps) {
 
     return (
         <>
-            <div className="flex h-14 items-center gap-3 border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 md:hidden">
-                <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Open admin menu">
-                            <Menu className="h-5 w-5" aria-hidden="true" />
-                        </Button>
-                    </SheetTrigger>
-                    <SheetContent side="left" className="w-72 p-0">
-                        <SheetHeader className="border-b border-slate-200 dark:border-slate-700">
-                            <SheetTitle>Admin Panel</SheetTitle>
-                            <SheetDescription className="sr-only">Navigate between admin areas</SheetDescription>
-                        </SheetHeader>
-                        <NavLinks pathname={pathname} label="Admin mobile navigation" onNavigate={() => setMenuOpen(false)} />
-                        <AdminUser username={username} />
-                    </SheetContent>
-                </Sheet>
-                <span className="font-semibold">Admin Panel</span>
-            </div>
-
             <aside
                 className={cn(
                     'hidden md:flex flex-col shrink-0 border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 transition-all duration-300',
                     collapsed ? 'w-16' : 'w-64'
                 )}
             >
-                <div className="flex h-16 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4">
+                <div className="flex h-14 items-center justify-between border-b border-slate-200 dark:border-slate-700 px-4">
                     {!collapsed && (
                         <Link href="/admin/dashboard" className="flex items-center gap-2">
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold">

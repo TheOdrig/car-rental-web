@@ -1,3 +1,4 @@
+import { personDisplayName } from '@/shared/lib';
 import type { User, UserRole, UserStatus } from '../../model/types';
 
 interface DisplayConfig {
@@ -56,10 +57,7 @@ export function getInitials(firstName?: string, lastName?: string): string {
 }
 
 export function getDisplayName(firstName?: string, lastName?: string, email?: string): string {
-    if (firstName || lastName) {
-        return `${firstName || ''} ${lastName || ''}`.trim();
-    }
-    return email || 'Unknown User';
+    return personDisplayName({ firstName, lastName, email }, 'Unknown User');
 }
 
 export function getPrimaryRole(roles: string[]): UserRole {

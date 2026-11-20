@@ -9,3 +9,4 @@ export * from './safe-redirect';
 export * from './seo';
 export * from './file-url';
 export * from './reset-link-errors';
+export * from './person-name';
