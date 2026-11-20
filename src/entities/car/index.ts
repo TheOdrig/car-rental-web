@@ -4,6 +4,7 @@ export {
     type Car,
     type AdminCar,
     type CarStatus,
+    type CarOccupancy,
     type CarSummary,
     type PricingRequest,
     type PricingModifier,
@@ -28,6 +29,9 @@ export {
 export {
     CAR_STATUS_LABELS,
     CAR_STATUSES,
+    CAR_OCCUPANCY_LABELS,
+    CAR_OCCUPANCIES,
+    carOccupancyLabel,
     AVAILABILITY_STATUS_LABELS,
     carStatusLabel,
 } from './model/status-labels';

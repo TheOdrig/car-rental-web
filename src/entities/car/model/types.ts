@@ -4,6 +4,8 @@ type CarSchemas = Pick<Schemas, 'PublicCarResponse' | 'CarResponse' | 'CarSummar
 
 export type CarStatus = NonNullable<CarSchemas['PublicCarResponse']['carStatusType']>;
 
+export type CarOccupancy = NonNullable<CarSchemas['CarResponse']['occupancy']>;
+
 export type CarSummary = WithRequired<CarSchemas['CarSummaryResponse'], 'id' | 'licensePlate' | 'brand' | 'model'>;
 
 export enum FuelType {

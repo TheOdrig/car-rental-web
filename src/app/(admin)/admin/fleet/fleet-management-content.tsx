@@ -16,10 +16,11 @@ import {
     useChangeCarStatus,
 } from '@/features/manage-fleet';
 import { toast } from 'sonner';
-import { CAR_STATUSES, CAR_STATUS_LABELS, useFilterOptions, type CarStatus } from '@/entities/car';
+import { CAR_OCCUPANCIES, CAR_OCCUPANCY_LABELS, CAR_STATUSES, CAR_STATUS_LABELS, useFilterOptions, type CarOccupancy, type CarStatus } from '@/entities/car';
 import { formatTime } from '@/shared/lib';
 
 type StatusFilter = 'all' | CarStatus;
+type OccupancyFilter = 'all' | CarOccupancy;
 
 const PAGE_SIZE = 25;
 const SEARCH_DEBOUNCE_MS = 300;
@@ -30,12 +31,14 @@ export function FleetManagementContent() {
     const [page, setPage] = useState(0);
     const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
     const [brandFilter, setBrandFilter] = useState<string>('all');
+    const [occupancyFilter, setOccupancyFilter] = useState<OccupancyFilter>('all');
 
     const { data: filterOptions } = useFilterOptions();
     const { data: fleetStatus, isLoading: isLoadingStats, refetch: refetchFleet, isFetching: isFetchingFleet } = useFleetStatus();
     const { data: carsData, isLoading: isLoadingCars, refetch: refetchCars, isFetching: isFetchingCars } = useFleetList({
         status: statusFilter !== 'all' ? statusFilter : undefined,
         brand: brandFilter !== 'all' ? brandFilter : undefined,
+        occupancy: occupancyFilter !== 'all' ? occupancyFilter : undefined,
         search: debouncedSearch || undefined,
         page,
         size: PAGE_SIZE,
@@ -170,6 +173,28 @@ export function FleetManagementContent() {
                             {CAR_STATUSES.map((status) => (
                                 <SelectItem key={status} value={status}>
                                     {CAR_STATUS_LABELS[status]}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                    <Select
+                        value={occupancyFilter}
+                        onValueChange={(v) => {
+                            setOccupancyFilter(v as OccupancyFilter);
+                            setPage(0);
+                        }}
+                    >
+                        <SelectTrigger
+                            className="w-[160px] bg-background border-slate-200 dark:border-slate-600 hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer text-slate-900 dark:text-slate-100"
+                            aria-label="Filter by occupancy"
+                        >
+                            <SelectValue placeholder="Occupancy" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="all">Any occupancy</SelectItem>
+                            {CAR_OCCUPANCIES.map((occupancy) => (
+                                <SelectItem key={occupancy} value={occupancy}>
+                                    {CAR_OCCUPANCY_LABELS[occupancy]}
                                 </SelectItem>
                             ))}
                         </SelectContent>

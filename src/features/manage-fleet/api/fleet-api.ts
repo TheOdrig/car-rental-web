@@ -68,6 +68,9 @@ async function fetchFleetList(filters?: FleetFilters): Promise<PageResponse<Admi
     if (filters?.brand && filters.brand !== 'all') {
         params.append('brand', filters.brand);
     }
+    if (filters?.occupancy && filters.occupancy !== 'all') {
+        params.append('occupancy', filters.occupancy);
+    }
     if (filters?.search) {
         params.append('search', filters.search);
     }

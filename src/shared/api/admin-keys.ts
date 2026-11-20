@@ -8,6 +8,7 @@ export interface AdminFleetListFilters {
     size?: number;
     status?: string;
     brand?: string;
+    occupancy?: string;
     search?: string;
 }
 

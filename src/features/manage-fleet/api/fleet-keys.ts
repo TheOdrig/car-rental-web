@@ -1,6 +1,7 @@
 export interface FleetFilters {
     status?: string;
     brand?: string;
+    occupancy?: string;
     search?: string;
     page?: number;
     size?: number;

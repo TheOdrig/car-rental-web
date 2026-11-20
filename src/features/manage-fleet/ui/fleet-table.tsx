@@ -40,8 +40,8 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { Skeleton } from '@/shared/ui/skeleton';
-import { cn, formatCurrencyWithDecimals } from '@/shared/lib';
-import { CAR_STATUSES, CAR_STATUS_LABELS, type AdminCar as CarType, type CarStatus } from '@/entities/car';
+import { cn, formatCurrencyWithDecimals, formatRentalReference } from '@/shared/lib';
+import { CAR_STATUSES, CAR_STATUS_LABELS, carOccupancyLabel, type AdminCar as CarType, type CarStatus } from '@/entities/car';
 import { Pagination } from '@/shared/ui/pagination';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
@@ -163,6 +163,7 @@ export const FleetTable = memo(function FleetTable({
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Car Details</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">License Plate</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Status</TableHead>
+                                    <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Occupancy</TableHead>
                                     <TableHead className="text-slate-600 dark:text-slate-300 font-semibold">Price/Day</TableHead>
                                     <TableHead className="text-right text-slate-600 dark:text-slate-300 font-semibold">Actions</TableHead>
                                 </TableRow>
@@ -170,7 +171,7 @@ export const FleetTable = memo(function FleetTable({
                             <TableBody>
                                 {cars.length === 0 ? (
                                     <TableRow>
-                                        <TableCell colSpan={5} className="h-32 text-center">
+                                        <TableCell colSpan={6} className="h-32 text-center">
                                             <div className="flex flex-col items-center gap-2 text-muted-foreground">
                                                 <Car className="h-8 w-8 opacity-50" />
                                                 <p>No vehicles found matching your criteria</p>
@@ -229,6 +230,19 @@ export const FleetTable = memo(function FleetTable({
                                                     )} />
                                                     {CAR_STATUS_LABELS[car.carStatusType] ?? car.carStatusType}
                                                 </div>
+                                            </TableCell>
+                                            <TableCell data-label="Occupancy" className="text-sm">
+                                                {car.currentRentalId && car.occupancy && car.occupancy !== 'FREE' ? (
+                                                    <Link
+                                                        href={`/admin/rentals/${car.currentRentalId}`}
+                                                        className="text-primary hover:underline"
+                                                        aria-label={`${carOccupancyLabel(car.occupancy)}, rental ${formatRentalReference(car.currentRentalId)}`}
+                                                    >
+                                                        {carOccupancyLabel(car.occupancy)}
+                                                    </Link>
+                                                ) : (
+                                                    <span className="text-muted-foreground">{carOccupancyLabel(car.occupancy)}</span>
+                                                )}
                                             </TableCell>
                                             <TableCell data-label="Price/Day" className="text-sm font-medium">
                                                 {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}

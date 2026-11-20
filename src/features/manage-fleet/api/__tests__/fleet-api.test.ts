@@ -121,3 +121,19 @@ describe('restoring a car', () => {
         expect(mockClientPost).toHaveBeenCalledWith('/api/admin/cars/12/restore');
     });
 });
+
+describe('fleet list filters', () => {
+    it('sends the occupancy filter and skips it when it is all', async () => {
+        const { clientGet } = await import('@/shared/api');
+        const { useFleetList } = await import('../fleet-api');
+        vi.mocked(clientGet).mockResolvedValue({ content: [] });
+
+        const first = renderHook(() => useFleetList({ occupancy: 'IN_USE', page: 0 }), { wrapper: createQueryWrapper() });
+        await waitFor(() => expect(first.result.current.isSuccess).toBe(true));
+        expect(vi.mocked(clientGet)).toHaveBeenCalledWith('/api/admin/cars?occupancy=IN_USE&page=0');
+
+        const second = renderHook(() => useFleetList({ occupancy: 'all' }), { wrapper: createQueryWrapper() });
+        await waitFor(() => expect(second.result.current.isSuccess).toBe(true));
+        expect(vi.mocked(clientGet)).toHaveBeenCalledWith('/api/admin/cars');
+    });
+});

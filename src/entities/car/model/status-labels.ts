@@ -1,5 +1,5 @@
 import { ownValue } from '@/shared/lib/utils';
-import type { CarStatus, DayAvailabilityStatus } from './types';
+import type { CarOccupancy, CarStatus, DayAvailabilityStatus } from './types';
 
 export const CAR_STATUS_LABELS: Record<CarStatus, string> = {
     AVAILABLE: 'Available',
@@ -9,6 +9,18 @@ export const CAR_STATUS_LABELS: Record<CarStatus, string> = {
 };
 
 export const CAR_STATUSES = Object.keys(CAR_STATUS_LABELS) as CarStatus[];
+
+export const CAR_OCCUPANCY_LABELS: Record<CarOccupancy, string> = {
+    FREE: 'Free',
+    RESERVED: 'Reserved today',
+    IN_USE: 'In use',
+};
+
+export const CAR_OCCUPANCIES = Object.keys(CAR_OCCUPANCY_LABELS) as CarOccupancy[];
+
+export function carOccupancyLabel(occupancy: string | null | undefined): string {
+    return ownValue(CAR_OCCUPANCY_LABELS, occupancy) ?? CAR_OCCUPANCY_LABELS.FREE;
+}
 
 export const AVAILABILITY_STATUS_LABELS: Record<DayAvailabilityStatus, string> = {
     AVAILABLE: 'Available',
