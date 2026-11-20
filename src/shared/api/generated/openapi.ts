@@ -1450,7 +1450,7 @@ export interface paths {
         };
         /**
          * Get similar available cars
-         * @description Find similar cars that are available for the specified date range. If dates are not provided, defaults to today + 30 days.
+         * @description Find similar cars that are available for the specified date range. If no dates are provided, availability is checked for the next 30 days and prices are for a single day starting today. If dates are provided, prices cover that range.
          */
         get: operations["getSimilarAvailableCars"];
         put?: never;
@@ -3262,6 +3262,7 @@ export interface components {
             brand?: string;
             /** @enum {string} */
             currency?: "TRY" | "USD" | "EUR" | "GBP" | "JPY";
+            /** @description Effective price per day in the car currency. For a request without dates this is the price of a single day starting today. For a request with dates it is the total price divided by the number of rental days in that range. */
             dailyRate?: number;
             /** Format: int64 */
             id?: number;
@@ -3272,6 +3273,7 @@ export interface components {
             similarityReasons?: string[];
             /** Format: int32 */
             similarityScore?: number;
+            /** @description Total price in the car currency for the priced range: one day when the request has no dates, otherwise the whole requested range. */
             totalPrice?: number;
         };
         UnbanUserRequest: {
@@ -8154,7 +8156,7 @@ export interface operations {
                  */
                 startDate?: string;
                 /**
-                 * @description Rental end date (default: today + 30 days)
+                 * @description Rental end date (default: start date when a start date is given)
                  * @example 2025-01-20
                  */
                 endDate?: string;
