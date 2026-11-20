@@ -1,7 +1,7 @@
 import { formatDistanceToNow } from 'date-fns';
+import { DEFAULT_CURRENCY, DEFAULT_LOCALE } from '@/shared/config/constants';
 import type { CurrencyType } from '@/shared/types';
 
-const LOCALE = 'en-US';
 const MISSING = 'N/A';
 
 export interface FormatCurrencyOptions {
@@ -12,12 +12,12 @@ export interface FormatCurrencyOptions {
 
 export function formatCurrency(
     amount: number,
-    currency: CurrencyType | string = 'USD',
+    currency: CurrencyType | string = DEFAULT_CURRENCY,
     options: FormatCurrencyOptions = {}
 ): string {
     const { minimumFractionDigits, maximumFractionDigits, showSymbol = true } = options;
 
-    return new Intl.NumberFormat(LOCALE, {
+    return new Intl.NumberFormat(DEFAULT_LOCALE, {
         style: showSymbol ? 'currency' : 'decimal',
         currency: showSymbol ? currency : undefined,
         currencyDisplay: showSymbol ? 'narrowSymbol' : undefined,
@@ -28,21 +28,21 @@ export function formatCurrency(
 
 export function formatCurrencyWithDecimals(
     amount: number,
-    currency: CurrencyType | string = 'USD'
+    currency: CurrencyType | string = DEFAULT_CURRENCY
 ): string {
     return formatCurrency(amount, currency);
 }
 
 export function formatAmount(amount: number, currency?: CurrencyType | string | null): string {
     if (currency) return formatCurrency(amount, currency);
-    return new Intl.NumberFormat(LOCALE, { maximumFractionDigits: 2 }).format(amount);
+    return new Intl.NumberFormat(DEFAULT_LOCALE, { maximumFractionDigits: 2 }).format(amount);
 }
 
 export function formatCompactCurrency(
     amount: number,
-    currency: CurrencyType | string = 'USD'
+    currency: CurrencyType | string = DEFAULT_CURRENCY
 ): string {
-    return new Intl.NumberFormat(LOCALE, {
+    return new Intl.NumberFormat(DEFAULT_LOCALE, {
         style: 'currency',
         currency,
         currencyDisplay: 'narrowSymbol',
@@ -52,8 +52,8 @@ export function formatCompactCurrency(
     }).format(amount);
 }
 
-export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): string {
-    const part = new Intl.NumberFormat(LOCALE, {
+export function getCurrencySymbol(currency: CurrencyType | string = DEFAULT_CURRENCY): string {
+    const part = new Intl.NumberFormat(DEFAULT_LOCALE, {
         style: 'currency',
         currency,
         currencyDisplay: 'narrowSymbol',
@@ -64,12 +64,12 @@ export function getCurrencySymbol(currency: CurrencyType | string = 'USD'): stri
 }
 
 export function formatNumber(value: number, options?: Intl.NumberFormatOptions): string {
-    return new Intl.NumberFormat(LOCALE, options).format(value);
+    return new Intl.NumberFormat(DEFAULT_LOCALE, options).format(value);
 }
 
 export function formatDailyPrice(
     amount: number,
-    currency: CurrencyType | string = 'USD'
+    currency: CurrencyType | string = DEFAULT_CURRENCY
 ): string {
     return `${formatCurrency(amount, currency)}/day`;
 }
@@ -95,15 +95,15 @@ function format(value: DateInput, options: Intl.DateTimeFormatOptions): string {
     const parsed = parseApiDate(value);
     if (!parsed) return MISSING;
     const timeZone = isDateOnly(value) ? 'UTC' : undefined;
-    return new Intl.DateTimeFormat(LOCALE, { ...options, timeZone }).format(parsed);
+    return new Intl.DateTimeFormat(DEFAULT_LOCALE, { ...options, timeZone }).format(parsed);
 }
 
 export function formatMonthShort(date: Date): string {
-    return new Intl.DateTimeFormat(LOCALE, { month: 'short' }).format(date);
+    return new Intl.DateTimeFormat(DEFAULT_LOCALE, { month: 'short' }).format(date);
 }
 
 export function formatNumericDate(date: Date): string {
-    return new Intl.DateTimeFormat(LOCALE).format(date);
+    return new Intl.DateTimeFormat(DEFAULT_LOCALE).format(date);
 }
 
 export function formatDate(value: DateInput): string {

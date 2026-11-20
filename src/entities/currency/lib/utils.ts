@@ -1,4 +1,9 @@
+import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES } from '@/shared/config/constants';
 import type { Currency, CurrencyCode } from '../model/types';
+
+export { DEFAULT_CURRENCY };
+
+export const RATES_BASE_CURRENCY: CurrencyCode = 'USD';
 
 export const CURRENCIES: Currency[] = [
     { code: 'USD', name: 'US Dollar', symbol: '$', decimals: 2 },
@@ -7,8 +12,6 @@ export const CURRENCIES: Currency[] = [
     { code: 'TRY', name: 'Turkish Lira', symbol: '₺', decimals: 2 },
     { code: 'JPY', name: 'Japanese Yen', symbol: '¥', decimals: 0 },
 ];
-
-export const DEFAULT_CURRENCY: CurrencyCode = 'USD';
 
 export const CURRENCY_STORAGE_KEY = 'preferred_currency';
 
@@ -20,18 +23,18 @@ export function getCurrencyByCode(code: CurrencyCode | string): Currency {
 }
 
 export function isValidCurrencyCode(code: string): code is CurrencyCode {
-    return ['USD', 'EUR', 'GBP', 'TRY', 'JPY'].includes(code.toUpperCase());
+    return (SUPPORTED_CURRENCIES as readonly string[]).includes(code.toUpperCase());
 }
 
 export function mapCurrency(currency: string | undefined | null): CurrencyCode {
-    if (!currency) return 'USD';
+    if (!currency) return DEFAULT_CURRENCY;
 
     const upper = currency.toUpperCase();
     if (isValidCurrencyCode(upper)) {
         return upper as CurrencyCode;
     }
 
-    return 'USD';
+    return DEFAULT_CURRENCY;
 }
 export type RateSource = 'LIVE' | 'CACHED' | 'FALLBACK';
 

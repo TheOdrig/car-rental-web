@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import type { DamageStatistics } from '../model/types';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface DamageCurrencyTotalsProps {
     totals: DamageStatistics['byCurrency'];
@@ -23,7 +24,7 @@ export function DamageCurrencyTotals({ totals }: DamageCurrencyTotalsProps) {
                 ) : (
                     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                         {totals.map((entry) => {
-                            const currency = entry.currency ?? 'USD';
+                            const currency = entry.currency ?? DEFAULT_CURRENCY;
                             return (
                                 <div
                                     key={currency}

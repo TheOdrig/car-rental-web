@@ -16,6 +16,7 @@ import { DynamicImage } from '@/shared/ui/dynamic-image';
 import { DamageStatusBadge, DamageSeverityBadge, useMyDamageDetail, getDamageCategoryLabel } from '@/entities/damage';
 import { VehicleLabel } from '@/entities/car';
 import { DamageDisputeForm } from '@/features/manage-damages';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 export function MyDamageDetailContent({ id }: { id: string }) {
     const damageId = parseInt(id, 10);
@@ -70,7 +71,7 @@ export function MyDamageDetailContent({ id }: { id: string }) {
             damage.resolvedAt ||
             damage.refundAmount !== undefined
     );
-    const damageCurrency = damage.currency ?? 'USD';
+    const damageCurrency = damage.currency ?? DEFAULT_CURRENCY;
     const resolved = Boolean(damage.resolvedAt);
 
     return (
@@ -170,12 +171,12 @@ export function MyDamageDetailContent({ id }: { id: string }) {
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     <div>
                                         <p className="text-sm text-muted-foreground">Repair Cost</p>
-                                        <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? 'USD')}</p>
+                                        <p className="text-xl font-bold">{formatCurrencyWithDecimals(damage.repairCostEstimate ?? 0, damage.currency ?? DEFAULT_CURRENCY)}</p>
                                     </div>
                                     <div>
                                         <p className="text-sm text-muted-foreground">Your Liability</p>
                                         <p className="text-xl font-bold text-destructive">
-                                            {formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? 'USD')}
+                                            {formatCurrencyWithDecimals(damage.customerLiability ?? 0, damage.currency ?? DEFAULT_CURRENCY)}
                                         </p>
                                     </div>
                                     <div>

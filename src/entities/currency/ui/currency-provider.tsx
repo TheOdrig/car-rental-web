@@ -16,6 +16,7 @@ import {
     type ExchangeRatesResponse,
     CURRENCIES,
     DEFAULT_CURRENCY,
+    RATES_BASE_CURRENCY,
     CURRENCY_STORAGE_KEY,
     RATES_CACHE_DURATION,
     getCurrencyByCode,
@@ -106,31 +107,31 @@ export function CurrencyProvider({
     }, []);
 
     const convert = useCallback(
-        (amount: number, from: CurrencyCode = 'USD'): number => {
+        (amount: number, from: CurrencyCode = DEFAULT_CURRENCY): number => {
             if (!rates) return amount;
             if (currency === from) return amount;
 
             const fromRate = rates[from] || 1;
             const toRate = rates[currency] || 1;
 
-            const amountInUsd = from === 'USD' ? amount : amount / fromRate;
-            return Math.round(amountInUsd * toRate * 100) / 100;
+            const amountInBase = from === RATES_BASE_CURRENCY ? amount : amount / fromRate;
+            return Math.round(amountInBase * toRate * 100) / 100;
         },
         [rates, currency]
     );
 
     const isConverted = useCallback(
-        (from: CurrencyCode = 'USD'): boolean => Boolean(rates) && currency !== from,
+        (from: CurrencyCode = DEFAULT_CURRENCY): boolean => Boolean(rates) && currency !== from,
         [rates, currency]
     );
 
     const formatSource = useCallback(
-        (amount: number, from: CurrencyCode = 'USD'): string => formatInCurrency(amount, from),
+        (amount: number, from: CurrencyCode = DEFAULT_CURRENCY): string => formatInCurrency(amount, from),
         []
     );
 
     const format = useCallback(
-        (amount: number, from: CurrencyCode = 'USD'): string => {
+        (amount: number, from: CurrencyCode = DEFAULT_CURRENCY): string => {
             if (!rates || currency === from) {
                 return formatInCurrency(amount, from);
             }

@@ -23,9 +23,10 @@ import { cn, formatCurrency, formatDate } from '@/shared/lib';
 import { toast } from 'sonner';
 import { useBookedDates } from '@/entities/car';
 import type { Car as CarType } from '@/entities/car';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 function formatPrice(price: number, currency: string): string {
-    return formatCurrency(price, currency || 'USD');
+    return formatCurrency(price, currency || DEFAULT_CURRENCY);
 }
 
 function monthKey(date: Date): string {

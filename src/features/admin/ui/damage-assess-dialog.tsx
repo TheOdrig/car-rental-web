@@ -25,7 +25,7 @@ import { Label } from '@/shared/ui/label';
 import { Textarea } from '@/shared/ui/textarea';
 import { Checkbox } from '@/shared/ui/checkbox';
 import { useAssessDamage, useReassessDamage } from '@/entities/damage';
-import { DEFAULT_CURRENCY } from '@/shared/config/constants';
+import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES } from '@/shared/config/constants';
 import { getCurrencySymbol } from '@/shared/lib';
 import type { DamageSeverity, DamageCategory } from '@/entities/damage';
 import type { CurrencyType } from '@/shared/types';
@@ -56,7 +56,7 @@ interface DamageAssessDialogProps {
     };
 }
 
-const CURRENCY_OPTIONS: CurrencyType[] = ['TRY', 'USD', 'EUR', 'GBP', 'JPY'];
+const CURRENCY_OPTIONS: readonly CurrencyType[] = SUPPORTED_CURRENCIES;
 
 const SEVERITY_OPTIONS: { value: DamageSeverity; label: string }[] = [
     { value: 'MINOR', label: 'Minor' },

@@ -44,6 +44,7 @@ import { cn, formatCurrencyWithDecimals, formatRentalReference } from '@/shared/
 import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, carOccupancyLabel, type AdminCar as CarType, type CarStatus } from '@/entities/car';
 import { Pagination } from '@/shared/ui/pagination';
 import { EmptyState } from '@/shared/ui/empty-state';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 const statusConfig: Record<CarStatus, { dotColor: string; textColor: string }> = {
     AVAILABLE: {
@@ -243,7 +244,7 @@ export const FleetTable = memo(function FleetTable({
                                                 )}
                                             </TableCell>
                                             <TableCell data-label="Price/Day" className="text-sm font-medium">
-                                                {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? 'USD')}
+                                                {formatCurrencyWithDecimals(car.price ?? 0, car.currencyType ?? DEFAULT_CURRENCY)}
                                             </TableCell>
                                             <TableCell data-wide className="text-right">
                                                 <div className="flex items-center justify-end gap-1">

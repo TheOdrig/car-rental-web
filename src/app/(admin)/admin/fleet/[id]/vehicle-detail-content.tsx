@@ -23,6 +23,7 @@ import {
     SelectValue,
 } from '@/shared/ui/select';
 import { CAR_STATUSES, CAR_SERVICE_STATUS_LABELS, type CarStatus } from '@/entities/car';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 const statusOptions = CAR_STATUSES.map((value) => ({ value, label: CAR_SERVICE_STATUS_LABELS[value] }));
 
@@ -152,7 +153,7 @@ export function VehicleDetailContent({ id }: { id: string }) {
             {vehicle.statistics && (
                 <VehicleStatisticsCard
                     statistics={vehicle.statistics}
-                    currency={vehicle.pricing?.currency ?? 'USD'}
+                    currency={vehicle.pricing?.currency ?? DEFAULT_CURRENCY}
                 />
             )}
 

@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import { StatCard } from '@/shared/ui/stat-card';
 import { formatCurrencyWithDecimals } from '@/shared/lib';
 import type { CustomerStatistics } from '@/entities/user';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface CustomerStatisticsCardProps {
     statistics: CustomerStatistics;
@@ -106,7 +107,7 @@ export function CustomerStatisticsCard({ statistics }: CustomerStatisticsCardPro
                                 <li key={entry.currency}>
                                     <StatCard
                                         label={`${entry.currency} (${entry.assessedCount ?? 0} assessed)`}
-                                        value={formatCurrencyWithDecimals(entry.totalCustomerLiability ?? 0, entry.currency ?? 'USD')}
+                                        value={formatCurrencyWithDecimals(entry.totalCustomerLiability ?? 0, entry.currency ?? DEFAULT_CURRENCY)}
                                         className="p-3"
                                     />
                                 </li>

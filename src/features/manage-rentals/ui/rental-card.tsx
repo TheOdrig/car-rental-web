@@ -22,6 +22,7 @@ import {
     RentalPaymentNote,
     RentalStatus,
 } from '@/entities/rental';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface RentalCardProps {
     rental: Rental;
@@ -51,7 +52,7 @@ function CardTitleLink({ href, children }: { href?: string; children: ReactNode 
 }
 
 function formatPrice(price: number, currency: string): string {
-    return formatCurrency(price, currency || 'USD');
+    return formatCurrency(price, currency || DEFAULT_CURRENCY);
 }
 
 function ActionButtons({
@@ -185,7 +186,7 @@ export const RentalCard = memo(function RentalCard({
 
                             <div className="mt-auto flex items-center justify-between border-t pt-3">
                                 <span className="text-xl font-bold text-foreground">
-                                    {formatPrice(totalPrice, currency || 'USD')}
+                                    {formatPrice(totalPrice, currency || DEFAULT_CURRENCY)}
                                 </span>
                                 <ActionButtons
                                     actions={actions}
@@ -254,7 +255,7 @@ export const RentalCard = memo(function RentalCard({
                                 </span>
                             </div>
                             <span className="font-semibold text-foreground">
-                                {formatPrice(totalPrice, currency || 'USD')}
+                                {formatPrice(totalPrice, currency || DEFAULT_CURRENCY)}
                             </span>
                         </div>
                     </div>

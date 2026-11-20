@@ -2,6 +2,7 @@ import { LATE_RETURN_STATUS_LABELS, Rental, RentalStatus, type LateReturnStatus,
 import { formatCurrency, formatDate, ownValue } from '@/shared/lib';
 import { parseLocalDate } from './rental-rules';
 import { isRentalPaymentSecured } from './rental-payment-state';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 export const isActive = (rental: Rental): boolean => {
     return rental.status === RentalStatus.IN_USE;
@@ -19,7 +20,7 @@ export const getFormattedRentalPeriod = (rental: Rental): string => {
 };
 
 export const getFormattedTotal = (rental: Rental): string => {
-    return formatCurrency(rental.totalPrice, rental.currency ?? 'USD');
+    return formatCurrency(rental.totalPrice, rental.currency ?? DEFAULT_CURRENCY);
 };
 
 export function getLateReturnStatusLabel(status: LateReturnStatus): string {

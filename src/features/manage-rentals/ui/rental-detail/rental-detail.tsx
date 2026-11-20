@@ -28,6 +28,7 @@ import { RentalDamageReports } from './rental-damage-reports';
 import { RentalNotesCard, hasRentalNotes } from './rental-notes-card';
 import { RentalPeriodCard } from './rental-period-card';
 import { VehicleDetailsCard } from './vehicle-details-card';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface RentalDetailProps {
     rental: Rental;
@@ -40,7 +41,7 @@ export function RentalDetail({ rental, driverName, className, onCancelSuccess }:
     const [showCancelDialog, setShowCancelDialog] = useState(false);
     const cancelMutation = useCancelRental();
 
-    const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = 'USD', status, paymentOpensOn } = rental;
+    const { carSummary, startDate, endDate, days = 1, dailyPrice = 0, totalPrice, currency = DEFAULT_CURRENCY, status, paymentOpensOn } = rental;
     const canCancel = status === RentalStatus.REQUESTED;
 
     const handleCancel = async () => {

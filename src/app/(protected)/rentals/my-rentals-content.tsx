@@ -29,6 +29,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from '@/shared/ui/alert-dialog';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 const PAGE_SIZE = 10;
 
@@ -201,7 +202,7 @@ export function MyRentalsContent() {
                                 <div className="flex items-center gap-2 text-sm">
                                     <Wallet className="h-4 w-4" aria-hidden="true" />
                                     <span className="font-semibold">Total:</span>
-                                    <span>{formatCurrencyWithDecimals(rentalToCancel.totalPrice, rentalToCancel.currency ?? 'USD')}</span>
+                                    <span>{formatCurrencyWithDecimals(rentalToCancel.totalPrice, rentalToCancel.currency ?? DEFAULT_CURRENCY)}</span>
                                 </div>
                             </div>
                         )}

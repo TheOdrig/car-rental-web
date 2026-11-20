@@ -9,6 +9,7 @@ import { DamageStatusBadge, DamageSeverityBadge } from '@/entities/damage';
 import { VehicleLabel } from '@/entities/car';
 import { AlertTriangle, ChevronRight } from 'lucide-react';
 import type { DamageReport } from '@/entities/damage';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface DamageCardProps {
     damage: DamageReport;
@@ -45,7 +46,7 @@ export function DamageCard({ damage, href, onDispute }: DamageCardProps) {
                         <p className="mt-2 text-sm font-medium">
                             Your Liability:{' '}
                             <span className="text-destructive">
-                                {formatCurrencyWithDecimals(damage.customerLiability, damage.currency ?? 'USD')}
+                                {formatCurrencyWithDecimals(damage.customerLiability, damage.currency ?? DEFAULT_CURRENCY)}
                             </span>
                         </p>
                     )}

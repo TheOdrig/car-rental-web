@@ -6,13 +6,14 @@ import { Skeleton } from '@/shared/ui/skeleton';
 import { Badge } from '@/shared/ui/badge';
 import { History, RefreshCw, CheckCircle } from 'lucide-react';
 import { formatCurrency, formatDateTime } from '@/shared/lib';
+import { DEFAULT_CURRENCY } from '@/shared/config/constants';
 
 interface PenaltyHistorySectionProps {
     rentalId: number;
     currency?: string;
 }
 
-export function PenaltyHistorySection({ rentalId, currency = 'USD' }: PenaltyHistorySectionProps) {
+export function PenaltyHistorySection({ rentalId, currency = DEFAULT_CURRENCY }: PenaltyHistorySectionProps) {
     const { data: history, isLoading, isError } = usePenaltyHistory(rentalId);
 
     if (isLoading) {

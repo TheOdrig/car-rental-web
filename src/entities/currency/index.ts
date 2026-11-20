@@ -3,6 +3,7 @@ export type { CurrencyCode, Currency, ExchangeRatesResponse, ConversionRequest, 
 export {
     CURRENCIES,
     DEFAULT_CURRENCY,
+    RATES_BASE_CURRENCY,
     CURRENCY_STORAGE_KEY,
     RATES_CACHE_DURATION,
     getCurrencyByCode,
