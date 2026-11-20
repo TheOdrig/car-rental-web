@@ -12,10 +12,10 @@ export default function RegisterPage() {
         <div className="space-y-8">
             <div className="flex flex-col gap-2">
                 <h1 className="text-3xl md:text-4xl font-black leading-tight tracking-tight">
-                    Start your journey
+                    Create your account
                 </h1>
                 <p className="text-muted-foreground text-base">
-                    Create an account to unlock exclusive deals.
+                    You need an account to request rentals, pay and follow their status.
                 </p>
             </div>
 
