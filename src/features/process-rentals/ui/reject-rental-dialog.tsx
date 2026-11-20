@@ -76,7 +76,7 @@ export function RejectRentalDialog({
                 </DialogHeader>
 
                 <div className="space-y-6 py-4">
-                    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-5 space-y-4 shadow-sm relative overflow-hidden group">
+                    <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/50 p-5 space-y-4 shadow-sm relative overflow-hidden group">
                         <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
                             <Car className="h-10 w-10 text-slate-900 dark:text-white" />
                         </div>
@@ -149,7 +149,7 @@ export function RejectRentalDialog({
                         variant="destructive"
                         onClick={handleConfirm}
                         disabled={isLoading}
-                        className="bg-rose-500 hover:bg-rose-600 dark:bg-rose-600 dark:hover:bg-rose-700 text-white font-bold h-11 px-6 shadow-lg shadow-rose-500/20 gap-2"
+                        className="bg-rose-600 hover:bg-rose-700 text-white font-semibold h-11 px-6 gap-2"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">

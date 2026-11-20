@@ -44,7 +44,7 @@ export function PromotionalBanners({ rules = PRICING_RULES, className }: Promoti
     if (rules.length === 0) return null;
 
     return (
-        <section className={cn('px-4 py-12', className)}>
+        <section className={cn('py-12', className)}>
             <div className="container mx-auto">
                 <h2 className="text-2xl font-bold md:text-3xl">How pricing works</h2>
                 <p className="mt-1 max-w-2xl text-muted-foreground">
@@ -54,7 +54,7 @@ export function PromotionalBanners({ rules = PRICING_RULES, className }: Promoti
 
                 <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
                     {rules.map((rule) => (
-                        <div key={rule.id} className="rounded-xl border bg-card p-6">
+                        <div key={rule.id} className="rounded-lg border bg-card p-6">
                             <h3 className="font-semibold">{rule.title}</h3>
                             <p className="mt-1 text-sm text-muted-foreground">{rule.description}</p>
                             <dl className="mt-4 divide-y text-sm">

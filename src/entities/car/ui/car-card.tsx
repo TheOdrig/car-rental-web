@@ -73,8 +73,7 @@ export const CarCard = memo(function CarCard({
     const cardContent = (
         <Card
             className={cn(
-                'group overflow-hidden transition-all duration-300 hover:shadow-lg cursor-pointer',
-                variant === 'compact' && 'py-3',
+                'group h-full gap-0 overflow-hidden py-0 transition-shadow duration-200 hover:shadow-md cursor-pointer',
                 className
             )}
             onClick={() => onSelect?.(car)}
@@ -101,14 +100,14 @@ export const CarCard = memo(function CarCard({
                 {isSearchResult && car.appliedDiscounts && car.appliedDiscounts.length > 0 && (
                     <Badge
                         variant="default"
-                        className="absolute top-3 left-3 bg-accent text-white"
+                        className="absolute top-3 left-3"
                     >
                         {car.appliedDiscounts[0]}
                     </Badge>
                 )}
             </div>
 
-            <CardContent className={cn('p-4', variant === 'compact' && 'p-3')}>
+            <CardContent className={cn('flex flex-1 flex-col p-4', variant === 'compact' && 'p-3')}>
                 <Heading className="font-semibold text-lg leading-tight mb-1 line-clamp-2 break-words" title={`${brand} ${model}`}>
                     {brand} {model}
                 </Heading>
@@ -135,14 +134,12 @@ export const CarCard = memo(function CarCard({
                     )}
                 </div>
 
-                <div className="flex items-baseline justify-between">
+                <div className="mt-auto flex items-baseline justify-between gap-2">
                     <div>
                         <span className="text-xl font-bold text-slate-900 dark:text-slate-100">
                             {format(price, sourceCurrency)}
                         </span>
-                        {isSearchResult && (
-                            <span className="text-sm text-muted-foreground">/day</span>
-                        )}
+                        <span className="text-sm text-muted-foreground">/day</span>
                     </div>
                     {totalPrice && (
                         <div className="text-right">
@@ -159,7 +156,7 @@ export const CarCard = memo(function CarCard({
 
     if (!onSelect) {
         return (
-            <Link href={`/cars/${car.id}`} className="block">
+            <Link href={`/cars/${car.id}`} className="block h-full rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                 {cardContent}
             </Link>
         );
@@ -170,7 +167,7 @@ export const CarCard = memo(function CarCard({
 
 export function CarCardSkeleton({ variant = 'default', className }: CarCardSkeletonProps) {
     return (
-        <Card className={cn('overflow-hidden', variant === 'compact' && 'py-3', className)}>
+        <Card className={cn('h-full gap-0 overflow-hidden py-0', className)}>
             <Skeleton className="aspect-[16/10] rounded-none" />
 
             <CardContent className={cn('p-4', variant === 'compact' && 'p-3')}>

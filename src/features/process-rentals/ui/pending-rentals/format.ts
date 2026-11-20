@@ -20,27 +20,27 @@ const STATUS_CONFIG: Record<string, StatusDisplay> = {
     CONFIRMED: {
         label: RENTAL_STATUS_LABELS.CONFIRMED,
         variant: 'default',
-        className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+        className: 'bg-emerald-700 hover:bg-emerald-800 text-white',
     },
     IN_USE: {
         label: RENTAL_STATUS_LABELS.IN_USE,
         variant: 'secondary',
-        className: 'bg-violet-500 hover:bg-violet-600 text-white',
+        className: 'bg-violet-700 hover:bg-violet-800 text-white',
     },
     OVERDUE: {
         label: 'Overdue',
         variant: 'destructive',
-        className: 'bg-rose-500 hover:bg-rose-600 text-white',
+        className: 'bg-rose-700 hover:bg-rose-800 text-white',
     },
     CANCELLED: {
         label: RENTAL_STATUS_LABELS.CANCELLED,
         variant: 'outline',
-        className: 'text-slate-500 border-slate-200 dark:border-slate-800',
+        className: 'text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800',
     },
     RETURNED: {
         label: RENTAL_STATUS_LABELS.RETURNED,
         variant: 'default',
-        className: 'bg-emerald-500 hover:bg-emerald-600 text-white',
+        className: 'bg-emerald-700 hover:bg-emerald-800 text-white',
     },
 };
 

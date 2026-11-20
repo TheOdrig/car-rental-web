@@ -41,7 +41,7 @@ export function CarListItem({ car, className, priority = false, headingLevel: He
     const data = getCarDisplayData(car);
 
     return (
-        <Card className={cn('group overflow-hidden', className)}>
+        <Card className={cn('group gap-0 overflow-hidden py-0', className)}>
             <div className="flex flex-col sm:flex-row">
                 <div className="relative w-full sm:w-72 h-48 sm:h-auto sm:min-h-[200px] flex-shrink-0">
                     <Link href={`/cars/${data.id}`}>
@@ -161,7 +161,7 @@ export function CarListViewSkeleton({ count = 4 }: { count?: number }) {
     return (
         <div className="space-y-4">
             {Array.from({ length: count }).map((_, index) => (
-                <Card key={index} className="overflow-hidden">
+                <Card key={index} className="gap-0 overflow-hidden py-0">
                     <div className="flex flex-col sm:flex-row">
                         <Skeleton className="w-full sm:w-72 h-48 sm:h-[200px]" />
                         <div className="flex-1 p-4 sm:p-6">

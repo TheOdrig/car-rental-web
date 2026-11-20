@@ -136,7 +136,7 @@ export function AdminAlertsContent() {
                         ))}
                     </div>
                 ) : filteredAlerts.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-3xl border-2 border-dashed border-muted">
+                    <div className="flex flex-col items-center justify-center py-20 bg-muted/30 rounded-lg border-2 border-dashed border-muted">
                         <div className="h-16 w-16 rounded-full bg-background flex items-center justify-center shadow-sm">
                             <AlertTriangle className="h-8 w-8 text-muted-foreground" />
                         </div>

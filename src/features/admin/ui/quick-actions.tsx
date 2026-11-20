@@ -165,10 +165,8 @@ function QuickActionButton({
         <Button
             variant={buttonVariant}
             className={cn(
-                "h-auto flex-1 flex-col gap-2 py-5 px-6 rounded-2xl transition-all duration-300",
-                !isDisabled && "hover:scale-[1.02] hover:shadow-md",
-                isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer",
-                variant === 'default' && "shadow-lg shadow-blue-500/20"
+                "h-auto flex-1 flex-col gap-2 rounded-lg px-6 py-4",
+                isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"
             )}
             onClick={onClick}
             disabled={isDisabled}
@@ -176,22 +174,22 @@ function QuickActionButton({
             <div className="flex items-center gap-3">
                 <div className={cn(
                     "p-2 rounded-lg",
-                    variant === 'default' ? "bg-white/20" : "bg-primary/10 dark:bg-primary/20"
+                    variant === 'default' ? "bg-primary-foreground/15" : "bg-primary/10 dark:bg-primary/20"
                 )}>
                     {React.isValidElement(icon) ? React.cloneElement(icon as React.ReactElement<{ className?: string }>, {
-                        className: cn("h-5 w-5", variant === 'default' ? "text-white" : "text-primary")
+                        className: cn("h-5 w-5", variant === 'default' ? "text-primary-foreground" : "text-primary")
                     }) : icon}
                 </div>
                 <span className={cn(
                     "text-3xl font-bold tracking-tight",
-                    variant === 'default' ? "text-white" : "text-slate-900 dark:text-white"
+                    variant === 'default' ? "text-primary-foreground" : "text-slate-900 dark:text-white"
                 )}>
                     {count}
                 </span>
             </div>
             <span className={cn(
                 "text-xs font-semibold uppercase tracking-wider",
-                variant === 'default' ? "text-blue-100" : "text-slate-500 dark:text-slate-400"
+                variant === 'default' ? "text-primary-foreground/90" : "text-slate-500 dark:text-slate-400"
             )}>
                 {label}
             </span>

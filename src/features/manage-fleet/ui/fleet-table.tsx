@@ -144,7 +144,7 @@ export const FleetTable = memo(function FleetTable({
     return (
         <>
             <Card className={cn(
-                "rounded-3xl bg-card border border-white/50 dark:border-white/10 shadow-lg",
+                "rounded-lg bg-card border border-border shadow-sm",
                 className
             )}>
                 <CardHeader className="pb-3">

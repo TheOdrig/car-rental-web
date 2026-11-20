@@ -121,7 +121,7 @@ export function ApproveRentalDialog({
                         </div>
                     </div>
 
-                    <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-2xl p-6 shadow-inner">
+                    <div className="relative overflow-hidden bg-slate-100 dark:bg-slate-900 rounded-lg p-6 shadow-inner">
 
                         <div className="relative z-10 grid grid-cols-3 gap-x-4 gap-y-5">
                             <div className="space-y-1.5">
@@ -185,7 +185,7 @@ export function ApproveRentalDialog({
                     <Button
                         onClick={handleConfirm}
                         disabled={isLoading}
-                        className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white font-bold h-11 px-6 shadow-lg shadow-blue-500/20"
+                        className="bg-primary text-primary-foreground hover:bg-primary/90 font-semibold h-11 px-6"
                     >
                         {isLoading ? (
                             <div className="flex items-center gap-2">

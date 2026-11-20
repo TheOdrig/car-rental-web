@@ -53,6 +53,11 @@ describe('CarCard', () => {
             renderWithProviders(<CarCard car={car} />);
             expect(screen.getByText('$150.00')).toBeInTheDocument();
         });
+        it('labels the price as per day', () => {
+            const car = createMockCar({ price: 150, currencyType: 'USD' });
+            renderWithProviders(<CarCard car={car} />);
+            expect(screen.getByText('/day')).toBeInTheDocument();
+        });
         it('should render fuel type when provided', () => {
             const car = createMockCar({ fuelType: 'GASOLINE' });
             renderWithProviders(<CarCard car={car} />);

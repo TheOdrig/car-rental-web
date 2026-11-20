@@ -147,6 +147,118 @@
     --warning-foreground: hsl(222.2 47.4% 11.2%);
 }
 
+.dark :is(.text-green-500, .text-green-600, .text-green-700) {
+    color: var(--color-emerald-400);
+}
+
+.dark :is(.text-emerald-500, .text-emerald-600, .text-emerald-700) {
+    color: var(--color-emerald-400);
+}
+
+.dark :is(.text-amber-500, .text-amber-600, .text-amber-700) {
+    color: var(--color-amber-400);
+}
+
+.dark :is(.text-yellow-500, .text-yellow-600, .text-yellow-700) {
+    color: var(--color-amber-400);
+}
+
+.dark :is(.text-orange-500, .text-orange-600, .text-orange-700) {
+    color: var(--color-orange-400);
+}
+
+.dark :is(.text-red-500, .text-red-600, .text-red-700) {
+    color: var(--color-red-400);
+}
+
+.dark :is(.text-rose-500, .text-rose-600, .text-rose-700) {
+    color: var(--color-rose-400);
+}
+
+.dark :is(.text-blue-500, .text-blue-600, .text-blue-700) {
+    color: var(--color-blue-400);
+}
+
+.dark :is(.text-sky-500, .text-sky-600, .text-sky-700) {
+    color: var(--color-sky-400);
+}
+
+.dark :is(.text-violet-500, .text-violet-600, .text-violet-700) {
+    color: var(--color-violet-400);
+}
+
+.dark :is(.text-purple-500, .text-purple-600, .text-purple-700) {
+    color: var(--color-violet-400);
+}
+
+.dark :is(.text-cyan-500, .text-cyan-600, .text-cyan-700) {
+    color: var(--color-cyan-400);
+}
+
+.dark :is(.text-teal-500, .text-teal-600, .text-teal-700) {
+    color: var(--color-teal-400);
+}
+
+.dark :is(.text-indigo-500, .text-indigo-600, .text-indigo-700) {
+    color: var(--color-indigo-400);
+}
+
+:root:not(.dark) .text-green-500 {
+    color: var(--color-green-600);
+}
+
+:root:not(.dark) .text-emerald-500 {
+    color: var(--color-emerald-600);
+}
+
+:root:not(.dark) .text-amber-500 {
+    color: var(--color-amber-600);
+}
+
+:root:not(.dark) .text-yellow-500 {
+    color: var(--color-yellow-600);
+}
+
+:root:not(.dark) .text-orange-500 {
+    color: var(--color-orange-600);
+}
+
+:root:not(.dark) .text-red-500 {
+    color: var(--color-red-600);
+}
+
+:root:not(.dark) .text-rose-500 {
+    color: var(--color-rose-600);
+}
+
+:root:not(.dark) .text-blue-500 {
+    color: var(--color-blue-600);
+}
+
+:root:not(.dark) .text-sky-500 {
+    color: var(--color-sky-600);
+}
+
+:root:not(.dark) .text-violet-500 {
+    color: var(--color-violet-600);
+}
+
+:root:not(.dark) .text-purple-500 {
+    color: var(--color-purple-600);
+}
+
+:root:not(.dark) .text-cyan-500 {
+    color: var(--color-cyan-600);
+}
+
+:root:not(.dark) .text-teal-500 {
+    color: var(--color-teal-600);
+}
+
+:root:not(.dark) .text-indigo-500 {
+    color: var(--color-indigo-600);
+}
+
 * {
     border-color: var(--border);
 }

@@ -134,7 +134,7 @@ export function Header() {
                             <Button variant="ghost" asChild className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800">
                                 <Link href="/login">Log In</Link>
                             </Button>
-                            <Button asChild className="bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-200">
+                            <Button asChild>
                                 <Link href="/register">Sign Up</Link>
                             </Button>
                         </div>
